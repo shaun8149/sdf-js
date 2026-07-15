@@ -150,12 +150,7 @@ export function renderHierarchy(ir, opts = {}) {
       children,
       transform: { translate: p },
       material: nodeMat(level[i], maxLevel, emphasis.has(i)),
-      animation: [
-        {
-          channel: 'transform.translate.y',
-          expr: `${(p[1] + drop).toFixed(3)} - ${drop} * smoothstep(${t0.toFixed(2)}, ${t1.toFixed(2)}, t)`,
-        },
-      ],
+      // STATIC (user-locked 2026-07-15): only the CAMERA animates.
     });
   }
 

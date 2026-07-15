@@ -98,6 +98,19 @@
       .stage-bullet.on.cur {
         opacity: 1;
       }
+      /* RIGHT narration column (overlay `side:'right'`). A comparison page must
+         put its two sides' text in TWO PLACES — stacking both in the single
+         left column destroys the contrast the page exists to make (user-locked
+         2026-07-15: 文本一定要区分，不要只放在左边). */
+      .stage-bullet.side-right {
+        left: auto;
+        right: 6.5vw;
+        text-align: right;
+        transform: translateX(14px);
+      }
+      .stage-bullet.side-right.on {
+        transform: translateX(0);
+      }
       /* Insight panel — the derived takeaway (R1: the chart finishes the
          derivation for the reader). Bottom-right, opposite the title/bullet
          column; big claim + small cited derivation line. */

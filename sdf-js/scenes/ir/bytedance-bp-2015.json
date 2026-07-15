@@ -42,9 +42,9 @@
       "structure": "proportion",
       "title": "资讯的移动化远高于搜索",
       "groups": [
-        { "label": "社交/聊天", "values": [76.9, 23.1], "sliceLabels": ["移动", "电脑"] },
-        { "label": "新闻/资讯", "values": [68.6, 31.4], "sliceLabels": ["移动", "电脑"] },
-        { "label": "使用搜索引擎", "values": [42.4, 57.6], "sliceLabels": ["移动", "电脑"] }
+        { "label": "社交/聊天", "values": [23.1, 76.9], "sliceLabels": ["电脑", "移动"] },
+        { "label": "新闻/资讯", "values": [31.4, 68.6], "sliceLabels": ["电脑", "移动"] },
+        { "label": "使用搜索引擎", "values": [57.6, 42.4], "sliceLabels": ["电脑", "移动"] }
       ],
       "emphasis": 2,
       "callout": {
@@ -161,6 +161,7 @@
     {
       "structure": "roadmap",
       "title": "产品演化：推荐内容 → 推荐商品 → 推荐服务",
+      "climb": false,
       "milestones": [
         { "date": "2012", "label": "新闻·时政社会" },
         { "date": "2013", "label": "泛资讯·段子小说" },

@@ -1137,12 +1137,6 @@
         "rotate": [0, -1, 0]
       },
       "material": "mat-0",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "3.400 - 0.000 * smoothstep(0.00, 1.00, t) + 0.07 * sin(0.35 * t + 0.00)"
-        }
-      ],
       "collection": "station-0"
     },
     {
@@ -1157,12 +1151,6 @@
         "rotate": [0, -0.5, 0]
       },
       "material": "mat-0",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "2.600 - 0.000 * smoothstep(0.00, 1.00, t) + 0.09 * sin(0.43 * t + 2.10)"
-        }
-      ],
       "collection": "station-0"
     },
     {
@@ -1177,12 +1165,6 @@
         "rotate": [0, 0, 0]
       },
       "material": "mat-0",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "4.600 - 0.000 * smoothstep(0.00, 1.00, t) + 0.11 * sin(0.51 * t + 4.20)"
-        }
-      ],
       "collection": "station-0"
     },
     {
@@ -1197,12 +1179,6 @@
         "rotate": [0, 0.5, 0]
       },
       "material": "mat-0",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "4.000 - 0.000 * smoothstep(0.00, 1.00, t) + 0.13 * sin(0.59 * t + 0.02)"
-        }
-      ],
       "collection": "station-0"
     },
     {
@@ -1217,12 +1193,6 @@
         "rotate": [0, 1, 0]
       },
       "material": "mat-0",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "5.800 - 0.000 * smoothstep(0.00, 1.00, t) + 0.15 * sin(0.67 * t + 2.12)"
-        }
-      ],
       "collection": "station-0"
     },
     {
@@ -1237,12 +1207,6 @@
         "rotate": [0, 1.5, 0]
       },
       "material": "mat-0",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "5.200 - 0.000 * smoothstep(0.00, 1.00, t) + 0.17 * sin(0.75 * t + 4.22)"
-        }
-      ],
       "collection": "station-0"
     },
     {
@@ -1257,12 +1221,6 @@
         "rotate": [0, 2, 0]
       },
       "material": "mat-0",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "7.000 - 0.000 * smoothstep(0.00, 1.00, t) + 0.19 * sin(0.83 * t + 0.04)"
-        }
-      ],
       "collection": "station-0"
     },
     {
@@ -1277,12 +1235,6 @@
         "rotate": [0, 2.5, 0]
       },
       "material": "mat-0",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "6.400 - 0.000 * smoothstep(0.00, 1.00, t) + 0.21 * sin(0.91 * t + 2.14)"
-        }
-      ],
       "collection": "station-0"
     },
     {
@@ -1297,12 +1249,6 @@
         "rotate": [0, 3, 0]
       },
       "material": "mat-0",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "2.000 - 0.000 * smoothstep(0.00, 1.00, t) + 0.23 * sin(0.99 * t + 4.24)"
-        }
-      ],
       "collection": "station-0"
     },
     {
@@ -1337,12 +1283,6 @@
         "rotate": [0, 0, 1.5707963267948966]
       },
       "material": "mat-2",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "3.700 - 0.000 * smoothstep(7.60, 8.60, t) + 0.07 * sin(0.35 * t + -1.56)"
-        }
-      ],
       "collection": "station-1"
     },
     {
@@ -1355,12 +1295,6 @@
         "translate": [15.498579321292716, 6.717749959911059, 55.197120953775176]
       },
       "material": "mat-3",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "8.018 - 1.300 * smoothstep(9.45, 10.00, t) + 0.04 * sin(0.6 * t + -4.56)"
-        }
-      ],
       "collection": "station-1"
     },
     {
@@ -1373,12 +1307,6 @@
         "translate": [14.135932496115032, 5.888298781822307, 55.197120953775176]
       },
       "material": "mat-4",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "7.188 - 1.300 * smoothstep(10.45, 11.00, t) + 0.04 * sin(0.6 * t + -2.86)"
-        }
-      ],
       "collection": "station-1"
     },
     {
@@ -1391,12 +1319,6 @@
         "translate": [13.354388947188697, 4.497620778785201, 55.197120953775176]
       },
       "material": "mat-3",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "5.798 - 1.300 * smoothstep(11.45, 12.00, t) + 0.04 * sin(0.6 * t + -1.16)"
-        }
-      ],
       "collection": "station-1"
     },
     {
@@ -1409,12 +1331,6 @@
         "translate": [13.354388947188697, 2.902379221214799, 55.197120953775176]
       },
       "material": "mat-3",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "4.202 - 1.300 * smoothstep(12.45, 13.00, t) + 0.04 * sin(0.6 * t + 0.54)"
-        }
-      ],
       "collection": "station-1"
     },
     {
@@ -1427,12 +1343,6 @@
         "translate": [14.135932496115032, 1.5117012181776928, 55.197120953775176]
       },
       "material": "mat-3",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "2.812 - 1.300 * smoothstep(13.45, 14.00, t) + 0.04 * sin(0.6 * t + -4.04)"
-        }
-      ],
       "collection": "station-1"
     },
     {
@@ -1445,12 +1355,6 @@
         "translate": [15.498579321292716, 0.6822500400889417, 55.197120953775176]
       },
       "material": "mat-3",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "1.982 - 1.300 * smoothstep(14.45, 15.00, t) + 0.04 * sin(0.6 * t + -2.34)"
-        }
-      ],
       "collection": "station-1"
     },
     {
@@ -1496,12 +1400,6 @@
         "translate": [33.60652227176139, 0.9931034482758622, 50.042506388252356]
       },
       "material": "mat-6",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "-1.293 + 2.286 * smoothstep(21.45, 22.05, t)"
-        }
-      ],
       "pattern": "cracked",
       "collection": "station-2"
     },
@@ -1528,12 +1426,6 @@
         "translate": [32.336522271761396, 1.2413793103448276, 50.042506388252356]
       },
       "material": "mat-7",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "-1.541 + 2.783 * smoothstep(22.55, 23.15, t)"
-        }
-      ],
       "pattern": "cracked",
       "collection": "station-2"
     },
@@ -1560,12 +1452,6 @@
         "translate": [31.066522271761396, 1.6, 50.042506388252356]
       },
       "material": "mat-8",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "-1.900 + 3.500 * smoothstep(23.65, 24.25, t)"
-        }
-      ],
       "pattern": "cracked",
       "collection": "station-2"
     },
@@ -1592,12 +1478,6 @@
         "translate": [29.796522271761393, 1.9034482758620692, 50.042506388252356]
       },
       "material": "mat-9",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "-2.203 + 4.107 * smoothstep(24.75, 25.35, t)"
-        }
-      ],
       "pattern": "cracked",
       "collection": "station-2"
     },
@@ -1624,12 +1504,6 @@
         "translate": [28.526522271761394, 2.1517241379310343, 50.042506388252356]
       },
       "material": "mat-10",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "-2.452 + 4.603 * smoothstep(25.85, 26.45, t)"
-        }
-      ],
       "pattern": "cracked",
       "collection": "station-2"
     },
@@ -1656,12 +1530,6 @@
         "translate": [27.256522271761394, 2.4, 50.042506388252356]
       },
       "material": "mat-11",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "-2.700 + 5.100 * smoothstep(26.95, 27.55, t)"
-        }
-      ],
       "collection": "station-2"
     },
     {
@@ -1767,12 +1635,6 @@
         "translate": [45.97934551994386, 0.14464710547184773, 39.97646805314658]
       },
       "material": "mat-6",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "-0.445 + 0.589 * smoothstep(34.75, 35.35, t)"
-        }
-      ],
       "pattern": "cracked",
       "collection": "station-3"
     },
@@ -1799,12 +1661,6 @@
         "translate": [44.70934551994387, 0.28263283108643933, 39.97646805314658]
       },
       "material": "mat-7",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "-0.583 + 0.865 * smoothstep(35.85, 36.45, t)"
-        }
-      ],
       "pattern": "cracked",
       "collection": "station-3"
     },
@@ -1831,12 +1687,6 @@
         "translate": [43.43934551994386, 0.5443298969072166, 39.97646805314658]
       },
       "material": "mat-8",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "-0.844 + 1.389 * smoothstep(36.95, 37.55, t)"
-        }
-      ],
       "pattern": "cracked",
       "collection": "station-3"
     },
@@ -1863,12 +1713,6 @@
         "translate": [42.16934551994387, 0.9601903251387788, 39.97646805314658]
       },
       "material": "mat-9",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "-1.260 + 2.220 * smoothstep(38.05, 38.65, t)"
-        }
-      ],
       "pattern": "cracked",
       "collection": "station-3"
     },
@@ -1895,12 +1739,6 @@
         "translate": [40.899345519943864, 1.5501982553528946, 39.97646805314658]
       },
       "material": "mat-10",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "-1.850 + 3.400 * smoothstep(39.15, 39.75, t)"
-        }
-      ],
       "pattern": "cracked",
       "collection": "station-3"
     },
@@ -1927,12 +1765,6 @@
         "translate": [39.62934551994387, 2.4, 39.97646805314658]
       },
       "material": "mat-11",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "-2.700 + 5.100 * smoothstep(40.25, 40.85, t)"
-        }
-      ],
       "collection": "station-3"
     },
     {
@@ -2038,12 +1870,6 @@
         "translate": [55.17756627776315, 2.4, 26.945557962711373]
       },
       "material": "mat-11",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "-2.700 + 5.100 * smoothstep(48.05, 48.65, t)"
-        }
-      ],
       "collection": "station-4"
     },
     {
@@ -2069,12 +1895,6 @@
         "translate": [53.90756627776315, 2.2374501992031868, 26.945557962711373]
       },
       "material": "mat-7",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "-2.537 + 4.775 * smoothstep(49.15, 49.75, t)"
-        }
-      ],
       "pattern": "cracked",
       "collection": "station-4"
     },
@@ -2101,12 +1921,6 @@
         "translate": [52.63756627776315, 1.4151394422310757, 26.945557962711373]
       },
       "material": "mat-8",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "-1.715 + 3.130 * smoothstep(50.25, 50.85, t)"
-        }
-      ],
       "pattern": "cracked",
       "collection": "station-4"
     },
@@ -2133,12 +1947,6 @@
         "translate": [51.36756627776315, 1.2430278884462151, 26.945557962711373]
       },
       "material": "mat-9",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "-1.543 + 2.786 * smoothstep(51.35, 51.95, t)"
-        }
-      ],
       "pattern": "cracked",
       "collection": "station-4"
     },
@@ -2165,12 +1973,6 @@
         "translate": [50.09756627776315, 0.7362549800796813, 26.945557962711373]
       },
       "material": "mat-10",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "-1.036 + 1.773 * smoothstep(52.45, 53.05, t)"
-        }
-      ],
       "pattern": "cracked",
       "collection": "station-4"
     },
@@ -2197,12 +1999,6 @@
         "translate": [48.827566277763154, 0.6501992031872509, 26.945557962711373]
       },
       "material": "mat-13",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "-0.950 + 1.600 * smoothstep(53.55, 54.15, t)"
-        }
-      ],
       "pattern": "cracked",
       "collection": "station-4"
     },
@@ -2309,12 +2105,6 @@
         "translate": [60.51899459067182, 2.4, 11.916219105907269]
       },
       "material": "mat-11",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "-2.700 + 5.100 * smoothstep(61.35, 61.95, t)"
-        }
-      ],
       "collection": "station-5"
     },
     {
@@ -2340,12 +2130,6 @@
         "translate": [59.24899459067182, 2.2072538860103625, 11.916219105907269]
       },
       "material": "mat-7",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "-2.507 + 4.715 * smoothstep(62.45, 63.05, t)"
-        }
-      ],
       "pattern": "cracked",
       "collection": "station-5"
     },
@@ -2372,12 +2156,6 @@
         "translate": [57.97899459067182, 1.5015544041450775, 11.916219105907269]
       },
       "material": "mat-8",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "-1.802 + 3.303 * smoothstep(63.55, 64.15, t)"
-        }
-      ],
       "pattern": "cracked",
       "collection": "station-5"
     },
@@ -2404,12 +2182,6 @@
         "translate": [56.70899459067182, 1.2590673575129532, 11.916219105907269]
       },
       "material": "mat-9",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "-1.559 + 2.818 * smoothstep(64.65, 65.25, t)"
-        }
-      ],
       "pattern": "cracked",
       "collection": "station-5"
     },
@@ -2436,12 +2208,6 @@
         "translate": [55.43899459067182, 1.0290155440414508, 11.916219105907269]
       },
       "material": "mat-10",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "-1.329 + 2.358 * smoothstep(65.75, 66.35, t)"
-        }
-      ],
       "pattern": "cracked",
       "collection": "station-5"
     },
@@ -2468,12 +2234,6 @@
         "translate": [54.16899459067182, 0.9699481865284973, 11.916219105907269]
       },
       "material": "mat-13",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "-1.270 + 2.240 * smoothstep(66.85, 67.45, t)"
-        }
-      ],
       "pattern": "cracked",
       "collection": "station-5"
     },
@@ -2606,12 +2366,6 @@
         "translate": [62.03248115611, 4.3, -3.996891208906867]
       },
       "material": "mat-14",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "0.950 + 3.350 * smoothstep(75.90, 76.65, t) + 0.05 * sin(0.5 * t + -36.50)"
-        }
-      ],
       "collection": "station-6"
     },
     {
@@ -2624,12 +2378,6 @@
         "translate": [58.43248115611, 4.3, -3.996891208906867]
       },
       "material": "mat-3",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "0.950 + 3.350 * smoothstep(77.00, 77.75, t) + 0.05 * sin(0.5 * t + -34.40)"
-        }
-      ],
       "collection": "station-6"
     },
     {
@@ -2642,12 +2390,6 @@
         "translate": [54.83248115611, 4.3, -3.996891208906867]
       },
       "material": "mat-3",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "0.950 + 3.350 * smoothstep(78.10, 78.85, t) + 0.05 * sin(0.5 * t + -32.30)"
-        }
-      ],
       "collection": "station-6"
     },
     {
@@ -2661,12 +2403,6 @@
         "translate": [65.33248115611, 2.175, -3.996891208906867]
       },
       "material": "mat-15",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "0.175 + 2.000 * smoothstep(74.80, 75.50, t)"
-        }
-      ],
       "collection": "station-6"
     },
     {
@@ -2679,12 +2415,6 @@
         "translate": [65.33248115611, 3.4999999999999996, -3.996891208906867]
       },
       "material": "mat-15",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "1.500 + 2.000 * smoothstep(74.80, 75.50, t)"
-        }
-      ],
       "collection": "station-6"
     },
     {
@@ -2697,12 +2427,6 @@
         "translate": [65.33248115611, 3.7199999999999998, -3.996891208906867]
       },
       "material": "mat-15",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "1.720 + 2.000 * smoothstep(74.80, 75.50, t)"
-        }
-      ],
       "collection": "station-6"
     },
     {
@@ -2715,12 +2439,6 @@
         "translate": [65.33248115611, 3.9399999999999995, -3.996891208906867]
       },
       "material": "mat-15",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "1.940 + 2.000 * smoothstep(74.80, 75.50, t)"
-        }
-      ],
       "collection": "station-6"
     },
     {
@@ -2733,12 +2451,6 @@
         "translate": [65.33248115611, 4.159999999999999, -3.996891208906867]
       },
       "material": "mat-15",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "2.160 + 2.000 * smoothstep(74.80, 75.50, t)"
-        }
-      ],
       "collection": "station-6"
     },
     {
@@ -3099,12 +2811,6 @@
         "translate": [-33.78720183839145, 0.06, -45.43264936863136]
       },
       "material": "mat-6",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "-0.360 + 0.420 * smoothstep(141.25, 141.85, t)"
-        }
-      ],
       "pattern": "cracked",
       "collection": "station-14"
     },
@@ -3131,12 +2837,6 @@
         "translate": [-35.05720183839144, 0.1945945945945946, -45.43264936863136]
       },
       "material": "mat-7",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "-0.495 + 0.689 * smoothstep(142.35, 142.95, t)"
-        }
-      ],
       "pattern": "cracked",
       "collection": "station-14"
     },
@@ -3163,12 +2863,6 @@
         "translate": [-36.327201838391446, 0.5837837837837838, -45.43264936863136]
       },
       "material": "mat-8",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "-0.884 + 1.468 * smoothstep(143.45, 144.05, t)"
-        }
-      ],
       "pattern": "cracked",
       "collection": "station-14"
     },
@@ -3195,12 +2889,6 @@
         "translate": [-37.59720183839144, 1.1027027027027028, -45.43264936863136]
       },
       "material": "mat-9",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "-1.403 + 2.505 * smoothstep(144.55, 145.15, t)"
-        }
-      ],
       "pattern": "cracked",
       "collection": "station-14"
     },
@@ -3227,12 +2915,6 @@
         "translate": [-38.867201838391445, 1.945945945945946, -45.43264936863136]
       },
       "material": "mat-10",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "-2.246 + 4.192 * smoothstep(145.65, 146.25, t)"
-        }
-      ],
       "pattern": "cracked",
       "collection": "station-14"
     },
@@ -3259,12 +2941,6 @@
         "translate": [-40.13720183839144, 2.4, -45.43264936863136]
       },
       "material": "mat-11",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "-2.700 + 5.100 * smoothstep(146.75, 147.35, t)"
-        }
-      ],
       "collection": "station-14"
     },
     {
@@ -3370,12 +3046,6 @@
         "translate": [-44.03912523339169, 2.4, -33.775600776213984]
       },
       "material": "mat-6",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "-2.700 + 5.100 * smoothstep(154.55, 155.15, t)"
-        }
-      ],
       "pattern": "cracked",
       "collection": "station-15"
     },
@@ -3402,12 +3072,6 @@
         "translate": [-45.30912523339169, 2.3564356435643563, -33.775600776213984]
       },
       "material": "mat-18",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "-2.656 + 5.013 * smoothstep(155.65, 156.25, t)"
-        }
-      ],
       "pattern": "cracked",
       "collection": "station-15"
     },
@@ -3434,12 +3098,6 @@
         "translate": [-46.579125233391686, 2.2376237623762374, -33.775600776213984]
       },
       "material": "mat-19",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "-2.538 + 4.775 * smoothstep(156.75, 157.35, t)"
-        }
-      ],
       "pattern": "cracked",
       "collection": "station-15"
     },
@@ -3466,12 +3124,6 @@
         "translate": [-47.84912523339169, 2.1425742574257423, -33.775600776213984]
       },
       "material": "mat-20",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "-2.443 + 4.585 * smoothstep(157.85, 158.45, t)"
-        }
-      ],
       "pattern": "cracked",
       "collection": "station-15"
     },
@@ -3498,12 +3150,6 @@
         "translate": [-49.11912523339169, 2.023762376237624, -33.775600776213984]
       },
       "material": "mat-21",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "-2.324 + 4.348 * smoothstep(158.95, 159.55, t)"
-        }
-      ],
       "pattern": "cracked",
       "collection": "station-15"
     },
@@ -3530,12 +3176,6 @@
         "translate": [-50.38912523339169, 1.881188118811881, -33.775600776213984]
       },
       "material": "mat-22",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "-2.181 + 4.062 * smoothstep(160.05, 160.65, t)"
-        }
-      ],
       "pattern": "cracked",
       "collection": "station-15"
     },
@@ -3562,12 +3202,6 @@
         "translate": [-51.65912523339169, 1.786138613861386, -33.775600776213984]
       },
       "material": "mat-11",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "-2.086 + 3.872 * smoothstep(161.15, 161.75, t)"
-        }
-      ],
       "collection": "station-15"
     },
     {
@@ -3662,12 +3296,6 @@
         "rotate": [0, 0, 1.5707963267948966]
       },
       "material": "mat-2",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "3.700 - 0.000 * smoothstep(167.30, 168.30, t) + 0.07 * sin(0.35 * t + -57.45)"
-        }
-      ],
       "collection": "station-16"
     },
     {
@@ -3680,12 +3308,6 @@
         "translate": [-55.49045081535453, 6.717749959911059, -20.81357038731703]
       },
       "material": "mat-4",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "8.018 - 1.300 * smoothstep(169.15, 169.70, t) + 0.04 * sin(0.6 * t + -100.38)"
-        }
-      ],
       "collection": "station-16"
     },
     {
@@ -3698,12 +3320,6 @@
         "translate": [-57.45490124492356, 5.003591609722465, -20.81357038731703]
       },
       "material": "mat-3",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "6.304 - 1.300 * smoothstep(170.15, 170.70, t) + 0.04 * sin(0.6 * t + -98.68)"
-        }
-      ],
       "collection": "station-16"
     },
     {
@@ -3716,12 +3332,6 @@
         "translate": [-57.45490124492356, 2.3964083902775357, -20.81357038731703]
       },
       "material": "mat-3",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "3.696 - 1.300 * smoothstep(171.15, 171.70, t) + 0.04 * sin(0.6 * t + -96.98)"
-        }
-      ],
       "collection": "station-16"
     },
     {
@@ -3734,12 +3344,6 @@
         "translate": [-55.49045081535453, 0.6822500400889417, -20.81357038731703]
       },
       "material": "mat-3",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "1.982 - 1.300 * smoothstep(172.15, 172.70, t) + 0.04 * sin(0.6 * t + -95.28)"
-        }
-      ],
       "collection": "station-16"
     },
     {
@@ -3772,12 +3376,6 @@
         "translate": [-59.08974899002229, 8.240083449326644, -4.207163672311558]
       },
       "material": "mat-23",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "9.340 - 1.1 * smoothstep(177.75, 178.25, t) + 0.018 * sin(1.3 * t + -230.75)"
-        }
-      ],
       "collection": "station-17"
     },
     {
@@ -3790,12 +3388,6 @@
         "translate": [-60.99638941772459, 6.556638433341682, -3.5939557666537056]
       },
       "material": "mat-24",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "7.657 - 1.1 * smoothstep(177.87, 178.37, t) + 0.018 * sin(1.3 * t + -228.65)"
-        }
-      ],
       "collection": "station-17"
     },
     {
@@ -3808,12 +3400,6 @@
         "translate": [-59.642210909989316, 5.410462203579505, -6.07388246213735]
       },
       "material": "mat-24",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "6.510 - 1.1 * smoothstep(177.99, 178.49, t) + 0.018 * sin(1.3 * t + -226.55)"
-        }
-      ],
       "collection": "station-17"
     },
     {
@@ -3826,12 +3412,6 @@
         "translate": [-58.43248115611001, 4.034705367679379, -3.996891208906843]
       },
       "material": "mat-25",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "5.135 - 1.1 * smoothstep(178.11, 178.61, t) + 0.018 * sin(1.3 * t + -224.45)"
-        }
-      ],
       "collection": "station-17"
     },
     {
@@ -3844,12 +3424,6 @@
         "translate": [-61.5594986330423, 3.0535128331174013, -4.121645787576225]
       },
       "material": "mat-11",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "4.154 - 1.1 * smoothstep(178.23, 178.73, t) + 0.018 * sin(1.3 * t + -222.35)"
-        }
-      ],
       "collection": "station-17"
     },
     {
@@ -3862,12 +3436,6 @@
         "translate": [-56.77554925003693, 2.3752519777557772, -5.490334895955035]
       },
       "material": "mat-24",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "3.475 - 1.1 * smoothstep(178.35, 178.85, t) + 0.018 * sin(1.3 * t + -220.25)"
-        }
-      ],
       "collection": "station-17"
     },
     {
@@ -3880,12 +3448,6 @@
         "translate": [-60.551251890578605, 1.4770305268093469, -2.2439479164134744]
       },
       "material": "mat-24",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "2.577 - 1.1 * smoothstep(178.47, 178.97, t) + 0.018 * sin(1.3 * t + -218.15)"
-        }
-      ],
       "collection": "station-17"
     },
     {
@@ -3898,12 +3460,6 @@
         "translate": [-58.932525422374646, 0.6000000000000001, -4.615136752840582]
       },
       "material": "mat-24",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "1.700 - 1.1 * smoothstep(178.59, 179.09, t) + 0.018 * sin(1.3 * t + -216.05)"
-        }
-      ],
       "collection": "station-17"
     },
     {
@@ -3918,12 +3474,6 @@
         "translate": [-59.08974899002229, 8.240083449326644, -4.207163672311558]
       },
       "material": "mat-26",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "9.340 - 1.1 * smoothstep(178.91, 179.36, t)"
-        }
-      ],
       "collection": "station-17"
     },
     {
@@ -3938,12 +3488,6 @@
         "translate": [-60.99638941772459, 6.556638433341682, -3.5939557666537056]
       },
       "material": "mat-26",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "7.657 - 1.1 * smoothstep(179.05, 179.50, t)"
-        }
-      ],
       "collection": "station-17"
     },
     {
@@ -3958,12 +3502,6 @@
         "translate": [-59.642210909989316, 5.410462203579505, -6.07388246213735]
       },
       "material": "mat-26",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "6.510 - 1.1 * smoothstep(179.19, 179.64, t)"
-        }
-      ],
       "collection": "station-17"
     },
     {
@@ -3978,12 +3516,6 @@
         "translate": [-58.43248115611001, 4.034705367679379, -3.996891208906843]
       },
       "material": "mat-26",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "5.135 - 1.1 * smoothstep(179.33, 179.78, t)"
-        }
-      ],
       "collection": "station-17"
     },
     {
@@ -3998,12 +3530,6 @@
         "translate": [-61.5594986330423, 3.0535128331174013, -4.121645787576225]
       },
       "material": "mat-26",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "4.154 - 1.1 * smoothstep(179.47, 179.92, t)"
-        }
-      ],
       "collection": "station-17"
     },
     {
@@ -4018,12 +3544,6 @@
         "translate": [-60.551251890578605, 1.4770305268093469, -2.2439479164134744]
       },
       "material": "mat-26",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "2.577 - 1.1 * smoothstep(179.61, 180.06, t)"
-        }
-      ],
       "collection": "station-17"
     },
     {
@@ -4038,12 +3558,6 @@
         "translate": [-58.932525422374646, 0.6000000000000001, -4.615136752840582]
       },
       "material": "mat-26",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "1.700 - 1.1 * smoothstep(179.75, 180.20, t)"
-        }
-      ],
       "collection": "station-17"
     },
     {
@@ -4058,12 +3572,6 @@
         "translate": [-56.77554925003693, 2.3752519777557772, -5.490334895955035]
       },
       "material": "mat-26",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "3.475 - 1.1 * smoothstep(179.89, 180.34, t)"
-        }
-      ],
       "collection": "station-17"
     },
     {
@@ -4077,12 +3585,6 @@
         "rotate": [0, 0, 0]
       },
       "material": "mat-27",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "4.405 - 0.000 * smoothstep(177.50, 178.50, t) + 0.05 * sin(0.30 * t + -53.25)"
-        }
-      ],
       "collection": "station-17"
     },
     {
@@ -4096,12 +3598,6 @@
         "rotate": [0, 0.9, 0]
       },
       "material": "mat-27",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "4.400 - 0.000 * smoothstep(177.50, 178.50, t) + 0.07 * sin(0.35 * t + -60.82)"
-        }
-      ],
       "collection": "station-17"
     },
     {
@@ -4115,12 +3611,6 @@
         "rotate": [0, 1.8, 0]
       },
       "material": "mat-27",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "3.630 - 0.000 * smoothstep(177.50, 178.50, t) + 0.09 * sin(0.40 * t + -68.40)"
-        }
-      ],
       "collection": "station-17"
     },
     {
@@ -4134,12 +3624,6 @@
         "rotate": [0, 2.7, 0]
       },
       "material": "mat-27",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "4.223 - 0.000 * smoothstep(177.50, 178.50, t) + 0.05 * sin(0.45 * t + -75.97)"
-        }
-      ],
       "collection": "station-17"
     },
     {
@@ -4153,12 +3637,6 @@
         "rotate": [0, 0.5, 0]
       },
       "material": "mat-27",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "3.084 - 0.000 * smoothstep(177.50, 178.50, t) + 0.07 * sin(0.50 * t + -83.55)"
-        }
-      ],
       "collection": "station-17"
     },
     {
@@ -4172,12 +3650,6 @@
         "rotate": [0, 1.4, 0]
       },
       "material": "mat-27",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "3.818 - 0.000 * smoothstep(177.50, 178.50, t) + 0.09 * sin(0.30 * t + -53.03)"
-        }
-      ],
       "collection": "station-17"
     },
     {
@@ -4191,12 +3663,6 @@
         "rotate": [0, 2.3000000000000003, 0]
       },
       "material": "mat-27",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "2.743 - 0.000 * smoothstep(177.50, 178.50, t) + 0.05 * sin(0.35 * t + -60.60)"
-        }
-      ],
       "collection": "station-17"
     },
     {
@@ -4210,12 +3676,6 @@
         "rotate": [0, 0.09999999999999964, 0]
       },
       "material": "mat-27",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "3.248 - 0.000 * smoothstep(177.50, 178.50, t) + 0.07 * sin(0.40 * t + -68.18)"
-        }
-      ],
       "collection": "station-17"
     },
     {
@@ -4229,12 +3689,6 @@
         "rotate": [0, 1, 0]
       },
       "material": "mat-27",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "2.515 - 0.000 * smoothstep(177.50, 178.50, t) + 0.09 * sin(0.45 * t + -75.75)"
-        }
-      ],
       "collection": "station-17"
     },
     {
@@ -4248,12 +3702,6 @@
         "rotate": [0, 1.8999999999999995, 0]
       },
       "material": "mat-27",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "2.626 - 0.000 * smoothstep(177.50, 178.50, t) + 0.05 * sin(0.50 * t + -83.33)"
-        }
-      ],
       "collection": "station-17"
     },
     {
@@ -4267,12 +3715,6 @@
         "rotate": [0, 2.8, 0]
       },
       "material": "mat-27",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "2.275 - 0.000 * smoothstep(177.50, 178.50, t) + 0.07 * sin(0.30 * t + -52.81)"
-        }
-      ],
       "collection": "station-17"
     },
     {
@@ -4286,12 +3728,6 @@
         "rotate": [0, 0.6000000000000001, 0]
       },
       "material": "mat-27",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "2.074 - 0.000 * smoothstep(177.50, 178.50, t) + 0.09 * sin(0.35 * t + -60.38)"
-        }
-      ],
       "collection": "station-17"
     },
     {
@@ -4305,12 +3741,6 @@
         "rotate": [0, 1.5000000000000004, 0]
       },
       "material": "mat-27",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "1.917 - 0.000 * smoothstep(177.50, 178.50, t) + 0.05 * sin(0.40 * t + -67.96)"
-        }
-      ],
       "collection": "station-17"
     },
     {
@@ -4324,12 +3754,6 @@
         "rotate": [0, 2.400000000000001, 0]
       },
       "material": "mat-27",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "1.675 - 0.000 * smoothstep(177.50, 178.50, t) + 0.07 * sin(0.45 * t + -75.53)"
-        }
-      ],
       "collection": "station-17"
     },
     {
@@ -4343,12 +3767,6 @@
         "rotate": [0, 0.1999999999999993, 0]
       },
       "material": "mat-27",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "1.390 - 0.000 * smoothstep(177.50, 178.50, t) + 0.09 * sin(0.50 * t + -83.11)"
-        }
-      ],
       "collection": "station-17"
     },
     {
@@ -4362,12 +3780,6 @@
         "rotate": [0, 1.0999999999999996, 0]
       },
       "material": "mat-27",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "1.443 - 0.000 * smoothstep(177.50, 178.50, t) + 0.05 * sin(0.30 * t + -52.59)"
-        }
-      ],
       "collection": "station-17"
     },
     {
@@ -4381,12 +3793,6 @@
         "rotate": [0, 2, 0]
       },
       "material": "mat-27",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "0.717 - 0.000 * smoothstep(177.50, 178.50, t) + 0.07 * sin(0.35 * t + -60.16)"
-        }
-      ],
       "collection": "station-17"
     },
     {
@@ -4400,12 +3806,6 @@
         "rotate": [0, 2.9000000000000004, 0]
       },
       "material": "mat-27",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "1.316 - 0.000 * smoothstep(177.50, 178.50, t) + 0.09 * sin(0.40 * t + -67.74)"
-        }
-      ],
       "collection": "station-17"
     },
     {
@@ -4419,12 +3819,6 @@
         "rotate": [0, 0.6999999999999988, 0]
       },
       "material": "mat-27",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "-0.006 - 0.000 * smoothstep(177.50, 178.50, t) + 0.05 * sin(0.45 * t + -75.31)"
-        }
-      ],
       "collection": "station-17"
     },
     {
@@ -4438,12 +3832,6 @@
         "rotate": [0, 1.600000000000001, 0]
       },
       "material": "mat-27",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "1.174 - 0.000 * smoothstep(177.50, 178.50, t) + 0.07 * sin(0.50 * t + -82.89)"
-        }
-      ],
       "collection": "station-17"
     },
     {
@@ -4457,12 +3845,6 @@
         "rotate": [0, 2.4999999999999996, 0]
       },
       "material": "mat-27",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "-0.644 - 0.000 * smoothstep(177.50, 178.50, t) + 0.09 * sin(0.30 * t + -52.37)"
-        }
-      ],
       "collection": "station-17"
     },
     {
@@ -4476,12 +3858,6 @@
         "rotate": [0, 0.3000000000000016, 0]
       },
       "material": "mat-27",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "0.879 - 0.000 * smoothstep(177.50, 178.50, t) + 0.05 * sin(0.35 * t + -59.94)"
-        }
-      ],
       "collection": "station-17"
     },
     {
@@ -4613,12 +3989,6 @@
         "translate": [-42.804345519943865, 3.15, 39.97646805314659]
       },
       "material": "mat-28",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "4.150 - 1 * smoothstep(205.55, 206.10, t)"
-        }
-      ],
       "collection": "station-20"
     },
     {
@@ -4652,12 +4022,6 @@
         "translate": [-42.804345519943865, 2, 38.07646805314659]
       },
       "material": "mat-29",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "3.000 - 1 * smoothstep(207.05, 207.60, t)"
-        }
-      ],
       "collection": "station-20"
     },
     {
@@ -4691,12 +4055,6 @@
         "translate": [-41.158897252753434, 2, 40.92646805314659]
       },
       "material": "mat-29",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "3.000 - 1 * smoothstep(207.05, 207.60, t)"
-        }
-      ],
       "collection": "station-20"
     },
     {
@@ -4730,12 +4088,6 @@
         "translate": [-44.4497937871343, 2, 40.92646805314659]
       },
       "material": "mat-29",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "3.000 - 1 * smoothstep(207.05, 207.60, t)"
-        }
-      ],
       "collection": "station-20"
     },
     {
@@ -4769,12 +4121,6 @@
         "translate": [-41.661453643463496, 0.8500000000000001, 41.61817758333717]
       },
       "material": "mat-30",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "1.850 - 1 * smoothstep(208.55, 209.10, t)"
-        }
-      ],
       "collection": "station-20"
     },
     {
@@ -4873,12 +4219,6 @@
         "translate": [-29.521522271761395, 3.2199999999999998, 50.38250638825236]
       },
       "material": "mat-33",
-      "animation": [
-        {
-          "channel": "transform.translate.z",
-          "expr": "52.443 - 2.060 * smoothstep(216.45, 216.90, t)"
-        }
-      ],
       "collection": "station-21"
     },
     {
@@ -4892,12 +4232,6 @@
         "translate": [-29.521522271761395, 1.7999999999999998, 50.38250638825236]
       },
       "material": "mat-33",
-      "animation": [
-        {
-          "channel": "transform.translate.z",
-          "expr": "52.443 - 2.060 * smoothstep(217.35, 217.80, t)"
-        }
-      ],
       "collection": "station-21"
     },
     {
@@ -4911,12 +4245,6 @@
         "translate": [-31.341522271761395, 3.2199999999999998, 50.38250638825236]
       },
       "material": "mat-33",
-      "animation": [
-        {
-          "channel": "transform.translate.z",
-          "expr": "52.443 - 2.060 * smoothstep(218.25, 218.70, t)"
-        }
-      ],
       "collection": "station-21"
     },
     {
@@ -4930,12 +4258,6 @@
         "translate": [-31.341522271761395, 1.7999999999999998, 50.38250638825236]
       },
       "material": "mat-4",
-      "animation": [
-        {
-          "channel": "transform.translate.z",
-          "expr": "52.443 - 2.060 * smoothstep(219.15, 219.60, t)"
-        }
-      ],
       "collection": "station-21"
     },
     {
@@ -4949,12 +4271,6 @@
         "rotate": [0, -0.9, 0]
       },
       "material": "mat-12",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "3.310 - 0.000 * smoothstep(215.20, 216.20, t) + 0.06 * sin(0.30 * t + -64.56)"
-        }
-      ],
       "collection": "station-21"
     },
     {
@@ -4968,12 +4284,6 @@
         "rotate": [0, -0.4, 0]
       },
       "material": "mat-12",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "2.110 - 0.000 * smoothstep(215.20, 216.20, t) + 0.08 * sin(0.37 * t + -77.42)"
-        }
-      ],
       "collection": "station-21"
     },
     {
@@ -4987,12 +4297,6 @@
         "rotate": [0, 0.09999999999999998, 0]
       },
       "material": "mat-12",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "4.710 - 0.000 * smoothstep(215.20, 216.20, t) + 0.10 * sin(0.44 * t + -90.29)"
-        }
-      ],
       "collection": "station-21"
     },
     {
@@ -5006,12 +4310,6 @@
         "rotate": [0, 0.6, 0]
       },
       "material": "mat-12",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "4.110 - 0.000 * smoothstep(215.20, 216.20, t) + 0.12 * sin(0.51 * t + -109.43)"
-        }
-      ],
       "collection": "station-21"
     },
     {
@@ -5057,12 +4355,6 @@
         "translate": [-14.531732231633432, 0.24, 56.39712095377516]
       },
       "material": "mat-6",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "-0.540 + 0.780 * smoothstep(226.35, 226.95, t)"
-        }
-      ],
       "pattern": "cracked",
       "collection": "station-22"
     },
@@ -5089,12 +4381,6 @@
         "translate": [-15.801732231633432, 1.2, 56.39712095377516]
       },
       "material": "mat-20",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "-1.500 + 2.700 * smoothstep(227.45, 228.05, t)"
-        }
-      ],
       "pattern": "cracked",
       "collection": "station-22"
     },
@@ -5121,12 +4407,6 @@
         "translate": [-17.071732231633433, 2.4, 56.39712095377516]
       },
       "material": "mat-11",
-      "animation": [
-        {
-          "channel": "transform.translate.y",
-          "expr": "-2.700 + 5.100 * smoothstep(228.55, 229.15, t)"
-        }
-      ],
       "collection": "station-22"
     },
     {
@@ -5667,6 +4947,7 @@
       "text": "① 即将爆发的个性化数字媒体市场",
       "anchor": [15.498579321292716, 6.717749959911059, 55.197120953775176],
       "role": "screen",
+      "side": "right",
       "revealAt": 10.05,
       "hideAt": 18.6
     },
@@ -5681,6 +4962,7 @@
       "text": "② 独创的个性化资讯发现引擎",
       "anchor": [14.135932496115032, 5.888298781822307, 55.197120953775176],
       "role": "screen",
+      "side": "right",
       "revealAt": 11.05,
       "hideAt": 18.6
     },
@@ -5695,6 +4977,7 @@
       "text": "③ 领先于世界同类产品的功能和技术",
       "anchor": [13.354388947188697, 4.497620778785201, 55.197120953775176],
       "role": "screen",
+      "side": "right",
       "revealAt": 12.05,
       "hideAt": 18.6
     },
@@ -5709,6 +4992,7 @@
       "text": "④ 行业领先的用户粘度和自然增长",
       "anchor": [13.354388947188697, 2.902379221214799, 55.197120953775176],
       "role": "screen",
+      "side": "right",
       "revealAt": 13.05,
       "hideAt": 18.6
     },
@@ -5723,6 +5007,7 @@
       "text": "⑤ 完善的多产品布局,覆盖移动终端和 PC 端",
       "anchor": [14.135932496115032, 1.5117012181776928, 55.197120953775176],
       "role": "screen",
+      "side": "right",
       "revealAt": 14.05,
       "hideAt": 18.6
     },
@@ -5737,6 +5022,7 @@
       "text": "⑥ 具有丰富创业经验和技术功底的团队",
       "anchor": [15.498579321292716, 0.6822500400889417, 55.197120953775176],
       "role": "screen",
+      "side": "right",
       "revealAt": 15.05,
       "hideAt": 18.6
     },
@@ -6222,6 +5508,7 @@
       "text": "编辑挑选·连续阅读",
       "anchor": [62.03248115611, 0.19999999999999996, -3.496891208906867],
       "role": "screen",
+      "side": "left",
       "revealAt": 73.40000000000002,
       "hideAt": 82.40000000000002
     },
@@ -6229,6 +5516,7 @@
       "text": "浏览/搜索/媒体转载",
       "anchor": [58.43248115611, 0.19999999999999996, -3.496891208906867],
       "role": "screen",
+      "side": "left",
       "revealAt": 73.60000000000001,
       "hideAt": 82.40000000000002
     },
@@ -6236,6 +5524,7 @@
       "text": "PC",
       "anchor": [54.83248115611, 0.19999999999999996, -3.496891208906867],
       "role": "screen",
+      "side": "left",
       "revealAt": 73.80000000000001,
       "hideAt": 82.40000000000002
     },
@@ -6243,6 +5532,7 @@
       "text": "个性化·社交化·碎片阅读",
       "anchor": [62.03248115611, 5.3, -3.596891208906867],
       "role": "screen",
+      "side": "right",
       "revealAt": 76.75000000000001,
       "hideAt": 82.40000000000002
     },
@@ -6250,6 +5540,7 @@
       "text": "关注/推荐/转发",
       "anchor": [58.43248115611, 5.3, -3.596891208906867],
       "role": "screen",
+      "side": "right",
       "revealAt": 77.85000000000001,
       "hideAt": 82.40000000000002
     },
@@ -6257,6 +5548,7 @@
       "text": "移动终端",
       "anchor": [54.83248115611, 5.3, -3.596891208906867],
       "role": "screen",
+      "side": "right",
       "revealAt": 78.95000000000002,
       "hideAt": 82.40000000000002
     },
@@ -6629,6 +5921,7 @@
       "text": "① 独创的数据处理和推荐技术底框架",
       "anchor": [-55.49045081535453, 6.717749959911059, -20.81357038731703],
       "role": "screen",
+      "side": "right",
       "revealAt": 169.74999999999997,
       "hideAt": 176.29999999999998
     },
@@ -6643,6 +5936,7 @@
       "text": "② 自然语言、多媒体信息处理",
       "anchor": [-57.45490124492356, 5.003591609722465, -20.81357038731703],
       "role": "screen",
+      "side": "right",
       "revealAt": 170.74999999999997,
       "hideAt": 176.29999999999998
     },
@@ -6657,6 +5951,7 @@
       "text": "③ 高维度用户兴趣建模",
       "anchor": [-57.45490124492356, 2.3964083902775357, -20.81357038731703],
       "role": "screen",
+      "side": "right",
       "revealAt": 171.74999999999997,
       "hideAt": 176.29999999999998
     },
@@ -6671,6 +5966,7 @@
       "text": "④ 高性能的实时大规模数据运算",
       "anchor": [-55.49045081535453, 0.6822500400889417, -20.81357038731703],
       "role": "screen",
+      "side": "right",
       "revealAt": 172.74999999999997,
       "hideAt": 176.29999999999998
     },
@@ -6883,6 +6179,7 @@
       "text": "扩充信息类型和来源",
       "anchor": [-29.521522271761395, 2.88, 50.24250638825236],
       "role": "screen",
+      "side": "left",
       "align": "center",
       "revealAt": 216.94999999999996,
       "hideAt": 223.49999999999997
@@ -6891,6 +6188,7 @@
       "text": "深挖用户特征·升级推荐系统",
       "anchor": [-29.521522271761395, 1.4599999999999997, 50.24250638825236],
       "role": "screen",
+      "side": "left",
       "align": "center",
       "revealAt": 217.84999999999997,
       "hideAt": 223.49999999999997
@@ -6899,6 +6197,7 @@
       "text": "强化社区互动",
       "anchor": [-31.341522271761395, 2.88, 50.24250638825236],
       "role": "screen",
+      "side": "right",
       "align": "center",
       "revealAt": 218.74999999999997,
       "hideAt": 223.49999999999997
@@ -6907,6 +6206,7 @@
       "text": "国际化与商业化尝试",
       "anchor": [-31.341522271761395, 1.4599999999999997, 50.24250638825236],
       "role": "screen",
+      "side": "right",
       "align": "center",
       "revealAt": 219.64999999999995,
       "hideAt": 223.49999999999997

@@ -124,36 +124,21 @@ export function renderHold(ir, opts = {}) {
       args: { radius: HR, h: 0 },
       transform: { translate: [0.6, HCY, -1.2], rotate: [0, 0, Math.PI / 2] },
       material: { ...ROCK_MAT, roughness: 0.4 },
-      animation: [
-        {
-          // the float: a slow breath — 悬空 must read as suspension, not parking
-          channel: 'transform.translate.y',
-          expr: `${HCY.toFixed(3)} - 0.000 * smoothstep(0.00, 1.00, t) + 0.07 * sin(0.35 * t + 1.10)`,
-        },
-      ],
     });
-    // balls on the curved rim, top → bottom down the screen-right side
+    // balls on the curved rim, top → bottom down the screen-right side.
+    // STATIC (user-locked 2026-07-15): only the CAMERA animates.
     const R = HR + 0.75;
     const E0 = 1.28; // rad above horizontal for ball ①  (~73°)
     bullets.forEach((_, k) => {
       const e = E0 - (k * (2 * E0)) / Math.max(1, N - 1); // ① top … ⑥ bottom
       const x = 0.6 - Math.cos(e) * R; // -x renders screen-RIGHT (the curved side)
       const y = HCY + Math.sin(e) * R;
-      const drop = 1.3;
-      const t0 = introLead + k * holdEach - 0.35;
-      const t1 = t0 + 0.55;
       subjects.push({
         id: `orb-${k}`,
         type: 'sphere',
         args: { radius: 0.42 },
         transform: { translate: [x, y, -1.2] },
         material: emphasis.has(k) ? GOLD_MAT : RED_MAT,
-        animation: [
-          {
-            channel: 'transform.translate.y',
-            expr: `${(y + drop).toFixed(3)} - ${drop.toFixed(3)} * smoothstep(${t0.toFixed(2)}, ${t1.toFixed(2)}, t) + 0.04 * sin(0.6 * t + ${((k * 1.7) % 6.28).toFixed(2)})`,
-          },
-        ],
       });
     });
   }
@@ -173,17 +158,10 @@ export function renderHold(ir, opts = {}) {
     [6.8, 2.0, -13, 1.1, 0.6],
   ];
   if (N > 0) FLOATERS.length = 0; // contents page: the dome owns the stage
+  // STATIC (user-locked 2026-07-15): only the CAMERA animates.
   FLOATERS.forEach(([x, y, z, w, h], i) => {
     subjects.push(
-      rock(`floater-${i}`, [x, y, z], [w, h, w * 0.55], ROCK_MAT, {
-        rotate: [0, 0.5 * i - 1, 0],
-        animation: [
-          {
-            channel: 'transform.translate.y',
-            expr: `${y.toFixed(3)} - 0.000 * smoothstep(0.00, 1.00, t) + ${(0.07 + 0.02 * i).toFixed(2)} * sin(${(0.35 + 0.08 * i).toFixed(2)} * t + ${((i * 2.1) % 6.28).toFixed(2)})`,
-          },
-        ],
-      }),
+      rock(`floater-${i}`, [x, y, z], [w, h, w * 0.55], ROCK_MAT, { rotate: [0, 0.5 * i - 1, 0] }),
     );
   });
 
@@ -277,9 +255,13 @@ export function renderHold(ir, opts = {}) {
     const x = 0.6 - Math.cos(e) * 3.15;
     const y = 3.7 + Math.sin(e) * 3.15;
     overlay.push({
+      // The source page-2 lists its numbered items to the RIGHT of the
+      // semicircle, beside their balls — the left column put the words on the
+      // OPPOSITE side from the geometry they name (user-locked 2026-07-15).
       text: b,
       anchor: [x, y, -1.2],
       role: 'screen',
+      side: 'right',
       revealAt: introLead + k * holdEach + 0.25,
     });
     // the source page numbers its balls — the digit rides ITS orb (anchor

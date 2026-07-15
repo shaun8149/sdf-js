@@ -131,32 +131,32 @@ function renderEvolutionForm(ir, env) {
         material: EVO_ROCK,
       });
       overlay.push({
+        // the PAST stratum reads down the LEFT column; the PRESENT down the
+        // RIGHT (a two-stratum comparison needs its text in two places)
         text: nodes[i],
         anchor: [x, PAST_Y - 0.75, 0.5],
         role: 'screen',
+        side: 'left',
         revealAt: 0.4 + yi * 0.2,
       });
     } else {
-      // the PRESENT: a red orb that RISES out of its past tablet
-      const t0 = riseStart + k * holdEach;
-      const t1 = t0 + 0.75;
+      // the PRESENT: a red orb at the upper stratum. STATIC (user-locked
+      // 2026-07-15): only the CAMERA animates — a rising orb is at the wrong
+      // height at every frame but the last, so the page never matches its
+      // source diagram while it plays.
+      const t1 = riseStart + k * holdEach + 0.75;
       subjects.push({
         id: `now-${i}`,
         type: 'sphere',
         args: { radius: emphasis.has(i) ? 0.85 : 0.7 },
         transform: { translate: [x, NOW_Y, 0] },
         material: emphasis.has(i) ? { ...EVO_RED, glow: 0.24 } : EVO_RED,
-        animation: [
-          {
-            channel: 'transform.translate.y',
-            expr: `${PAST_Y.toFixed(3)} + ${(NOW_Y - PAST_Y).toFixed(3)} * smoothstep(${t0.toFixed(2)}, ${t1.toFixed(2)}, t) + 0.05 * sin(0.5 * t + ${((k * 2.1) % 6.28).toFixed(2)})`,
-          },
-        ],
       });
       overlay.push({
         text: nodes[i],
         anchor: [x, NOW_Y + 1.0, 0.4],
         role: 'screen',
+        side: 'right',
         revealAt: t1 + 0.1,
       });
       k++;
@@ -166,16 +166,9 @@ function renderEvolutionForm(ir, env) {
   // THE BIG UPWARD ARROW — far screen-left, foot at the past stratum, tip at
   // the present stratum (the source page's red rising arrow). Vertical shaft
   // + a stepped head narrowing upward (analytic tier: no z-rotation, so the
-  // wedge is stacked slabs). It RISES into place before the first orb flies.
+  // wedge is stacked slabs). STATIC (user-locked 2026-07-15): only the CAMERA
+  // animates — the arrow stands drawn from frame one, like the source page.
   const arrowMat = { ...EVO_RED, glow: 0.16 };
-  const arrT0 = introLead + 0.2;
-  const arrT1 = arrT0 + 0.7;
-  const rise = (fy) => [
-    {
-      channel: 'transform.translate.y',
-      expr: `${(fy - 2.0).toFixed(3)} + 2.000 * smoothstep(${arrT0.toFixed(2)}, ${arrT1.toFixed(2)}, t)`,
-    },
-  ];
   const shaftH = NOW_Y - PAST_Y - 0.9;
   const shaftY = PAST_Y + shaftH / 2;
   subjects.push({
@@ -184,7 +177,6 @@ function renderEvolutionForm(ir, env) {
     args: { dims: [0.34, shaftH, 0.3], cornerR: 0.06 },
     transform: { translate: [AX, shaftY, 0] },
     material: arrowMat,
-    animation: rise(shaftY),
   });
   for (let j = 0; j < 4; j++) {
     const hy = PAST_Y + shaftH + 0.1 + j * 0.22;
@@ -194,7 +186,6 @@ function renderEvolutionForm(ir, env) {
       args: { dims: [1.15 - j * 0.27, 0.22, 0.3] },
       transform: { translate: [AX, hy, 0] },
       material: arrowMat,
-      animation: rise(hy),
     });
   }
 
@@ -324,29 +315,23 @@ export function renderMatrix(ir, opts = {}) {
   const introLead = 1.6;
   const holdEach = 0.9;
   const zStart = 2.4; // launched from the camera side
-  order.forEach((i, k) => {
+  // STATIC (user-locked 2026-07-15): only the CAMERA animates — the board is
+  // fully filled from frame one, exactly like the source page.
+  order.forEach((i) => {
     const [xi, yi] = ir.cells[i];
     const size = mag ? 0.24 + 0.32 * Math.sqrt((Number(mag[i]) || 0) / mMax) : 0.34;
     const zFinal = 0.15 + size / 2 + 0.02; // clear the thick cell face
-    const t0 = introLead + k * holdEach - 0.35;
-    const t1 = t0 + 0.45;
     subjects.push({
       id: `item-${i}`,
       type: 'rounded_box',
       args: { dims: [size, size, size], cornerR: 0.06 },
       transform: { translate: [cellX(xi), cellY(yi), zFinal] },
       material: itemMat(emphasis.has(i), opts.accent),
-      animation: [
-        {
-          channel: 'transform.translate.z',
-          expr: `${zStart.toFixed(3)} - ${(zStart - zFinal).toFixed(3)} * smoothstep(${Math.max(0.2, t0).toFixed(2)}, ${t1.toFixed(2)}, t)`,
-        },
-      ],
     });
   });
 
-  // Floating flank rocks: the black-stone motif hovers beside the board —
-  // depth layers behind the flat wall, slow idle bob (transplant-safe tail).
+  // Flank rocks: the black-stone motif beside the board — depth layers behind
+  // the flat wall (static, like everything else).
   [
     [-(boardW / 2 + 2.4), cy + 0.8, -2.2, 1.5, 0.9],
     [boardW / 2 + 2.7, cy - 0.4, -3.0, 1.9, 1.1],
@@ -366,12 +351,6 @@ export function renderMatrix(ir, opts = {}) {
         roughness: 0.5,
         clearcoat: 0.35,
       },
-      animation: [
-        {
-          channel: 'transform.translate.y',
-          expr: `${fy.toFixed(3)} - 0.000 * smoothstep(0.00, 1.00, t) + ${(0.06 + 0.02 * fi).toFixed(2)} * sin(${(0.3 + 0.07 * fi).toFixed(2)} * t + ${((fi * 2.2) % 6.28).toFixed(2)})`,
-        },
-      ],
     });
   });
 
@@ -458,12 +437,15 @@ export function renderMatrix(ir, opts = {}) {
   order.forEach((i, k) => {
     const [xi, yi] = ir.cells[i];
     overlay.push({
-      // cell texts are SPOKEN — the subtitle column lights each entry as its
-      // cube slams onto the board. Axis labels above stay ANCHORED: they
-      // define the space and are unreadable anywhere else.
+      // Cell texts ride the narration column — but a 2-column matrix is a
+      // COMPARISON, so each side gets its OWN column: axes[0][0]'s entries read
+      // down the LEFT, axes[0][1]'s down the RIGHT. Stacking both sides in one
+      // column destroys the contrast the page exists to make (user-locked
+      // 2026-07-15: 对比必须把文本放在两个地方). Axis labels stay ANCHORED.
       text: nodes[i],
       anchor: [cellX(xi), cellY(yi) - 0.34, 0.2],
       role: 'screen',
+      ...(X === 2 ? { side: xi === 0 ? 'left' : 'right' } : {}),
       align: 'center',
       revealAt: introLead + k * holdEach + 0.15,
     });

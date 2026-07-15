@@ -97,12 +97,7 @@ export function renderSequence(ir, opts = {}) {
       args: { stages: 1, radii: [radii[i], radii[i + 1]], stageHeight, gap: 0 },
       transform: { translate: [0, yc, 0] },
       material: stageMat(i, N, emphasis.has(i), opts.accent),
-      animation: [
-        {
-          channel: 'transform.translate.y',
-          expr: `${yFull} - ${drop} * smoothstep(${revealStart.toFixed(2)}, ${revealEnd.toFixed(2)}, t)`,
-        },
-      ],
+      // STATIC (user-locked 2026-07-15): only the CAMERA animates.
     });
   });
 

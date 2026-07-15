@@ -310,7 +310,9 @@ export function createFigure({
           ? 'stage-title'
           : o.role === 'insight'
             ? 'stage-insight'
-            : 'stage-bullet';
+            : // overlay `side:'right'` opens the RIGHT narration column — a
+              // comparison page needs its two sides' text in TWO places
+              `stage-bullet${o.side === 'right' ? ' side-right' : ''}`;
       d.textContent = o.text;
       // insight panels carry a cited derivation line under the takeaway
       // (Rule 24: derived values name their parents)
@@ -410,7 +412,9 @@ export function createFigure({
       let curCh = -1;
       for (const o of stageItems)
         if (o.role === 'title' && o.revealAt <= t + 0.02 && o._ch > curCh) curCh = o._ch;
-      let slot = 0;
+      // two independent narration columns — each side stacks its own slots so a
+      // comparison page reads as two facing lists, not one merged pile
+      const slots = { left: 0, right: 0 };
       let lastOn = -1;
       for (let i = 0; i < stageItems.length; i++) {
         const o = stageItems[i];
@@ -419,8 +423,9 @@ export function createFigure({
         // seeks honest in both directions.
         const on = o._ch === curCh && o.revealAt <= t + 0.02 && (o.hideAt == null || t < o.hideAt);
         if (o.role === 'screen' && on) {
-          stageEls[i].style.top = `calc(21vh + ${slot} * 9.5vh)`;
-          slot++;
+          const side = o.side === 'right' ? 'right' : 'left';
+          stageEls[i].style.top = `calc(21vh + ${slots[side]} * 9.5vh)`;
+          slots[side]++;
           lastOn = i;
         }
         stageEls[i].classList.toggle('on', on);

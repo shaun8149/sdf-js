@@ -92,16 +92,13 @@ const deck = JSON.parse(
   );
   ok(transits.length === 2, 'two transit shots (stage transitions)');
 
-  // time: station k's build-ins start after station k-1's camera time has elapsed
-  const t0Of = (pfx) =>
-    Math.min(
-      ...scene.subjects
-        .filter((s) => s.id.startsWith(pfx) && s.animation)
-        .map((s) => Number(s.animation[0].expr.match(/smoothstep\((-?[\d.]+)/)[1])),
-    );
-  const dur0 = stations[0].cameraSequence.shots.reduce((s, sh) => s + sh.duration, 0);
-  ok(t0Of('s1-') >= dur0, 'station 2 build-ins wait for station 1 to play out');
-  ok(t0Of('s2-') > t0Of('s1-'), 'stations reveal in deck order');
+  // STATIC GEOMETRY (user-locked 2026-07-15): only the CAMERA animates, so the
+  // deck carries no geometry build-ins at all — the pacing now lives entirely
+  // in the camera timeline and the overlay reveals (checked just below).
+  ok(
+    scene.subjects.every((s) => !s.animation),
+    'assembled deck has ZERO geometry build-ins (camera owns all motion)',
+  );
 
   // overlay: anchors moved with stations; titles reveal with their slide
   const titles = scene.overlay.filter((o) => o.role === 'title');
