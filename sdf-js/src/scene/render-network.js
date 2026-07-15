@@ -27,6 +27,13 @@ const label = (n) => (typeof n === 'string' ? n : (n && (n.label ?? n.name)) || 
 
 /**
  * Deterministic 3D constellation layout. Returns { pos, degree, hub }.
+ *
+ * ir.form === 'cycle' → THE FLYWHEEL: the hub sits at the centre and every
+ * other node rides an even RING around it, upright in the picture plane. A
+ * flywheel page (engine drives 创作→分发→互动, source p22) is a CYCLE, and
+ * the generic golden-angle + spring layout scatters that ring into a random
+ * 3D cloud — the structure the page exists to show is destroyed. Reusable:
+ * any deck emitting form:'cycle' gets the ring.
  */
 export function constellationLayout(ir, opts = {}) {
   const N = ir.nodes.length;
@@ -41,6 +48,23 @@ export function constellationLayout(ir, opts = {}) {
   const maxDeg = Math.max(...degree, 1);
   let hub = 0;
   for (let i = 1; i < N; i++) if (degree[i] > degree[hub]) hub = i;
+
+  if (ir.form === 'cycle') {
+    // hub centred; the rest evenly around a ring in the XY plane (facing the
+    // camera), first ring node at 12 o'clock, going clockwise ON SCREEN
+    // (+x renders screen-left, so screen-clockwise is -cos).
+    const ring = [];
+    for (let i = 0; i < N; i++) if (i !== hub) ring.push(i);
+    const RR = radius * 1.05;
+    const CY = radius * 1.15; // float the wheel off the floor
+    const pos = new Array(N);
+    pos[hub] = [0, CY, 0];
+    ring.forEach((i, k) => {
+      const a = Math.PI / 2 - (k / ring.length) * 2 * Math.PI;
+      pos[i] = [-Math.cos(a) * RR, CY + Math.sin(a) * RR, 0];
+    });
+    return { pos, degree, hub };
+  }
 
   // Golden-angle sphere seed: well-spread, deterministic. Hubs start closer in.
   const GA = Math.PI * (3 - Math.sqrt(5));
@@ -156,7 +180,13 @@ export function renderNetwork(ir, opts = {}) {
   const emphasisIdx = ir.emphasis && ir.emphasis.length ? ir.emphasis[0] : hub;
   const emphasis = new Set(ir.emphasis && ir.emphasis.length ? ir.emphasis : [hub]);
 
-  const nodeR = (i) => 0.24 + 0.26 * Math.sqrt((Number(mag[i]) || 1) / mMax);
+  // A flywheel's ring nodes are PEERS — the source page draws them the same
+  // size, so magnitude-scaling them (the generic graph behaviour) makes the
+  // cycle read as a ranking it is not. Only the hub is bigger: it drives.
+  const cycle = ir.form === 'cycle';
+  const nodeR = cycle
+    ? (i) => (i === hub ? 0.62 : 0.5)
+    : (i) => 0.24 + 0.26 * Math.sqrt((Number(mag[i]) || 1) / mMax);
 
   // STATIC (user-locked 2026-07-15): only the CAMERA animates — the graph is
   // fully wired from frame one, so it matches its source diagram at every
@@ -223,33 +253,77 @@ export function renderNetwork(ir, opts = {}) {
   const cloudR = Math.max(...pos.map((p) => Math.hypot(p[0], p[2]))) + 0.6;
   const midY = pos.reduce((s, p) => s + p[1], 0) / N;
   const wireDone = edgesStart + ir.relations.length * 0.14 + 0.45;
-  const shots = [
-    // 1 — hero: inside the cloud, looking at the hub
-    {
-      duration: 1.0,
-      pos: [hubP[0] + cloudR * 0.5, Math.max(hubP[1] - 0.6, 0.4), hubP[2] + cloudR * 0.55],
-      target: [hubP[0], hubP[1], hubP[2]],
-      fov: 56,
-      aperture: 0.55, // hero: shallow focus on the hub
-      focalDistance: cloudR * 0.7,
-      ease: 'out',
-    },
-    // 2 — crane up and out: the whole constellation
-    {
-      duration: 1.3,
-      pos: [1.0, midY + cloudR * 1.2, cloudR * 1.7],
-      target: [0, midY, 0],
-      fov: 48,
-      transition: 'blend',
-      aperture: 0.3,
-      focalDistance: cloudR * 1.9,
-      ease: 'inout',
-    },
-  ];
-  // 3 — orbit tour while the network wires itself (duration covers the waves)
+  // A CYCLE is a flat wheel standing in the picture plane — orbiting it edge-on
+  // destroys the ring the page exists to show. Frontal beats instead: meet the
+  // wheel square, drift across it, punch the hub. (The generic constellation
+  // keeps its orbit tour — a 3D cloud has no face to respect.)
+  const wheelR = cycle ? Math.max(...pos.map((p) => Math.hypot(p[0], p[1] - midY))) + 0.7 : 0;
+  const wheelD = cycle ? Math.max(7, wheelR * 2.6) : 0;
+  const shots = cycle
+    ? [
+        {
+          duration: 1.0,
+          pos: [0.5, midY + 0.2, wheelD + 1.2],
+          target: [0, midY, 0],
+          fov: 48,
+          aperture: 0.22,
+          focalDistance: wheelD + 1.2,
+          ease: 'out',
+        },
+        {
+          duration: 1.3,
+          pos: [-0.8, midY + 0.1, wheelD],
+          target: [0.1, midY, 0],
+          fov: 46,
+          transition: 'blend',
+          aperture: 0.2,
+          focalDistance: wheelD,
+          ease: 'inout',
+        },
+      ]
+    : [
+        // 1 — hero: inside the cloud, looking at the hub
+        {
+          duration: 1.0,
+          pos: [hubP[0] + cloudR * 0.5, Math.max(hubP[1] - 0.6, 0.4), hubP[2] + cloudR * 0.55],
+          target: [hubP[0], hubP[1], hubP[2]],
+          fov: 56,
+          aperture: 0.55, // hero: shallow focus on the hub
+          focalDistance: cloudR * 0.7,
+          ease: 'out',
+        },
+        // 2 — crane up and out: the whole constellation
+        {
+          duration: 1.3,
+          pos: [1.0, midY + cloudR * 1.2, cloudR * 1.7],
+          target: [0, midY, 0],
+          fov: 48,
+          transition: 'blend',
+          aperture: 0.3,
+          focalDistance: cloudR * 1.9,
+          ease: 'inout',
+        },
+      ];
+  // 3 — tour while the eye reads the graph (duration covers the label reveals)
   const orbitBeats = 3;
   const orbitDur = Math.max(1.2, (wireDone - 2.3) / orbitBeats);
   for (let k = 0; k < orbitBeats; k++) {
+    if (cycle) {
+      // stay frontal; drift a little around the wheel's face
+      const a = Math.PI / 2 - (k / orbitBeats) * 2 * Math.PI;
+      shots.push({
+        duration: orbitDur,
+        pos: [-Math.cos(a) * wheelR * 0.35, midY + Math.sin(a) * wheelR * 0.3, wheelD * 0.8],
+        target: [-Math.cos(a) * wheelR * 0.5, midY + Math.sin(a) * wheelR * 0.45, 0],
+        fov: 45,
+        transition: 'blend',
+        aperture: 0.2,
+        focalDistance: wheelD * 0.8,
+        shake: 0.04,
+        ease: 'smooth',
+      });
+      continue;
+    }
     const theta = 1.5 + k * 1.4;
     const dist = cloudR * 1.6;
     shots.push({
@@ -287,16 +361,22 @@ export function renderNetwork(ir, opts = {}) {
     exposure: [1.2, 1.0],
     ease: 'out',
   });
-  // 5 — payoff pull-back
-  const payoffDist = (cloudR * 2.6 + 1.5) * (env ? env.payoffZoom : 1);
+  // 5 — payoff pull-back. A cycle's money frame is SQUARE ON: the wheel is a
+  // flat diagram and the crane angle would read it as a skewed triangle.
+  const payoffDist = cycle
+    ? (wheelD + 1.6) * (env ? env.payoffZoom : 1)
+    : (cloudR * 2.6 + 1.5) * (env ? env.payoffZoom : 1);
   shots.push({
     duration: 2.4,
-    // payoff at a MID crane angle (~25° down): eye-level rays run the length
-    // of the whole cloud (11fps even in stone mode); steep overhead fills the
-    // frame with floor (which in RICH mode pays the wet-floor retrace). The
-    // middle angle grounds most rays quickly without floor-filling the frame.
-    pos: [1.4, midY + payoffDist * 0.42 + (env ? 0.5 : 0), payoffDist * 0.92],
-    target: [0, midY - 0.1, 0],
+    // generic constellation: payoff at a MID crane angle (~25° down) —
+    // eye-level rays run the length of the whole cloud (11fps even in stone
+    // mode); steep overhead fills the frame with floor (which in RICH mode
+    // pays the wet-floor retrace). The middle angle grounds most rays quickly
+    // without floor-filling the frame.
+    pos: cycle
+      ? [0.3, midY + 0.3, payoffDist]
+      : [1.4, midY + payoffDist * 0.42 + (env ? 0.5 : 0), payoffDist * 0.92],
+    target: cycle ? [0, midY, 0] : [0, midY - 0.1, 0],
     fov: 44,
     transition: 'blend',
     aperture: 0.12, // deep focus: the whole story stays sharp

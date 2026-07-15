@@ -108,6 +108,25 @@ export function renderHold(ir, opts = {}) {
         }
       }
     }
+  } else if (ir.form === 'circles') {
+    // CONCEPT CIRCLES — the source page draws N labelled circles side by side
+    // (p7: 技术 / 世界 / 人). Three peer spheres in a row, EQUAL size (they are
+    // peers, not a ranking), each naming its own idea. Reusable: any deck
+    // emitting hold + form:'circles' gets this.
+    const CR = 1.35;
+    const CCY = 3.0;
+    const gap = CR * 2 + 1.5;
+    bullets.forEach((_, k) => {
+      // +x renders screen-LEFT → k=0 sits screen-left (reading order L→R)
+      const x = ((N - 1) / 2 - k) * gap;
+      subjects.push({
+        id: `circle-${k}`,
+        type: 'sphere',
+        args: { radius: CR },
+        transform: { translate: [x, CCY, -1.0] },
+        material: emphasis.has(k) ? GOLD_MAT : RED_MAT,
+      });
+    });
   } else {
     // CONTENTS — the source page-2 diagram, FLOATING AND UPRIGHT (user art
     // direction 2026-07-14: "一个半球悬空不是很帅吗?你把半球立起来"): a
@@ -167,75 +186,113 @@ export function renderHold(ir, opts = {}) {
 
   // ---- camera: three quiet beats ---------------------------------------------------
   const driftDur = Math.max(2.2, N * holdEach + 0.8);
+  // concept circles: a flat row of peers — meet it square on, drift across it
+  const circlesRow = ir.form === 'circles' ? (N - 1) * (1.35 * 2 + 1.5) + 2.7 : 0;
+  // the frame is WIDE (16:9+), so the row's width is not the binding constraint
+  // at this fov — a distance sized off the vertical fov parks the camera twice
+  // as far as it needs and the circles read as buttons.
+  const circlesD = Math.max(7, circlesRow * 0.68);
   const shots =
-    N === 0
+    ir.form === 'circles'
       ? [
-          // cover: ground-level, looking up the title slab with the forest
-          // skyline climbing behind it
           {
             duration: introLead,
-            pos: [2.8, 1.0, 8.6],
-            target: [0, 3.1, -1.4],
-            fov: 44,
-            aperture: 0.35,
-            focalDistance: 9.2,
+            pos: [0.4, 3.2, circlesD + 0.8],
+            target: [0, 3.0, -1.0],
+            fov: 46,
+            aperture: 0.2,
+            focalDistance: circlesD + 0.8,
             ease: 'out',
           },
           {
             duration: driftDur,
-            pos: [-2.4, 1.6, 7.2],
-            target: [0.4, 4.2, -8],
+            pos: [-1.2, 3.1, circlesD - 0.6],
+            target: [0.2, 3.0, -1.0],
             fov: 46,
             transition: 'blend',
-            aperture: 0.26,
-            focalDistance: 9.5,
+            aperture: 0.18,
+            focalDistance: circlesD - 0.6,
             ease: 'smooth',
           },
           {
             duration: 2.0,
-            pos: [0.8, 2.6, 9.6 * (env ? env.payoffZoom : 1)],
-            target: [0, 3.4, -6],
+            pos: [0.2, 3.3, (circlesD + 1.2) * (env ? env.payoffZoom : 1)],
+            target: [0, 3.0, -1.0],
             fov: 46,
             transition: 'blend',
             aperture: 0.12,
-            focalDistance: 11.0,
+            focalDistance: circlesD + 1.2,
             ease: 'out',
           },
         ]
-      : [
-          // contents: EYE-LEVEL with the FLOATING half-disc, straight in from
-          // outside the screen — the page-2 composition hangs mid-air, so the
-          // camera meets it at its heart (~y 3.4). Lateral drift only.
-          {
-            duration: introLead,
-            pos: [0.3, 3.4, 8.8],
-            target: [-0.6, 3.5, -1.2],
-            fov: 46,
-            aperture: 0.28,
-            focalDistance: 9.8,
-            ease: 'out',
-          },
-          {
-            duration: driftDur,
-            pos: [-1.7, 3.7, 7.9],
-            target: [-0.4, 3.6, -1.2],
-            fov: 46,
-            transition: 'blend',
-            aperture: 0.22,
-            focalDistance: 9.0,
-            ease: 'smooth',
-          },
-          {
-            duration: 2.0,
-            pos: [-0.4, 3.7, 9.4 * (env ? env.payoffZoom : 1)],
-            target: [-0.6, 3.6, -1.2],
-            fov: 45,
-            transition: 'blend',
-            aperture: 0.12,
-            focalDistance: 10.4,
-            ease: 'out',
-          },
-        ];
+      : N === 0
+        ? [
+            // cover: ground-level, looking up the title slab with the forest
+            // skyline climbing behind it
+            {
+              duration: introLead,
+              pos: [2.8, 1.0, 8.6],
+              target: [0, 3.1, -1.4],
+              fov: 44,
+              aperture: 0.35,
+              focalDistance: 9.2,
+              ease: 'out',
+            },
+            {
+              duration: driftDur,
+              pos: [-2.4, 1.6, 7.2],
+              target: [0.4, 4.2, -8],
+              fov: 46,
+              transition: 'blend',
+              aperture: 0.26,
+              focalDistance: 9.5,
+              ease: 'smooth',
+            },
+            {
+              duration: 2.0,
+              pos: [0.8, 2.6, 9.6 * (env ? env.payoffZoom : 1)],
+              target: [0, 3.4, -6],
+              fov: 46,
+              transition: 'blend',
+              aperture: 0.12,
+              focalDistance: 11.0,
+              ease: 'out',
+            },
+          ]
+        : [
+            // contents: EYE-LEVEL with the FLOATING half-disc, straight in from
+            // outside the screen — the page-2 composition hangs mid-air, so the
+            // camera meets it at its heart (~y 3.4). Lateral drift only.
+            {
+              duration: introLead,
+              pos: [0.3, 3.4, 8.8],
+              target: [-0.6, 3.5, -1.2],
+              fov: 46,
+              aperture: 0.28,
+              focalDistance: 9.8,
+              ease: 'out',
+            },
+            {
+              duration: driftDur,
+              pos: [-1.7, 3.7, 7.9],
+              target: [-0.4, 3.6, -1.2],
+              fov: 46,
+              transition: 'blend',
+              aperture: 0.22,
+              focalDistance: 9.0,
+              ease: 'smooth',
+            },
+            {
+              duration: 2.0,
+              pos: [-0.4, 3.7, 9.4 * (env ? env.payoffZoom : 1)],
+              target: [-0.6, 3.6, -1.2],
+              fov: 45,
+              transition: 'blend',
+              aperture: 0.12,
+              focalDistance: 10.4,
+              ease: 'out',
+            },
+          ];
 
   // ---- overlay: narrative → the stage layer ------------------------------------------
   // title/screen roles are STAGE items — figure-core renders them as pure 2D
@@ -249,30 +306,51 @@ export function renderHold(ir, opts = {}) {
     },
   ];
   const CIRCLED = ['①', '②', '③', '④', '⑤', '⑥', '⑦', '⑧', '⑨', '⑩'];
-  bullets.forEach((b, k) => {
-    // same rim math as the orbs (top → bottom down the curved right side)
-    const e = 1.28 - (k * 2.56) / Math.max(1, N - 1);
-    const x = 0.6 - Math.cos(e) * 3.15;
-    const y = 3.7 + Math.sin(e) * 3.15;
-    overlay.push({
-      // The source page-2 lists its numbered items to the RIGHT of the
-      // semicircle, beside their balls — the left column put the words on the
-      // OPPOSITE side from the geometry they name (user-locked 2026-07-15).
-      text: b,
-      anchor: [x, y, -1.2],
-      role: 'screen',
-      side: 'right',
-      revealAt: introLead + k * holdEach + 0.25,
+  if (ir.form === 'circles') {
+    // Each circle names its OWN idea — the text sits directly under the sphere
+    // it belongs to (the user's "外圍做三塊文本"), never pooled in one column.
+    const gap = 1.35 * 2 + 1.5;
+    bullets.forEach((b, k) => {
+      const x = ((N - 1) / 2 - k) * gap;
+      overlay.push({
+        text: b,
+        anchor: [x, 3.0 - 1.35 - 0.55, -0.6],
+        role: 'card',
+        align: 'center',
+        revealAt: introLead + k * holdEach + 0.25,
+      });
+      overlay.push({
+        text: CIRCLED[k] || String(k + 1),
+        anchor: [x, 3.0 + 1.35 + 0.45, -0.6],
+        role: 'value',
+        revealAt: introLead + k * holdEach + 0.3,
+      });
     });
-    // the source page numbers its balls — the digit rides ITS orb (anchor
-    // layer: a label bound to geometry), landing right after the drop
-    overlay.push({
-      text: CIRCLED[k] || String(k + 1),
-      anchor: [x, y + 0.66, -1.2],
-      role: 'value',
-      revealAt: introLead + k * holdEach + 0.3,
+  } else
+    bullets.forEach((b, k) => {
+      // same rim math as the orbs (top → bottom down the curved right side)
+      const e = 1.28 - (k * 2.56) / Math.max(1, N - 1);
+      const x = 0.6 - Math.cos(e) * 3.15;
+      const y = 3.7 + Math.sin(e) * 3.15;
+      overlay.push({
+        // The source page-2 lists its numbered items to the RIGHT of the
+        // semicircle, beside their balls — the left column put the words on the
+        // OPPOSITE side from the geometry they name (user-locked 2026-07-15).
+        text: b,
+        anchor: [x, y, -1.2],
+        role: 'screen',
+        side: 'right',
+        revealAt: introLead + k * holdEach + 0.25,
+      });
+      // the source page numbers its balls — the digit rides ITS orb (anchor
+      // layer: a label bound to geometry), landing right after the drop
+      overlay.push({
+        text: CIRCLED[k] || String(k + 1),
+        anchor: [x, y + 0.66, -1.2],
+        role: 'value',
+        revealAt: introLead + k * holdEach + 0.3,
+      });
     });
-  });
 
   return {
     v: 1,
