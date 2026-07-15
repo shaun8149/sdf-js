@@ -6278,7 +6278,7 @@
     {
       "role": "plate",
       "image": "assets/bytedance/page-05.png",
-      "anchor": [112, 4.35, 0],
+      "anchor": [112, 4.35, -0.06],
       "w": 9.2,
       "h": 6.9,
       "revealAt": 82.60000000000002,
@@ -6294,7 +6294,7 @@
     {
       "role": "plate",
       "image": "assets/bytedance/page-07.png",
-      "anchor": [128, 4.35, 0],
+      "anchor": [128, 4.35, -0.06],
       "w": 9.2,
       "h": 6.9,
       "revealAt": 90.60000000000002,
@@ -6310,7 +6310,7 @@
     {
       "role": "plate",
       "image": "assets/bytedance/page-08.png",
-      "anchor": [144, 4.35, 0],
+      "anchor": [144, 4.35, -0.06],
       "w": 9.2,
       "h": 6.9,
       "revealAt": 98.60000000000002,
@@ -6326,7 +6326,7 @@
     {
       "role": "plate",
       "image": "assets/bytedance/page-09.png",
-      "anchor": [160, 4.35, 0],
+      "anchor": [160, 4.35, -0.06],
       "w": 9.2,
       "h": 6.9,
       "revealAt": 106.60000000000002,
@@ -6342,7 +6342,7 @@
     {
       "role": "plate",
       "image": "assets/bytedance/page-10.png",
-      "anchor": [176, 4.35, 0],
+      "anchor": [176, 4.35, -0.06],
       "w": 9.2,
       "h": 6.9,
       "revealAt": 114.60000000000002,
@@ -6358,7 +6358,7 @@
     {
       "role": "plate",
       "image": "assets/bytedance/page-11.png",
-      "anchor": [192, 4.35, 0],
+      "anchor": [192, 4.35, -0.06],
       "w": 9.2,
       "h": 6.9,
       "revealAt": 122.60000000000002,
@@ -6374,7 +6374,7 @@
     {
       "role": "plate",
       "image": "assets/bytedance/page-12.png",
-      "anchor": [208, 4.35, 0],
+      "anchor": [208, 4.35, -0.06],
       "w": 9.2,
       "h": 6.9,
       "revealAt": 130.60000000000002,
@@ -6761,7 +6761,7 @@
     {
       "role": "plate",
       "image": "assets/bytedance/page-17.png",
-      "anchor": [288, 4.35, 0],
+      "anchor": [288, 4.35, -0.06],
       "w": 9.2,
       "h": 6.9,
       "revealAt": 186.99999999999997,
@@ -6777,7 +6777,7 @@
     {
       "role": "plate",
       "image": "assets/bytedance/page-18.png",
-      "anchor": [304, 4.35, 0],
+      "anchor": [304, 4.35, -0.06],
       "w": 9.2,
       "h": 6.9,
       "revealAt": 194.99999999999997,
@@ -8286,13 +8286,13 @@
       },
       {
         "duration": 1,
-        "pos": [269.3729825230677, 2.953512833117401, 1.3752454213306184],
+        "pos": [269.8729825230677, 2.953512833117401, 3.1752454213306187],
         "target": [268.8729825230677, 3.1135128331174013, -0.12475457866938144],
         "fov": 40,
         "transition": "blend",
         "beat": "super",
         "aperture": [0.9, 0.45],
-        "focalDistance": 1.6,
+        "focalDistance": 3.4000000000000004,
         "shake": [0.5, 0.06],
         "ambient": [0.15, 1],
         "exposure": [1.2, 1],

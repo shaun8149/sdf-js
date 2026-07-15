@@ -210,12 +210,15 @@ export function createFigure({
       const img = document.createElement('img');
       img.src = `../../scenes/${o.image}`;
       img.decoding = 'async';
+      // layout box matches the WORLD quad's aspect (4:3 pages, 16:9 pages…)
+      // so the homography never stretches pixels
+      img._pxH = Math.round(PLATE_PX_W * ((o.h || 1) / (o.w || 1)));
       Object.assign(img.style, {
         position: 'fixed',
         left: '0',
         top: '0',
         width: `${PLATE_PX_W}px`,
-        height: `${PLATE_PX_H}px`,
+        height: `${img._pxH}px`,
         transformOrigin: '0 0',
         pointerEvents: 'none',
         zIndex: '6', // under every text layer — words outrank pixels
@@ -419,7 +422,7 @@ export function createFigure({
       const chh = canvas.clientHeight;
       el.style.transform = plateMatrix3d(
         PLATE_PX_W,
-        PLATE_PX_H,
+        el._pxH || PLATE_PX_H,
         [tl.x * cw, tl.y * chh],
         [tr.x * cw, tr.y * chh],
         [bl.x * cw, bl.y * chh],

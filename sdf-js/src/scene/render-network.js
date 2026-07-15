@@ -286,17 +286,20 @@ export function renderNetwork(ir, opts = {}) {
       ease: 'smooth',
     });
   }
-  // 4 — the super: hard cut punch-in on the hub/emphasis node
+  // 4 — the super: hard cut punch-in on the hub/emphasis node. Distance scales
+  // with the node's RADIUS — a degree-7 hub is a big ball, and the old fixed
+  // 1.5 offset filled the whole frame with it (2015-deck fidelity round 1).
   const superAt = shots.reduce((s, sh) => s + sh.duration, 0); // presentation time of the impact
+  const pr = nodeR(emphasisIdx);
   shots.push({
     duration: 1.0,
-    pos: [gp[0] + 0.5, Math.max(gp[1] - 0.1, 0.14), gp[2] + 1.5],
+    pos: [gp[0] + 0.5 + pr, Math.max(gp[1] - 0.1, 0.14), gp[2] + 1.5 + pr * 3.6],
     target: [gp[0], gp[1] + 0.06, gp[2]],
     fov: 40,
     transition: 'cut',
     beat: 'super',
     aperture: [0.9, 0.45], // rack focus: the world falls away, the subject stays
-    focalDistance: 1.6,
+    focalDistance: 1.6 + pr * 3.6,
     shake: [0.5, 0.06], // impact-then-settle
     ambient: [0.15, 1.0], // spotlight crash: surroundings collapse on the hit, then recover
     exposure: [1.2, 1.0],
