@@ -414,8 +414,10 @@ export function compileAnalyticFrag(subjects, opts = {}) {
       body += `    float tk = iCylinderZ(q, dq, ${flt(r)}, ${flt(he)}, n${k});\n`;
       body += `    if (tk > 0.0 && tk < tHit) {\n`;
       body += `      vec3 hp = q + dq * tk;\n`;
-      // clockwise from startAngle (pie convention): frac = (start - θ)/2π mod 1
-      body += `      float frac = (${flt(start)} - atan(hp.y, hp.x)) * ${flt(1 / (2 * Math.PI))};\n`;
+      // Clockwise ON SCREEN from startAngle (the pie convention every source
+      // page uses). The studio renders +x as screen-LEFT, so a clockwise sweep
+      // in LOCAL xy comes out mirrored — negate x to read the SCREEN angle.
+      body += `      float frac = (${flt(start)} - atan(hp.y, -hp.x)) * ${flt(1 / (2 * Math.PI))};\n`;
       body += `      frac = frac - floor(frac);\n`;
       body += `      vec3 pc = vec3(${flt(last.rgb[0])}, ${flt(last.rgb[1])}, ${flt(last.rgb[2])});\n`;
       for (let si = 0; si < slices.length - 1; si++) {

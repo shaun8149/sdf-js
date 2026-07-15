@@ -116,7 +116,9 @@ export function renderProportion(ir, opts = {}) {
       const pct = Math.round(sl.frac * 100);
       overlay.push({
         text: sliceLabels[si] ? `${sliceLabels[si]} ${pct}%` : `${pct}%`,
-        anchor: [x + Math.cos(ang) * rr, CY + Math.sin(ang) * rr, THICK / 2 + 0.05],
+        // ang is a SCREEN angle; +x renders screen-LEFT, so the world x offset
+        // negates it — the chip lands on the wedge it names, not its mirror.
+        anchor: [x - Math.cos(ang) * rr, CY + Math.sin(ang) * rr, THICK / 2 + 0.05],
         role: 'value',
         revealAt: introLead + g * holdEach + 0.45,
       });
