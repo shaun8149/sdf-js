@@ -38,19 +38,14 @@ ok(
   'top stage wider than bottom (radii from magnitude)',
 );
 
-// build-in: each stage animates transform.translate.y with a staggered smoothstep reveal
+// STATIC GEOMETRY (user-locked 2026-07-15): only the CAMERA animates. A stage
+// that drops in is at the wrong height every frame but the last, so the funnel
+// never matches its source page while it plays; and geometry moving under a
+// moving camera splits the viewer's attention.
 ok(
-  stages.every(
-    (s) => Array.isArray(s.animation) && s.animation[0].channel === 'transform.translate.y',
-  ),
-  'each stage has a translate.y build-in channel',
+  stages.every((s) => !s.animation),
+  'stages carry NO build-in animation (camera owns all motion)',
 );
-ok(
-  stages.every((s) => /smoothstep\(/.test(s.animation[0].expr)),
-  'build-in uses smoothstep (one-shot reveal)',
-);
-const starts = stages.map((s) => Number(s.animation[0].expr.match(/smoothstep\(([\d.]+)/)[1]));
-ok(starts[0] < starts[3], 'reveal windows staggered by order (top reveals first)');
 
 ok(scene.cameraSequence && scene.cameraSequence.shots.length >= 4, 'has a multi-shot fly-through');
 // fighting-game grammar: low hero opening → crane peak → spiral descent →

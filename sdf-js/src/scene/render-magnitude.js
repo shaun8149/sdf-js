@@ -92,22 +92,15 @@ function renderHorizontalBars(ir, opts, env) {
     const L = lenOf(i);
     const y = yOf(k);
     const xc = -L / 2; // grows screen-right (-x)
-    const t0 = Math.max(0.2, introLead + k * holdEach - 0.45);
-    const t1 = t0 + 0.55;
-    // rail the bar rides in on (a thin baseline groove at x=0)
+    // STATIC (user-locked 2026-07-15): only the CAMERA animates. A bar that
+    // slides in is the wrong length at every frame but the last — the chart
+    // must match the source page's geometry the moment it is on screen.
     subjects.push({
       id: `hbar-${i}`,
       type: 'rounded_box',
       args: { dims: [L, BAR_H, DEPTH], cornerR: 0.05 },
       transform: { translate: [xc, y, 0] },
       material: monoMat(k, N, emphasis.has(i), opts.accent),
-      animation: [
-        {
-          // slide in from screen-right (off its final centre by the bar length)
-          channel: 'transform.translate.x',
-          expr: `${(xc - L - 1.5).toFixed(3)} + ${(L + 1.5).toFixed(3)} * smoothstep(${t0.toFixed(2)}, ${t1.toFixed(2)}, t)`,
-        },
-      ],
     });
   });
   // a baseline spine at x=0 (where every bar starts) + a back wall of guards
@@ -282,11 +275,8 @@ export function renderMagnitude(ir, opts = {}) {
   order.forEach((i, k) => {
     const H = height(i);
     const yFinal = H / 2; // box centre when standing on the floor
-    const buried = H + 0.3; // start fully underground, then erupt
-    const t0 = Math.max(0.2, riseStart(k));
-    const t1 = t0 + 0.6;
-    // Plinth first: a static base slab each monolith erupts THROUGH — turns a
-    // floating box into a mounted monument (and grounds the eruption).
+    // Plinth: a base slab each monolith stands ON — turns a floating box into
+    // a mounted monument.
     subjects.push({
       id: `plinth-${i}`,
       type: 'box',
@@ -301,18 +291,14 @@ export function renderMagnitude(ir, opts = {}) {
         clearcoat: 0.1,
       },
     });
+    // STATIC (user-locked 2026-07-15): only the CAMERA animates — an erupting
+    // monolith is the wrong height at every frame but the last.
     const craft = {
       id: `mono-${i}`,
       type: 'rounded_box', // beveled edges — a hewn stone, not a raw prim
       args: { dims: [W, H, W], cornerR: 0.045 },
       transform: { translate: [xOf(i), yFinal, 0] },
       material: monoMat(i, N, emphasis.has(i), opts.accent),
-      animation: [
-        {
-          channel: 'transform.translate.y',
-          expr: `${(yFinal - buried).toFixed(3)} + ${buried.toFixed(3)} * smoothstep(${t0.toFixed(2)}, ${t1.toFixed(2)}, t)`,
-        },
-      ],
     };
     if (!emphasis.has(i)) craft.pattern = 'cracked'; // stone grain; the gold champion stays polished
     subjects.push(craft);

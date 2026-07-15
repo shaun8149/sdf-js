@@ -13,6 +13,10 @@
 //   { structure:'roadmap',
 //     title,
 //     milestones: [ { date, label, detail? }, … ],
+//     climb?: boolean,   // true (default) = a RISING milestone curve (a growth
+//                        // timeline, source p9); false = a FLAT staged timeline
+//                        // (source p10: years above the line, stages below).
+//                        // 2D-fidelity: the source page's shape decides.
 //     emphasis?: <index>,  callout? }
 import { validateIR } from './ir.js';
 import { getEnvironment } from './environments.js';
@@ -58,12 +62,15 @@ export function renderRoadmap(ir, opts = {}) {
   const stride = 2.9;
   // +x renders screen-LEFT → i=0 sits screen-left (time reads L→R)
   const xOf = (i) => ((N - 1) / 2 - i) * stride;
-  const yOf = (i) => RAIL_Y + 0.5 + i * CLIMB; // the line climbs over time
+  // climb (default): a RISING milestone curve. climb:false: a FLAT staged
+  // timeline — the source page's own shape decides (2D-fidelity round 2).
+  const climbing = ir.climb !== false;
+  const step = climbing ? CLIMB : 0;
+  const yOf = (i) => RAIL_Y + 0.5 + i * step;
   const span = (N - 1) * stride;
 
   const introLead = 1.6;
   const holdEach = 1.05;
-  const riseAt = (i) => introLead + i * holdEach - 0.4;
 
   const subjects = [];
 
@@ -76,31 +83,24 @@ export function renderRoadmap(ir, opts = {}) {
     material: RAIL_MAT,
   });
 
-  // connector segments (node i → node i+1) — the rising line. Each is a capsule
-  // between two node points; it rises with the LATER node's beat.
+  // connector segments (node i → node i+1) — the rising line, drawn STATIC:
+  // only the camera animates (user-locked 2026-07-15). A line that assembles
+  // itself never matches the source diagram at any frame.
   for (let i = 0; i < N - 1; i++) {
     const a = [xOf(i), yOf(i), 0];
     const b = [xOf(i + 1), yOf(i + 1), 0];
-    const t0 = riseAt(i + 1);
     subjects.push({
       id: `seg-${i}`,
       type: 'capsule',
       args: { a: [0, 0, 0], b: [b[0] - a[0], b[1] - a[1], b[2] - a[2]], radius: 0.06 },
       transform: { translate: a },
       material: SEG_MAT,
-      animation: [
-        {
-          channel: 'transform.translate.y',
-          expr: `${(a[1] - 1.1).toFixed(3)} + 1.100 * smoothstep(${t0.toFixed(2)}, ${(t0 + 0.5).toFixed(2)}, t)`,
-        },
-      ],
     });
   }
 
   ms.forEach((m, i) => {
     const x = xOf(i);
     const y = yOf(i);
-    const t0 = riseAt(i);
     const emph = i === emphasisIdx;
     // post from the rail up to the node — the milestone stands on the timeline
     const postH = y - RAIL_Y;
@@ -110,12 +110,6 @@ export function renderRoadmap(ir, opts = {}) {
       args: { dims: [0.1, postH, 0.1] },
       transform: { translate: [x, RAIL_Y + postH / 2, 0] },
       material: RAIL_MAT,
-      animation: [
-        {
-          channel: 'transform.translate.y',
-          expr: `${(RAIL_Y + postH / 2 - 1.1).toFixed(3)} + 1.100 * smoothstep(${t0.toFixed(2)}, ${(t0 + 0.5).toFixed(2)}, t)`,
-        },
-      ],
     });
     // the milestone node
     subjects.push({
@@ -124,12 +118,6 @@ export function renderRoadmap(ir, opts = {}) {
       args: { radius: emph ? NODE_R * 1.35 : NODE_R },
       transform: { translate: [x, y, 0] },
       material: NODE_MAT(emph, opts.accent),
-      animation: [
-        {
-          channel: 'transform.translate.y',
-          expr: `${(y - 1.1).toFixed(3)} + 1.100 * smoothstep(${t0.toFixed(2)}, ${(t0 + 0.5).toFixed(2)}, t) + 0.02 * sin(1.1 * t + ${((i * 1.7) % 6.28).toFixed(2)})`,
-        },
-      ],
     });
   });
 
@@ -141,6 +129,11 @@ export function renderRoadmap(ir, opts = {}) {
       role: 'title',
     },
   ];
+  // Label geometry follows the source page's own shape (2D-fidelity round 2):
+  //   climb  (p9 growth curve): date BELOW the rail, milestone ABOVE its node —
+  //          the diagonal climb spreads neighbours so they don't stack.
+  //   stages (p10 flat timeline): year ABOVE the line, stage content BELOW it —
+  //          exactly the source's tick-above / box-below arrangement.
   ms.forEach((m, i) => {
     const x = xOf(i);
     const y = yOf(i);
@@ -148,16 +141,14 @@ export function renderRoadmap(ir, opts = {}) {
     if (m.date)
       overlay.push({
         text: String(m.date),
-        anchor: [x, RAIL_Y - 0.35, 0.25],
+        anchor: climbing ? [x, RAIL_Y - 0.35, 0.25] : [x, y + 0.6, 0.2],
         role: 'card',
         align: 'center',
         revealAt,
       });
-    // milestone label sits ABOVE its node (a diagram, not narration); the
-    // diagonal climb spreads neighbours so they don't stack
     overlay.push({
       text: String(m.label || ''),
-      anchor: [x, y + 0.6, 0.2],
+      anchor: climbing ? [x, y + 0.6, 0.2] : [x, RAIL_Y - 0.5, 0.25],
       role: 'card',
       align: 'center',
       revealAt,

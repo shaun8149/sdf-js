@@ -40,12 +40,17 @@ ok(
     monos.every((s) => s.args.dims[0] === monos[0].args.dims[0]),
     'equal footprints',
   );
-  // rise-not-drop: animated y starts BELOW the final position
-  const startsBelow = monos.every((s) => {
-    const m = s.animation[0].expr.match(/^(-?[\d.]+) \+ ([\d.]+) \* smoothstep/);
-    return m && Number(m[1]) < s.transform.translate[1];
-  });
-  ok(startsBelow, 'monoliths ERUPT from underground (rise, not drop)');
+  // STATIC GEOMETRY (user-locked 2026-07-15): only the CAMERA animates — an
+  // erupting monolith is the wrong HEIGHT at every frame but the last, so the
+  // chart never matches its source page while it plays.
+  ok(
+    monos.every((s) => !s.animation),
+    'monoliths carry NO build-in animation (camera owns all motion)',
+  );
+  ok(
+    monos.every((s) => Math.abs(s.transform.translate[1] - s.args.dims[1] / 2) < 1e-9),
+    'every monolith stands ON the floor from frame one (height = the encoding)',
+  );
 
   // fighting-game grammar: hero low at the champion → crane → tracking beats → super → wide
   const shots = scene.cameraSequence.shots;

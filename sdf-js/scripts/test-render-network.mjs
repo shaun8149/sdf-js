@@ -51,18 +51,11 @@ ok(
   const edgesS = scene.subjects.filter((s) => s.id.startsWith('net-edge-'));
   ok(nodesS.length === 10, 'one subject per node');
   ok(edgesS.length === 14, 'one subject per edge');
+  // STATIC GEOMETRY (user-locked 2026-07-15): only the CAMERA animates — the
+  // graph is fully wired from frame one, matching the source diagram.
   ok(
-    [...nodesS, ...edgesS].every(
-      (s) => Array.isArray(s.animation) && s.animation[0].channel === 'transform.translate.y',
-    ),
-    'every node AND edge has a build-in',
-  );
-  // wiring order: all nodes land before the first edge starts
-  const t0 = (s) => Number(s.animation[0].expr.match(/smoothstep\(([\d.]+)/)[1]);
-  ok(Math.max(...nodesS.map(t0)) < Math.min(...edgesS.map(t0)), 'edges wire AFTER nodes land');
-  ok(
-    nodesS.every((s) => /sin\(/.test(s.animation[0].expr)),
-    'nodes idle-breathe after landing',
+    [...nodesS, ...edgesS].every((s) => !s.animation),
+    'nodes and edges carry NO build-in animation (camera owns all motion)',
   );
 
   // fighting-game grammar

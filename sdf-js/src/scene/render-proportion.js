@@ -76,20 +76,15 @@ export function renderProportion(ir, opts = {}) {
     const values = (grp.values || []).map((x) => Number(x) || 0);
     const slices = buildSlices(values);
     const x = xOf(g);
-    // the pie floats and bobs — a proportion standing in the room
+    // STATIC (user-locked 2026-07-15): only the CAMERA animates. A bobbing pie
+    // never matches the source page's geometry at any given frame, and motion
+    // under a moving camera splits the viewer's attention.
     subjects.push({
       id: `pie-${g}`,
       type: 'pie-chart',
       args: { radius: R, thickness: THICK, startAngle: Math.PI / 2, slices },
       transform: { translate: [x, CY, 0] },
       material: { hue: 0.58, sat: 0.2, value: 0.7, kind: 'normal', roughness: 0.4, clearcoat: 0.4 },
-      animation: [
-        {
-          // gentle bob — the coin floats, it does not sit parked
-          channel: 'transform.translate.y',
-          expr: `${CY.toFixed(3)} - 0.000 * smoothstep(0.00, 1.00, t) + 0.05 * sin(0.4 * t + ${((g * 1.7) % 6.28).toFixed(2)})`,
-        },
-      ],
     });
     // a slim pedestal so the pie reads as STANDING in the room
     subjects.push({
@@ -100,10 +95,11 @@ export function renderProportion(ir, opts = {}) {
       material: { hue: 0.6, sat: 0.05, value: 0.5, kind: 'normal', roughness: 0.6 },
     });
 
-    // group label under the pie
+    // group label ABOVE the pie — the source page captions each pie on top
+    // (2D-fidelity round 2: up/down must match the original)
     overlay.push({
       text: String(grp.label || ''),
-      anchor: [x, CY - R - 0.55, 0],
+      anchor: [x, CY + R + 0.5, 0],
       role: 'card',
       align: 'center',
       revealAt: introLead + g * holdEach + 0.2,

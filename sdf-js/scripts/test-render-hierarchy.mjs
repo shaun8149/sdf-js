@@ -49,21 +49,15 @@ ok(
   const scene = renderHierarchy(ir);
   const nodeSubjects = scene.subjects.filter((s) => s.id.startsWith('node-'));
   ok(nodeSubjects.length === 9, 'one subject per node');
+  // STATIC GEOMETRY (user-locked 2026-07-15): only the CAMERA animates — the
+  // whole tree stands from frame one, matching the source org chart.
   ok(
-    nodeSubjects.every(
-      (s) => Array.isArray(s.animation) && s.animation[0].channel === 'transform.translate.y',
-    ),
-    'every node has a translate.y build-in',
+    nodeSubjects.every((s) => !s.animation),
+    'nodes carry NO build-in animation (camera owns all motion)',
   );
   // edges ride with the CHILD subject (union: ball + up-link capsule)
   const withLink = nodeSubjects.filter((s) => s.children.some((c) => c.type === 'capsule'));
   ok(withLink.length === 8, 'every non-root node carries its up-link capsule');
-  // root reveals first, deeper levels later
-  const t0 = (s) => Number(s.animation[0].expr.match(/smoothstep\(([\d.]+)/)[1]);
-  ok(
-    t0(nodeSubjects[0]) < t0(nodeSubjects[4]),
-    'root lands before grandchildren (per-level cascade)',
-  );
 
   // fighting-game grammar: rises to a crane peak, descends, has the super, ends wide
   const shots = scene.cameraSequence.shots;

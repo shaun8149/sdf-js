@@ -158,32 +158,26 @@ export function renderNetwork(ir, opts = {}) {
 
   const nodeR = (i) => 0.24 + 0.26 * Math.sqrt((Number(mag[i]) || 1) / mMax);
 
-  // Assembly: nodes cascade in a quick wave, then edges land in waves — the
-  // network wires itself while the camera orbits.
-  const drop = 1.1;
+  // STATIC (user-locked 2026-07-15): only the CAMERA animates — the graph is
+  // fully wired from frame one, so it matches its source diagram at every
+  // moment and the camera owns all the motion. The beat CLOCK survives: label
+  // reveals and camera timing still ride these (text syncs to the camera; only
+  // GEOMETRY stopped moving).
   const nodeT0 = (i) => 0.25 + i * 0.12;
   const edgesStart = 0.25 + N * 0.12 + 0.2;
   const subjects = [];
   for (let i = 0; i < N; i++) {
     const p = pos[i];
-    const t0 = nodeT0(i);
     subjects.push({
       id: `net-node-${i}`,
       type: 'sphere',
       args: { radius: nodeR(i) },
       transform: { translate: p },
       material: nodeMatN(degree[i], maxDeg, emphasis.has(i), opts.accent),
-      animation: [
-        {
-          channel: 'transform.translate.y',
-          expr: `${(p[1] + drop).toFixed(3)} - ${drop} * smoothstep(${t0.toFixed(2)}, ${(t0 + 0.5).toFixed(2)}, t) + 0.018 * sin(1.3 * t + ${(i * 2.1).toFixed(2)})`, // + idle breathing: a living constellation, not statues
-        },
-      ],
     });
   }
   ir.relations.forEach(([a, b], e) => {
     const pa = pos[a];
-    const t0 = edgesStart + e * 0.14;
     subjects.push({
       id: `net-edge-${e}`,
       type: 'capsule',
@@ -194,12 +188,6 @@ export function renderNetwork(ir, opts = {}) {
       },
       transform: { translate: pa },
       material: EDGE_MAT,
-      animation: [
-        {
-          channel: 'transform.translate.y',
-          expr: `${(pa[1] + drop).toFixed(3)} - ${drop} * smoothstep(${t0.toFixed(2)}, ${(t0 + 0.45).toFixed(2)}, t)`,
-        },
-      ],
     });
   });
 
@@ -225,12 +213,6 @@ export function renderNetwork(ir, opts = {}) {
           rotate: [0, (d * 0.9) % 3.1, 0],
         },
         material: { hue: 0.62, sat: 0.2, value: 0.18, kind: 'normal', roughness: 0.5 }, // R1: near-black dust, not floating bricks
-        animation: [
-          {
-            channel: 'transform.translate.y',
-            expr: `${(2.2 + y * shell * 0.55).toFixed(3)} - 0.000 * smoothstep(0.00, 1.00, t) + ${(0.05 + 0.02 * (d % 3)).toFixed(2)} * sin(${(0.3 + 0.05 * (d % 5)).toFixed(2)} * t + ${((d * 1.3) % 6.28).toFixed(2)})`,
-          },
-        ],
       });
     }
   }

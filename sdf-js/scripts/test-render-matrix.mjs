@@ -5,15 +5,24 @@ import { assembleDeck } from '../src/scene/assemble-deck.js';
 import { compile } from '../src/scene/index.js';
 import { expandStage } from '../src/scene/stage.js';
 
-let pass = 0, fail = 0;
+let pass = 0,
+  fail = 0;
 const ok = (c, n) => (c ? (pass++, console.log(`  ✓ ${n}`)) : (fail++, console.log(`  ✗ ${n}`)));
 console.log('=== render-matrix (quadrant wall) ===\n');
 
 const swot = {
   structure: 'matrix',
   nodes: ['Strong team', 'High burn', 'AI wave', 'Incumbents'],
-  axes: [['Internal', 'External'], ['Helpful', 'Harmful']],
-  cells: [[0, 0], [0, 1], [1, 0], [1, 1]],
+  axes: [
+    ['Internal', 'External'],
+    ['Helpful', 'Harmful'],
+  ],
+  cells: [
+    [0, 0],
+    [0, 1],
+    [1, 0],
+    [1, 1],
+  ],
   emphasis: [2],
   title: 'SWOT',
 };
@@ -37,16 +46,31 @@ ok(
   'items land exactly on their cells',
 );
 
-// build-in: items slam in along z with a smoothstep window, staggered
-ok(items.every((s) => s.animation && s.animation[0].channel === 'transform.translate.z'), 'items animate along z');
-ok(items.every((s) => /smoothstep\(/.test(s.animation[0].expr)), 'slam uses smoothstep');
+// STATIC GEOMETRY (user-locked 2026-07-15): only the CAMERA animates — the
+// board is fully filled from frame one, exactly like the source page.
+ok(
+  items.every((s) => !s.animation),
+  'items carry NO build-in animation (camera owns all motion)',
+);
 
 // emphasis item gets the gold treatment + a value label; camera has cut super + payoff
 ok(items.find((s) => s.id === 'item-2').material.glow > 0, 'emphasis item glows (gold)');
-ok(scene.cameraSequence.shots.some((s) => s.transition === 'cut'), 'has the punch-in super');
-ok(scene.overlay.filter((o) => o.role === 'card').length >= 2 + 2, 'axis labels stay ANCHORED (they define the space)');
-ok(scene.overlay.filter((o) => o.role === 'screen').length >= 3, 'cell texts ride the subtitle column');
-ok(scene.subjects.every((s) => !/text/.test(s.type)), 'no baked SDF text');
+ok(
+  scene.cameraSequence.shots.some((s) => s.transition === 'cut'),
+  'has the punch-in super',
+);
+ok(
+  scene.overlay.filter((o) => o.role === 'card').length >= 2 + 2,
+  'axis labels stay ANCHORED (they define the space)',
+);
+ok(
+  scene.overlay.filter((o) => o.role === 'screen').length >= 3,
+  'cell texts ride the subtitle column',
+);
+ok(
+  scene.subjects.every((s) => !/text/.test(s.type)),
+  'no baked SDF text',
+);
 
 // compiles; renderIR dispatch reaches it; staged deck with a matrix slide assembles
 try {
@@ -58,7 +82,10 @@ try {
 ok(renderIR(swot).subjects.length === scene.subjects.length, 'renderIR dispatches matrix');
 {
   const deck = assembleDeck({ title: 't', slides: [swot] }, { stage: true });
-  ok(deck.subjects.some((s) => s.id.includes('stage-platform')), 'staged deck with matrix slide assembles');
+  ok(
+    deck.subjects.some((s) => s.id.includes('stage-platform')),
+    'staged deck with matrix slide assembles',
+  );
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

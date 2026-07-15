@@ -15,7 +15,10 @@ const ok = (c, n) => (c ? (pass++, console.log(`  ✓ ${n}`)) : (fail++, console
 console.log('=== render-hold (title-card interlude) ===\n');
 
 // ---- IR validation --------------------------------------------------------------
-ok(validateIR({ structure: 'hold', title: '封面', nodes: [] }).ok, 'bare cover (empty nodes) is valid');
+ok(
+  validateIR({ structure: 'hold', title: '封面', nodes: [] }).ok,
+  'bare cover (empty nodes) is valid',
+);
 ok(
   validateIR({ structure: 'hold', title: 't', nodes: ['a', 'b'] }).ok,
   'hold with bullets is valid',
@@ -73,19 +76,22 @@ const IR = {
     JSON.stringify(orbs[5].material) !== JSON.stringify(orbs[0].material),
     'emphasized bullet orb is gold among the red',
   );
-  // deck-transplant safety: every build-in expr (drop + idle bob tails on the
-  // floaters) must parse under the STRICT shifter
+  // STATIC GEOMETRY (user-locked 2026-07-15): only the CAMERA animates — the
+  // arc of balls is fully drawn from frame one, matching the source page.
+  ok(
+    s.subjects.every((x) => !x.animation),
+    'no build-in animation anywhere (camera owns all motion)',
+  );
+  // whatever exprs DO survive here must still parse under the STRICT shifter
   let allShift = true;
-  const animated = s.subjects.filter((x) => x.animation);
-  ok(animated.length >= 6, 'orbs drop in on their beats (animated bodies)');
-  for (const p of animated) {
+  for (const p of s.subjects.filter((x) => x.animation)) {
     try {
       shiftBuildInExpr(p.animation[0].expr, 2.5, 10);
-    } catch (e) {
+    } catch {
       allShift = false;
     }
   }
-  ok(allShift, 'all build-in exprs survive assembleDeck expr shifting');
+  ok(allShift, 'any surviving build-in expr still shifts under assembleDeck');
 }
 
 // ---- renderIR seam -----------------------------------------------------------------
