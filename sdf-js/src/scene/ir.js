@@ -63,6 +63,41 @@ export function validateIR(ir) {
   }
   if (ir.order != null && (!Array.isArray(ir.order) || ir.order.length !== N))
     errors.push('order length must match nodes length');
+  else if (Array.isArray(ir.order)) {
+    for (const idx of ir.order) {
+      if (!Number.isInteger(idx) || idx < 0 || idx >= N) {
+        errors.push(`order index ${idx} references a node out of range`);
+        break;
+      }
+    }
+  }
+  if (ir.emphasis != null) {
+    const scalarEmphasis = ir.structure === 'proportion' || ir.structure === 'roadmap';
+    const domain =
+      ir.structure === 'proportion'
+        ? Array.isArray(ir.groups)
+          ? ir.groups.length
+          : 0
+        : ir.structure === 'roadmap'
+          ? Array.isArray(ir.milestones)
+            ? ir.milestones.length
+            : 0
+          : N;
+    if (scalarEmphasis) {
+      if (!Number.isInteger(ir.emphasis)) errors.push('emphasis must be an integer index');
+      else if (ir.emphasis < 0 || ir.emphasis >= domain)
+        errors.push(`emphasis index ${ir.emphasis} out of range`);
+    } else if (!Array.isArray(ir.emphasis)) {
+      errors.push('emphasis must be an array of node indices');
+    } else {
+      for (const idx of ir.emphasis) {
+        if (!Number.isInteger(idx) || idx < 0 || idx >= domain) {
+          errors.push(`emphasis index ${idx} out of range`);
+          break;
+        }
+      }
+    }
+  }
   if (ir.relations != null) {
     if (!Array.isArray(ir.relations)) errors.push('relations must be an array');
     else {
