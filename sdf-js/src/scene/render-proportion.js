@@ -35,13 +35,20 @@ const THICK = 0.42;
 const CY = 3.2; // pie centre float height
 
 // values → cumulative slice descriptors {end, rgb} for the analytic pie type.
-function buildSlices(values) {
+// opts.colors (per-group, optional): explicit [r,g,b] per slice to match a
+// source page exactly (e.g. p27: 今日头条 coral, 百度 blue, 微信 green, 其他
+// purple). Falls back to the shared categorical palette by slice index.
+function buildSlices(values, colors) {
   const v = values.map((x) => Math.max(0, Number(x) || 0));
   const sum = v.reduce((a, b) => a + b, 0) || 1;
   let acc = 0;
   return v.map((x, i) => {
     acc += x / sum;
-    return { end: Math.min(1, acc), rgb: SLICE_PALETTE[i % SLICE_PALETTE.length], frac: x / sum };
+    const rgb =
+      Array.isArray(colors) && Array.isArray(colors[i])
+        ? colors[i]
+        : SLICE_PALETTE[i % SLICE_PALETTE.length];
+    return { end: Math.min(1, acc), rgb, frac: x / sum };
   });
 }
 
@@ -74,7 +81,7 @@ export function renderProportion(ir, opts = {}) {
 
   groups.forEach((grp, g) => {
     const values = (grp.values || []).map((x) => Number(x) || 0);
-    const slices = buildSlices(values);
+    const slices = buildSlices(values, grp.colors);
     const x = xOf(g);
     // STATIC (user-locked 2026-07-15): only the CAMERA animates. A bobbing pie
     // never matches the source page's geometry at any given frame, and motion
@@ -114,9 +121,12 @@ export function renderProportion(ir, opts = {}) {
       const ang = Math.PI / 2 - mid * 2 * Math.PI; // clockwise from 12 o'clock
       const rr = R * 0.58;
       const pct = Math.round(sl.frac * 100);
+      // -Math.cos: the shader negates hp.x to sweep clockwise ON SCREEN, so a
+      // slice at screen-angle `ang` sits at WORLD x = -R·cos(ang). The chip must
+      // use the same flip or it points at the mirror-image wedge.
       overlay.push({
         text: sliceLabels[si] ? `${sliceLabels[si]} ${pct}%` : `${pct}%`,
-        anchor: [x + Math.cos(ang) * rr, CY + Math.sin(ang) * rr, THICK / 2 + 0.05],
+        anchor: [x - Math.cos(ang) * rr, CY + Math.sin(ang) * rr, THICK / 2 + 0.05],
         role: 'value',
         revealAt: introLead + g * holdEach + 0.45,
       });

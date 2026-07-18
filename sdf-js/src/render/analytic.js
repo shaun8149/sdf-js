@@ -414,8 +414,13 @@ export function compileAnalyticFrag(subjects, opts = {}) {
       body += `    float tk = iCylinderZ(q, dq, ${flt(r)}, ${flt(he)}, n${k});\n`;
       body += `    if (tk > 0.0 && tk < tHit) {\n`;
       body += `      vec3 hp = q + dq * tk;\n`;
-      // clockwise from startAngle (pie convention): frac = (start - θ)/2π mod 1
-      body += `      float frac = (${flt(start)} - atan(hp.y, hp.x)) * ${flt(1 / (2 * Math.PI))};\n`;
+      // clockwise ON SCREEN from startAngle (pie convention). The studio maps
+      // world +x → screen-LEFT (a reflection), so a clockwise-in-world sweep
+      // reads counter-clockwise on screen. Negating hp.x flips it back so the
+      // slices sweep clockwise as the viewer sees them, matching the source
+      // page (e.g. p27: 今日头条 top → 百度 right → 微信 bottom → 其他 left).
+      // The label anchors in render-proportion.js carry the matching -cos flip.
+      body += `      float frac = (${flt(start)} - atan(hp.y, -hp.x)) * ${flt(1 / (2 * Math.PI))};\n`;
       body += `      frac = frac - floor(frac);\n`;
       body += `      vec3 pc = vec3(${flt(last.rgb[0])}, ${flt(last.rgb[1])}, ${flt(last.rgb[2])});\n`;
       for (let si = 0; si < slices.length - 1; si++) {
