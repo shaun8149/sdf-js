@@ -161,9 +161,19 @@ function flowChartToIR(a) {
 function timelineToIR(a, atomType) {
   const events = Array.isArray(a?.events) ? a.events : [];
   if (!events.length) return null;
-  const nodes = events.map((e) => e?.label || e?.date || '');
+  const milestones = events.map((e) => ({
+    date: e?.date != null ? String(e.date) : '',
+    label: e?.label != null ? String(e.label) : e?.date != null ? String(e.date) : '',
+    ...(e?.sublabel ? { detail: String(e.sublabel) } : {}),
+  }));
   return finish(
-    { structure: 'sequence', nodes, order: nodes.map((_, i) => i), title: a.title || '' },
+    {
+      structure: 'roadmap',
+      milestones,
+      // The horizontal 2D timeline is a flat axis; vertical timeline maps to a climb.
+      climb: atomType !== 'timeline',
+      title: a.title || '',
+    },
     atomType,
   );
 }
@@ -376,15 +386,45 @@ function valuesLabelsToIR(a, atomType) {
   const values = Array.isArray(a?.values) ? a.values : [];
   const labels = Array.isArray(a?.labels) ? a.labels : [];
   if (!values.length || values.length !== labels.length) return null;
+  const magnitude = values.map((v) => (typeof v === 'number' ? v : parseMagnitude(v)));
+  if (magnitude.some((v) => v == null)) return null;
   return finish(
     {
       structure: 'magnitude',
       nodes: labels,
-      magnitude: values,
-      emphasis: [argmax(values)],
+      magnitude,
+      emphasis: [argmax(magnitude)],
       title: a.title || '',
     },
     atomType,
+  );
+}
+
+function barToIR(a) {
+  const ir = valuesLabelsToIR(a, 'bar');
+  return ir ? { ...ir, orientation: 'horizontal' } : null;
+}
+
+function pieToIR(a) {
+  const values = Array.isArray(a?.values) ? a.values : [];
+  const labels = Array.isArray(a?.labels) ? a.labels : [];
+  if (!values.length || values.length !== labels.length) return null;
+  const numericValues = values.map((v) => (typeof v === 'number' ? v : parseMagnitude(v)));
+  if (numericValues.some((v) => v == null)) return null;
+  return finish(
+    {
+      structure: 'proportion',
+      groups: [
+        {
+          label: a.title || a.centerLabel || '',
+          values: numericValues,
+          sliceLabels: labels,
+        },
+      ],
+      emphasis: 0,
+      title: a.title || a.centerLabel || '',
+    },
+    'pie',
   );
 }
 
@@ -675,9 +715,9 @@ const ATOM_IR_MAP = {
   'radial-wheel-segmented': radialWheelSegmentedToIR,
 
   // magnitude
-  bar: (a) => valuesLabelsToIR(a, 'bar'),
+  bar: barToIR,
   column: (a) => valuesLabelsToIR(a, 'column'),
-  pie: (a) => valuesLabelsToIR(a, 'pie'),
+  pie: pieToIR,
   'donut-with-center': donutWithCenterToIR,
   'segmented-bar': segmentedBarToIR,
   'stat-grid-large': statGridLargeToIR,
@@ -712,6 +752,16 @@ export function atomToIR(subject) {
     console.warn(`scaffold-to-ir: ${subject.type} threw — ${e.message}`);
     return null;
   }
+}
+
+function irRichness(ir) {
+  if (Array.isArray(ir?.nodes)) return ir.nodes.length;
+  if (ir?.structure === 'proportion' && Array.isArray(ir.groups)) {
+    return ir.groups.reduce((sum, g) => sum + (Array.isArray(g?.values) ? g.values.length : 0), 0);
+  }
+  if (ir?.structure === 'roadmap' && Array.isArray(ir.milestones)) return ir.milestones.length;
+  if (ir?.structure === 'image') return Array.isArray(ir.nodes) ? ir.nodes.length : 1;
+  return 0;
 }
 
 // ---- slot-level KPI aggregation ----------------------------------------------
@@ -833,10 +883,15 @@ export function holdSlotToIR(sceneData, label = '') {
 export function slotToIR(sceneData) {
   const subjects = Array.isArray(sceneData?.subjects) ? sceneData.subjects : [];
   let best = null;
+  let bestScore = -1;
   for (const s of subjects) {
     const ir = atomToIR(s);
     if (!ir) continue;
-    if (!best || ir.nodes.length > best.nodes.length) best = ir;
+    const score = irRichness(ir);
+    if (!best || score > bestScore) {
+      best = ir;
+      bestScore = score;
+    }
   }
   if (!best) best = kpiSlotToIR(subjects);
   return best;
