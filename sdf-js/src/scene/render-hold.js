@@ -64,12 +64,120 @@ const rock = (id, [x, y, z], [w, h, d], material, extra = {}) => {
   return s;
 };
 
+// form:'circles' — N equal CONCEPT CIRCLES in a row (source p7: 技术/世界/人).
+// A hold page whose content is a few peer concepts side by side, not a bullet
+// ladder. Each concept is one hero sphere: heading card ABOVE its sphere, the
+// supporting phrases BELOW it — the text sits WITH its geometry, never pooled
+// in one screen column (user-locked 2026-07-15: 文本分区). Reusable: any deck
+// emitting hold+form:'circles' gets this — no per-page geometry.
+function renderHoldCircles(ir, env) {
+  const nodes = ir.nodes || [];
+  const N = nodes.length;
+  const emphasis = new Set(ir.emphasis || []);
+  const CR = 1.35; // concept sphere radius
+  const CCY = 3.0; // float height of sphere centres
+  const stride = 2 * CR + 1.7;
+  // +x renders screen-LEFT → i=0 sits screen-left (reading order L→R)
+  const xOf = (i) => ((N - 1) / 2 - i) * stride;
+  const rowSpan = (N - 1) * stride + 2 * CR;
+  const introLead = 1.8;
+  const holdEach = 1.1;
+
+  // STATIC (user-locked 2026-07-15): only the CAMERA animates.
+  const subjects = nodes.map((n, i) => ({
+    id: `circle-${i}`,
+    type: 'sphere',
+    args: { radius: CR },
+    transform: { translate: [xOf(i), CCY, 0] },
+    material: emphasis.has(i) ? GOLD_MAT : RED_MAT,
+  }));
+
+  const overlay = [{ text: String(ir.title || ''), anchor: [0, CCY + CR + 1.6, 0], role: 'title' }];
+  nodes.forEach((n, i) => {
+    const x = xOf(i);
+    const revealAt = introLead + i * holdEach + 0.25;
+    // heading rides ABOVE its sphere (the source circle's inner heading)
+    overlay.push({
+      text: label(n),
+      anchor: [x, CCY + CR + 0.55, 0],
+      role: 'card',
+      align: 'center',
+      revealAt,
+    });
+    // supporting phrases sit BELOW the same sphere — each concept keeps its
+    // own text, three columns on screen exactly like the source page
+    if (n && typeof n === 'object' && n.sub) {
+      overlay.push({
+        text: String(n.sub),
+        anchor: [x, CCY - CR - 0.6, -0.4],
+        role: 'card',
+        align: 'center',
+        revealAt: revealAt + 0.2,
+      });
+    }
+  });
+
+  // frontal read — the page is a row of peers, no orbiting (镜头 LOCK: hold
+  // pages never punch; push in, drift across the row, pull back)
+  const D = Math.max(7, rowSpan * 0.68);
+  const shots = [
+    {
+      duration: introLead,
+      pos: [0.3, CCY + 0.4, D + 1.2],
+      target: [0, CCY, 0],
+      fov: 46,
+      aperture: 0.24,
+      focalDistance: D + 1.2,
+      ease: 'out',
+    },
+    {
+      duration: Math.max(2.2, N * holdEach + 0.6),
+      pos: [-1.2, CCY + 0.2, D],
+      target: [0, CCY, 0],
+      fov: 46,
+      transition: 'blend',
+      aperture: 0.2,
+      focalDistance: D,
+      ease: 'smooth',
+    },
+    {
+      duration: 2.0,
+      pos: [0.2, CCY + 0.6, (D + 1.6) * (env ? env.payoffZoom : 1)],
+      target: [0, CCY - 0.1, 0],
+      fov: 46,
+      transition: 'blend',
+      aperture: 0.12,
+      focalDistance: D + 1.6,
+      ease: 'out',
+    },
+  ];
+  const superAt = shots[0].duration + shots[1].duration;
+  if (ir.callout && ir.callout.text) {
+    overlay.push({
+      text: String(ir.callout.text),
+      sub: ir.callout.sub ? String(ir.callout.sub) : undefined,
+      role: 'insight',
+      revealAt: superAt + 0.2,
+    });
+  }
+
+  return {
+    v: 1,
+    name: `(hold·circles) ${ir.title || 'concepts'}${env ? ' · alpine' : ''}`,
+    subjects: env ? [...subjects, ...env.subjects] : subjects,
+    overlay,
+    cameraSequence: { loop: false, shots },
+    defaults: env ? env.defaults : { stage: { size: [Math.max(16, rowSpan + 6), 12, 12] } },
+  };
+}
+
 export function renderHold(ir, opts = {}) {
   const v = validateIR(ir);
   if (!v.ok) throw new Error(`renderHold: invalid IR — ${v.errors.join('; ')}`);
   if (ir.structure !== 'hold')
     throw new Error(`renderHold: expected structure 'hold', got '${ir.structure}'`);
   const env = getEnvironment(opts.env);
+  if (ir.form === 'circles') return renderHoldCircles(ir, env);
 
   const bullets = (ir.nodes || []).map(label).filter(Boolean);
   const N = bullets.length;
