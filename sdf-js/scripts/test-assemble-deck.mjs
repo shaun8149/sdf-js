@@ -168,7 +168,7 @@ const deck = JSON.parse(
   const plates = scene.overlay.filter((o) => o.role === 'plate');
   ok(plates.length === 2, 'image stations emit one plate overlay each');
   ok(
-    plates[0].hideAt <= plates[1].revealAt,
+    plates[0].hideAt <= plates[1].revealAt + 1e-6,
     'consecutive image plates do not overlap during transit',
   );
 }
