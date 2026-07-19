@@ -26,7 +26,7 @@ const arg = (flag, dflt = null) => {
 };
 const PDF = arg('--pdf');
 const OUT = arg('--out');
-const WIDTH = parseInt(arg('--width', '1024'), 10);
+const WIDTH = parseInt(arg('--width', '1568'), 10); // Claude vision long-edge budget ≈1568px — 1024 wastes it and thin chart connectors vanish (p9 milestone mispair root cause)
 const FORCE = process.argv.includes('--force');
 if (!PDF || !OUT) {
   console.error('✗ required: --pdf <path> --out <dir>');

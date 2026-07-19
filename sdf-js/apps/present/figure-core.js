@@ -314,6 +314,9 @@ export function createFigure({
               // comparison page needs its two sides' text in TWO places
               `stage-bullet${o.side === 'right' ? ' side-right' : ''}`;
       d.textContent = o.text;
+      // very long titles (wild-corpus English headings) drop a size tier so
+      // the two-line wrap still fits the top band
+      if (o.role === 'title' && String(o.text || '').length > 36) d.classList.add('long');
       // insight panels carry a cited derivation line under the takeaway
       // (Rule 24: derived values name their parents)
       if (o.role === 'insight' && o.sub) {

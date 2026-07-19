@@ -152,6 +152,8 @@ function runCheck(check, ir, { vision, chartGeometry }) {
       return check.anyOf.includes(ir.form || ir.orientation);
     case 'values':
       return multisetEq(vals, check.equals);
+    case 'valuesIfAny':
+      return vals.length === 0 || multisetEq(vals, check.equals);
     case 'valuesContain':
       return check.values.every((t) => vals.some((v) => Math.abs(v - t) < 1e-9));
     case 'valuesAnyOf':
