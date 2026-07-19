@@ -1,0 +1,182 @@
+{
+  "id": "pdf-slide-3",
+  "title": "Slide 3: 3D SPHERES",
+  "prompt": "Presentation slide 3: \"3D SPHERES\". A single hero KPI value of 50%. Lift to a 3D scene where the number itself is the monumental subject — extruded text on a pedestal, dramatic single-light cinematic feel, title hovering above. Keynote / TED-stage aesthetic.",
+  "code2d": "// =============================================================================\n// Atlas presentation demo — slide 3: \"3D SPHERES\"\n// Pattern detected: kpi-feature\n//\n// SEMANTIC HINT for lift: this is a PRESENTATION SCENE — favor regular\n// geometric shapes (axis-aligned bars/columns/spheres), clean palette, a\n// stage / pedestal below the data, camera tilted slightly above. Avoid\n// organic / naturalistic interpretations.\n// =============================================================================\nimport {\n  circle, ellipse, rectangle, rounded_rectangle, segment, ring,\n  union, difference, dilate, render,\n} from '../../src/index.js';\nimport { text2dSDF } from '../../src/scene/components/typography/text-3d.js';\n\nconst BG_TOP    = [248, 250, 254];\nconst BG_BOT    = [218, 228, 240];\nconst ACCENT    = [42, 96, 178];\nconst ACCENT_2  = [232, 124, 64];\nconst INK       = [28, 36, 52];\nconst SOFT_INK  = [120, 130, 148];\n\n// Single dominant KPI value: 50%\nconst bigValue = text2dSDF({ text: '50%', height: 0.7, strokeWidth: 0.08, align: 'center' })\n  .translate([0, 0.05]);\n\nconst pedestal = rounded_rectangle([1.6, 0.06], 0.03, [0, -0.45]);\nconst title = text2dSDF({ text: '3D SPHERES', height: 0.12, strokeWidth: 0.018 }).translate([0, 0.72]);\nconst caption = text2dSDF({ text: 'THIS IS A', height: 0.07, strokeWidth: 0.012 }).translate([0, -0.62]);\n\nconst layers = [\n  { sdf: pedestal, color: SOFT_INK },\n  { sdf: bigValue, color: ACCENT },\n  { sdf: title,    color: INK },\n  { sdf: caption,  color: SOFT_INK },\n];\n\nconst canvas = document.getElementById('c');\nconst ctx = canvas.getContext('2d');\nrender.silhouette(ctx, layers, {\n  view: 1.4,\n  background: { top: BG_TOP, bottom: BG_BOT },\n});\n",
+  "sceneData": {
+    "v": 1,
+    "name": "kpi-hero: 3D SPHERES — 50%",
+    "source": {
+      "format": "llm-lift",
+      "prompt": "Presentation slide 3: \"3D SPHERES\". A single hero KPI value of 50%. Lift to a 3D scene where the number itself is the monumental subject — extruded text on a pedestal, dramatic single-light cinematic feel, title hovering above. Keynote / TED-stage aesthetic.",
+      "from2dCode": "2D shows: '50%' hero text (height 0.7), '3D SPHERES' title above, 'THIS IS A' caption below, pedestal rectangle. Presentation KPI pattern."
+    },
+    "subjects": [
+      {
+        "id": "stage-floor",
+        "type": "box",
+        "args": {
+          "dims": [8, 0.15, 5]
+        },
+        "transform": {
+          "translate": [0, -0.85, 0]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.08,
+          "value": 0.42,
+          "metal": 0.05,
+          "glow": 0
+        }
+      },
+      {
+        "id": "pedestal",
+        "type": "rounded_box",
+        "args": {
+          "dims": [3.2, 0.25, 1.8],
+          "cornerR": 0.08
+        },
+        "transform": {
+          "translate": [0, -0.62, 0]
+        },
+        "material": {
+          "hue": 0.62,
+          "sat": 0.12,
+          "value": 0.5,
+          "metal": 0.1,
+          "glow": 0
+        }
+      },
+      {
+        "id": "hero-50-percent",
+        "type": "text-3d-pipe",
+        "args": {
+          "text": "50%",
+          "height": 1.8,
+          "pipeRadius": 0.16,
+          "letterSpacing": 0.15,
+          "align": "center"
+        },
+        "transform": {
+          "translate": [0, 0.4, 0]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.68,
+          "value": 0.72,
+          "metal": 0.35,
+          "glow": 0
+        }
+      },
+      {
+        "id": "accent-sphere-left",
+        "type": "sphere",
+        "args": {
+          "radius": 0.22
+        },
+        "transform": {
+          "translate": [-1.85, -0.38, 0.35]
+        },
+        "material": {
+          "hue": 0.05,
+          "sat": 0.72,
+          "value": 0.68,
+          "metal": 0.15,
+          "glow": 0
+        }
+      },
+      {
+        "id": "accent-sphere-right",
+        "type": "sphere",
+        "args": {
+          "radius": 0.18
+        },
+        "transform": {
+          "translate": [1.95, -0.42, 0.28]
+        },
+        "material": {
+          "hue": 0.05,
+          "sat": 0.7,
+          "value": 0.65,
+          "metal": 0.15,
+          "glow": 0
+        }
+      }
+    ],
+    "overlay": [
+      {
+        "text": "3D SPHERES",
+        "anchor": [0, 2.2, 0],
+        "role": "title",
+        "align": "center"
+      },
+      {
+        "text": "THIS IS A",
+        "anchor": [0, -1.05, 0],
+        "role": "head",
+        "align": "center"
+      }
+    ],
+    "ground": {
+      "y": -1,
+      "region": "stage-ground",
+      "material": {
+        "hue": 0.58,
+        "sat": 0.1,
+        "value": 0.38
+      }
+    },
+    "defaults": {
+      "camera": {
+        "yaw": 0,
+        "pitch": 0.22,
+        "distance": 8.5,
+        "focal": 1.4,
+        "targetX": 0,
+        "targetY": 0.3,
+        "targetZ": 0,
+        "aperture": 0.5,
+        "focalDistance": 8.5
+      },
+      "light": {
+        "azimuth": -0.85,
+        "altitude": 0.52,
+        "distance": 35,
+        "intensity": 1.25
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.48
+      },
+      "postFx": {
+        "exposure": 1.08,
+        "vignetteStrength": 0.38,
+        "bloomMix": 0.2,
+        "bloomThreshold": 0.82,
+        "lensFlareStrength": 0.08
+      }
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-07-19",
+    "model": "claude-sonnet-4-5",
+    "promptVersion": "v3.17",
+    "pattern": "kpi-feature",
+    "slideIndex": 3,
+    "tokenUsageLift": {
+      "input_tokens": 72568,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 1263,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.236649,
+    "elapsedSec": 18.1
+  }
+}

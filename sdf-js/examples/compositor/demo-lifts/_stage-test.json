@@ -1,0 +1,114 @@
+{
+  "id": "_stage-test",
+  "title": "stage test — room enclosure + emissive panels + 3 metals",
+  "prompt": "three metal spheres on a studio stage lit by ceiling softboxes",
+  "sceneData": {
+    "v": 1,
+    "name": "stage test",
+    "subjects": [
+      {
+        "id": "floor",
+        "type": "box",
+        "args": { "dims": [12, 0.3, 14] },
+        "transform": { "translate": [0, -0.15, 2] },
+        "material": "stone"
+      },
+      {
+        "id": "ceiling",
+        "type": "box",
+        "args": { "dims": [12, 0.3, 14] },
+        "transform": { "translate": [0, 5.0, 2] },
+        "material": { "hue": 0.6, "sat": 0.04, "value": 0.5, "metal": 0, "glow": 0 }
+      },
+      {
+        "id": "wall_back",
+        "type": "box",
+        "args": { "dims": [12, 5.3, 0.3] },
+        "transform": { "translate": [0, 2.5, -5] },
+        "material": { "hue": 0.6, "sat": 0.05, "value": 0.55, "metal": 0, "glow": 0 }
+      },
+      {
+        "id": "wall_left",
+        "type": "box",
+        "args": { "dims": [0.3, 5.3, 14] },
+        "transform": { "translate": [-6, 2.5, 2] },
+        "material": { "hue": 0.6, "sat": 0.05, "value": 0.5, "metal": 0, "glow": 0 }
+      },
+      {
+        "id": "wall_right",
+        "type": "box",
+        "args": { "dims": [0.3, 5.3, 14] },
+        "transform": { "translate": [6, 2.5, 2] },
+        "material": { "hue": 0.08, "sat": 0.06, "value": 0.5, "metal": 0, "glow": 0 }
+      },
+
+      {
+        "id": "panel_l",
+        "type": "box",
+        "args": { "dims": [4.5, 0.15, 2.2] },
+        "transform": { "translate": [-2.5, 4.8, 0.5] },
+        "material": { "hue": 0.6, "sat": 0.04, "value": 1.0, "metal": 0, "glow": 1.0 }
+      },
+      {
+        "id": "panel_r",
+        "type": "box",
+        "args": { "dims": [4.5, 0.15, 2.2] },
+        "transform": { "translate": [2.5, 4.8, 0.5] },
+        "material": { "hue": 0.09, "sat": 0.06, "value": 1.0, "metal": 0, "glow": 0.9 }
+      },
+
+      {
+        "id": "s_silver",
+        "type": "sphere",
+        "args": { "r": 0.9 },
+        "transform": { "translate": [-2.4, 0.9, 0.3] },
+        "material": "silver"
+      },
+      {
+        "id": "s_gold",
+        "type": "sphere",
+        "args": { "r": 0.9 },
+        "transform": { "translate": [0.0, 0.9, -0.2] },
+        "material": "gold"
+      },
+      {
+        "id": "s_matte",
+        "type": "sphere",
+        "args": { "r": 0.9 },
+        "transform": { "translate": [2.4, 0.9, 0.3] },
+        "material": "matte-white"
+      }
+    ],
+    "cameraSequence": {
+      "loop": false,
+      "shots": [
+        {
+          "duration": 0.05,
+          "pos": [3.2, 3.4, 9.5],
+          "target": [0, 0.95, -0.3],
+          "fov": 40,
+          "aperture": 0,
+          "focalDistance": 10,
+          "ease": "linear"
+        }
+      ]
+    },
+    "defaults": {
+      "camera": {
+        "yaw": 3.14159,
+        "pitch": 0.12,
+        "distance": 15,
+        "focal": 1.35,
+        "targetX": 0,
+        "targetY": 1.1,
+        "targetZ": 0.5
+      },
+      "light": { "altitude": 0.85, "azimuth": 0.6, "distance": 50, "intensity": 0.5 },
+      "lights": [
+        { "pos": [-2.5, 4.5, 0.5], "color": [0.78, 0.84, 1.0], "intensity": 3.2, "radius": 2.2 },
+        { "pos": [2.5, 4.5, 0.5], "color": [1.0, 0.9, 0.74], "intensity": 3.0, "radius": 2.2 }
+      ],
+      "studioBg": "dark"
+    }
+  }
+}
