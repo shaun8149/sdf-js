@@ -36,9 +36,13 @@ async function getPdfjs() {
     // Node — resolve the locally installed copy.
     pdfjsModule = await import('pdfjs-dist/legacy/build/pdf.mjs');
     const { createRequire } = await import('node:module');
+    const { pathToFileURL } = await import('node:url');
     const require = createRequire(import.meta.url);
-    pdfjsModule.GlobalWorkerOptions.workerSrc =
-      require.resolve('pdfjs-dist/legacy/build/pdf.worker.mjs');
+    // pathToFileURL, not the raw resolved path: on Windows require.resolve
+    // yields "C:\…", which the ESM worker loader rejects ("protocol 'c:'").
+    pdfjsModule.GlobalWorkerOptions.workerSrc = pathToFileURL(
+      require.resolve('pdfjs-dist/legacy/build/pdf.worker.mjs'),
+    ).href;
   } else {
     // Browser — pull from CDN at call time.
     pdfjsModule = await import(/* @vite-ignore */ PDFJS_BROWSER_CDN);

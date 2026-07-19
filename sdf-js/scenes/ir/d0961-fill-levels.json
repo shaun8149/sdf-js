@@ -1,0 +1,425 @@
+{
+  "title": "3D Spheres — Fill Levels",
+  "zones": [[0], [1, 2, 3, 4], [5, 6, 7, 8, 9], [10, 11, 12, 13, 14, 15], [16, 17, 18, 19]],
+  "chapters": [
+    {
+      "title": "开场"
+    },
+    {
+      "title": "第一章 · 基础量表",
+      "note": "三档与四档填充示例"
+    },
+    {
+      "title": "第二章 · 多维对比",
+      "note": "五项与三项指标并列"
+    },
+    {
+      "title": "第三章 · 单一焦点",
+      "note": "高亮单球与满值状态"
+    },
+    {
+      "title": "第四章 · 模板结构",
+      "note": "占位符与轴刻度示意"
+    }
+  ],
+  "finale": {
+    "text": "以上是全套填充水平模板的可视化框架。",
+    "sub": "替换占位符后,即可呈现您的实际数据故事。"
+  },
+  "slides": [
+    {
+      "structure": "magnitude",
+      "title": "FILL LEVELS",
+      "nodes": ["①", "②", "③"],
+      "magnitude": [80, 40, 20],
+      "unit": "%",
+      "callout": {
+        "text": "三档填充水平:80%、40%、20%",
+        "sub": "PowerPoint 模板示例 —— 无实质数据声明",
+        "sourcePage": 1
+      }
+    },
+    {
+      "structure": "magnitude",
+      "title": "FILL LEVELS",
+      "nodes": ["①", "②", "③", "④"],
+      "magnitude": [20, 50, 80, 90],
+      "unit": "%",
+      "emphasis": [3],
+      "callout": {
+        "text": "四档:20% → 90%",
+        "sub": "模板页 —— 实际标签待填充",
+        "sourcePage": 2
+      }
+    },
+    {
+      "structure": "magnitude",
+      "title": "FILL LEVELS",
+      "nodes": ["DESCRIPTION 1", "DESCRIPTION 2", "DESCRIPTION 3"],
+      "magnitude": [10, 60, 50],
+      "unit": "%",
+      "emphasis": [1],
+      "callout": {
+        "text": "DESCRIPTION 2: 60%",
+        "sub": "Enter your subheadline here",
+        "sourcePage": 3
+      }
+    },
+    {
+      "structure": "hold",
+      "form": "circles",
+      "title": "FILL LEVELS",
+      "nodes": [
+        {
+          "label": "50%",
+          "sub": "This is a placeholder text. This text can be replaced with your own text. The text demonstrates how your own text will look when you replace the placeholder with your own text."
+        }
+      ],
+      "emphasis": [],
+      "callout": {
+        "text": "Fill level: 50%",
+        "sub": "Template page with placeholder content",
+        "sourcePage": 4
+      }
+    },
+    {
+      "structure": "magnitude",
+      "title": "FILL LEVELS",
+      "nodes": ["Enter your subheadline here"],
+      "magnitude": [100],
+      "unit": "%",
+      "callout": {
+        "text": "100%",
+        "sub": "Template placeholder page — no substantive claim present",
+        "sourcePage": 5
+      }
+    },
+    {
+      "structure": "magnitude",
+      "title": "Fill Levels",
+      "nodes": [
+        "DESCRIPTION 4",
+        "DESCRIPTION 5",
+        "DESCRIPTION 3",
+        "DESCRIPTION 2",
+        "DESCRIPTION 1"
+      ],
+      "magnitude": [100, 80, 50, 40, 20],
+      "unit": "%",
+      "emphasis": [0],
+      "callout": {
+        "text": "DESCRIPTION 4: 100%",
+        "sub": "Template placeholder deck with 5 fill-level measurements",
+        "sourcePage": 6
+      }
+    },
+    {
+      "structure": "magnitude",
+      "title": "Fill Levels",
+      "nodes": ["DESCRIPTION 1", "DESCRIPTION 2", "DESCRIPTION 3"],
+      "magnitude": [50, 100, 80],
+      "unit": "%",
+      "emphasis": [1],
+      "callout": {
+        "text": "DESCRIPTION 2: 100%",
+        "sub": "DESCRIPTION 1: 50% · DESCRIPTION 3: 80%",
+        "sourcePage": 7
+      }
+    },
+    {
+      "structure": "magnitude",
+      "title": "FILL LEVELS",
+      "nodes": ["THIS IS A", "PLACEHOLDER TEXT.", "Enter your subheadline here"],
+      "magnitude": [80, 60, 50],
+      "unit": "%",
+      "emphasis": [0],
+      "callout": {
+        "text": "THIS IS A: 80%",
+        "sub": "PLACEHOLDER TEXT. 60% —— Enter your subheadline here 50%",
+        "sourcePage": 8
+      }
+    },
+    {
+      "structure": "hold",
+      "title": "FILL LEVELS",
+      "nodes": [],
+      "callout": {
+        "text": "Enter your subheadline here",
+        "sub": "模板页面 —— 无实际数据内容",
+        "sourcePage": 9
+      },
+      "needsReview": true
+    },
+    {
+      "structure": "hold",
+      "title": "FILL LEVELS",
+      "nodes": [],
+      "callout": {
+        "text": "Enter your subheadline here",
+        "sub": "模板页面,无实际数据内容",
+        "sourcePage": 10
+      },
+      "needsReview": true
+    },
+    {
+      "structure": "magnitude",
+      "title": "FILL LEVELS",
+      "nodes": ["Description 2", "Enter your subheadline here", "Description 3", "Description 4"],
+      "magnitude": [50, 30, 30, 20],
+      "unit": "%",
+      "callout": {
+        "text": "Description 2 leads at 50%",
+        "sub": "Template placeholder page with four fill-level measurements",
+        "sourcePage": 11
+      }
+    },
+    {
+      "structure": "hold",
+      "title": "Fill Levels",
+      "nodes": [],
+      "callout": {
+        "text": "模板页面:五个填充级别示例",
+        "sub": "占位文本重复五次 —— 实际内容待填充",
+        "sourcePage": 12
+      },
+      "needsReview": true
+    },
+    {
+      "structure": "magnitude",
+      "title": "FILL LEVELS",
+      "nodes": ["Description 1"],
+      "magnitude": [90],
+      "unit": "%",
+      "emphasis": [0],
+      "callout": {
+        "text": "Description 1: 90%",
+        "sub": "Enter your subheadline here",
+        "sourcePage": 13
+      }
+    },
+    {
+      "structure": "hold",
+      "form": "circles",
+      "title": "FILL LEVELS",
+      "nodes": [
+        {
+          "label": "DESCRIPTION TEXT",
+          "sub": "The text demonstrates how your own text will look when you replace the placeholder with your own text. This text can be replaced with your own text."
+        },
+        {
+          "label": "DESCRIPTION TEXT",
+          "sub": "The text demonstrates how your own text will look when you replace the placeholder with your own text. This text can be replaced with your own text."
+        },
+        {
+          "label": "DESCRIPTION TEXT",
+          "sub": "The text demonstrates how your own text will look when you replace the placeholder with your own text. This text can be replaced with your own text."
+        }
+      ],
+      "callout": {
+        "text": "Enter your subheadline here",
+        "sub": "Three peer concepts with identical placeholder descriptions",
+        "sourcePage": 14
+      }
+    },
+    {
+      "structure": "hold",
+      "form": "circles",
+      "title": "FILL LEVELS",
+      "nodes": [
+        {
+          "label": "DESCRIPTION 1",
+          "sub": "This is a placeholder text. This text can be replaced with your own text."
+        },
+        {
+          "label": "DESCRIPTION 2",
+          "sub": "This is a placeholder text. This text can be replaced with your own text."
+        },
+        {
+          "label": "DESCRIPTION 3",
+          "sub": "This is a placeholder text. This text can be replaced with your own text."
+        },
+        {
+          "label": "DESCRIPTION 4",
+          "sub": "This is a placeholder text. This text can be replaced with your own text."
+        }
+      ],
+      "callout": {
+        "text": "100%",
+        "sub": "Enter your subheadline here",
+        "sourcePage": 15
+      }
+    },
+    {
+      "structure": "hold",
+      "form": "circles",
+      "title": "FILL LEVELS",
+      "nodes": [
+        {
+          "label": "80%",
+          "sub": "DESCRIPTION TEXT"
+        },
+        {
+          "label": "60%",
+          "sub": "DESCRIPTION TEXT"
+        },
+        {
+          "label": "70%",
+          "sub": "DESCRIPTION TEXT"
+        }
+      ],
+      "callout": {
+        "text": "三项指标:80%、60%、70%",
+        "sub": "模板页面 —— 占位文本待替换",
+        "sourcePage": 16
+      }
+    },
+    {
+      "structure": "magnitude",
+      "title": "FILL LEVELS",
+      "nodes": ["①", "②", "③"],
+      "magnitude": [20, 40, 90],
+      "unit": "%",
+      "emphasis": [2],
+      "callout": {
+        "text": "三档填充水平:20% → 40% → 90%",
+        "sub": "模板页面,占位符文本未替换",
+        "sourcePage": 17
+      }
+    },
+    {
+      "structure": "hold",
+      "title": "FILL LEVELS",
+      "nodes": ["Enter your subheadline here"],
+      "callout": {
+        "text": "填充级别示例:10% → 100%",
+        "sub": "模板页面 —— 等间距数列为轴刻度,非实际数据",
+        "sourcePage": 18
+      },
+      "needsReview": true
+    },
+    {
+      "structure": "hold",
+      "title": "FILL LEVELS",
+      "nodes": [],
+      "callout": {
+        "text": "模板页面:无实际数据",
+        "sub": "副标题占位符 —— 需替换为真实内容",
+        "sourcePage": 19
+      },
+      "needsReview": true
+    },
+    {
+      "structure": "hold",
+      "title": "2D SPHERES",
+      "nodes": [],
+      "callout": {
+        "text": "填充级别演示页(FILL LEVELS)",
+        "sub": "模板页 —— 无实际数据内容",
+        "sourcePage": 20
+      },
+      "needsReview": true
+    }
+  ],
+  "script": [
+    {
+      "text": "欢迎。这是一套填充水平可视化模板,包含三档填充:80%、40%、20%,以及三个编号球体。",
+      "station": 0,
+      "kind": "station"
+    },
+    {
+      "text": "第一组变体:四档递增,从20%升至90%,球体标注为①到④。",
+      "station": 1,
+      "kind": "station"
+    },
+    {
+      "text": "第二页展示三个描述标签,聚焦中间球体DESCRIPTION 2,填充至60%。",
+      "station": 2,
+      "kind": "station"
+    },
+    {
+      "text": "单球版本:填充级别50%,附长段占位文本,演示详细说明区的排版能力。",
+      "station": 3,
+      "kind": "station"
+    },
+    {
+      "text": "满值示例:单个球体100%填充,副标题为占位符,无实质数据声明。",
+      "station": 4,
+      "kind": "station"
+    },
+    {
+      "text": "进入五项对比场景。DESCRIPTION 4达到100%,其余四项依次排列,展示五球横向布局。",
+      "station": 5,
+      "kind": "station"
+    },
+    {
+      "text": "三球梯度:DESCRIPTION 1为50%,DESCRIPTION 2满值100%,DESCRIPTION 3居中80%。",
+      "station": 6,
+      "kind": "station"
+    },
+    {
+      "text": "另一组三球:THIS IS A为80%,PLACEHOLDER TEXT为60%,副标题球体为50%。",
+      "station": 7,
+      "kind": "station"
+    },
+    {
+      "text": "空白模板页,仅标题与副标题占位符,无球体数据内容。",
+      "station": 8,
+      "kind": "station"
+    },
+    {
+      "text": "第二张空白页,结构相同,副标题为待填充状态。",
+      "station": 9,
+      "kind": "station"
+    },
+    {
+      "text": "四球模板回归:Description 2领先,填充50%,其余三项为占位标签。",
+      "station": 10,
+      "kind": "station"
+    },
+    {
+      "text": "五球示例页,中文说明为模板页面,占位文本重复五次,实际内容待替换。",
+      "station": 11,
+      "kind": "station"
+    },
+    {
+      "text": "单球高值突出:Description 1达到90%,演示峰值表现的视觉焦点。",
+      "station": 12,
+      "kind": "station"
+    },
+    {
+      "text": "三项对等结构,每项标注DESCRIPTION TEXT,附相同占位说明,强调并列关系而非数据差异。",
+      "station": 13,
+      "kind": "station"
+    },
+    {
+      "text": "四球满值页:所有球体显示100%,DESCRIPTION 1到4各配占位文本,展示满载状态下的信息密度。",
+      "station": 14,
+      "kind": "station"
+    },
+    {
+      "text": "三项数值组合:80%、60%、70%,中文副标题提示为模板页,占位文本待替换。",
+      "station": 15,
+      "kind": "station"
+    },
+    {
+      "text": "三档递增再现:从20%经40%至90%,编号①②③,模板结构清晰复现。",
+      "station": 16,
+      "kind": "station"
+    },
+    {
+      "text": "轴刻度演示:填充级别从10%到100%,等间距数列为刻度标注,非实际数据,仅展示度量框架。",
+      "station": 17,
+      "kind": "station"
+    },
+    {
+      "text": "无数据内容页,副标题占位符需替换为真实内容,模板结构保留完整。",
+      "station": 18,
+      "kind": "station"
+    },
+    {
+      "text": "尾页标注2D SPHERES,标题为填充级别演示,模板页无实际数据内容,结构收尾。",
+      "station": 19,
+      "kind": "station"
+    }
+  ]
+}
