@@ -62,9 +62,39 @@
           "label": "上线"
         },
         {
+          "type": "milestone",
+          "date": "2012.10",
+          "label": "1000"
+        },
+        {
+          "type": "milestone",
+          "date": "2013.5",
+          "label": "B"
+        },
+        {
+          "type": "milestone",
+          "date": "2013.7",
+          "label": "5000"
+        },
+        {
+          "type": "milestone",
+          "date": "2014.12",
+          "label": "C"
+        },
+        {
+          "type": "milestone",
+          "date": "2015.3",
+          "label": "2.4"
+        },
+        {
           "type": "milestoneNot",
           "date": "2014.6",
           "label": "国外同行"
+        },
+        {
+          "type": "milestoneNot",
+          "date": "2014.6",
+          "label": "5000"
         }
       ]
     },

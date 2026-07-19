@@ -82,6 +82,8 @@ The attached image IS the page. You can now READ chart geometry directly:
 - Rule 7 is REPLACED: do NOT degrade chart pages to hold — emit the real structure with your chart-read values. Do NOT set needsReview just because the text layer only had ticks.
 - Use the image to settle label↔value pairing and left-to-right order (it beats the text digest when they disagree).
 - ARITY: nodes must have EXACTLY one label per value you emit. Reading 11 monthly bars → 11 labels (2014.1 … 2015.3; invent no dates — interpolate the axis labels you see) and 11 values. Same for every series in a grouped chart.
+- AXIS ARITHMETIC: read the axis maximum carefully before scaling (7,000,000 is 700万, not 7000万) — every callout/script number must respect the axis units you read.
+- PAST vs PRESENT tables: bind each column/row to its era by the page's own 过去/现在 (before/after) markers — never by reading order.
 - TIMELINES: each label box/callout connects to exactly ONE node by a thin connector line or by proximity along the curve — pair by FOLLOWING THE CONNECTOR in the image, not by reading order. A box sitting past the last dated node belongs to the FINAL date. Badges/icons decorating a segment are narrative color (callout.sub), not milestones.
 - DENSE RANKINGS (>10 bars): emit only the TOP 8 by value, note "TOP15 truncated to 8" in callout.sub — the 3D stage can't seat 30 bars anyway.
 - Everything else (no invention beyond faithful chart reads, neutral callouts, page vocabulary) still applies.`;
@@ -187,7 +189,25 @@ export function antiFabricationGate(ir, { hadImage = false, ladders = [] } = {})
 // Values are sacred — only labels are synthesized.
 const CIRCLED = '①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳';
 export function repairArity(ir) {
-  if (!ir || !Array.isArray(ir.magnitude) || !Array.isArray(ir.nodes)) return ir;
+  if (!ir || !Array.isArray(ir.nodes)) return ir;
+  // Grouped charts: if every series agrees on a length, align nodes to IT
+  // (pad with ①… / trim); if the series DISAGREE among themselves the read is
+  // broken — leave it for the validator to reject and the retry to re-read
+  // (final-showdown audit: a 9/12/12 series set shifted bars off their labels).
+  if (Array.isArray(ir.series) && ir.series.length) {
+    const lens = [...new Set(ir.series.map((s) => (s.values || []).length))];
+    if (lens.length !== 1) return ir;
+    const M = lens[0];
+    if (M > 0 && ir.nodes.length !== M) {
+      const fixed = { ...ir, nodes: ir.nodes.slice(0, M) };
+      for (let k = fixed.nodes.length; k < M; k++) fixed.nodes.push(CIRCLED[k] || `#${k + 1}`);
+      if (Array.isArray(ir.magnitude) && ir.magnitude.length !== M)
+        fixed.magnitude = ir.series[ir.series.length - 1].values.slice();
+      return fixed;
+    }
+    return ir;
+  }
+  if (!Array.isArray(ir.magnitude)) return ir;
   const M = ir.magnitude.length;
   const N = ir.nodes.length;
   if (M === N || M === 0) return ir;
@@ -199,6 +219,19 @@ export function repairArity(ir) {
     fixed.nodes = ir.nodes.slice(0, M);
   }
   return fixed;
+}
+
+// Grouped series spanning incommensurable units (分钟 vs 条数 vs %: five
+// orders of magnitude on one axis) render as nonsense even when every number
+// is honest. Flag — don't demote (the data is real; the assembly needs review).
+export function flagUnitMismatch(ir) {
+  if (!ir || !Array.isArray(ir.series) || ir.series.length < 2) return ir;
+  const maxes = ir.series
+    .map((s) => Math.max(...(s.values || [0]).map((v) => Math.abs(Number(v) || 0))))
+    .filter((m) => m > 0);
+  if (maxes.length < 2) return ir;
+  if (Math.max(...maxes) / Math.min(...maxes) > 1000) return { ...ir, unitMismatch: true };
+  return ir;
 }
 
 /**
@@ -240,7 +273,9 @@ export async function extractSlideIR({ slide, index, callLLM, imageBase64 = null
         v = validateIR(cand);
       }
       if (v.ok) {
-        const gated = antiFabricationGate(cand, { hadImage: !!imageBase64, ladders });
+        const gated = flagUnitMismatch(
+          antiFabricationGate(cand, { hadImage: !!imageBase64, ladders }),
+        );
         return { ir: gated, attempts: attempt + 1, demoted: !!gated.demoted };
       }
       lastErrs = v.errors;

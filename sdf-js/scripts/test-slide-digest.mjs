@@ -158,6 +158,49 @@ console.log('=== slide-digest: deterministic anti-fabrication layer ===\n');
   ok(r2.nodes.length === 2, 'arity repair trims surplus labels');
 }
 
+// ---- 3d. series arity + unit mismatch (final-showdown validators) ---------------
+{
+  const { repairArity, flagUnitMismatch } = await import('../src/mapping/slide-to-ir.js');
+  const { validateIR } = await import('../src/scene/ir.js');
+  // series 一致但 nodes 短 → pad
+  const r1 = repairArity({
+    structure: 'magnitude',
+    form: 'grouped',
+    nodes: ['a'],
+    series: [
+      { label: 'x', values: [1, 2, 3] },
+      { label: 'y', values: [4, 5, 6] },
+    ],
+    magnitude: [1],
+  });
+  ok(
+    r1.nodes.length === 3 && r1.magnitude.length === 3,
+    'series-aligned arity repair pads nodes+magnitude',
+  );
+  // series 互不一致 → 不修,交给校验
+  const r2 = repairArity({
+    structure: 'magnitude',
+    nodes: ['a'],
+    series: [{ values: [1, 2] }, { values: [1, 2, 3] }],
+  });
+  ok(r2.nodes.length === 1, 'disagreeing series left for the validator');
+  const v = validateIR({
+    structure: 'magnitude',
+    nodes: ['a', 'b'],
+    magnitude: [1, 2],
+    series: [{ label: 's', values: [1, 2, 3] }],
+  });
+  ok(
+    !v.ok && v.errors.some((e) => /series .* length/.test(e)),
+    'IR contract rejects series/nodes mismatch',
+  );
+  // 混单位标记
+  const f1 = flagUnitMismatch({ series: [{ values: [38, 31] }, { values: [900000, 675000] }] });
+  ok(f1.unitMismatch === true, 'incommensurable grouped series flagged');
+  const f2 = flagUnitMismatch({ series: [{ values: [71, 77] }, { values: [78, 61] }] });
+  ok(!f2.unitMismatch, 'commensurable series untouched');
+}
+
 // ---- 4. anti-fabrication gates (slide-to-ir) -----------------------------------
 {
   const { antiFabricationGate, ladderOverlap } = await import('../src/mapping/slide-to-ir.js');
