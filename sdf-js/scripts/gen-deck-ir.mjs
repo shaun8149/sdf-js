@@ -27,8 +27,10 @@
 // calls the LLM for missing/failed slides. --force re-extracts everything.
 // =============================================================================
 
-import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
+import { resolve } from 'node:path';
+import { spawnSync } from 'node:child_process';
 import { extractSlideIR, parseJsonLoose } from '../src/mapping/slide-to-ir.js';
 
 const API_KEY = process.env.ANTHROPIC_API_KEY;
@@ -49,7 +51,34 @@ const PDF_PATH = arg('--pdf');
 const NAME = arg('--name');
 const DECK_TITLE = arg('--title', '');
 const ONLY = arg('--only') ? parseInt(arg('--only'), 10) : null;
-const IMAGES_DIR = arg('--images'); // dir of page-<n>.png (1-based); enables vision mode
+let IMAGES_DIR = arg('--images'); // dir of page-<n>.png (1-based); enables vision mode
+// --vision: one flag does it all — derive the pages dir from the deck name
+// and bake the renders if they aren't there yet.
+if (!IMAGES_DIR && process.argv.includes('--vision')) {
+  if (!PDF_PATH) {
+    console.error('✗ --vision requires --pdf (page renders come from the PDF)');
+    process.exit(1);
+  }
+  IMAGES_DIR = `${REPO}sdf-js/fixtures/pages/${NAME}`;
+  if (!existsSync(`${IMAGES_DIR}/page-01.png`)) {
+    console.log(`--vision: baking page renders → ${IMAGES_DIR}`);
+    const r = spawnSync(
+      process.execPath,
+      [
+        `${REPO}sdf-js/scripts/bake-pdf-pages.mjs`,
+        '--pdf',
+        resolve(process.cwd(), PDF_PATH),
+        '--out',
+        `sdf-js/fixtures/pages/${NAME}`,
+      ],
+      { stdio: 'inherit' },
+    );
+    if (r.status !== 0) {
+      console.error('✗ page bake failed');
+      process.exit(1);
+    }
+  }
+}
 const pageImage = (i) => {
   if (!IMAGES_DIR) return null;
   const p = `${IMAGES_DIR}/page-${String(i + 1).padStart(2, '0')}.png`;
@@ -156,6 +185,20 @@ async function main() {
       console.log(`  [${i}] FELL BACK to bare hold (needsReview)`);
     }
     if (demoted) console.log(`  [${i}] chart+needsReview → demoted to hold (no fabricated series)`);
+    // An image station with an unknown path gets the baked page render,
+    // copied into the standard scenes/assets/<deck>/ home (wild corpus
+    // finding: "PLACEHOLDER" shipped verbatim and 404'd in the player).
+    if (ir.structure === 'image' && (!ir.image || ir.image === 'PLACEHOLDER') && IMAGES_DIR) {
+      const pageFile = `page-${String(i + 1).padStart(2, '0')}.png`;
+      const src = `${IMAGES_DIR}/${pageFile}`;
+      if (existsSync(src)) {
+        const assetDir = `${REPO}sdf-js/scenes/assets/${NAME}`;
+        mkdirSync(assetDir, { recursive: true });
+        writeFileSync(`${assetDir}/${pageFile}`, readFileSync(src));
+        ir.image = `assets/${NAME}/${pageFile}`;
+        console.log(`  [${i}] image PLACEHOLDER → ${ir.image}`);
+      }
+    }
     irs.push(ir);
     cache[i] = ir;
     writeFileSync(CACHE_PATH, JSON.stringify(cache, null, 1));
@@ -169,8 +212,24 @@ async function main() {
     return;
   }
 
+  // Drop skippable pages (references / appendix / legal boilerplate) BEFORE
+  // the narrative pass — the model never sees them, so the "editorially
+  // skipped stations break the zone partition" failure class (3DGS wild run)
+  // disappears at the source. --keep-all opts out. sourcePage in callouts
+  // keeps pointing at the ORIGINAL page numbers, so provenance survives.
+  let deckIrs = irs;
+  if (!process.argv.includes('--keep-all')) {
+    const dropped = irs.map((ir, i) => (ir.skippable ? i : -1)).filter((i) => i >= 0);
+    if (dropped.length) {
+      deckIrs = irs.filter((ir) => !ir.skippable);
+      console.log(
+        `  skippable pages dropped: ${dropped.map((i) => i + 1).join(', ')} (${deckIrs.length} stations remain)`,
+      );
+    }
+  }
+
   // Phase 2: deck narrative
-  const stationFacts = irs.map((ir, i) => ({
+  const stationFacts = deckIrs.map((ir, i) => ({
     i,
     structure: ir.structure,
     title: ir.title,
@@ -180,6 +239,7 @@ async function main() {
   const deckUser = `Deck title hint: ${DECK_TITLE || '(none)'}\nStations:\n${JSON.stringify(stationFacts, null, 1)}`;
   let envelope = null;
   let envErrs = null;
+  let lastCand = null;
   for (let attempt = 0; attempt < 3; attempt++) {
     const user = envErrs
       ? `${deckUser}\n\nYour previous attempt failed:\n- ${envErrs.join('\n- ')}\nReturn a corrected JSON.`
@@ -187,7 +247,8 @@ async function main() {
     try {
       const raw = await callLLM(DECK_SYSTEM, user, 8000);
       const cand = parseJsonLoose(raw);
-      envErrs = validateEnvelope(cand, irs.length);
+      lastCand = cand;
+      envErrs = validateEnvelope(cand, deckIrs.length);
       if (envErrs.length === 0) {
         envelope = cand;
         break;
@@ -196,9 +257,19 @@ async function main() {
     } catch (e) {
       envErrs = [e.message.slice(0, 200)];
       console.log(`  deck pass attempt ${attempt + 1} error: ${envErrs[0]}`);
+      lastCand = null;
     }
   }
-  if (!envelope) throw new Error('deck narrative pass failed after 3 attempts');
+  if (!envelope) {
+    // Deterministic envelope repair — same philosophy as the arity repair: at
+    // temperature 0 the model loops on the same partition mistake (first wild
+    // corpus, a 14-page SIGGRAPH paper: zones written for only 8 of 14
+    // stations, three identical retries). Salvage what it wrote — titles,
+    // narration lines it DID produce — and rebuild the invariants: contiguous
+    // zone partition, exactly one station line per station.
+    envelope = repairEnvelope(lastCand, deckIrs, DECK_TITLE || NAME);
+    console.log('  deck pass REPAIRED deterministically (envelopeRepaired: true)');
+  }
 
   // Phase 3: assemble + compile check
   const deck = {
@@ -206,7 +277,7 @@ async function main() {
     zones: envelope.zones,
     chapters: envelope.chapters,
     finale: envelope.finale,
-    slides: irs,
+    slides: deckIrs,
     script: envelope.script,
   };
   const { assembleDeck } = await import('../src/scene/assemble-deck.js');
@@ -216,12 +287,65 @@ async function main() {
   );
 
   writeFileSync(OUT_PATH, JSON.stringify(deck, null, 1) + '\n');
-  const flagged = irs.filter((x) => x.needsReview).length;
+  const flagged = deckIrs.filter((x) => x.needsReview).length;
   console.log(`\n✓ wrote ${OUT_PATH}`);
   console.log(
-    `  ${irs.length} stations | structures: ${[...new Set(irs.map((x) => x.structure))].join(', ')} | needsReview: ${flagged}`,
+    `  ${deckIrs.length} stations | structures: ${[...new Set(irs.map((x) => x.structure))].join(', ')} | needsReview: ${flagged}`,
   );
   console.log(`  total LLM cost: $${totalCost.toFixed(2)}`);
+}
+
+// Rebuild a broken narrative envelope around what the model DID produce.
+// Zones: keep the chapter count if plausible, re-partition 0..N-1 evenly.
+// Script: keep every grounded station line the model wrote; synthesize a
+// title-based placeholder for missing stations; drop out-of-range lines.
+function repairEnvelope(cand, irs, fallbackTitle) {
+  const N = irs.length;
+  const c = cand && typeof cand === 'object' ? cand : {};
+  const chapterCount = Math.min(
+    Math.max(Array.isArray(c.chapters) ? c.chapters.length : 0, 2),
+    Math.max(2, Math.min(6, Math.round(N / 6) + 1)),
+  );
+  const zones = [];
+  const per = Math.ceil(N / chapterCount);
+  for (let z = 0; z < chapterCount; z++) {
+    const zone = [];
+    for (let i = z * per; i < Math.min((z + 1) * per, N); i++) zone.push(i);
+    if (zone.length) zones.push(zone);
+  }
+  const chapters = zones.map(
+    (_, z) => (Array.isArray(c.chapters) && c.chapters[z]) || { title: `第 ${z + 1} 章` },
+  );
+  const byStation = new Map();
+  if (Array.isArray(c.script))
+    for (const line of c.script)
+      if (
+        line &&
+        line.kind === 'station' &&
+        Number.isInteger(line.station) &&
+        line.station >= 0 &&
+        line.station < N &&
+        !byStation.has(line.station)
+      )
+        byStation.set(line.station, line);
+  const script = [];
+  for (let i = 0; i < N; i++) {
+    script.push(
+      byStation.get(i) || {
+        text: String(irs[i].callout?.text || irs[i].title || `第 ${i + 1} 页`),
+        station: i,
+        kind: 'station',
+      },
+    );
+  }
+  return {
+    title: c.title || fallbackTitle,
+    chapters,
+    zones,
+    script,
+    finale: c.finale && c.finale.text ? c.finale : { text: fallbackTitle, sub: '完' },
+    envelopeRepaired: true,
+  };
 }
 
 function validateEnvelope(env, N) {

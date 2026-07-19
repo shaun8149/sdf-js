@@ -208,6 +208,8 @@ function runCheck(check, ir, { vision, chartGeometry }) {
       const t = irText(ir);
       return check.all.every((s) => t.includes(s));
     }
+    case 'flag':
+      return ir[check.field] === check.equals;
     case 'mentions':
       return irText(ir).includes(check.text);
     case 'noContact':

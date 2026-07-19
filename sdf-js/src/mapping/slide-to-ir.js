@@ -40,6 +40,7 @@ export const SLIDE_SYSTEM = `You convert ONE presentation page into ONE "IR" JSO
 - title: the page's own headline (its own words, condensed is fine).
 - callout: {text, sub, sourcePage} — text = the page's single punchline claim (verbatim-condensed); sub = the page's remaining load-bearing claims joined with " · " or " —— "; sourcePage = the 1-based page number. Every station should have one unless the page is a bare cover.
 - emphasis: what the page itself emphasizes (its biggest number, its verdict, its NOW).
+- skippable: true — set it when the page carries NO presentable content of its own: reference/bibliography lists, appendix boilerplate, legal disclaimers, blank/divider pages. The deck builder drops these stations. A summary, thank-you, or contact page is NOT skippable (it closes the show).
 
 ## Structure selection heuristics (apply BEFORE defaulting to hold)
 - ≥3 standalone LARGE numbers/percentages (fs ≥ ~2× body text) = chart data → "magnitude" (unit:"%", magnitude = the numbers, nodes = each value's nearby heading; if headings are placeholders/absent use "① ② ③…"). NEVER model chart data as hold bullets.
