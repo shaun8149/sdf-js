@@ -17,6 +17,7 @@
 // =============================================================================
 
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { emitSlide2dCode } from '../src/mapping/slide-to-2d-code.js';
 
 const API_KEY = process.env.ANTHROPIC_API_KEY;
@@ -30,7 +31,9 @@ const FORCE = process.argv.includes('--force');
 const slideArg = process.argv.indexOf('--slide');
 const ONLY_SLIDE = slideArg > 0 ? parseInt(process.argv[slideArg + 1], 10) : null;
 
-const REPO = new URL('../..', import.meta.url).pathname;
+// fileURLToPath, not URL.pathname — the latter yields "/C:/…" on Windows and
+// string-concat then produces the unopenable "C:\C:\…".
+const REPO = fileURLToPath(new URL('../..', import.meta.url));
 const SLIDEDATA = `${REPO}sdf-js/examples/pdf-demo/slidedata.json`;
 const LIFT_PROMPT_PATH = `${REPO}sdf-js/examples/compositor/system-prompt-lift-3d.md`;
 const OUT_DIR = `${REPO}sdf-js/examples/compositor/demo-lifts`;
