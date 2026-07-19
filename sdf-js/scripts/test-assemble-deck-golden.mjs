@@ -16,20 +16,40 @@ import { assembleDeck } from '../src/scene/assemble-deck.js';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const GOLDEN_DIR = resolve(__dirname, '../fixtures/golden');
 const DECK = JSON.parse(readFileSync(resolve(__dirname, '../scenes/ir/bytedance-bp.json'), 'utf8'));
-const LAYOUTS = ['line', 'radial', 'grid', 'courtyard'];
+// The 2015 production deck freezes on its SHIPPING layout only (theater) —
+// it iterates faster than the 2013 corpus deck, so one golden keeps the
+// regression net without four files of churn per content edit.
+const DECK_2015 = JSON.parse(
+  readFileSync(resolve(__dirname, '../scenes/ir/bytedance-bp-2015.json'), 'utf8'),
+);
+const RUNS = [
+  ...['line', 'radial', 'grid', 'courtyard'].map((layout) => ({
+    deck: DECK,
+    layout,
+    file: `assemble-deck-${layout}.json`,
+    label: layout,
+  })),
+  {
+    deck: DECK_2015,
+    layout: 'theater',
+    file: 'assemble-deck-2015-theater.json',
+    label: '2015·theater',
+  },
+];
 const UPDATE = process.argv.includes('--update');
 
 let pass = 0,
   fail = 0;
 const ok = (c, n) => (c ? (pass++, console.log(`  ✓ ${n}`)) : (fail++, console.log(`  ✗ ${n}`)));
-console.log('=== assemble-deck golden snapshots (bytedance-bp × 3 layouts) ===\n');
+console.log('=== assemble-deck golden snapshots (bytedance-bp × 4 layouts + 2015 × theater) ===\n');
 
 if (UPDATE) mkdirSync(GOLDEN_DIR, { recursive: true });
 
-for (const layout of LAYOUTS) {
-  const scene = assembleDeck(DECK, { layout });
+for (const { deck, layout, file: fname, label: layoutLabel } of RUNS) {
+  const layoutName = layoutLabel;
+  const scene = assembleDeck(deck, { layout });
   const got = JSON.stringify(scene, null, 1);
-  const file = resolve(GOLDEN_DIR, `assemble-deck-${layout}.json`);
+  const file = resolve(GOLDEN_DIR, fname);
   if (UPDATE) {
     writeFileSync(file, got + '\n');
     console.log(
@@ -38,7 +58,7 @@ for (const layout of LAYOUTS) {
     continue;
   }
   if (!existsSync(file)) {
-    ok(false, `${layout}: golden file missing — run with --update once`);
+    ok(false, `${layoutName}: golden file missing — run with --update once`);
     continue;
   }
   // Compare CONTENT, not formatting: the pre-commit prettier hook re-indents
@@ -50,14 +70,14 @@ for (const layout of LAYOUTS) {
   if (norm(got) === want) {
     ok(
       true,
-      `${layout}: output matches golden (${scene.subjects.length} subjects, ${scene.cameraSequence.shots.length} shots, ${scene.deckWindows.length} windows)`,
+      `${layoutName}: output matches golden (${scene.subjects.length} subjects, ${scene.cameraSequence.shots.length} shots, ${scene.deckWindows.length} windows)`,
     );
   } else {
     const gotN = norm(got);
     let i = 0;
     while (i < Math.min(gotN.length, want.length) && gotN[i] === want[i]) i++;
     const ctx = (s) => s.slice(Math.max(0, i - 80), i + 80).replace(/\n/g, '⏎');
-    ok(false, `${layout}: output diverges from golden at char ${i} (normalized)`);
+    ok(false, `${layoutName}: output diverges from golden at char ${i} (normalized)`);
     console.log(`    golden: …${ctx(want)}…`);
     console.log(`    got:    …${ctx(gotN)}…`);
     console.log(
