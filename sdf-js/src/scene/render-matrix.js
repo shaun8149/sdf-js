@@ -436,16 +436,19 @@ export function renderMatrix(ir, opts = {}) {
   );
   order.forEach((i, k) => {
     const [xi, yi] = ir.cells[i];
+    // Cell texts ride the narration columns — but a matrix is a COMPARISON,
+    // so each side gets its OWN column: the first axis category's entries
+    // read down the LEFT, the last category's down the RIGHT. Stacking every
+    // column's text in one place destroys the contrast the page exists to
+    // make (user-locked 2026-07-15: 对比必须把文本放在两个地方). MIDDLE
+    // columns (X ≥ 3, e.g. p6's 头条/Google/趋势) anchor as world cards at
+    // their own cells — the text stays WITH its geometry.
+    const isMiddle = X >= 3 && xi > 0 && xi < X - 1;
     overlay.push({
-      // Cell texts ride the narration column — but a 2-column matrix is a
-      // COMPARISON, so each side gets its OWN column: axes[0][0]'s entries read
-      // down the LEFT, axes[0][1]'s down the RIGHT. Stacking both sides in one
-      // column destroys the contrast the page exists to make (user-locked
-      // 2026-07-15: 对比必须把文本放在两个地方). Axis labels stay ANCHORED.
       text: nodes[i],
       anchor: [cellX(xi), cellY(yi) - 0.34, 0.2],
-      role: 'screen',
-      ...(X === 2 ? { side: xi === 0 ? 'left' : 'right' } : {}),
+      role: isMiddle ? 'card' : 'screen',
+      ...(isMiddle ? {} : { side: xi === 0 ? 'left' : 'right' }),
       align: 'center',
       revealAt: introLead + k * holdEach + 0.15,
     });

@@ -57,9 +57,22 @@ export function coneTreeLayout(ir, opts = {}) {
     const kids = children[i];
     if (!kids.length) return;
     const step = (2 * Math.PI) / kids.length;
+    // The child circle must FIT its children: a big sibling crowd on a small
+    // circle collapses into a blob (caught on p23's 战术级 fan of 6 — balls
+    // nearly touching, labels stacked). Grow the circle so adjacent children
+    // keep at least ~minSpacing of arc between centres.
+    const minSpacing = opts.minSpacing ?? 1.15;
+    const rEff = Math.max(r, (kids.length * minSpacing) / (2 * Math.PI));
     kids.forEach((c, k) => {
       const a = baseAngle + step * k + (kids.length > 1 ? 0 : Math.PI / 5);
-      place(c, x + Math.cos(a) * r, z + Math.sin(a) * r, lvl + 1, r * 0.45, a + Math.PI / 3);
+      place(
+        c,
+        x + Math.cos(a) * rEff,
+        z + Math.sin(a) * rEff,
+        lvl + 1,
+        rEff * 0.45,
+        a + Math.PI / 3,
+      );
     });
   };
   place(root, 0, 0, 0, rootRadius, -Math.PI / 2);

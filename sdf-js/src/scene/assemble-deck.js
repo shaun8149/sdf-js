@@ -468,6 +468,18 @@ export function assembleDeck(deck, opts = {}) {
     for (const s of st.subjects) {
       const moved = JSON.parse(JSON.stringify(s));
       moved.id = `s${k}-${s.id}`;
+      // Nested children compile into the same flat id space as top-level
+      // subjects — namespace them too, or two stations of the same structure
+      // collide (caught when a second hierarchy station joined the deck:
+      // both emitted children named node-ball-N and the transit window
+      // bundling them failed SceneData validation).
+      (function renameKids(subj) {
+        if (!Array.isArray(subj.children)) return;
+        for (const c of subj.children) {
+          if (c.id) c.id = `s${k}-${c.id}`;
+          renameKids(c);
+        }
+      })(moved);
       // Wave A2: collection assigned AT BIRTH (renderer-assigned wins) — ids
       // are pure identity, routing rides the tag from the moment it exists.
       moved.collection = moved.collection || `station-${k}`;
