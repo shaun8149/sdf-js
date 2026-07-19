@@ -223,7 +223,19 @@ ${titleLine ? '  { sdf: title,  color: INK },' : ''}
 ${RENDER_TAIL}
 `;
 
-  const prompt = `Presentation slide ${slide.index}: "${slide.title || '(untitled)'}". A chart of ${N} percentage values (${p.values.map((v) => Math.round(v * 100) + '%').join(', ')}). Geometric, axis-aligned. In 3D, lift to a clean bar/column chart on a stage with the title floating above — corporate keynote aesthetic, not naturalistic.`;
+  // The slide often NAMES its own visual form ("3D SPHERES — FILL LEVELS",
+  // gauges, dials …). The prompt must repeat the source's form vocabulary, not
+  // override it: hardcoding "bar/column chart" here flattened 11/15 chart
+  // slides of the D0961 fill-sphere deck into bars (supervisor audit
+  // 2026-07-19 — the lift LLM picked the right atom whenever the prompt
+  // allowed it). Bars stay the default for form-silent slides.
+  const srcText =
+    `${slide.title || ''} ${(slide.body || []).map((b) => b.text).join(' ')}`.toLowerCase();
+  const wantsSpheres = /sphere|fill[- ]?level|球/.test(srcText);
+  const formHint = wantsSpheres
+    ? 'sphere fill-level gauges — one sphere per value, each filled to its percentage (the sphere-fill atom), equal radii so the FILL carries the value'
+    : 'a clean bar/column chart';
+  const prompt = `Presentation slide ${slide.index}: "${slide.title || '(untitled)'}". A chart of ${N} percentage values (${p.values.map((v) => Math.round(v * 100) + '%').join(', ')}). Geometric, axis-aligned. In 3D, lift to ${formHint} on a stage with the title floating above — corporate keynote aesthetic, not naturalistic.`;
   return { prompt, code2d: code, pattern: 'percent-list', confidence: p.confidence };
 }
 

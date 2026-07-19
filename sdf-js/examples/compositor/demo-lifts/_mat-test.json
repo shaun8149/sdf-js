@@ -1,0 +1,45 @@
+{
+  "id": "_mat-test",
+  "title": "material test — silver / gold / matte",
+  "prompt": "three spheres: silver, gold, matte white",
+  "sceneData": {
+    "v": 1,
+    "name": "material test",
+    "subjects": [
+      {
+        "id": "s_silver",
+        "type": "sphere",
+        "args": { "r": 0.9 },
+        "transform": { "translate": [-2.2, 0.0, 0.0] },
+        "material": "silver"
+      },
+      {
+        "id": "s_gold",
+        "type": "sphere",
+        "args": { "r": 0.9 },
+        "transform": { "translate": [0.0, 0.0, 0.0] },
+        "material": "gold"
+      },
+      {
+        "id": "s_matte",
+        "type": "sphere",
+        "args": { "r": 0.9 },
+        "transform": { "translate": [2.2, 0.0, 0.0] },
+        "material": "matte-white"
+      }
+    ],
+    "defaults": {
+      "camera": {
+        "yaw": 0.35,
+        "pitch": 0.25,
+        "distance": 7.5,
+        "focal": 1.6,
+        "targetX": 0,
+        "targetY": 0,
+        "targetZ": 0
+      },
+      "light": { "altitude": 0.7, "azimuth": 0.9, "distance": 50, "intensity": 1.0 },
+      "studioBg": "dark"
+    }
+  }
+}
