@@ -31,6 +31,7 @@ import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
+import { buildSlideCacheSource, readSlideCache } from '../src/mapping/deck-ir-cache.js';
 import { extractSlideIR, parseJsonLoose } from '../src/mapping/slide-to-ir.js';
 
 const API_KEY = process.env.ANTHROPIC_API_KEY;
@@ -147,13 +148,18 @@ async function main() {
     slides = await parseDeck(PDF_PATH);
   }
   console.log(`deck "${NAME}": ${slides.length} slides`);
+  const cacheSource = buildSlideCacheSource({
+    kind: SLIDEDATA_PATH ? 'slidedata' : 'pdf',
+    sourcePath: SLIDEDATA_PATH || PDF_PATH,
+    slideCount: slides.length,
+    imagesDir: IMAGES_DIR,
+  });
 
   // Phase 1: per-slide IR (cached, validated, self-repairing)
   // --force alone wipes the cache; --force --only N keeps it and re-extracts
   // only slide N (otherwise a one-slide retouch nukes 30 cached results).
   const wipeCache = FORCE && ONLY == null;
-  const cache =
-    existsSync(CACHE_PATH) && !wipeCache ? JSON.parse(readFileSync(CACHE_PATH, 'utf8')) : {};
+  const cache = readSlideCache(CACHE_PATH, cacheSource, { wipe: wipeCache, log: console.log });
   const irs = [];
   for (let i = 0; i < slides.length; i++) {
     if (ONLY != null && i !== ONLY) {

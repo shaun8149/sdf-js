@@ -97,6 +97,7 @@ const TESTS = [
 
   // M1.5 SlideData → 2D SDF code emitter (consumed by compositor + lift LLM)
   { category: 'mapper', file: 'sdf-js/scripts/test-slide-to-2d-code.mjs' },
+  { category: 'mapper', file: 'sdf-js/scripts/test-deck-ir-cache.mjs' },
 
   // Atlas typography Wave 1 — digits + KPI symbols as SDF glyphs.
   { category: 'typography', file: 'sdf-js/scripts/test-text-3d.mjs' },
