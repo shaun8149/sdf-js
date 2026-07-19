@@ -61,6 +61,23 @@ export function validateIR(ir) {
     else if (N && ir.magnitude.length !== N)
       errors.push('magnitude length must match nodes length');
   }
+  // series (grouped charts): every series must align with nodes — a 9/12/12
+  // mismatch renders shifted bars against wrong labels (final-showdown audit:
+  // p16 put 237.5M under a phantom "⑨" node).
+  if (ir.series != null) {
+    if (!Array.isArray(ir.series)) errors.push('series must be an array');
+    else
+      for (const s of ir.series) {
+        if (!s || !Array.isArray(s.values)) {
+          errors.push('each series needs a values array');
+          break;
+        }
+        if (N && s.values.length !== N) {
+          errors.push(`series "${s.label ?? '?'}" length must match nodes length`);
+          break;
+        }
+      }
+  }
   if (ir.order != null && (!Array.isArray(ir.order) || ir.order.length !== N))
     errors.push('order length must match nodes length');
   if (ir.relations != null) {
