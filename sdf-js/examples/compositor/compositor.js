@@ -2113,9 +2113,25 @@ function runActiveGpuRenderer({ keepCamera = false } = {}) {
               pitch,
             });
             st.render(sdf); // re-render with the fitted camera (studio is on-demand)
+          } else if (scene.cameraStatic) {
+            // Sweep saturated (scene bigger than the search radius) or empty —
+            // the scene's OWN declared camera beats studio's neutral pose. A
+            // big lifted scene (D0961 slide 17 spans ±13.5 with defaults.camera
+            // distance 28) otherwise renders from INSIDE its geometry.
+            st.setCamState(sphericalToCamState(scene.cameraStatic));
+            st.render(sdf);
           }
         } catch (e) {
-          /* unbounded SDF / eval error → keep studio's default pose */
+          // unbounded SDF / eval error → the scene's declared camera still
+          // beats the neutral pose when it exists
+          if (scene.cameraStatic) {
+            try {
+              st.setCamState(sphericalToCamState(scene.cameraStatic));
+              st.render(sdf);
+            } catch (_) {
+              /* keep studio's default pose */
+            }
+          }
         }
       });
     }
