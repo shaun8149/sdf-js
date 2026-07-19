@@ -82,27 +82,73 @@ const numPages = await page.evaluate(async (url) => {
 }, pdfUrl);
 console.log(`${PDF}: ${numPages} pages → ${OUT} (width ${WIDTH})`);
 
+const WANT_HALVES = process.argv.includes('--halves');
 for (let n = 1; n <= numPages; n++) {
   const outFile = resolve(REPO, OUT, `page-${String(n).padStart(2, '0')}.png`);
-  if (existsSync(outFile) && !FORCE) {
+  const skipFull = existsSync(outFile) && !FORCE;
+  if (skipFull && !WANT_HALVES) {
     console.log(`  [${n}] exists, skip`);
     continue;
   }
-  const dataUrl = await page.evaluate(
-    async ({ n, cellW }) => {
-      const pg = await window.__pdf.getPage(n);
-      const base = pg.getViewport({ scale: 1 });
-      const vp = pg.getViewport({ scale: cellW / base.width });
-      const c = document.createElement('canvas');
-      c.width = Math.round(vp.width);
-      c.height = Math.round(vp.height);
-      await pg.render({ canvasContext: c.getContext('2d'), viewport: vp }).promise;
-      return c.toDataURL('image/png');
-    },
-    { n, cellW: WIDTH },
-  );
-  writeFileSync(outFile, Buffer.from(dataUrl.split(',')[1], 'base64'));
-  console.log(`  [${n}] ✓ ${outFile.split(/[\\/]/).pop()}`);
+  if (!skipFull) {
+    const dataUrl = await page.evaluate(
+      async ({ n, cellW }) => {
+        const pg = await window.__pdf.getPage(n);
+        const base = pg.getViewport({ scale: 1 });
+        const vp = pg.getViewport({ scale: cellW / base.width });
+        const c = document.createElement('canvas');
+        c.width = Math.round(vp.width);
+        c.height = Math.round(vp.height);
+        await pg.render({ canvasContext: c.getContext('2d'), viewport: vp }).promise;
+        return c.toDataURL('image/png');
+      },
+      { n, cellW: WIDTH },
+    );
+    writeFileSync(outFile, Buffer.from(dataUrl.split(',')[1], 'base64'));
+    console.log(`  [${n}] ✓ ${outFile.split(/[\\/]/).pop()}`);
+  }
+
+  if (process.argv.includes('--halves')) {
+    // Left/right half crops, each rendered to the full width budget →
+    // ~2× effective DPI. Connector-line pairing on dense timelines needs
+    // this: at page scale the 1px connectors blur into the curve.
+    for (const side of ['L', 'R']) {
+      const halfFile = resolve(REPO, OUT, `page-${String(n).padStart(2, '0')}-${side}.png`);
+      if (existsSync(halfFile) && !FORCE) continue;
+      const halfUrl = await page.evaluate(
+        async ({ n, cellW, side }) => {
+          const pg = await window.__pdf.getPage(n);
+          const base = pg.getViewport({ scale: 1 });
+          const scale = (cellW * 2) / base.width; // render 2× then crop half
+          const vp = pg.getViewport({ scale });
+          const full = document.createElement('canvas');
+          full.width = Math.round(vp.width);
+          full.height = Math.round(vp.height);
+          await pg.render({ canvasContext: full.getContext('2d'), viewport: vp }).promise;
+          const half = document.createElement('canvas');
+          half.width = Math.round(vp.width / 2);
+          half.height = Math.round(vp.height);
+          half
+            .getContext('2d')
+            .drawImage(
+              full,
+              side === 'L' ? 0 : half.width,
+              0,
+              half.width,
+              half.height,
+              0,
+              0,
+              half.width,
+              half.height,
+            );
+          return half.toDataURL('image/png');
+        },
+        { n, cellW: WIDTH, side },
+      );
+      writeFileSync(halfFile, Buffer.from(halfUrl.split(',')[1], 'base64'));
+    }
+    console.log(`  [${n}] ✓ halves L/R`);
+  }
 }
 
 await browser.close();

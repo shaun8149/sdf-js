@@ -151,11 +151,44 @@ export function pageLadders(slide) {
 }
 
 /**
+ * Deck-level nav chrome: short label sets repeated across ≥3 pages are site
+ * furniture (running footers, section tab rails), not page content — the 2013
+ * BP's 4-tab rail leaked into three stations as nodes with subs scrambled
+ * across pillars. Returns a Set of chrome strings for slideDigest's opts.chrome.
+ *
+ * Guardrails (the 2013 BP's text layer is FRAGMENTED — single chars 节/跳/动
+ * repeat everywhere): items must be ≥minLen chars and not pure digits/punct,
+ * and if the surviving set is still huge the text layer is fragmentation
+ * noise — return empty rather than poison the digest with 100 banned words.
+ */
+export function detectNavChrome(slides, { minPages = 3, minLen = 4, maxLen = 14, fuse = 12 } = {}) {
+  const count = new Map();
+  for (const slide of slides) {
+    const seen = new Set();
+    for (const b of slide.body || []) {
+      const t = (b.text || '').trim();
+      if (
+        t.length >= minLen &&
+        t.length <= maxLen &&
+        !/^[\d\s.,:;/、,。·©®™()()%-]+$/.test(t) &&
+        !seen.has(t)
+      ) {
+        seen.add(t);
+        count.set(t, (count.get(t) || 0) + 1);
+      }
+    }
+  }
+  const chrome = [...count.entries()].filter(([, n]) => n >= minPages).map(([t]) => t);
+  return new Set(chrome.length > fuse ? [] : chrome);
+}
+
+/**
  * Full prompt block for one page.
  * opts.vision: the page image accompanies this digest — omit the tick-ladder
  * warnings entirely (they are text-blindness workarounds; with the image
  * present they only scare the model away from legitimate chart reads — eval
  * vision round 1 watched an unwarranted demotion on a ten-gauge data page).
+ * opts.chrome: Set of nav-chrome strings (detectNavChrome) to call out.
  */
 export function slideDigest(slide, i, opts = {}) {
   const lines = (slide.body || [])
@@ -190,5 +223,12 @@ export function slideDigest(slide, i, opts = {}) {
     ? `\nSPATIAL PAIRING (each number's nearest label by 2D distance — trust THIS over line order):\n${pairs.map((p) => `${p.num} ↔ "${p.label.slice(0, 40)}"`).join('\n')}`
     : '';
 
-  return `PAGE ${i + 1}\nTITLE: ${slide.title || '(untitled)'}\nLAYOUT: ${slide.layout || '?'}\nBODY (top→bottom, fs = font size — bigger = more prominent):\n${body || '(no body text)'}${pairNote}${warn}`;
+  const chromeHits = opts.chrome
+    ? [...new Set(lines.map((l) => l.text).filter((t) => opts.chrome.has(t)))]
+    : [];
+  const chromeNote = chromeHits.length
+    ? `\nNAV CHROME (these labels repeat across many pages — a section tab rail / running header, NOT this page's content; do NOT use them as nodes or attach subs to them): ${chromeHits.join(' · ')}`
+    : '';
+
+  return `PAGE ${i + 1}\nTITLE: ${slide.title || '(untitled)'}\nLAYOUT: ${slide.layout || '?'}\nBODY (top→bottom, fs = font size — bigger = more prominent):\n${body || '(no body text)'}${chromeNote}${pairNote}${warn}`;
 }

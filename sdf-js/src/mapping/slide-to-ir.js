@@ -53,7 +53,7 @@ export const SLIDE_SYSTEM = `You convert ONE presentation page into ONE "IR" JSO
 ## Fidelity rules (hard — violations are audit failures)
 1. NEVER invent numbers, names, dates, or claims. Every value/label must appear on the page (or be an explicit chart read — see rule 2).
 2. A number read off a chart's bars (not printed as text) is an APPROXIMATION: keep ratios faithful and append "读图近似" (or "approx. from chart" for non-Chinese decks) inside callout.sub.
-3. If a page holds several charts, model the one carrying the headline claim; the other charts' key claims go into callout.sub. (A page MAY NOT be split here — one page, one IR.)
+3. If a page holds several charts, model the ONE carrying the headline claim; the other charts' key claims go into callout.sub. NEVER merge separate charts into one grouped station: "series" is ONLY for series that share one axis and one unit inside a single chart (2011 vs 2014 on the same % scale). Two charts with different units (分钟 vs 条数 vs %) or different axes are different charts — pick one. A single time-series chart → form:"line", not grouped.
 4. Template placeholder copy (lorem-style "This is a placeholder text") may be copied verbatim or dropped — never rewritten into realistic-sounding content.
 5. Keep the page's own vocabulary; do not import claims from other pages.
 6. callout.text must be a claim PRESENT on the page. If the page makes no claim (template/placeholder decks), give a neutral reading ("四档:20% → 90%") — never editorialize: no "achieved" / "success" / "growth" unless the page says so.
@@ -83,9 +83,12 @@ The attached image IS the page. You can now READ chart geometry directly:
 - Use the image to settle label↔value pairing and left-to-right order (it beats the text digest when they disagree).
 - ARITY: nodes must have EXACTLY one label per value you emit. Reading 11 monthly bars → 11 labels (2014.1 … 2015.3; invent no dates — interpolate the axis labels you see) and 11 values. Same for every series in a grouped chart.
 - AXIS ARITHMETIC: read the axis maximum carefully before scaling (7,000,000 is 700万, not 7000万) — every callout/script number must respect the axis units you read.
+- AXIS-LABEL HONESTY: if tick labels are unreadable, corrupted, or absent, NEVER synthesize them (no invented dates/months — a 2013 deck cannot cite 2015). Use ①②… node labels, anchor only to endpoint annotations you can actually read, and set "axisUncertain": true. Cross-check chart-internal consistency: cumulative ≥ active, totals ≥ parts — a violation means you misread an axis.
 - PAST vs PRESENT tables: bind each column/row to its era by the page's own 过去/现在 (before/after) markers — never by reading order.
 - TIMELINES: each label box/callout connects to exactly ONE node by a thin connector line or by proximity along the curve — pair by FOLLOWING THE CONNECTOR in the image, not by reading order. A box sitting past the last dated node belongs to the FINAL date. Badges/icons decorating a segment are narrative color (callout.sub), not milestones.
 - DENSE RANKINGS (>10 bars): emit only the TOP 8 by value, note "TOP15 truncated to 8" in callout.sub — the 3D stage can't seat 30 bars anyway.
+- SECTION TAB RAILS: a row of 3-5 short section labels that repeats visually across consecutive pages (one highlighted) is NAVIGATION, not content. Extract this page's OWN content (its annotations, screenshots, channels) — never the rail labels as nodes.
+- OURS-vs-COMPETITORS pages: bind each caption to the screenshot it sits under/next to in the IMAGE, and name each screenshot by its OWN visible logo/watermark/app chrome — never by the page headline. If you cannot identify a product from its logo, label it 竞品① (etc). A weakness caption (需手工…/信息杂/繁琐) belongs to a competitor; the deck's own product NEVER inherits a competitor's flaw — if your pairing gives it one, you paired wrong.
 - Everything else (no invention beyond faithful chart reads, neutral callouts, page vocabulary) still applies.`;
 
 // LLMs wrap JSON in fences / prose — strip to the outermost object. A second
@@ -239,8 +242,65 @@ export function flagUnitMismatch(ir) {
  * `user` is a string (text mode) or Anthropic content blocks (vision mode).
  * Returns { ir, attempts, demoted } — ir is null only if every retry failed.
  */
-export async function extractSlideIR({ slide, index, callLLM, imageBase64 = null, retries = 3 }) {
-  const digest = slideDigest(slide, index, { vision: !!imageBase64 });
+// Second-pass timeline verification: dated-label boxes on a dense roadmap sit
+// geometrically between nodes (the 2015 BP's 5000万 box defeated four prompt
+// rounds at page scale). With 2× half-page crops the connector lines are
+// visible — one extra call re-derives each date↔label pairing by following
+// them. Only fires for roadmap results when the halves exist.
+export async function verifyRoadmapPairings({ ir, callLLM, halves }) {
+  if (!ir || ir.structure !== 'roadmap' || !halves || halves.length === 0) return ir;
+  const user = [
+    ...halves.map((data) => ({
+      type: 'image',
+      source: { type: 'base64', media_type: 'image/png', data },
+    })),
+    {
+      type: 'text',
+      text: `These are 2× close-ups (left/right halves) of the timeline page you just extracted. Current milestones:\n${JSON.stringify(ir.milestones, null, 1)}\n\nVerify EVERY date↔label pairing by FOLLOWING each label box's thin connector line to the node it touches. A box between two nodes belongs to the node its connector meets, not the nearest text. Badges/icons without boxes are not milestones. Respond with ONLY the corrected milestones JSON array (same shape).`,
+    },
+  ];
+  try {
+    const raw = await callLLM({
+      system:
+        'You verify timeline pairings in chart close-ups. Respond with only a JSON array of {date,label} milestones.',
+      user,
+      maxTokens: 2000,
+      temperature: 0,
+    });
+    const start = raw.indexOf('[');
+    const end = raw.lastIndexOf(']');
+    if (start < 0 || end <= start) return ir;
+    const ms = JSON.parse(raw.slice(start, end + 1));
+    if (Array.isArray(ms) && ms.length >= 2 && ms.every((m) => m && m.date && m.label)) {
+      // Disagreement between the page-scale read and the close-up read is
+      // itself the best ambiguity signal we have — surface it instead of
+      // silently trusting either pass (the 2015 BP's 5000万 box survived
+      // five prompt/mechanism rounds; some boxes are genuinely ambiguous).
+      const key = (arr) => JSON.stringify(arr.map((m) => `${m.date}→${m.label}`));
+      const changed = key(ms) !== key(ir.milestones || []);
+      return {
+        ...ir,
+        milestones: ms,
+        connectorVerified: true,
+        ...(changed ? { pairingUncertain: true } : {}),
+      };
+    }
+  } catch {
+    /* verification is best-effort — keep the first-pass milestones */
+  }
+  return ir;
+}
+
+export async function extractSlideIR({
+  slide,
+  index,
+  callLLM,
+  imageBase64 = null,
+  halves = null,
+  chrome = null,
+  retries = 3,
+}) {
+  const digest = slideDigest(slide, index, { vision: !!imageBase64, chrome });
   // Gate 2 arms on STRONG ladders only (font-relative axis ticks — see
   // slide-digest.js); ambiguous ladders are the model's call with pairing
   // evidence, so the gate must not override a legitimate data ladder.
@@ -261,7 +321,15 @@ export async function extractSlideIR({ slide, index, callLLM, imageBase64 = null
         ]
       : text;
     try {
-      const raw = await callLLM({ system, user, maxTokens: imageBase64 ? 6500 : 4000 });
+      // First attempt runs cold (reproducible); retries add temperature to
+      // escape deterministic dead-loops (p16: the same 3-series read failed
+      // identically three times, then passed on an out-of-band rerun).
+      const raw = await callLLM({
+        system,
+        user,
+        maxTokens: imageBase64 ? 6500 : 4000,
+        temperature: attempt === 0 ? 0 : 0.5,
+      });
       let cand = parseJsonLoose(raw);
       let v = validateIR(cand);
       if (!v.ok) {
@@ -273,9 +341,10 @@ export async function extractSlideIR({ slide, index, callLLM, imageBase64 = null
         v = validateIR(cand);
       }
       if (v.ok) {
-        const gated = flagUnitMismatch(
+        let gated = flagUnitMismatch(
           antiFabricationGate(cand, { hadImage: !!imageBase64, ladders }),
         );
+        gated = await verifyRoadmapPairings({ ir: gated, callLLM, halves });
         return { ir: gated, attempts: attempt + 1, demoted: !!gated.demoted };
       }
       lastErrs = v.errors;

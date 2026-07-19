@@ -59,7 +59,9 @@ export function validateIR(ir) {
   if (ir.magnitude != null) {
     if (!Array.isArray(ir.magnitude)) errors.push('magnitude must be an array');
     else if (N && ir.magnitude.length !== N)
-      errors.push('magnitude length must match nodes length');
+      errors.push(
+        `magnitude length ${ir.magnitude.length} must match nodes length ${N} — emit exactly one value per node (sample the chart at the node labels you emit)`,
+      );
   }
   // series (grouped charts): every series must align with nodes — a 9/12/12
   // mismatch renders shifted bars against wrong labels (final-showdown audit:
@@ -73,7 +75,9 @@ export function validateIR(ir) {
           break;
         }
         if (N && s.values.length !== N) {
-          errors.push(`series "${s.label ?? '?'}" length must match nodes length`);
+          errors.push(
+            `series "${s.label ?? '?'}" has ${s.values.length} values but there are ${N} nodes — every series must sample the SAME ${N} x-positions as your node labels`,
+          );
           break;
         }
       }
