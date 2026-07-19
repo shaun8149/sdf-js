@@ -1,319 +1,297 @@
 {
   "id": "pdf-slide-19",
   "title": "Slide 19: 2D SPHERES",
-  "prompt": "Presentation slide 19: \"2D SPHERES\". A chart of 10 percentage values (10%, 20%, 30%, 40%, 50%, 60%, 70%, 80%, 90%, 100%). Geometric, axis-aligned. In 3D, lift to a clean bar/column chart on a stage with the title floating above — corporate keynote aesthetic, not naturalistic.",
+  "prompt": "Presentation slide 19: \"2D SPHERES\". A chart of 10 percentage values (10%, 20%, 30%, 40%, 50%, 60%, 70%, 80%, 90%, 100%). Geometric, axis-aligned. In 3D, lift to sphere fill-level gauges — one sphere per value, each filled to its percentage (the sphere-fill atom), equal radii so the FILL carries the value on a stage with the title floating above — corporate keynote aesthetic, not naturalistic.",
   "code2d": "// =============================================================================\n// Atlas presentation demo — slide 19: \"2D SPHERES\"\n// Pattern detected: percent-list\n//\n// SEMANTIC HINT for lift: this is a PRESENTATION SCENE — favor regular\n// geometric shapes (axis-aligned bars/columns/spheres), clean palette, a\n// stage / pedestal below the data, camera tilted slightly above. Avoid\n// organic / naturalistic interpretations.\n// =============================================================================\nimport {\n  circle, ellipse, rectangle, rounded_rectangle, segment, ring,\n  union, difference, dilate, render,\n} from '../../src/index.js';\nimport { text2dSDF } from '../../src/scene/components/typography/text-3d.js';\n\nconst BG_TOP    = [248, 250, 254];\nconst BG_BOT    = [218, 228, 240];\nconst ACCENT    = [42, 96, 178];\nconst ACCENT_2  = [232, 124, 64];\nconst INK       = [28, 36, 52];\nconst SOFT_INK  = [120, 130, 148];\n\n// 10 percentage data points: 10%, 20%, 30%, 40%, 50%, 60%, 70%, 80%, 90%, 100%\nconst bars = union(\n  rectangle([0.064 * 2, 0.090], [-0.900, -0.455]),\n  rectangle([0.064 * 2, 0.180], [-0.700, -0.410]),\n  rectangle([0.064 * 2, 0.270], [-0.500, -0.365]),\n  rectangle([0.064 * 2, 0.360], [-0.300, -0.320]),\n  rectangle([0.064 * 2, 0.450], [-0.100, -0.275]),\n  rectangle([0.064 * 2, 0.540], [0.100, -0.230]),\n  rectangle([0.064 * 2, 0.630], [0.300, -0.185]),\n  rectangle([0.064 * 2, 0.720], [0.500, -0.140]),\n  rectangle([0.064 * 2, 0.810], [0.700, -0.095]),\n  rectangle([0.064 * 2, 0.900], [0.900, -0.050]),\n);\n\nconst labels = union(\n  text2dSDF({ text: '10%', height: 0.08, strokeWidth: 0.014 }).translate([-0.900, -0.350]),\n  text2dSDF({ text: '20%', height: 0.08, strokeWidth: 0.014 }).translate([-0.700, -0.260]),\n  text2dSDF({ text: '30%', height: 0.08, strokeWidth: 0.014 }).translate([-0.500, -0.170]),\n  text2dSDF({ text: '40%', height: 0.08, strokeWidth: 0.014 }).translate([-0.300, -0.080]),\n  text2dSDF({ text: '50%', height: 0.08, strokeWidth: 0.014 }).translate([-0.100, 0.010]),\n  text2dSDF({ text: '60%', height: 0.08, strokeWidth: 0.014 }).translate([0.100, 0.100]),\n  text2dSDF({ text: '70%', height: 0.08, strokeWidth: 0.014 }).translate([0.300, 0.190]),\n  text2dSDF({ text: '80%', height: 0.08, strokeWidth: 0.014 }).translate([0.500, 0.280]),\n  text2dSDF({ text: '90%', height: 0.08, strokeWidth: 0.014 }).translate([0.700, 0.370]),\n  text2dSDF({ text: '100%', height: 0.08, strokeWidth: 0.014 }).translate([0.900, 0.460]),\n);\n\nconst stage = rectangle([1.95, 0.02], [0, -0.52]);\nconst title = text2dSDF({ text: '2D SPHERES', height: 0.13, strokeWidth: 0.018 }).translate([0, 0.7]);\n\nconst layers = [\n  { sdf: stage,  color: SOFT_INK },\n  { sdf: bars,   color: ACCENT },\n  { sdf: labels, color: INK },\n  { sdf: title,  color: INK },\n];\n\nconst canvas = document.getElementById('c');\nconst ctx = canvas.getContext('2d');\nrender.silhouette(ctx, layers, {\n  view: 1.4,\n  background: { top: BG_TOP, bottom: BG_BOT },\n});\n",
   "sceneData": {
     "v": 1,
-    "name": "compare: 2D SPHERES",
+    "name": "sequence: 2D SPHERES",
     "source": {
       "format": "llm-lift",
-      "prompt": "Presentation slide 19: \"2D SPHERES\". A chart of 10 percentage values (10%, 20%, 30%, 40%, 50%, 60%, 70%, 80%, 90%, 100%). Geometric, axis-aligned. In 3D, lift to a clean bar/column chart on a stage with the title floating above — corporate keynote aesthetic, not naturalistic.",
-      "from2dCode": "text2dSDF title '2D SPHERES' + 10 rectangle bars (heights 0.09-0.90) + 10 text2dSDF labels ('10%'-'100%') + stage rectangle"
+      "prompt": "Presentation slide 19: \"2D SPHERES\". A chart of 10 percentage values (10%, 20%, 30%, 40%, 50%, 60%, 70%, 80%, 90%, 100%). Geometric, axis-aligned. In 3D, lift to sphere fill-level gauges — one sphere per value, each filled to its percentage (the sphere-fill atom), equal radii so the FILL carries the value on a stage with the title floating above — corporate keynote aesthetic, not naturalistic.",
+      "from2dCode": "10 bars + 10 labels + stage + title. 2D shows bar heights encoding percentage; 3D lifts to sphere-fill gauges (material.kind:'fill') with equal radii + liquid levels."
     },
     "subjects": [
       {
-        "id": "stage-pedestal",
-        "type": "rounded_box",
+        "id": "stage",
+        "type": "box",
         "args": {
-          "dims": [20, 0.4, 6],
-          "cornerR": 0.08
+          "dims": [22, 0.3, 3.5]
         },
         "transform": {
-          "translate": [0, -0.2, 0]
+          "translate": [0, -0.15, 0]
         },
         "material": {
           "hue": 0.6,
           "sat": 0.08,
-          "value": 0.7,
-          "metal": 0.15,
-          "glow": 0
-        }
-      },
-      {
-        "id": "bar-01",
-        "type": "rounded_box",
-        "args": {
-          "dims": [1.1, 0.9, 1.1],
-          "cornerR": 0.08
-        },
-        "transform": {
-          "translate": [-9, 0.45, 0]
-        },
-        "material": {
-          "hue": 0.6,
-          "sat": 0.65,
-          "value": 0.58,
+          "value": 0.42,
           "metal": 0.05,
           "glow": 0
         }
       },
       {
-        "id": "bar-02",
-        "type": "rounded_box",
+        "id": "gauge-10",
+        "type": "sphere-fill-3d",
         "args": {
-          "dims": [1.1, 1.8, 1.1],
-          "cornerR": 0.08
+          "levels": [0.1],
+          "radii": [0.85]
         },
         "transform": {
-          "translate": [-7, 0.9, 0]
+          "translate": [-9.9, 0.7, 0]
         },
         "material": {
-          "hue": 0.6,
-          "sat": 0.65,
-          "value": 0.58,
-          "metal": 0.05,
-          "glow": 0
+          "kind": "fill",
+          "hue": 0.58,
+          "sat": 0.75,
+          "value": 0.65
         }
       },
       {
-        "id": "bar-03",
-        "type": "rounded_box",
+        "id": "gauge-20",
+        "type": "sphere-fill-3d",
         "args": {
-          "dims": [1.1, 2.7, 1.1],
-          "cornerR": 0.08
+          "levels": [0.2],
+          "radii": [0.85]
         },
         "transform": {
-          "translate": [-5, 1.35, 0]
+          "translate": [-7.7, 0.7, 0]
         },
         "material": {
-          "hue": 0.6,
-          "sat": 0.65,
-          "value": 0.58,
-          "metal": 0.05,
-          "glow": 0
+          "kind": "fill",
+          "hue": 0.58,
+          "sat": 0.75,
+          "value": 0.65
         }
       },
       {
-        "id": "bar-04",
-        "type": "rounded_box",
+        "id": "gauge-30",
+        "type": "sphere-fill-3d",
         "args": {
-          "dims": [1.1, 3.6, 1.1],
-          "cornerR": 0.08
+          "levels": [0.3],
+          "radii": [0.85]
         },
         "transform": {
-          "translate": [-3, 1.8, 0]
+          "translate": [-5.5, 0.7, 0]
         },
         "material": {
-          "hue": 0.6,
-          "sat": 0.65,
-          "value": 0.58,
-          "metal": 0.05,
-          "glow": 0
+          "kind": "fill",
+          "hue": 0.58,
+          "sat": 0.75,
+          "value": 0.65
         }
       },
       {
-        "id": "bar-05",
-        "type": "rounded_box",
+        "id": "gauge-40",
+        "type": "sphere-fill-3d",
         "args": {
-          "dims": [1.1, 4.5, 1.1],
-          "cornerR": 0.08
+          "levels": [0.4],
+          "radii": [0.85]
         },
         "transform": {
-          "translate": [-1, 2.25, 0]
+          "translate": [-3.3, 0.7, 0]
         },
         "material": {
-          "hue": 0.6,
-          "sat": 0.65,
-          "value": 0.58,
-          "metal": 0.05,
-          "glow": 0
+          "kind": "fill",
+          "hue": 0.58,
+          "sat": 0.75,
+          "value": 0.65
         }
       },
       {
-        "id": "bar-06",
-        "type": "rounded_box",
+        "id": "gauge-50",
+        "type": "sphere-fill-3d",
         "args": {
-          "dims": [1.1, 5.4, 1.1],
-          "cornerR": 0.08
+          "levels": [0.5],
+          "radii": [0.85]
         },
         "transform": {
-          "translate": [1, 2.7, 0]
+          "translate": [-1.1, 0.7, 0]
         },
         "material": {
-          "hue": 0.6,
-          "sat": 0.65,
-          "value": 0.58,
-          "metal": 0.05,
-          "glow": 0
+          "kind": "fill",
+          "hue": 0.58,
+          "sat": 0.75,
+          "value": 0.65
         }
       },
       {
-        "id": "bar-07",
-        "type": "rounded_box",
+        "id": "gauge-60",
+        "type": "sphere-fill-3d",
         "args": {
-          "dims": [1.1, 6.3, 1.1],
-          "cornerR": 0.08
+          "levels": [0.6],
+          "radii": [0.85]
         },
         "transform": {
-          "translate": [3, 3.15, 0]
+          "translate": [1.1, 0.7, 0]
         },
         "material": {
-          "hue": 0.6,
-          "sat": 0.65,
-          "value": 0.58,
-          "metal": 0.05,
-          "glow": 0
+          "kind": "fill",
+          "hue": 0.58,
+          "sat": 0.75,
+          "value": 0.65
         }
       },
       {
-        "id": "bar-08",
-        "type": "rounded_box",
+        "id": "gauge-70",
+        "type": "sphere-fill-3d",
         "args": {
-          "dims": [1.1, 7.2, 1.1],
-          "cornerR": 0.08
+          "levels": [0.7],
+          "radii": [0.85]
         },
         "transform": {
-          "translate": [5, 3.6, 0]
+          "translate": [3.3, 0.7, 0]
         },
         "material": {
-          "hue": 0.6,
-          "sat": 0.65,
-          "value": 0.58,
-          "metal": 0.05,
-          "glow": 0
+          "kind": "fill",
+          "hue": 0.58,
+          "sat": 0.75,
+          "value": 0.65
         }
       },
       {
-        "id": "bar-09",
-        "type": "rounded_box",
+        "id": "gauge-80",
+        "type": "sphere-fill-3d",
         "args": {
-          "dims": [1.1, 8.1, 1.1],
-          "cornerR": 0.08
+          "levels": [0.8],
+          "radii": [0.85]
         },
         "transform": {
-          "translate": [7, 4.05, 0]
+          "translate": [5.5, 0.7, 0]
         },
         "material": {
-          "hue": 0.6,
-          "sat": 0.65,
-          "value": 0.58,
-          "metal": 0.05,
-          "glow": 0
+          "kind": "fill",
+          "hue": 0.58,
+          "sat": 0.75,
+          "value": 0.65
         }
       },
       {
-        "id": "bar-10",
-        "type": "rounded_box",
+        "id": "gauge-90",
+        "type": "sphere-fill-3d",
         "args": {
-          "dims": [1.1, 9, 1.1],
-          "cornerR": 0.08
+          "levels": [0.9],
+          "radii": [0.85]
         },
         "transform": {
-          "translate": [9, 4.5, 0]
+          "translate": [7.7, 0.7, 0]
         },
         "material": {
-          "hue": 0.6,
-          "sat": 0.65,
-          "value": 0.58,
-          "metal": 0.05,
-          "glow": 0
+          "kind": "fill",
+          "hue": 0.58,
+          "sat": 0.75,
+          "value": 0.65
+        }
+      },
+      {
+        "id": "gauge-100",
+        "type": "sphere-fill-3d",
+        "args": {
+          "levels": [1],
+          "radii": [0.85]
+        },
+        "transform": {
+          "translate": [9.9, 0.7, 0]
+        },
+        "material": {
+          "kind": "fill",
+          "hue": 0.58,
+          "sat": 0.75,
+          "value": 0.65
         }
       }
     ],
     "overlay": [
       {
-        "text": "2D SPHERES",
-        "anchor": [0, 6.5, 0],
-        "role": "title",
-        "align": "center"
-      },
-      {
         "text": "10%",
-        "anchor": [-9, 0.9, 0],
+        "anchor": [-9.9, 0.7, 0],
         "role": "value",
-        "align": "center",
-        "radius": 0.55
+        "radius": 0.85
       },
       {
         "text": "20%",
-        "anchor": [-7, 1.8, 0],
+        "anchor": [-7.7, 0.7, 0],
         "role": "value",
-        "align": "center",
-        "radius": 0.55
+        "radius": 0.85
       },
       {
         "text": "30%",
-        "anchor": [-5, 2.7, 0],
+        "anchor": [-5.5, 0.7, 0],
         "role": "value",
-        "align": "center",
-        "radius": 0.55
+        "radius": 0.85
       },
       {
         "text": "40%",
-        "anchor": [-3, 3.6, 0],
+        "anchor": [-3.3, 0.7, 0],
         "role": "value",
-        "align": "center",
-        "radius": 0.55
+        "radius": 0.85
       },
       {
         "text": "50%",
-        "anchor": [-1, 4.5, 0],
+        "anchor": [-1.1, 0.7, 0],
         "role": "value",
-        "align": "center",
-        "radius": 0.55
+        "radius": 0.85
       },
       {
         "text": "60%",
-        "anchor": [1, 5.4, 0],
+        "anchor": [1.1, 0.7, 0],
         "role": "value",
-        "align": "center",
-        "radius": 0.55
+        "radius": 0.85
       },
       {
         "text": "70%",
-        "anchor": [3, 6.3, 0],
+        "anchor": [3.3, 0.7, 0],
         "role": "value",
-        "align": "center",
-        "radius": 0.55
+        "radius": 0.85
       },
       {
         "text": "80%",
-        "anchor": [5, 7.2, 0],
+        "anchor": [5.5, 0.7, 0],
         "role": "value",
-        "align": "center",
-        "radius": 0.55
+        "radius": 0.85
       },
       {
         "text": "90%",
-        "anchor": [7, 8.1, 0],
+        "anchor": [7.7, 0.7, 0],
         "role": "value",
-        "align": "center",
-        "radius": 0.55
+        "radius": 0.85
       },
       {
         "text": "100%",
-        "anchor": [9, 9, 0],
+        "anchor": [9.9, 0.7, 0],
         "role": "value",
-        "align": "center",
-        "radius": 0.55
+        "radius": 0.85
+      },
+      {
+        "text": "2D SPHERES",
+        "anchor": [0, 3.2, 0],
+        "role": "title"
       }
     ],
     "ground": {
-      "y": -0.4,
-      "region": "floor",
+      "y": -0.3,
+      "region": "ground",
       "material": {
-        "hue": 0.58,
-        "sat": 0.1,
-        "value": 0.5
+        "hue": 0.6,
+        "sat": 0.05,
+        "value": 0.35
       }
     },
     "defaults": {
       "camera": {
-        "yaw": 0.25,
-        "pitch": 0.35,
-        "distance": 28,
+        "yaw": 0,
+        "pitch": 0.25,
+        "distance": 18,
         "focal": 1.4,
         "targetX": 0,
-        "targetY": 3.5,
+        "targetY": 1.2,
         "targetZ": 0,
         "aperture": 0.3,
-        "focalDistance": 28
+        "focalDistance": 18
       },
       "light": {
-        "azimuth": 0.6,
-        "altitude": 0.55,
-        "distance": 60,
+        "azimuth": 0.4,
+        "altitude": 0.5,
+        "distance": 35,
         "intensity": 1.1
       },
       "shadow": {
@@ -323,9 +301,9 @@
       },
       "postFx": {
         "exposure": 1.05,
-        "vignetteStrength": 0.3,
+        "vignetteStrength": 0.25,
         "bloomMix": 0.18,
-        "bloomThreshold": 0.88,
+        "bloomThreshold": 0.85,
         "lensFlareStrength": 0
       }
     }
@@ -337,18 +315,18 @@
     "pattern": "percent-list",
     "slideIndex": 19,
     "tokenUsageLift": {
-      "input_tokens": 73206,
+      "input_tokens": 73234,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 0,
       "cache_creation": {
         "ephemeral_5m_input_tokens": 0,
         "ephemeral_1h_input_tokens": 0
       },
-      "output_tokens": 2604,
+      "output_tokens": 2428,
       "service_tier": "standard",
       "inference_geo": "not_available"
     },
-    "costUSD": 0.258678,
-    "elapsedSec": 30.1
+    "costUSD": 0.256122,
+    "elapsedSec": 29.4
   }
 }
