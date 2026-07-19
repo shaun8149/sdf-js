@@ -237,17 +237,394 @@ function renderHorizontalBars(ir, opts, env) {
   };
 }
 
+// ---- trend line (form:'line') --------------------------------------------------
+// A time-series page (monthly growth curve) is a LINE in the source — rendering
+// it as monoliths loses the connected shape. Here each point is a sphere and
+// consecutive points are joined by capsules riding above a baseline rail: the
+// curve's silhouette IS the page's message. y is linear from ZERO (honest
+// encoding — a cropped axis exaggerates growth); the value chips carry exact
+// numbers. All analytic primitives (sphere/capsule/box) — zero-march tier.
+// Reusable: any deck emitting magnitude+form:'line' gets this.
+function renderLineChart(ir, opts, env) {
+  const nodes = ir.nodes.map(label);
+  const N = nodes.length;
+  const mag = ir.magnitude.map((x) => Math.max(0, Number(x) || 0));
+  const mMax = Math.max(...mag, 1e-9);
+  const emphasisIdx = ir.emphasis && ir.emphasis.length ? ir.emphasis[0] : N - 1;
+
+  const SPAN_X = Math.min(12, Math.max(8, (N - 1) * 2.0));
+  const stride = N > 1 ? SPAN_X / (N - 1) : 0;
+  // +x renders screen-LEFT → i=0 sits screen-left (time reads L→R)
+  const xOf = (i) => ((N - 1) / 2 - i) * stride;
+  const RAIL_Y = 1.0; // baseline (value 0) floats just above the floor
+  const PLOT_H = 4.4;
+  const yOf = (i) => RAIL_Y + (mag[i] / mMax) * PLOT_H;
+
+  const introLead = introLeadOf();
+  const holdEach = TEMPO.beatHold * 0.75; // lines have more points than bars — brisker walk
+
+  const POINT_MAT = {
+    hue: 0.57,
+    sat: 0.62,
+    value: 0.8,
+    kind: 'normal',
+    roughness: 0.28,
+    clearcoat: 0.5,
+  };
+  const GOLD = {
+    hue: 0.11,
+    sat: 0.78,
+    value: 0.95,
+    glow: 0.1,
+    kind: 'normal',
+    roughness: 0.22,
+    clearcoat: 0.6,
+  };
+  const SEG_MAT = {
+    hue: 0.57,
+    sat: 0.45,
+    value: 0.72,
+    glow: 0.05,
+    kind: 'normal',
+    roughness: 0.35,
+  };
+  const RAIL_MAT = { hue: 0.6, sat: 0.08, value: 0.5, kind: 'normal', roughness: 0.6 };
+
+  // STATIC (user-locked 2026-07-15): only the CAMERA animates. A line that
+  // draws itself is the wrong curve at every frame but the last.
+  const subjects = [
+    {
+      id: 'rail',
+      type: 'box',
+      args: { dims: [SPAN_X + 1.2, 0.09, 0.3] },
+      transform: { translate: [0, RAIL_Y, 0] },
+      material: RAIL_MAT,
+    },
+  ];
+  for (let i = 0; i < N - 1; i++) {
+    const a = [xOf(i), yOf(i), 0];
+    const b = [xOf(i + 1), yOf(i + 1), 0];
+    subjects.push({
+      id: `seg-${i}`,
+      type: 'capsule',
+      args: { a: [0, 0, 0], b: [b[0] - a[0], b[1] - a[1], 0], radius: 0.055 },
+      transform: { translate: a },
+      material: SEG_MAT,
+    });
+  }
+  nodes.forEach((_, i) => {
+    const emph = i === emphasisIdx;
+    subjects.push({
+      id: `pt-${i}`,
+      type: 'sphere',
+      args: { radius: emph ? 0.3 : 0.2 },
+      transform: { translate: [xOf(i), yOf(i), 0] },
+      material: emph ? GOLD : POINT_MAT,
+    });
+  });
+
+  const overlay = [
+    {
+      text: String(ir.title || nodes[N - 1]).toUpperCase(),
+      anchor: [0, RAIL_Y + PLOT_H + 1.5, 0],
+      role: 'title',
+    },
+  ];
+  nodes.forEach((n, i) => {
+    const revealAt = introLead + i * holdEach + 0.3;
+    // time label BELOW the rail, value chip ABOVE its point — the source
+    // chart's axis-below / number-above arrangement
+    overlay.push({
+      text: n,
+      anchor: [xOf(i), RAIL_Y - 0.45, 0.2],
+      role: 'card',
+      align: 'center',
+      revealAt,
+    });
+    overlay.push({
+      text: (ir.display && ir.display[i]) || String(mag[i]),
+      anchor: [xOf(i), yOf(i) + 0.62, 0],
+      role: 'value',
+      radius: i === emphasisIdx ? 0.46 : 0.32,
+      revealAt,
+    });
+  });
+
+  // camera: frontal establishing → travel the curve L→R → super on the
+  // emphasis point → payoff (fighting-game grammar, calm variant)
+  const midY = RAIL_Y + PLOT_H * 0.45;
+  const D = Math.max(10, SPAN_X * 0.62 + 4);
+  const shots = [
+    {
+      duration: introLead,
+      pos: [SPAN_X * 0.22, midY + 0.8, D],
+      target: [0, midY, 0],
+      fov: 48,
+      aperture: 0.13,
+      focalDistance: D,
+      ease: 'out',
+    },
+  ];
+  nodes.forEach((_, i) => {
+    shots.push({
+      duration: holdEach,
+      pos: [xOf(i) * 0.55, yOf(i) + 0.5, D * 0.6],
+      target: [xOf(i), yOf(i), 0],
+      fov: 45,
+      transition: 'blend',
+      aperture: 0.2,
+      focalDistance: D * 0.6,
+      shake: 0.035,
+      ease: 'smooth',
+    });
+  });
+  const superAt = shots.reduce((s, sh) => s + sh.duration, 0);
+  shots.push({
+    duration: TEMPO.superHold,
+    pos: [xOf(emphasisIdx) + 0.5, yOf(emphasisIdx) + 0.25, 2.6],
+    target: [xOf(emphasisIdx), yOf(emphasisIdx), 0],
+    fov: 42,
+    transition: 'cut',
+    beat: 'super',
+    aperture: [0.8, 0.4],
+    focalDistance: 2.8,
+    shake: [0.4, 0.06],
+    ambient: [0.2, 1.0],
+    exposure: [1.15, 1.0],
+    ease: 'out',
+  });
+  const payoffDist = (D + 1.5) * (env ? env.payoffZoom : 1);
+  shots.push({
+    duration: TEMPO.payoff,
+    pos: [SPAN_X * 0.1, midY + 1.2, payoffDist],
+    target: [0, midY, 0],
+    fov: 47,
+    transition: 'blend',
+    aperture: 0.12,
+    focalDistance: payoffDist,
+    ease: 'out',
+  });
+
+  const insight = deriveMagnitudeInsight(ir);
+  const payoffStart = superAt + TEMPO.superHold;
+  if (insight)
+    overlay.push({
+      text: insight.text,
+      sub: insight.sub + (insight.note ? ` · ${insight.note}` : ''),
+      role: 'insight',
+      revealAt: payoffStart + 0.4,
+    });
+  if (ir.callout && ir.callout.text)
+    overlay.push({
+      text: String(ir.callout.text),
+      sub: ir.callout.sub ? String(ir.callout.sub) : undefined,
+      role: 'insight',
+      revealAt: superAt + 0.25,
+      hideAt: insight ? payoffStart + 0.4 : undefined,
+    });
+
+  return {
+    v: 1,
+    name: `(magnitude·line) ${ir.title || 'trend'}${env ? ' · alpine' : ''}`,
+    subjects: env ? [...subjects, ...env.subjects] : subjects,
+    overlay,
+    cameraSequence: { loop: false, shots, hitstops: [{ at: superAt + 0.02, hold: 0.14 }] },
+    defaults: env
+      ? env.defaults
+      : { stage: { size: [Math.max(16, SPAN_X + 6), Math.max(12, PLOT_H + 6), 12] } },
+  };
+}
+
+// ---- grouped bars (form:'grouped') ----------------------------------------------
+// A category × series comparison (e.g. 2011 vs 2014 usage across six needs) is a
+// GROUPED bar chart in the source. Each category is a tight pair/triple of bars
+// standing on the floor, series kept apart by COLOR (legend baked into the first
+// group's chips: "2011年 71%"), categories spread L→R. Bars scale linearly from
+// zero. Analytic-safe (boxes) — zero-march tier. Reusable: any deck emitting
+// magnitude+form:'grouped'+series gets this.
+function renderGroupedBars(ir, opts, env) {
+  const nodes = ir.nodes.map(label);
+  const N = nodes.length;
+  const series = ir.series || [];
+  const S = Math.max(1, series.length);
+  const vOf = (i, s) => Math.max(0, Number(series[s]?.values?.[i]) || 0);
+  let mMax = 1e-9;
+  for (let i = 0; i < N; i++) for (let s = 0; s < S; s++) mMax = Math.max(mMax, vOf(i, s));
+  const emphasisIdx = ir.emphasis && ir.emphasis.length ? ir.emphasis[0] : N - 1;
+  const unit = ir.unit ? String(ir.unit) : '';
+
+  const BW = 0.66; // bar width
+  const BGAP = 0.14; // within-group gap
+  const GG = 1.05; // between-group gap
+  const H_MAX = 4.6;
+  const DEPTH = 0.66;
+  const groupW = S * BW + (S - 1) * BGAP;
+  const stride = groupW + GG;
+  const spanX = (N - 1) * stride + groupW;
+  // +x renders screen-LEFT → category i=0 sits screen-left; within a group,
+  // series s=0 is the LEFT bar (legend order = reading order)
+  const groupX = (i) => ((N - 1) / 2 - i) * stride;
+  const barX = (i, s) => groupX(i) + (groupW / 2 - BW / 2) - s * (BW + BGAP);
+
+  // Series palette: first series muted coral, second blue (the classic
+  // then-vs-now pairing, matching the source page); third teal. Colors carry
+  // the SERIES identity, so no gold champion mark here — the camera's super
+  // punch marks the emphasis category instead.
+  const SERIES_MAT = [
+    { hue: 0.005, sat: 0.62, value: 0.78, kind: 'normal', roughness: 0.32, clearcoat: 0.4 },
+    { hue: 0.57, sat: 0.62, value: 0.8, kind: 'normal', roughness: 0.28, clearcoat: 0.5 },
+    { hue: 0.46, sat: 0.55, value: 0.7, kind: 'normal', roughness: 0.3, clearcoat: 0.45 },
+  ];
+
+  const introLead = introLeadOf();
+  const holdEach = TEMPO.beatHold;
+
+  // STATIC (user-locked 2026-07-15): only the CAMERA animates.
+  const subjects = [];
+  for (let i = 0; i < N; i++) {
+    for (let s = 0; s < S; s++) {
+      const h = Math.max(0.08, (vOf(i, s) / mMax) * H_MAX);
+      subjects.push({
+        id: `gbar-${i}-${s}`,
+        type: 'box',
+        args: { dims: [BW, h, DEPTH] },
+        transform: { translate: [barX(i, s), h / 2, 0] },
+        material: SERIES_MAT[s % SERIES_MAT.length],
+      });
+    }
+  }
+
+  const overlay = [
+    {
+      text: String(ir.title || nodes[0]).toUpperCase(),
+      anchor: [0, H_MAX + 1.7, 0],
+      role: 'title',
+    },
+  ];
+  for (let i = 0; i < N; i++) {
+    const revealAt = introLead + i * holdEach + 0.3;
+    // category label below its group (the source's x-axis)
+    overlay.push({
+      text: nodes[i],
+      anchor: [groupX(i), -0.5, 0.25],
+      role: 'card',
+      align: 'center',
+      revealAt,
+    });
+    // value chips above each bar; the FIRST group's chips carry the series
+    // label — the legend lives where the eye first lands, no separate key
+    for (let s = 0; s < S; s++) {
+      const val = vOf(i, s);
+      const h = (val / mMax) * H_MAX;
+      const txt =
+        i === 0 && series[s]?.label ? `${series[s].label} ${val}${unit}` : `${val}${unit}`;
+      overlay.push({
+        text: txt,
+        anchor: [barX(i, s), h + 0.5 + s * 0.02, 0],
+        role: 'value',
+        radius: i === emphasisIdx ? 0.4 : 0.32,
+        revealAt: revealAt + s * 0.12,
+      });
+    }
+  }
+
+  // camera: frontal establishing → walk the categories → super punch on the
+  // emphasis category → payoff wide
+  const midY = H_MAX * 0.48;
+  const D = Math.max(11, spanX * 0.6 + 4);
+  const shots = [
+    {
+      duration: introLead,
+      pos: [spanX * 0.18, midY + 1.0, D],
+      target: [0, midY, 0],
+      fov: 48,
+      aperture: 0.13,
+      focalDistance: D,
+      ease: 'out',
+    },
+  ];
+  for (let i = 0; i < N; i++) {
+    const hTop = (Math.max(...Array.from({ length: S }, (_, s) => vOf(i, s))) / mMax) * H_MAX;
+    shots.push({
+      duration: holdEach,
+      pos: [groupX(i) * 0.55, Math.min(hTop + 0.6, H_MAX), D * 0.58],
+      target: [groupX(i), hTop * 0.6, 0],
+      fov: 45,
+      transition: 'blend',
+      aperture: 0.2,
+      focalDistance: D * 0.58,
+      shake: 0.035,
+      ease: 'smooth',
+    });
+  }
+  const superAt = shots.reduce((s, sh) => s + sh.duration, 0);
+  const eTop =
+    (Math.max(...Array.from({ length: S }, (_, s) => vOf(emphasisIdx, s))) / mMax) * H_MAX;
+  shots.push({
+    duration: TEMPO.superHold,
+    pos: [groupX(emphasisIdx) + 0.6, Math.max(eTop * 0.35, 0.4), 3.0],
+    target: [groupX(emphasisIdx), eTop * 0.7, 0],
+    fov: 44,
+    transition: 'cut',
+    beat: 'super',
+    aperture: [0.8, 0.4],
+    focalDistance: 3.2,
+    shake: [0.4, 0.06],
+    ambient: [0.2, 1.0],
+    exposure: [1.15, 1.0],
+    ease: 'out',
+  });
+  const payoffDist = (D + 1.5) * (env ? env.payoffZoom : 1);
+  shots.push({
+    duration: TEMPO.payoff,
+    pos: [spanX * 0.08, midY + 1.4, payoffDist],
+    target: [0, midY, 0],
+    fov: 47,
+    transition: 'blend',
+    aperture: 0.12,
+    focalDistance: payoffDist,
+    ease: 'out',
+  });
+
+  const payoffStart = superAt + TEMPO.superHold;
+  if (ir.callout && ir.callout.text)
+    overlay.push({
+      text: String(ir.callout.text),
+      sub: ir.callout.sub ? String(ir.callout.sub) : undefined,
+      role: 'insight',
+      revealAt: superAt + 0.25,
+    });
+
+  return {
+    v: 1,
+    name: `(magnitude·grouped) ${ir.title || 'comparison'}${env ? ' · alpine' : ''}`,
+    subjects: env ? [...subjects, ...env.subjects] : subjects,
+    overlay,
+    cameraSequence: { loop: false, shots, hitstops: [{ at: superAt + 0.02, hold: 0.14 }] },
+    defaults: env
+      ? env.defaults
+      : { stage: { size: [Math.max(16, spanX + 6), Math.max(12, H_MAX + 6), 12] } },
+  };
+}
+
 export function renderMagnitude(ir, opts = {}) {
   const v = validateIR(ir);
   if (!v.ok) throw new Error(`renderMagnitude: invalid IR — ${v.errors.join('; ')}`);
   if (ir.structure !== 'magnitude')
     throw new Error(`renderMagnitude: expected structure 'magnitude', got '${ir.structure}'`);
   const env = getEnvironment(opts.env);
+  // form:'grouped' + series → category × series grouped bars (source: a
+  // then-vs-now comparison chart). Checked before orientation/line.
+  if (ir.form === 'grouped' && Array.isArray(ir.series) && ir.series.length)
+    return renderGroupedBars(ir, opts, env);
   // orientation:'horizontal' → ranked HORIZONTAL bars (categories top→bottom,
   // length ∝ value growing screen-right). The 2D source's horizontal bar chart
   // (rankings, long category names) reads natively this way; the vertical
   // monolith row is the default. Analytic-safe (boxes) — same fast tier.
   if (ir.orientation === 'horizontal') return renderHorizontalBars(ir, opts, env);
+  // form:'line' → connected trend curve (time-series pages are LINES in the
+  // source; monoliths lose the silhouette). Analytic-safe — same fast tier.
+  if (ir.form === 'line') return renderLineChart(ir, opts, env);
 
   const nodes = ir.nodes.map(label);
   const N = nodes.length;
