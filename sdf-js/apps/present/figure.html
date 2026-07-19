@@ -63,8 +63,16 @@
           opacity 0.5s,
           transform 0.5s;
         pointer-events: none;
-        white-space: nowrap;
+        /* Long wild-corpus titles (English paper headings) overflowed the
+           right edge under nowrap — wrap up to two lines inside the frame. */
+        white-space: normal;
+        overflow-wrap: break-word;
+        max-width: 87vw;
         z-index: 30;
+      }
+      .stage-title.long {
+        /* very long titles drop a size tier so two lines still fit the band */
+        font-size: clamp(32px, 5vh, 64px);
       }
       .stage-title.on {
         opacity: 1;

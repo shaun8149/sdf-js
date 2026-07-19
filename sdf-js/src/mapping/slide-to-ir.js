@@ -82,6 +82,7 @@ The attached image IS the page. You can now READ chart geometry directly:
 - Rule 7 is REPLACED: do NOT degrade chart pages to hold — emit the real structure with your chart-read values. Do NOT set needsReview just because the text layer only had ticks.
 - Use the image to settle label↔value pairing and left-to-right order (it beats the text digest when they disagree).
 - ARITY: nodes must have EXACTLY one label per value you emit. Reading 11 monthly bars → 11 labels (2014.1 … 2015.3; invent no dates — interpolate the axis labels you see) and 11 values. Same for every series in a grouped chart.
+- TIMELINES: each label box/callout connects to exactly ONE node by a thin connector line or by proximity along the curve — pair by FOLLOWING THE CONNECTOR in the image, not by reading order. A box sitting past the last dated node belongs to the FINAL date. Badges/icons decorating a segment are narrative color (callout.sub), not milestones.
 - DENSE RANKINGS (>10 bars): emit only the TOP 8 by value, note "TOP15 truncated to 8" in callout.sub — the 3D stage can't seat 30 bars anyway.
 - Everything else (no invention beyond faithful chart reads, neutral callouts, page vocabulary) still applies.`;
 
