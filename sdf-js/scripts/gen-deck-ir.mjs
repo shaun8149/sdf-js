@@ -27,7 +27,7 @@
 // calls the LLM for missing/failed slides. --force re-extracts everything.
 // =============================================================================
 
-import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { extractSlideIR, parseJsonLoose } from '../src/mapping/slide-to-ir.js';
 
@@ -156,6 +156,20 @@ async function main() {
       console.log(`  [${i}] FELL BACK to bare hold (needsReview)`);
     }
     if (demoted) console.log(`  [${i}] chart+needsReview → demoted to hold (no fabricated series)`);
+    // An image station with an unknown path gets the baked page render,
+    // copied into the standard scenes/assets/<deck>/ home (wild corpus
+    // finding: "PLACEHOLDER" shipped verbatim and 404'd in the player).
+    if (ir.structure === 'image' && (!ir.image || ir.image === 'PLACEHOLDER') && IMAGES_DIR) {
+      const pageFile = `page-${String(i + 1).padStart(2, '0')}.png`;
+      const src = `${IMAGES_DIR}/${pageFile}`;
+      if (existsSync(src)) {
+        const assetDir = `${REPO}sdf-js/scenes/assets/${NAME}`;
+        mkdirSync(assetDir, { recursive: true });
+        writeFileSync(`${assetDir}/${pageFile}`, readFileSync(src));
+        ir.image = `assets/${NAME}/${pageFile}`;
+        console.log(`  [${i}] image PLACEHOLDER → ${ir.image}`);
+      }
+    }
     irs.push(ir);
     cache[i] = ir;
     writeFileSync(CACHE_PATH, JSON.stringify(cache, null, 1));
@@ -180,6 +194,7 @@ async function main() {
   const deckUser = `Deck title hint: ${DECK_TITLE || '(none)'}\nStations:\n${JSON.stringify(stationFacts, null, 1)}`;
   let envelope = null;
   let envErrs = null;
+  let lastCand = null;
   for (let attempt = 0; attempt < 3; attempt++) {
     const user = envErrs
       ? `${deckUser}\n\nYour previous attempt failed:\n- ${envErrs.join('\n- ')}\nReturn a corrected JSON.`
@@ -187,6 +202,7 @@ async function main() {
     try {
       const raw = await callLLM(DECK_SYSTEM, user, 8000);
       const cand = parseJsonLoose(raw);
+      lastCand = cand;
       envErrs = validateEnvelope(cand, irs.length);
       if (envErrs.length === 0) {
         envelope = cand;
@@ -196,9 +212,19 @@ async function main() {
     } catch (e) {
       envErrs = [e.message.slice(0, 200)];
       console.log(`  deck pass attempt ${attempt + 1} error: ${envErrs[0]}`);
+      lastCand = null;
     }
   }
-  if (!envelope) throw new Error('deck narrative pass failed after 3 attempts');
+  if (!envelope) {
+    // Deterministic envelope repair — same philosophy as the arity repair: at
+    // temperature 0 the model loops on the same partition mistake (first wild
+    // corpus, a 14-page SIGGRAPH paper: zones written for only 8 of 14
+    // stations, three identical retries). Salvage what it wrote — titles,
+    // narration lines it DID produce — and rebuild the invariants: contiguous
+    // zone partition, exactly one station line per station.
+    envelope = repairEnvelope(lastCand, irs, DECK_TITLE || NAME);
+    console.log('  deck pass REPAIRED deterministically (envelopeRepaired: true)');
+  }
 
   // Phase 3: assemble + compile check
   const deck = {
@@ -222,6 +248,59 @@ async function main() {
     `  ${irs.length} stations | structures: ${[...new Set(irs.map((x) => x.structure))].join(', ')} | needsReview: ${flagged}`,
   );
   console.log(`  total LLM cost: $${totalCost.toFixed(2)}`);
+}
+
+// Rebuild a broken narrative envelope around what the model DID produce.
+// Zones: keep the chapter count if plausible, re-partition 0..N-1 evenly.
+// Script: keep every grounded station line the model wrote; synthesize a
+// title-based placeholder for missing stations; drop out-of-range lines.
+function repairEnvelope(cand, irs, fallbackTitle) {
+  const N = irs.length;
+  const c = cand && typeof cand === 'object' ? cand : {};
+  const chapterCount = Math.min(
+    Math.max(Array.isArray(c.chapters) ? c.chapters.length : 0, 2),
+    Math.max(2, Math.min(6, Math.round(N / 6) + 1)),
+  );
+  const zones = [];
+  const per = Math.ceil(N / chapterCount);
+  for (let z = 0; z < chapterCount; z++) {
+    const zone = [];
+    for (let i = z * per; i < Math.min((z + 1) * per, N); i++) zone.push(i);
+    if (zone.length) zones.push(zone);
+  }
+  const chapters = zones.map(
+    (_, z) => (Array.isArray(c.chapters) && c.chapters[z]) || { title: `第 ${z + 1} 章` },
+  );
+  const byStation = new Map();
+  if (Array.isArray(c.script))
+    for (const line of c.script)
+      if (
+        line &&
+        line.kind === 'station' &&
+        Number.isInteger(line.station) &&
+        line.station >= 0 &&
+        line.station < N &&
+        !byStation.has(line.station)
+      )
+        byStation.set(line.station, line);
+  const script = [];
+  for (let i = 0; i < N; i++) {
+    script.push(
+      byStation.get(i) || {
+        text: String(irs[i].callout?.text || irs[i].title || `第 ${i + 1} 页`),
+        station: i,
+        kind: 'station',
+      },
+    );
+  }
+  return {
+    title: c.title || fallbackTitle,
+    chapters,
+    zones,
+    script,
+    finale: c.finale && c.finale.text ? c.finale : { text: fallbackTitle, sub: '完' },
+    envelopeRepaired: true,
+  };
 }
 
 function validateEnvelope(env, N) {
