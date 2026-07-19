@@ -81,8 +81,14 @@ function renderHorizontalBars(ir, opts, env) {
   const DEPTH = 0.72;
   const PITCH = 1.18;
   const lenOf = (i) => Math.max(0.2, (Number(mag[i]) / mMax) * L_MAX);
-  const top = ((N - 1) / 2) * PITCH;
+  // The column STANDS ON the floor: bottom row floats just above y=0, ranks
+  // stack upward. Centring on y=0 buried the lower half of the ranking under
+  // the ground plane (bug caught on the p18 six-row chart: ranks 4-6 rendered
+  // only as floating chips — their bars were below the floor).
+  const bottomY = 0.85 + BAR_H / 2; // bottom bar's centre, clear of the floor
+  const top = bottomY + (N - 1) * PITCH;
   const yOf = (k) => top - k * PITCH; // rank k (0 = top)
+  const midY = (top + bottomY) / 2;
 
   const introLead = introLeadOf();
   const holdEach = TEMPO.beatHold;
@@ -108,7 +114,7 @@ function renderHorizontalBars(ir, opts, env) {
     id: 'baseline',
     type: 'box',
     args: { dims: [0.08, N * PITCH + 0.4, 0.3] },
-    transform: { translate: [0.06, 0, -0.1] },
+    transform: { translate: [0.06, midY, -0.1] },
     material: { hue: 0.6, sat: 0.08, value: 0.5, kind: 'normal', roughness: 0.6 },
   });
 
@@ -119,7 +125,7 @@ function renderHorizontalBars(ir, opts, env) {
     {
       duration: introLead,
       pos: [-L_MAX * 0.35, top + 1.2, D],
-      target: [-L_MAX * 0.4, 0, 0],
+      target: [-L_MAX * 0.4, midY, 0],
       fov: 48,
       aperture: 0.14,
       focalDistance: D,
@@ -164,7 +170,7 @@ function renderHorizontalBars(ir, opts, env) {
   shots.push({
     duration: TEMPO.payoff,
     pos: [-L_MAX * 0.4, top + 1.6, payoffDist],
-    target: [-L_MAX * 0.42, 0, 0],
+    target: [-L_MAX * 0.42, midY, 0],
     fov: 47,
     transition: 'blend',
     aperture: 0.12,
