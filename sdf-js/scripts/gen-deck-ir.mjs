@@ -29,6 +29,8 @@
 
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
+import { resolve } from 'node:path';
+import { spawnSync } from 'node:child_process';
 import { extractSlideIR, parseJsonLoose } from '../src/mapping/slide-to-ir.js';
 
 const API_KEY = process.env.ANTHROPIC_API_KEY;
@@ -49,7 +51,34 @@ const PDF_PATH = arg('--pdf');
 const NAME = arg('--name');
 const DECK_TITLE = arg('--title', '');
 const ONLY = arg('--only') ? parseInt(arg('--only'), 10) : null;
-const IMAGES_DIR = arg('--images'); // dir of page-<n>.png (1-based); enables vision mode
+let IMAGES_DIR = arg('--images'); // dir of page-<n>.png (1-based); enables vision mode
+// --vision: one flag does it all — derive the pages dir from the deck name
+// and bake the renders if they aren't there yet.
+if (!IMAGES_DIR && process.argv.includes('--vision')) {
+  if (!PDF_PATH) {
+    console.error('✗ --vision requires --pdf (page renders come from the PDF)');
+    process.exit(1);
+  }
+  IMAGES_DIR = `${REPO}sdf-js/fixtures/pages/${NAME}`;
+  if (!existsSync(`${IMAGES_DIR}/page-01.png`)) {
+    console.log(`--vision: baking page renders → ${IMAGES_DIR}`);
+    const r = spawnSync(
+      process.execPath,
+      [
+        `${REPO}sdf-js/scripts/bake-pdf-pages.mjs`,
+        '--pdf',
+        resolve(process.cwd(), PDF_PATH),
+        '--out',
+        `sdf-js/fixtures/pages/${NAME}`,
+      ],
+      { stdio: 'inherit' },
+    );
+    if (r.status !== 0) {
+      console.error('✗ page bake failed');
+      process.exit(1);
+    }
+  }
+}
 const pageImage = (i) => {
   if (!IMAGES_DIR) return null;
   const p = `${IMAGES_DIR}/page-${String(i + 1).padStart(2, '0')}.png`;
@@ -183,8 +212,24 @@ async function main() {
     return;
   }
 
+  // Drop skippable pages (references / appendix / legal boilerplate) BEFORE
+  // the narrative pass — the model never sees them, so the "editorially
+  // skipped stations break the zone partition" failure class (3DGS wild run)
+  // disappears at the source. --keep-all opts out. sourcePage in callouts
+  // keeps pointing at the ORIGINAL page numbers, so provenance survives.
+  let deckIrs = irs;
+  if (!process.argv.includes('--keep-all')) {
+    const dropped = irs.map((ir, i) => (ir.skippable ? i : -1)).filter((i) => i >= 0);
+    if (dropped.length) {
+      deckIrs = irs.filter((ir) => !ir.skippable);
+      console.log(
+        `  skippable pages dropped: ${dropped.map((i) => i + 1).join(', ')} (${deckIrs.length} stations remain)`,
+      );
+    }
+  }
+
   // Phase 2: deck narrative
-  const stationFacts = irs.map((ir, i) => ({
+  const stationFacts = deckIrs.map((ir, i) => ({
     i,
     structure: ir.structure,
     title: ir.title,
@@ -203,7 +248,7 @@ async function main() {
       const raw = await callLLM(DECK_SYSTEM, user, 8000);
       const cand = parseJsonLoose(raw);
       lastCand = cand;
-      envErrs = validateEnvelope(cand, irs.length);
+      envErrs = validateEnvelope(cand, deckIrs.length);
       if (envErrs.length === 0) {
         envelope = cand;
         break;
@@ -222,7 +267,7 @@ async function main() {
     // stations, three identical retries). Salvage what it wrote — titles,
     // narration lines it DID produce — and rebuild the invariants: contiguous
     // zone partition, exactly one station line per station.
-    envelope = repairEnvelope(lastCand, irs, DECK_TITLE || NAME);
+    envelope = repairEnvelope(lastCand, deckIrs, DECK_TITLE || NAME);
     console.log('  deck pass REPAIRED deterministically (envelopeRepaired: true)');
   }
 
@@ -232,7 +277,7 @@ async function main() {
     zones: envelope.zones,
     chapters: envelope.chapters,
     finale: envelope.finale,
-    slides: irs,
+    slides: deckIrs,
     script: envelope.script,
   };
   const { assembleDeck } = await import('../src/scene/assemble-deck.js');
@@ -242,10 +287,10 @@ async function main() {
   );
 
   writeFileSync(OUT_PATH, JSON.stringify(deck, null, 1) + '\n');
-  const flagged = irs.filter((x) => x.needsReview).length;
+  const flagged = deckIrs.filter((x) => x.needsReview).length;
   console.log(`\n✓ wrote ${OUT_PATH}`);
   console.log(
-    `  ${irs.length} stations | structures: ${[...new Set(irs.map((x) => x.structure))].join(', ')} | needsReview: ${flagged}`,
+    `  ${deckIrs.length} stations | structures: ${[...new Set(irs.map((x) => x.structure))].join(', ')} | needsReview: ${flagged}`,
   );
   console.log(`  total LLM cost: $${totalCost.toFixed(2)}`);
 }

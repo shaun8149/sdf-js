@@ -1,23 +1,17 @@
 {
   "title": "3D Gaussian Splatting for Real-Time Radiance Field Rendering",
-  "zones": [
-    [0, 1],
-    [2, 3, 4],
-    [5, 6, 7, 8],
-    [9, 10, 11],
-    [12, 13]
-  ],
+  "zones": [[0], [1, 2], [3, 4, 5, 6], [7, 8, 9], [10, 11, 12]],
   "chapters": [
     {
       "title": "开场"
     },
     {
-      "title": "第一章 · 方法概览",
-      "note": "从 NeRF 到 3D 高斯"
+      "title": "第一章 · 技术背景与相关工作",
+      "note": "从NeRF到点云渲染的演进"
     },
     {
-      "title": "第二章 · 核心技术",
-      "note": "自适应密集化与快速光栅化"
+      "title": "第二章 · 核心方法",
+      "note": "3D高斯表示与自适应优化"
     },
     {
       "title": "第三章 · 实验结果",
@@ -25,12 +19,12 @@
     },
     {
       "title": "第四章 · 局限与展望",
-      "note": "未来改进方向"
+      "note": "算法细节与未来方向"
     }
   ],
   "finale": {
-    "text": "3D Gaussian Splatting 重新定义了实时渲染的可能边界。",
-    "sub": "从稀疏点云到实时光场,每一帧都是算法与艺术的完美融合。"
+    "text": "3D Gaussian Splatting开启了实时辐射场渲染的新纪元",
+    "sub": "质量与速度的完美平衡,从学术到应用的关键一步"
   },
   "slides": [
     {
@@ -359,29 +353,20 @@
     },
     {
       "structure": "hold",
-      "title": "REFERENCES",
-      "nodes": [],
-      "callout": {
-        "text": "Bibliography page",
-        "sub": "Academic citations for neural rendering, point-based graphics, and view synthesis techniques",
-        "sourcePage": 12
-      }
-    },
-    {
-      "structure": "hold",
       "title": "Optimization and Densification Algorithm",
       "nodes": [
-        "① Gradient computation for quaternion components (Eq. 11)",
-        "② Algorithm 1: iterative refinement loop with SfM initialization",
+        "① Gradient computation for Gaussian covariance matrices (scaling & rotation)",
+        "② Iterative refinement loop: sample training view → rasterize → compute loss → backprop",
         "③ Pruning: remove low-opacity (α < ε) or oversized Gaussians",
         "④ Densification: split high-gradient large Gaussians (over-reconstruction) or clone small ones (under-reconstruction)",
-        "⑤ Rasterizer sorting: 16×16 tile-based radix sort with depth+index keys"
+        "⑤ Rasterizer design: radix sort splats per frame, 16×16 tile binning for parallel GPU processing"
       ],
       "callout": {
-        "text": "Iterative optimization with adaptive densification",
-        "sub": "Gradient derivation via chain rule (Σ = RSS^T R^T) —— Pruning by opacity/size thresholds —— Split/clone based on gradient magnitude & scale —— Tile-based radix sort for parallel rendering",
+        "text": "Algorithm 1 combines gradient-based optimization with adaptive densification",
+        "sub": "Gradients derived for quaternion rotation & scaling (Eq. 8–11) —— Refinement alternates pruning & splitting/cloning based on ∇L thresholds —— Rasterizer uses radix sort + tile-based parallelism for real-time rendering",
         "sourcePage": 13
-      }
+      },
+      "skippable": false
     },
     {
       "structure": "magnitude",
@@ -425,78 +410,73 @@
   ],
   "script": [
     {
-      "text": "3D Gaussian Splatting,SIGGRAPH 2023 最佳论文,实现了实时辐射场渲染的历史性突破:93 到 135 帧每秒的渲染速度,同时达到 25.2 的 PSNR,比 Mip-NeRF360 快 1300 倍。",
+      "text": "3D Gaussian Splatting,SIGGRAPH 2023的突破性工作:实时渲染达到93到135帧每秒,质量PSNR 25.2,超越Mip-NeRF360的24.3,但渲染速度快1300倍",
       "station": 0,
       "kind": "station"
     },
     {
-      "text": "相比传统 NeRF 方法需要 MVS 数据和长达 48 小时的训练,本文仅用 SfM 点云输入,6 到 51 分钟即可完成训练,实现高质量结果。",
+      "text": "相关工作回顾:传统NeRF方法需要MVS数据,训练耗时长达48小时;本文仅用SfM点云输入,目标是实时高分辨率渲染",
       "station": 1,
       "kind": "station"
     },
     {
-      "text": "核心创新在于用 3D 高斯替代连续密度场:无需昂贵的射线采样,无需 MVS 几何,避免了时序不稳定性。",
+      "text": "点云渲染的演进:NeRF使用连续密度场,需要昂贵的光线采样;点云方法GPU友好但缺乏质量;本文的3D高斯避免神经网络,用瓦片光栅化实现可见性排序的alpha混合",
       "station": 2,
       "kind": "station"
     },
     {
-      "text": "每个 3D 高斯由完整的协方差矩阵定义,分解为缩放矩阵 S 和旋转矩阵 R,存储为三维向量 s 和四元数 q,支持独立优化。",
+      "text": "方法概览:3D高斯用各向异性协方差矩阵表示,可微分且可投影到2D splat;协方差分解为缩放矩阵S和旋转矩阵R,存储为3D向量s加四元数q,便于独立优化",
       "station": 3,
       "kind": "station"
     },
     {
-      "text": "优化从稀疏 SfM 点云开始,每 100 次迭代进行自适应密集化:克隆欠重建区域的小高斯,分裂过重建区域的大高斯,移除透明度低于阈值的高斯。",
+      "text": "自适应控制流程:从稀疏SfM点云初始化,每100次迭代密集化,移除透明度低于阈值的高斯;梯度阈值0.0002判定是否需要克隆或分裂",
       "station": 4,
       "kind": "station"
     },
     {
-      "text": "基于瓦片的光栅化器是速度关键:16×16 瓦片剔除,GPU 基数排序,每个线程块协作加载到共享内存,前向后遍历累积颜色和透明度,直到饱和。",
+      "text": "瓦片光栅化器:16×16瓦片剔除,GPU基数排序按深度和瓦片ID,每个线程块协作加载到共享内存,前向后遍历累积颜色和alpha直到饱和",
       "station": 5,
       "kind": "station"
     },
     {
-      "text": "这是九个测试场景的视觉质量对比,包括 Mip-NeRF360、Deep Blending 和 Tanks&Temples 数据集,箭头和插图标注了非显著的质量差异。",
+      "text": "这是9个测试场景的视觉对比:我们的方法与Mip-NeRF360、InstantNGP、Plenoxels的质量差异,箭头和插图标注了非显而易见的细节",
       "station": 6,
       "kind": "station"
     },
     {
-      "text": "定量评估显示:30K 迭代版本在 Deep Blending 上达到 0.903 SSIM,最高分;在 Mip-NeRF360 上 0.792 SSIM,160 帧每秒,而 Mip-NeRF360 仅 0.06 帧每秒。",
+      "text": "定量评估:Ours-30K在Deep Blending达到0.903 SSIM最高分,与Mip-NeRF360的0.815竞争,但渲染速度160帧对比0.06帧;7K迭代版本6分钟训练即可达到0.770 SSIM",
       "station": 7,
       "kind": "station"
     },
     {
-      "text": "这是速度与质量的双重胜利。",
+      "text": "这是实时渲染的质量与速度双重突破",
       "station": 7,
       "kind": "super"
     },
     {
-      "text": "消融实验表明完整模型达到 26.05 PSNR:SfM 初始化、克隆分裂密集化、各向异性协方差、球谐函数都有贡献,训练时间 35 到 45 分钟,而 Mip-NeRF360 需要 48 小时。",
+      "text": "消融实验:完整模型平均PSNR 26.05;SfM初始化、密集化策略、各向异性协方差、球谐函数都有贡献;完整模型训练35到45分钟,对比Mip-NeRF360的48小时",
       "station": 8,
       "kind": "station"
     },
     {
-      "text": "方法也有局限:观察不足的区域会出现伪影,视角相关区域的大高斯会产生弹出伪影,简单的可见性算法导致深度切换,未应用正则化。",
+      "text": "局限性:在观测不足区域出现伪影,其他方法如Mip-NeRF360也有此问题;大高斯在视角相关区域产生popping伪影;简单可见性算法导致深度切换;未使用正则化",
       "station": 9,
       "kind": "station"
     },
     {
-      "text": "这是首个实时、高质量的辐射场渲染方法,训练时间具有竞争力。3D 高斯原语保留了体积渲染特性,同时支持快速基于 splat 的光栅化,证明连续表示并非高质量的必要条件。",
+      "text": "结论与讨论:首个实时辐射场渲染方法,质量匹配最佳昂贵方法,训练时间竞争;80%训练时间在Python,光栅化用CUDA优化;连续表示并非高质量的必要条件",
       "station": 10,
       "kind": "station"
     },
     {
-      "text": "参考文献页面,涵盖神经渲染、基于点的图形学和视图合成技术的学术引用。",
+      "text": "算法细节:梯度推导覆盖四元数旋转和缩放;迭代循环交替剪枝和密集化,基于梯度阈值判定分裂或克隆;光栅化器用基数排序和16×16瓦片并行",
       "station": 11,
       "kind": "station"
     },
     {
-      "text": "优化算法细节:通过链式法则推导梯度,基于不透明度和尺寸阈值剪枝,根据梯度幅度和尺度进行分裂或克隆,16×16 瓦片基数排序支持并行渲染。",
+      "text": "感知质量指标:Ours-30k在Truck场景LPIPS 0.148最低,跨Tanks&Temples和Deep Blending场景持续最佳;Mip-NeRF360数据集平均PSNR 27.58,SSIM 0.790,LPIPS 0.240",
       "station": 12,
-      "kind": "station"
-    },
-    {
-      "text": "30K 版本在 Tanks&Temples 和 Deep Blending 场景上取得最佳 LPIPS 分数:Truck 场景 0.148,所有方法中最低,感知质量始终最优。",
-      "station": 13,
       "kind": "station"
     }
   ]

@@ -1,0 +1,23 @@
+{
+  "name": "3dgs",
+  "source": { "pdf": "sdf-js/fixtures/wild/3dgs-siggraph2023.pdf" },
+  "optional": true,
+  "note": "Wild-corpus lock (SIGGRAPH 2023 paper, arXiv 2308.04079). Source PDF is gitignored — the suite skips gracefully when absent; re-download via arxiv.org/pdf/2308.04079.",
+  "pages": {
+    "0": {
+      "label": "标题页",
+      "checks": [{ "type": "mentions", "text": "Gaussian" }]
+    },
+    "7": {
+      "label": "评估表(真 SSIM 值)",
+      "checks": [
+        { "type": "structure", "anyOf": ["magnitude", "matrix"] },
+        { "type": "valuesContain", "values": [0.903] }
+      ]
+    },
+    "11": {
+      "label": "References 必须 skippable",
+      "checks": [{ "type": "flag", "field": "skippable", "equals": true }]
+    }
+  }
+}
