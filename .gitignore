@@ -22,3 +22,5 @@ sdf-js/fixtures/*.pptx
 screens/
 key.txt
 sdf-js/fixtures/pages/
+sdf-js/scenes/ir/*.slides-cache.json
+sdf-js/fixtures/wild/

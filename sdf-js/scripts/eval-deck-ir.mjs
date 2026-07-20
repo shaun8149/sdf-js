@@ -55,7 +55,7 @@ const SUITE_FILTER = arg('--suite');
 const SAVE = arg('--save');
 
 let totalCost = 0;
-async function callLLM({ system, user, maxTokens = 4000 }) {
+async function callLLM({ system, user, maxTokens = 4000, temperature = 0 }) {
   const res = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: {
@@ -65,7 +65,11 @@ async function callLLM({ system, user, maxTokens = 4000 }) {
     },
     body: JSON.stringify({
       model: MODEL,
-      temperature: 0,
+      // pass the caller's temperature through: retry-warming (attempt 0 at
+      // temp 0, retries at 0.5) is what breaks temp-0 validation dead-loops;
+      // hardcoding 0 here silently disabled it and p16 failed 3 identical
+      // attempts in a row while the SAME page passed in gen-deck-ir.
+      temperature,
       max_tokens: maxTokens,
       system,
       messages: [{ role: 'user', content: user }],
@@ -252,7 +256,21 @@ async function main() {
         const p = `${imagesDir}/page-${String(i + 1).padStart(2, '0')}.png`;
         if (existsSync(p)) imageBase64 = readFileSync(p).toString('base64');
       }
-      const { ir } = await extractSlideIR({ slide: slides[i], index: i, callLLM, imageBase64 });
+      let halves = null;
+      if (imagesDir) {
+        const hs = ['L', 'R'].map(
+          (sd) => `${imagesDir}/page-${String(i + 1).padStart(2, '0')}-${sd}.png`,
+        );
+        if (hs.every((p) => existsSync(p)))
+          halves = hs.map((p) => readFileSync(p).toString('base64'));
+      }
+      const { ir } = await extractSlideIR({
+        slide: slides[i],
+        index: i,
+        callLLM,
+        imageBase64,
+        halves,
+      });
       if (!ir) {
         console.log(`  ✗ [${idxStr}] ${page.label} — extraction failed entirely`);
         results.push({

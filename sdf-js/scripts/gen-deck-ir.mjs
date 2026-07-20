@@ -32,6 +32,7 @@ import { fileURLToPath } from 'node:url';
 import { resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { extractSlideIR, parseJsonLoose } from '../src/mapping/slide-to-ir.js';
+import { detectNavChrome } from '../src/mapping/slide-digest.js';
 
 const API_KEY = process.env.ANTHROPIC_API_KEY;
 if (!API_KEY) {
@@ -84,6 +85,17 @@ const pageImage = (i) => {
   const p = `${IMAGES_DIR}/page-${String(i + 1).padStart(2, '0')}.png`;
   return existsSync(p) ? readFileSync(p).toString('base64') : null;
 };
+// 2× half-page crops (bake-pdf-pages --halves) power the roadmap
+// connector-verification pass; absent files just skip the pass.
+const pageHalves = (i) => {
+  if (!IMAGES_DIR) return null;
+  const out = [];
+  for (const side of ['L', 'R']) {
+    const p = `${IMAGES_DIR}/page-${String(i + 1).padStart(2, '0')}-${side}.png`;
+    if (existsSync(p)) out.push(readFileSync(p).toString('base64'));
+  }
+  return out.length === 2 ? out : null;
+};
 if (!NAME || (!SLIDEDATA_PATH && !PDF_PATH)) {
   console.error('✗ required: --name <deck-name> and (--slidedata <path> | --pdf <path>)');
   process.exit(1);
@@ -93,7 +105,7 @@ const CACHE_PATH = `${OUT_PATH}.slides-cache.json`;
 
 // ---- Anthropic ---------------------------------------------------------------
 let totalCost = 0;
-async function callLLM(system, user, maxTokens = 4000) {
+async function callLLM(system, user, maxTokens = 4000, temperature = 0) {
   const res = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: {
@@ -103,7 +115,7 @@ async function callLLM(system, user, maxTokens = 4000) {
     },
     body: JSON.stringify({
       model: MODEL,
-      temperature: 0, // reproducible extractions — eval and production must match
+      temperature,
       max_tokens: maxTokens,
       system,
       messages: [{ role: 'user', content: user }],
@@ -147,6 +159,11 @@ async function main() {
     slides = await parseDeck(PDF_PATH);
   }
   console.log(`deck "${NAME}": ${slides.length} slides`);
+  const chrome = detectNavChrome(slides);
+  if (chrome.size)
+    console.log(
+      `  nav chrome (repeats ≥3 pages, suppressed as content): ${[...chrome].slice(0, 8).join(' · ')}${chrome.size > 8 ? ' …' : ''}`,
+    );
 
   // Phase 1: per-slide IR (cached, validated, self-repairing)
   // --force alone wipes the cache; --force --only N keeps it and re-extracts
@@ -170,8 +187,11 @@ async function main() {
     const { ir: extracted, demoted } = await extractSlideIR({
       slide: slides[i],
       index: i,
-      callLLM: ({ system, user, maxTokens }) => callLLM(system, user, maxTokens),
+      callLLM: ({ system, user, maxTokens, temperature }) =>
+        callLLM(system, user, maxTokens, temperature),
       imageBase64,
+      halves: pageHalves(i),
+      chrome,
     });
     let ir = extracted;
     if (!ir) {

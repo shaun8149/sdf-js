@@ -45,7 +45,7 @@
       ]
     },
     "8": {
-      "label": "p9 里程碑 roadmap(配对)",
+      "label": "p9 里程碑 roadmap(配对;尾部 2014.12/2015.3 ↔ 2.4亿/国外同行 两框连线真歧义 — 监督者与手工双裁互斥,不入金页,由 pairingUncertain 旗承担)",
       "checks": [
         {
           "type": "structure",
@@ -78,13 +78,8 @@
         },
         {
           "type": "milestone",
-          "date": "2014.12",
+          "date": "2014.6",
           "label": "C"
-        },
-        {
-          "type": "milestone",
-          "date": "2015.3",
-          "label": "2.4"
         },
         {
           "type": "milestoneNot",

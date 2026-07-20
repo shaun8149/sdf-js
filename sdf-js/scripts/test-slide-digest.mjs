@@ -7,7 +7,12 @@
 // by rendering the source pages during the 2026-07-19 audits.
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { detectTickLadders, spatialPairs, slideDigest } from '../src/mapping/slide-digest.js';
+import {
+  detectTickLadders,
+  detectNavChrome,
+  spatialPairs,
+  slideDigest,
+} from '../src/mapping/slide-digest.js';
 
 const REPO = fileURLToPath(new URL('../..', import.meta.url));
 
@@ -191,8 +196,8 @@ console.log('=== slide-digest: deterministic anti-fabrication layer ===\n');
     series: [{ label: 's', values: [1, 2, 3] }],
   });
   ok(
-    !v.ok && v.errors.some((e) => /series .* length/.test(e)),
-    'IR contract rejects series/nodes mismatch',
+    !v.ok && v.errors.some((e) => /series ".*" has 3 values but there are 2 nodes/.test(e)),
+    'IR contract rejects series/nodes mismatch (with counts for self-repair)',
   );
   // 混单位标记
   const f1 = flagUnitMismatch({ series: [{ values: [38, 31] }, { values: [900000, 675000] }] });
@@ -236,6 +241,33 @@ console.log('=== slide-digest: deterministic anti-fabrication layer ===\n');
   );
   ok(g4.structure === 'magnitude', 'gates stand down in vision mode');
   ok(ladderOverlap([50, 100, 150], ladders) === 1, 'ladderOverlap computes hit rate');
+}
+
+// --- nav-chrome detection (2013 BP p7–p11 tab rail leaked into 3 stations) ---
+{
+  const tab = (t) => ({ text: t, bbox: { x: 0, y: 0, w: 10, h: 10 }, fontSize: 12 });
+  const slides = [
+    { body: [tab('简单丰富'), tab('高质量评论'), tab('2013'), tab('页面独有内容A')] },
+    { body: [tab('简单丰富'), tab('高质量评论'), tab('2013'), tab('页面独有内容B')] },
+    { body: [tab('简单丰富'), tab('高质量评论'), tab('2013'), tab('简单丰富')] }, // dupe on one page counts once
+    { body: [tab('别的页')] },
+  ];
+  const chrome = detectNavChrome(slides);
+  ok(chrome.has('简单丰富') && chrome.has('高质量评论'), 'nav chrome: ≥3-page repeats detected');
+  ok(
+    !chrome.has('页面独有内容A') && !chrome.has('别的页'),
+    'nav chrome: page-unique text excluded',
+  );
+  ok(!chrome.has('2013'), 'nav chrome: pure digits excluded (minLen + numeric filter)');
+  // fragmentation fuse: a text layer shattered into repeating fragments must
+  // yield an EMPTY set, not a 100-word ban list (the 2013 BP text layer)
+  const frag = Array.from({ length: 3 }, () => ({
+    body: Array.from({ length: 20 }, (_, k) => tab(`碎片字组${k}`)),
+  }));
+  ok(detectNavChrome(frag).size === 0, 'nav chrome: fragmentation fuse returns empty set');
+  const d = slideDigest(slides[0], 0, { chrome });
+  ok(d.includes('NAV CHROME') && d.includes('简单丰富'), 'digest: chrome note names the rail');
+  ok(!slideDigest(slides[3], 3, { chrome }).includes('NAV CHROME'), 'digest: no note without hits');
 }
 
 console.log(`\n${pass}/${pass + fail} passed`);
