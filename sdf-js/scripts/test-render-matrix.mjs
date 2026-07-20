@@ -88,5 +88,60 @@ ok(renderIR(swot).subjects.length === scene.subjects.length, 'renderIR dispatche
   );
 }
 
+// ---- versus form (2 contenders × ≥3 dimensions → the aisle) -------------------------
+{
+  const vs = {
+    structure: 'matrix',
+    title: '推荐引擎 VS. 搜索引擎',
+    axes: [
+      ['推荐引擎', '搜索引擎'],
+      ['使用频次', '服务方式', '表达门槛', '表达精度'],
+    ],
+    nodes: ['高频', '低频', '主动', '被动', '低', '高', '中等', '高'],
+    cells: [
+      [0, 0],
+      [1, 0],
+      [0, 1],
+      [1, 1],
+      [0, 2],
+      [1, 2],
+      [0, 3],
+      [1, 3],
+    ],
+    emphasis: [0],
+  };
+  const { renderMatrix: rm } = await import('../src/scene/render-matrix.js');
+  const aisle = rm(vs);
+  ok(aisle.name.startsWith('(matrix·versus)'), '2×N comparison renders as the aisle');
+  const panels = aisle.subjects.filter((s) => s.id.startsWith('vs-panel-'));
+  ok(panels.length === 8, 'one panel per cell, both walls');
+  ok(
+    panels.every((s) => Math.abs(Math.abs(s.transform.translate[0]) - 2.35) < 1e-9),
+    'walls face each other across the aisle',
+  );
+  const a0 = panels.find((s) => s.id === 'vs-panel-0-0');
+  const b0 = panels.find((s) => s.id === 'vs-panel-1-0');
+  ok(
+    a0.transform.translate[0] > 0 && b0.transform.translate[0] < 0,
+    'contender 0 on +x (screen-left)',
+  );
+  // the walk: one blend beat per dimension between establishing and super
+  const walk = aisle.cameraSequence.shots.filter((s) => s.transition === 'blend' && !s.beat);
+  ok(walk.length >= vs.axes[1].length, 'camera walks one beat per dimension');
+  const sup = aisle.cameraSequence.shots.find((s) => s.beat === 'super');
+  ok(!!sup && sup.transition === 'cut', 'versus keeps the super punch-in');
+  // text in two places (locked): left column for contender 0, right for 1
+  const sides = aisle.overlay.filter((o) => o.role === 'screen').map((o) => o.side);
+  ok(sides.includes('left') && sides.includes('right'), 'comparison text lives in two columns');
+  try {
+    compile(expandStage(aisle), {});
+    ok(true, 'versus scene compiles');
+  } catch (e) {
+    ok(false, `versus compile failed: ${e.message}`);
+  }
+  // guards: SWOT (2×2) and explicit evolution stay off the aisle
+  ok(!rm(swot).name.includes('versus'), 'SWOT 2×2 stays a quadrant wall');
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

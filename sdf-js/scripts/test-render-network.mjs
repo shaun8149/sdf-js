@@ -90,6 +90,76 @@ ok(
   }
 }
 
+// ---- flywheel form (form:'cycle') --------------------------------------------------
+{
+  const { flywheelLayout, cycleMembers } = await import('../src/scene/render-network.js');
+  // the 2015 BP p22 shape: engine feeds a 3-node cycle
+  const fly = {
+    structure: 'network',
+    form: 'cycle',
+    title: '推荐引擎加速内容生态效率',
+    nodes: ['推荐引擎', '分发', '互动', '创作'],
+    relations: [
+      [0, 1],
+      [1, 2],
+      [2, 3],
+      [3, 1],
+      [1, 3],
+      [2, 1],
+    ],
+    emphasis: [0],
+  };
+  const inC = cycleMembers(fly);
+  ok(!inC[0] && inC[1] && inC[2] && inC[3], 'cycle members: engine out, loop in');
+  const { ring, centers } = flywheelLayout(fly);
+  ok(ring.join(',') === '1,2,3' && centers.join(',') === '0', 'ring order follows the flow');
+  const scene = renderNetwork(fly);
+  ok(scene.name.startsWith('(network·flywheel)'), 'cycle form renders as flywheel');
+  const hub = scene.subjects.find((s) => s.id === 'fly-hub-0');
+  ok(
+    !!hub &&
+      Math.abs(hub.transform.translate[0]) < 1e-9 &&
+      Math.abs(hub.transform.translate[2]) < 1e-9,
+    'engine stands at the hub',
+  );
+  const ringNodes = scene.subjects.filter((s) => s.id.startsWith('fly-node-'));
+  ok(
+    ringNodes.length === 3 &&
+      ringNodes.every((s) => {
+        const [x, , z] = s.transform.translate;
+        return Math.abs(Math.hypot(x, z) - 2.5) < 1e-6;
+      }),
+    'ring nodes sit on the rim at equal radius',
+  );
+  ok(
+    scene.subjects.filter((s) => s.id.startsWith('fly-arc-')).length === 18 &&
+      scene.subjects.filter((s) => s.id.startsWith('fly-tip-')).length === 9,
+    'directed rim arcs with arrowheads (3 arcs × 6 segs + 3×3 tips)',
+  );
+  const superShot = scene.cameraSequence.shots.find((s) => s.beat === 'super');
+  ok(!!superShot && superShot.transition === 'cut', 'flywheel keeps the super punch-in');
+  ok(scene.subjects.length <= 60, `leaf budget sane (${scene.subjects.length} ≤ 60)`);
+  try {
+    compile(expandStage(scene), {});
+    ok(true, 'flywheel compiles to SDF');
+  } catch (e) {
+    ok(false, `flywheel compile failed: ${e.message}`);
+  }
+  // a cycle too thin for a wheel falls back to the constellation
+  const thin = {
+    ...fly,
+    relations: [
+      [0, 1],
+      [1, 0],
+    ],
+    nodes: ['a', 'b'],
+  };
+  ok(
+    renderNetwork({ ...thin, form: 'cycle' }).name.startsWith('(network)'),
+    'thin cycle falls back',
+  );
+}
+
 // ---- dispatcher -------------------------------------------------------------------
 ok(renderIR(ir).name.startsWith('(network)'), 'renderIR dispatches network');
 

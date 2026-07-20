@@ -256,6 +256,193 @@ function renderEvolutionForm(ir, env) {
   };
 }
 
+// ---- versus form -----------------------------------------------------------------
+// A two-contender comparison (推荐引擎 VS 搜索引擎, N dimensions) is not a
+// quadrant wall — it's an AISLE. Two walls of panels face each other across a
+// walkway, one dimension per bay, and the camera WALKS the aisle: each step is
+// one dimension's head-to-head. That dolly-through is the read 2D can't do —
+// the page's flat table becomes a corridor of confrontations.
+//   1. establishing — the aisle entrance, both walls converging to the horizon
+//   2. the walk — one beat per dimension, camera advancing bay by bay
+//   3. the SUPER — punch-in on the emphasis panel
+//   4. payoff — high reverse from the far end, the whole corridor in one frame
+function renderVersusForm(ir, env, opts) {
+  const nodes = ir.nodes.map(label);
+  const [xCats, yCats] = ir.axes;
+  const Y = yCats.length;
+  const emphasis = new Set(ir.emphasis && ir.emphasis.length ? ir.emphasis : []);
+  const WALL_X = 2.35; // half-width of the aisle; contender 0 at +x (screen-left)
+  const ROW_GAP = 2.3;
+  const PANEL_Y = 1.75;
+  const rowZ = (yi) => -yi * ROW_GAP;
+  const sideX = (xi) => (xi === 0 ? WALL_X : -WALL_X);
+
+  const subjects = [];
+  // header steles: one per contender at the aisle entrance
+  xCats.forEach((c, xi) => {
+    subjects.push({
+      id: `vs-stele-${xi}`,
+      type: 'rounded_box',
+      args: { dims: [0.5, 2.6, 0.5], cornerR: 0.08 },
+      transform: { translate: [sideX(xi), 1.4, ROW_GAP * 0.8] },
+      material:
+        xi === 0
+          ? {
+              hue: 0.995,
+              sat: 0.8,
+              value: 0.75,
+              glow: 0.1,
+              kind: 'normal',
+              roughness: 0.3,
+              clearcoat: 0.5,
+            }
+          : { hue: 0.6, sat: 0.25, value: 0.35, kind: 'normal', roughness: 0.45, clearcoat: 0.3 },
+    });
+  });
+  // panels: one bay per dimension, both walls
+  // the two walls carry team colors: contender 0 warm, contender 1 cool —
+  // the aisle reads as a confrontation even before any text lands
+  const WALL_MATS = [
+    { hue: 0.07, sat: 0.42, value: 0.78, kind: 'normal', roughness: 0.35, clearcoat: 0.4 },
+    { hue: 0.6, sat: 0.28, value: 0.45, kind: 'normal', roughness: 0.45, clearcoat: 0.3 },
+  ];
+  ir.cells.forEach((c, i) => {
+    const [xi, yi] = c;
+    subjects.push({
+      id: `vs-panel-${xi}-${yi}`,
+      type: 'rounded_box',
+      args: { dims: [0.36, 1.25, 1.65], cornerR: 0.07 },
+      transform: { translate: [sideX(xi), PANEL_Y, rowZ(yi)] },
+      material: emphasis.has(i)
+        ? itemMat(true, opts.accent)
+        : xi === 0 && opts.accent
+          ? itemMat(false, opts.accent)
+          : WALL_MATS[xi],
+    });
+  });
+  // center spine: low guide blocks between bays — the walkway reads as built
+  for (let yi = 0; yi < Y; yi++) {
+    subjects.push({
+      id: `vs-spine-${yi}`,
+      type: 'rounded_box',
+      args: { dims: [0.28, 0.14, 0.28], cornerR: 0.05 },
+      transform: { translate: [0, 0.12, rowZ(yi)] },
+      material: { hue: 0.6, sat: 0.2, value: 0.4, glow: 0.06, kind: 'normal', roughness: 0.6 },
+    });
+  }
+
+  // ---- camera: walk the aisle ---------------------------------------------------
+  const introLead = 1.5;
+  const holdEach = 1.15;
+  const endZ = rowZ(Y - 1);
+  const shots = [
+    // 1 — establishing: entrance, both walls converging
+    {
+      duration: introLead,
+      pos: [0, 2.6, ROW_GAP * 1.9],
+      target: [0, PANEL_Y, endZ * 0.45],
+      fov: 52,
+      aperture: 0.18,
+      focalDistance: ROW_GAP * 2.2,
+      ease: 'out',
+    },
+  ];
+  // 2 — the walk: one beat per dimension bay
+  for (let yi = 0; yi < Y; yi++) {
+    shots.push({
+      duration: holdEach,
+      pos: [0, 2.15, rowZ(yi) + ROW_GAP * 1.35],
+      target: [0, PANEL_Y - 0.1, rowZ(yi) - ROW_GAP * 0.4],
+      fov: 50,
+      transition: 'blend',
+      aperture: 0.3,
+      focalDistance: ROW_GAP * 1.5,
+      ease: 'smooth',
+    });
+  }
+  // 3 — the super: punch-in on the emphasis panel (or contender 0's last bay)
+  const eIdx =
+    ir.emphasis && ir.emphasis.length ? ir.emphasis[0] : ir.cells.findIndex((c) => c[0] === 0);
+  const [exi, eyi] = ir.cells[eIdx] || [0, 0];
+  const superAt = shots.reduce((s, sh) => s + sh.duration, 0);
+  shots.push({
+    duration: 1.0,
+    // three-quarter framing from the aisle, a full bay back — the emphasis
+    // panel reads WITH its opponent across the aisle, not as a wall of paint
+    pos: [sideX(exi) * 0.15, PANEL_Y + 0.5, rowZ(eyi) + 2.9],
+    target: [sideX(exi) * 0.85, PANEL_Y, rowZ(eyi) - 0.3],
+    fov: 46,
+    transition: 'cut',
+    beat: 'super',
+    aperture: [0.8, 0.4],
+    focalDistance: 3.1,
+    shake: [0.4, 0.05],
+    ambient: [0.2, 1.0],
+    exposure: [1.2, 1.0],
+    ease: 'out',
+  });
+  // 4 — payoff: high three-quarter from the entrance, the whole corridor
+  // receding to its vanishing point (the shot the flat table can't make)
+  shots.push({
+    duration: 2.3,
+    pos: [3.4, 5.2, ROW_GAP * (env ? 2.4 * env.payoffZoom : 2.4)],
+    target: [0, PANEL_Y - 0.25, endZ * 0.55],
+    fov: 50,
+    transition: 'blend',
+    aperture: 0.1,
+    focalDistance: Math.abs(endZ) * 0.7 + ROW_GAP * 2.5,
+    ease: 'out',
+  });
+
+  // ---- overlay -------------------------------------------------------------------
+  const overlay = [
+    {
+      text: String(ir.title || 'Versus').toUpperCase(),
+      anchor: [0, 4.6, ROW_GAP * 0.5],
+      role: 'title',
+    },
+  ];
+  xCats.forEach((c, xi) =>
+    overlay.push({
+      text: String(c),
+      anchor: [sideX(xi), 3.1, ROW_GAP * 0.8],
+      role: 'card',
+      align: 'center',
+    }),
+  );
+  yCats.forEach((c, yi) =>
+    overlay.push({
+      text: String(c),
+      anchor: [0, PANEL_Y + 1.05, rowZ(yi)],
+      role: 'card',
+      align: 'center',
+      revealAt: introLead + yi * holdEach + 0.1,
+    }),
+  );
+  // panel texts ride the two narration columns — the comparison's text lives
+  // in TWO places (user-locked 2026-07-15: 对比必须把文本放在两个地方)
+  ir.cells.forEach((c, i) => {
+    const [xi, yi] = c;
+    overlay.push({
+      text: nodes[i],
+      anchor: [sideX(xi), PANEL_Y - 0.85, rowZ(yi)],
+      role: 'screen',
+      side: xi === 0 ? 'left' : 'right',
+      align: 'center',
+      revealAt: introLead + yi * holdEach + 0.25,
+    });
+  });
+
+  return {
+    v: 1,
+    name: `(matrix·versus) ${ir.title || 'versus'}${env ? ' · alpine' : ''}`,
+    subjects: env ? [...subjects, ...env.subjects] : subjects,
+    overlay,
+    cameraSequence: { loop: false, shots, hitstops: [{ at: superAt + 0.02, hold: 0.14 }] },
+    defaults: env ? env.defaults : { stage: { size: [16, 12, Math.max(14, Y * ROW_GAP + 8)] } },
+  };
+}
+
 export function renderMatrix(ir, opts = {}) {
   const v = validateIR(ir);
   if (!v.ok) throw new Error(`renderMatrix: invalid IR — ${v.errors.join('; ')}`);
@@ -263,6 +450,13 @@ export function renderMatrix(ir, opts = {}) {
     throw new Error(`renderMatrix: expected structure 'matrix', got '${ir.structure}'`);
   const env = getEnvironment(opts.env);
   if (ir.form === 'evolution' && ir.axes[0].length === 2) return renderEvolutionForm(ir, env);
+  // versus: explicit form, or the unmistakable shape — exactly 2 contenders
+  // compared across ≥3 dimensions (p5/p6 VS tables). SWOT (2×2) stays a wall.
+  if (
+    (ir.form === 'versus' || (!ir.form && ir.axes[0].length === 2 && ir.axes[1].length >= 3)) &&
+    ir.axes[0].length === 2
+  )
+    return renderVersusForm(ir, env, opts);
 
   const nodes = ir.nodes.map(label);
   const N = nodes.length;
