@@ -61,8 +61,11 @@ if (!IMAGES_DIR && process.argv.includes('--vision')) {
     process.exit(1);
   }
   IMAGES_DIR = `${REPO}sdf-js/fixtures/pages/${NAME}`;
-  if (!existsSync(`${IMAGES_DIR}/page-01.png`)) {
-    console.log(`--vision: baking page renders → ${IMAGES_DIR}`);
+  // Halves are part of the standard vision input now (full page + L/R 2×
+  // close-ups), so the bake always includes them — missing halves on an
+  // already-baked dir triggers a top-up bake.
+  if (!existsSync(`${IMAGES_DIR}/page-01.png`) || !existsSync(`${IMAGES_DIR}/page-01-L.png`)) {
+    console.log(`--vision: baking page renders (+halves) → ${IMAGES_DIR}`);
     const r = spawnSync(
       process.execPath,
       [
@@ -71,6 +74,7 @@ if (!IMAGES_DIR && process.argv.includes('--vision')) {
         resolve(process.cwd(), PDF_PATH),
         '--out',
         `sdf-js/fixtures/pages/${NAME}`,
+        '--halves',
       ],
       { stdio: 'inherit' },
     );
@@ -313,6 +317,44 @@ async function main() {
     `  ${deckIrs.length} stations | structures: ${[...new Set(irs.map((x) => x.structure))].join(', ')} | needsReview: ${flagged}`,
   );
   console.log(`  total LLM cost: $${totalCost.toFixed(2)}`);
+
+  // ---- audit block (review-then-ship v0) -----------------------------------
+  // Every flag the pipeline can raise, in one place, so a human can review a
+  // deck without opening the JSON. Silence ≠ clean unless the coverage note
+  // says the check ran: connector verification covers roadmap structures
+  // only, and the demotion gates stand down in vision mode (ladderWarning is
+  // their non-demoting vision-mode residue).
+  const flagOf = (pred, tag) => {
+    const hits = deckIrs.map((x, i) => ({ x, i })).filter(({ x }) => pred(x));
+    if (hits.length)
+      console.log(
+        `  ${tag}: ${hits.map(({ x, i }) => `#${i}${x.callout?.sourcePage ? `(p${x.callout.sourcePage})` : ''} ${String(x.title || '').slice(0, 24)}`).join(' | ')}`,
+      );
+    return hits.length;
+  };
+  console.log('\n== AUDIT (review before shipping) ==');
+  const nUncertain = flagOf(
+    (x) => x.pairingUncertain || x.bindingUncertain,
+    'pairing/bindingUncertain (two passes disagreed)',
+  );
+  const nReview = flagOf((x) => x.needsReview || x.demoted, 'needsReview/demoted');
+  const nLadder = flagOf(
+    (x) => x.ladderWarning,
+    'ladderWarning (values overlap axis ticks ≥50%, vision mode — verify against the page)',
+  );
+  const nAxis = flagOf((x) => x.axisUncertain, 'axisUncertain (tick labels unreadable)');
+  const nUnit = flagOf((x) => x.unitMismatch, 'unitMismatch (grouped series mix units)');
+  const nHold = deckIrs.filter((x) => x.structure === 'hold').length;
+  console.log(`  hold stations: ${nHold}/${deckIrs.length} (high share = chart pages flattened)`);
+  console.log(
+    `  coverage: connector verification = roadmap only; fabrication demotion gates stand down in vision mode`,
+  );
+  const total = nUncertain + nReview + nLadder + nAxis + nUnit;
+  console.log(
+    total === 0
+      ? '  no flags raised — still spot-check chart pages against source renders'
+      : `  ${total} flag(s) — resolve or route the camera around these before shipping`,
+  );
 }
 
 // Rebuild a broken narrative envelope around what the model DID produce.

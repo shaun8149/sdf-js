@@ -240,6 +240,13 @@ console.log('=== slide-digest: deterministic anti-fabrication layer ===\n');
     { hadImage: true, ladders },
   );
   ok(g4.structure === 'magnitude', 'gates stand down in vision mode');
+  // …but they leave a non-demoting warning flag for the audit block
+  ok(g4.ladderWarning === true, 'vision mode: high tick-overlap sets ladderWarning');
+  const g5 = antiFabricationGate(
+    { structure: 'magnitude', title: 't', nodes: ['a', 'b', 'c'], magnitude: [73, 27, 42] },
+    { hadImage: true, ladders },
+  );
+  ok(!g5.ladderWarning, 'vision mode: clean chart read carries no warning');
   ok(ladderOverlap([50, 100, 150], ladders) === 1, 'ladderOverlap computes hit rate');
 }
 
