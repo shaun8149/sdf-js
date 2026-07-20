@@ -140,12 +140,268 @@ const EDGE_MAT = {
   clearcoat: 0.15,
 };
 
+// ---- flywheel form ---------------------------------------------------------------
+// A cycle network (form:'cycle') is not a constellation — it's an ENGINE. The
+// native 3D form is a FLYWHEEL: the cycle members sit on a horizontal ring,
+// directed flow arcs run along the rim with arrowheads, and the non-cycle
+// feeder (the 2015 BP p22's 推荐引擎) stands at the hub driving it. The camera
+// orbits IN the flow direction — the wheel "spins" through parallax while the
+// geometry stays put (STATIC rule, user-locked 2026-07-15).
+
+/** Nodes that can reach themselves = the cycle members (tiny graphs, DFS). */
+export function cycleMembers(ir) {
+  const N = ir.nodes.length;
+  const adj = Array.from({ length: N }, () => []);
+  for (const [a, b] of ir.relations || []) if (a !== b) adj[a].push(b);
+  const reaches = (from, goal) => {
+    const seen = new Set();
+    const stack = [...adj[from]];
+    while (stack.length) {
+      const n = stack.pop();
+      if (n === goal) return true;
+      if (seen.has(n)) continue;
+      seen.add(n);
+      stack.push(...adj[n]);
+    }
+    return false;
+  };
+  return ir.nodes.map((_, i) => reaches(i, i));
+}
+
+/** Ring order: start at the lowest-index member, follow cycle edges. */
+export function flywheelLayout(ir) {
+  const inCycle = cycleMembers(ir);
+  const members = ir.nodes.map((_, i) => i).filter((i) => inCycle[i]);
+  const centers = ir.nodes.map((_, i) => i).filter((i) => !inCycle[i]);
+  const adj = Array.from({ length: ir.nodes.length }, () => []);
+  for (const [a, b] of ir.relations || []) adj[a].push(b);
+  const ring = [];
+  if (members.length) {
+    const seen = new Set();
+    let cur = members[0];
+    while (cur != null && !seen.has(cur)) {
+      ring.push(cur);
+      seen.add(cur);
+      cur = adj[cur].find((n) => inCycle[n] && !seen.has(n));
+    }
+    for (const m of members) if (!seen.has(m)) ring.push(m); // stragglers
+  }
+  return { ring, centers };
+}
+
+function renderFlywheelForm(ir, env, opts) {
+  const nodes = ir.nodes.map(label);
+  const { ring, centers } = flywheelLayout(ir);
+  const M = ring.length;
+  const R = 2.5;
+  const RING_Y = 1.9;
+  const emphasis = new Set(
+    ir.emphasis && ir.emphasis.length ? ir.emphasis : centers.length ? [centers[0]] : [ring[0]],
+  );
+  // ring node angles: index k → around the wheel; -θ so the flow reads
+  // clockwise from the standard high-orbit view (+x is screen-LEFT)
+  const angle = (k) => Math.PI / 2 - (k * 2 * Math.PI) / Math.max(M, 1);
+  const ringPos = ring.map((_, k) => [Math.cos(angle(k)) * R, RING_Y, Math.sin(angle(k)) * R]);
+  const centerPos = centers.map((_, j) => [0, RING_Y + j * 1.3, 0]);
+
+  const pos = new Array(ir.nodes.length);
+  ring.forEach((i, k) => (pos[i] = ringPos[k]));
+  centers.forEach((i, j) => (pos[i] = centerPos[j]));
+
+  const subjects = [];
+  // hub engine(s): bigger, brighter — the thing that drives the wheel
+  centers.forEach((i, j) => {
+    subjects.push({
+      id: `fly-hub-${j}`,
+      type: 'sphere',
+      args: { radius: 0.62 },
+      transform: { translate: centerPos[j] },
+      material: nodeMatN(1, 1, emphasis.has(i), opts.accent),
+    });
+  });
+  ring.forEach((i, k) => {
+    subjects.push({
+      id: `fly-node-${k}`,
+      type: 'sphere',
+      args: { radius: emphasis.has(i) ? 0.5 : 0.42 },
+      transform: { translate: ringPos[k] },
+      material: nodeMatN(2, 2, emphasis.has(i), opts.accent),
+    });
+  });
+  // rim arcs with arrowheads: one directed arc per consecutive ring pair.
+  // Arc = short capsule segments along the circle; arrowhead = 3 shrinking
+  // spheres at the arc's end (analytic tier: no cone primitive, no z-rotation).
+  const SEGS = 6;
+  const arcMat = { ...EDGE_MAT, value: 0.7, glow: 0.14 };
+  for (let k = 0; k < M; k++) {
+    const a0 = angle(k);
+    const a1 = angle(k + 1); // wraps: angle() is linear in k
+    const pad = 0.55 / R; // radians of clearance around each node
+    const from = a0 - pad;
+    const to = a1 + pad;
+    for (let s = 0; s < SEGS; s++) {
+      const t0 = from + ((to - from) * s) / SEGS;
+      const t1 = from + ((to - from) * (s + 1)) / SEGS;
+      const p0 = [Math.cos(t0) * R, RING_Y, Math.sin(t0) * R];
+      const p1 = [Math.cos(t1) * R, RING_Y, Math.sin(t1) * R];
+      subjects.push({
+        id: `fly-arc-${k}-${s}`,
+        type: 'capsule',
+        args: { a: [0, 0, 0], b: [p1[0] - p0[0], 0, p1[2] - p0[2]], radius: 0.055 },
+        transform: { translate: p0 },
+        material: arcMat,
+      });
+    }
+    // arrowhead: 3 shrinking spheres continuing PAST the arc end toward the
+    // destination node (flow direction = decreasing angle)
+    for (let h = 0; h < 3; h++) {
+      const th = to - ((h + 1) * 0.55 * pad) / 3;
+      subjects.push({
+        id: `fly-tip-${k}-${h}`,
+        type: 'sphere',
+        args: { radius: 0.13 - h * 0.035 },
+        transform: { translate: [Math.cos(th) * R, RING_Y, Math.sin(th) * R] },
+        material: arcMat,
+      });
+    }
+  }
+  // spokes: hub → ring relations (thin, faint)
+  const ringSet = new Set(ring);
+  (ir.relations || []).forEach(([a, b], e) => {
+    const hubEnd = !ringSet.has(a) || !ringSet.has(b);
+    if (!hubEnd) return; // rim traffic is already the arcs
+    const pa = pos[a];
+    const pb = pos[b];
+    if (!pa || !pb) return;
+    subjects.push({
+      id: `fly-spoke-${e}`,
+      type: 'capsule',
+      args: { a: [0, 0, 0], b: [pb[0] - pa[0], pb[1] - pa[1], pb[2] - pa[2]], radius: 0.04 },
+      transform: { translate: pa },
+      material: EDGE_MAT,
+    });
+  });
+
+  // ---- camera: five beats, flywheel variation — the orbit FOLLOWS the flow ----
+  const eIdx = [...emphasis][0];
+  const ep = pos[eIdx] || [0, RING_Y, 0];
+  const shots = [
+    // 1 — hero: low at rim level, looking across the wheel at the hub
+    {
+      duration: 1.1,
+      pos: [ringPos[0][0] * 1.5, RING_Y - 0.5, ringPos[0][2] * 1.5 + 1.2],
+      target: [0, RING_Y + 0.2, 0],
+      fov: 54,
+      aperture: 0.5,
+      focalDistance: R * 1.4,
+      ease: 'out',
+    },
+    // 2 — crane out: the whole wheel
+    {
+      duration: 1.3,
+      pos: [0.8, RING_Y + R * 1.5, R * 2.3],
+      target: [0, RING_Y, 0],
+      fov: 46,
+      transition: 'blend',
+      aperture: 0.25,
+      focalDistance: R * 2.6,
+      ease: 'inout',
+    },
+  ];
+  // 3 — flow orbit: circle in the direction the arrows point (θ decreasing),
+  // one beat per ring node — the wheel spins via parallax
+  for (let k = 0; k < Math.max(M, 3); k++) {
+    const th = Math.PI / 2 - ((k + 1) * 2 * Math.PI) / Math.max(M, 3);
+    const dist = R * 2.2;
+    shots.push({
+      duration: 1.15,
+      pos: [Math.cos(th) * dist, RING_Y + R * 1.05, Math.sin(th) * dist],
+      target: [0, RING_Y - 0.15, 0],
+      fov: 45,
+      transition: 'blend',
+      aperture: 0.22,
+      focalDistance: dist,
+      ease: 'smooth',
+    });
+  }
+  // 4 — the super: hard cut punch-in on the engine/emphasis
+  const superAt = shots.reduce((s, sh) => s + sh.duration, 0);
+  shots.push({
+    duration: 1.0,
+    pos: [ep[0] + 0.6, Math.max(ep[1] - 0.05, 0.4), ep[2] + 2.1],
+    target: [ep[0], ep[1] + 0.05, ep[2]],
+    fov: 42,
+    transition: 'cut',
+    beat: 'super',
+    aperture: [0.9, 0.45],
+    focalDistance: 2.2,
+    shake: [0.5, 0.06],
+    ambient: [0.15, 1.0],
+    exposure: [1.2, 1.0],
+    ease: 'out',
+  });
+  // 5 — payoff pull-back: mid crane, the whole engine turning in one frame
+  const payoffDist = (R * 2.9 + 1.2) * (env ? env.payoffZoom : 1);
+  shots.push({
+    duration: 2.4,
+    pos: [1.2, RING_Y + payoffDist * 0.5, payoffDist * 0.9],
+    target: [0, RING_Y - 0.1, 0],
+    fov: 45,
+    transition: 'blend',
+    aperture: 0.12,
+    focalDistance: payoffDist,
+    ease: 'out',
+  });
+
+  const overlay = [
+    {
+      text: String(ir.title || 'Flywheel').toUpperCase(),
+      anchor: [0, RING_Y + R * 1.15 + 0.9, 0],
+      role: 'title',
+    },
+  ];
+  centers.forEach((i, j) => {
+    overlay.push({
+      text: nodes[i],
+      anchor: [0, centerPos[j][1] + 0.95, 0],
+      role: 'card',
+      align: 'center',
+      revealAt: 0.4,
+    });
+  });
+  ring.forEach((i, k) => {
+    const p = ringPos[k];
+    overlay.push({
+      text: nodes[i],
+      anchor: [p[0] * 1.18, p[1] - 0.72, p[2] * 1.18],
+      role: 'card',
+      align: 'center',
+      revealAt: 0.7 + k * 0.25,
+    });
+  });
+  const co = calloutOverlay(ir, superAt);
+  if (co) overlay.push(co);
+
+  return {
+    v: 1,
+    name: `(network·flywheel) ${ir.title || 'cycle'}${env ? ' · alpine' : ''}`,
+    subjects: env ? [...subjects, ...env.subjects] : subjects,
+    overlay,
+    cameraSequence: { loop: false, shots, hitstops: [{ at: superAt + 0.02, hold: 0.14 }] },
+    defaults: env ? env.defaults : { stage: { size: [16, 12, 12] } },
+  };
+}
+
 export function renderNetwork(ir, opts = {}) {
   const v = validateIR(ir);
   if (!v.ok) throw new Error(`renderNetwork: invalid IR — ${v.errors.join('; ')}`);
   if (ir.structure !== 'network')
     throw new Error(`renderNetwork: expected structure 'network', got '${ir.structure}'`);
   const env = getEnvironment(opts.env);
+  if (ir.form === 'cycle' && (ir.relations || []).length >= 3) {
+    const { ring } = flywheelLayout(ir);
+    if (ring.length >= 3) return renderFlywheelForm(ir, env, opts);
+  }
 
   const nodes = ir.nodes.map(label);
   const N = nodes.length;
