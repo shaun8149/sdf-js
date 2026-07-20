@@ -158,6 +158,17 @@ ok(
     renderNetwork({ ...thin, form: 'cycle' }).name.startsWith('(network)'),
     'thin cycle falls back',
   );
+  const large = {
+    structure: 'network',
+    form: 'cycle',
+    title: 'oversized flywheel',
+    nodes: Array.from({ length: 10 }, (_, i) => `n${i}`),
+    relations: Array.from({ length: 10 }, (_, i) => [i, (i + 1) % 10]),
+  };
+  ok(
+    renderNetwork(large).name.startsWith('(network)'),
+    'oversized cycle falls back before exceeding the studio subject budget',
+  );
 }
 
 // ---- dispatcher -------------------------------------------------------------------

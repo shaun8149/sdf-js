@@ -34,11 +34,6 @@ if (!DECK || !OUT) {
   console.error('✗ required: --deck <name> --out <dir>');
   process.exit(1);
 }
-const FRAMES = resolve(OUT, 'frames');
-const STILLS = resolve(OUT, 'gate');
-mkdirSync(FRAMES, { recursive: true });
-mkdirSync(STILLS, { recursive: true });
-
 const CHROME = [
   'C:/Program Files/Google/Chrome/Application/chrome.exe',
   'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe',
@@ -49,6 +44,25 @@ if (!CHROME) {
   console.error('✗ no Chrome executable found');
   process.exit(1);
 }
+
+const loadFfmpeg = async () => {
+  try {
+    const ffmpegPath = (await import('ffmpeg-static')).default;
+    if (!ffmpegPath) throw new Error('ffmpeg-static did not return a binary path');
+    return ffmpegPath;
+  } catch (e) {
+    console.error('✗ ffmpeg-static is required before capture starts');
+    console.error(`  ${e && e.message ? e.message : String(e)}`);
+    console.error('  Run: npm install');
+    process.exit(1);
+  }
+};
+const ffmpeg = await loadFfmpeg();
+
+const FRAMES = resolve(OUT, 'frames');
+const STILLS = resolve(OUT, 'gate');
+mkdirSync(FRAMES, { recursive: true });
+mkdirSync(STILLS, { recursive: true });
 
 const MIME = {
   '.html': 'text/html',
@@ -74,7 +88,14 @@ const PORT = server.address().port;
 
 const browser = await chromium.launch({ executablePath: CHROME, headless: true });
 const page = await browser.newPage({ viewport: { width: WIDTH, height: HEIGHT } });
-page.on('pageerror', (e) => console.error('  [page]', String(e).slice(0, 160)));
+let rejectReady = null;
+const pageReadyFailed = new Promise((_, reject) => {
+  rejectReady = reject;
+});
+page.on('pageerror', (e) => {
+  console.error('  [page]', String(e).slice(0, 160));
+  if (rejectReady) rejectReady(e);
+});
 
 const url = `http://127.0.0.1:${PORT}/sdf-js/apps/present/figure.html?deck=${DECK}&layout=${LAYOUT}&fps=0`;
 console.log(`▶ ${url}`);
@@ -85,8 +106,11 @@ await page.goto(url, { waitUntil: 'domcontentloaded' });
 // boot overlay gets .done on the first real frame — capture must not start
 // until then, or the film opens on minutes of "warming shaders n/122".
 console.log('  waiting for shader warm-up…');
-await page.waitForSelector('#loading.done', { timeout: 600000 });
-await page.waitForTimeout(500);
+await Promise.race([page.waitForSelector('#loading.done', { timeout: 600000 }), pageReadyFailed]);
+await page.evaluate(() => {
+  window.__figStudio?.setSequenceTime?.(0);
+});
+await page.waitForTimeout(100);
 console.log('  warm-up complete, capture begins');
 
 const cdp = await page.context().newCDPSession(page);
@@ -137,7 +161,6 @@ console.log(`\n✓ ${n} frames over ${captureSecs.toFixed(1)}s, ${still} stills`
 // assemble mp4 at the REAL capture rate (frames ÷ elapsed) so playback runs
 // at true speed — CDP delivers at compositor rate and ignores ack pacing
 const realFps = (n / Math.max(captureSecs, 1)).toFixed(3);
-const ffmpeg = (await import('ffmpeg-static')).default;
 const mp4 = resolve(OUT, `${DECK}-${LAYOUT}.mp4`);
 const r = spawnSync(
   ffmpeg,

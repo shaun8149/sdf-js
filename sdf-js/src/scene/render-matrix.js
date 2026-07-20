@@ -17,6 +17,17 @@ import { validateIR } from './ir.js';
 import { getEnvironment } from './environments.js';
 
 const label = (n) => (typeof n === 'string' ? n : (n && (n.label ?? n.name)) || '');
+const PAST_AXIS_RE = /过去|以前|历史|旧|before|past|then|legacy|former|earlier/i;
+const PRESENT_AXIS_RE = /现在|当前|未来|新|after|present|now|today|current|future/i;
+const isEraAxis = (axis) => {
+  if (!Array.isArray(axis) || axis.length !== 2) return false;
+  const a = String(axis[0] || '');
+  const b = String(axis[1] || '');
+  return (
+    (PAST_AXIS_RE.test(a) && PRESENT_AXIS_RE.test(b)) ||
+    (PAST_AXIS_RE.test(b) && PRESENT_AXIS_RE.test(a))
+  );
+};
 
 const TILE_MAT = { hue: 0.6, sat: 0.1, value: 0.3, kind: 'normal', roughness: 0.7, clearcoat: 0.1 };
 const itemMat = (emphasized, accent) =>
@@ -449,7 +460,8 @@ export function renderMatrix(ir, opts = {}) {
   if (ir.structure !== 'matrix')
     throw new Error(`renderMatrix: expected structure 'matrix', got '${ir.structure}'`);
   const env = getEnvironment(opts.env);
-  if (ir.form === 'evolution' && ir.axes[0].length === 2) return renderEvolutionForm(ir, env);
+  if ((ir.form === 'evolution' || (!ir.form && isEraAxis(ir.axes[0]))) && ir.axes[0].length === 2)
+    return renderEvolutionForm(ir, env);
   // versus: explicit form, or the unmistakable shape — exactly 2 contenders
   // compared across ≥3 dimensions (p5/p6 VS tables). SWOT (2×2) stays a wall.
   if (

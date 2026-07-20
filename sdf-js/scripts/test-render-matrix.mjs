@@ -141,6 +141,28 @@ ok(renderIR(swot).subjects.length === scene.subjects.length, 'renderIR dispatche
   }
   // guards: SWOT (2×2) and explicit evolution stay off the aisle
   ok(!rm(swot).name.includes('versus'), 'SWOT 2×2 stays a quadrant wall');
+  const era = {
+    structure: 'matrix',
+    title: '过去到现在',
+    axes: [
+      ['过去', '现在'],
+      ['生产', '分发', '终端'],
+    ],
+    nodes: ['线下', '线上', '人工', '算法', 'PC', '移动'],
+    cells: [
+      [0, 0],
+      [1, 0],
+      [0, 1],
+      [1, 1],
+      [0, 2],
+      [1, 2],
+    ],
+    emphasis: [3],
+  };
+  ok(
+    rm(era).name.startsWith('(matrix·evolution)'),
+    'implicit past/present 2×N matrix renders as evolution',
+  );
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

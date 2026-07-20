@@ -140,6 +140,10 @@ const EDGE_MAT = {
   clearcoat: 0.15,
 };
 
+const FLYWHEEL_ARC_SEGMENTS = 6;
+const FLYWHEEL_TIP_COUNT = 3;
+const FLYWHEEL_SUBJECT_BUDGET = 80;
+
 // ---- flywheel form ---------------------------------------------------------------
 // A cycle network (form:'cycle') is not a constellation — it's an ENGINE. The
 // native 3D form is a FLYWHEEL: the cycle members sit on a horizontal ring,
@@ -189,6 +193,17 @@ export function flywheelLayout(ir) {
   return { ring, centers };
 }
 
+function flywheelSubjectCount(ir, { ring, centers }) {
+  const ringSet = new Set(ring);
+  const spokes = (ir.relations || []).filter(([a, b]) => !ringSet.has(a) || !ringSet.has(b)).length;
+  return (
+    centers.length +
+    ring.length +
+    ring.length * (FLYWHEEL_ARC_SEGMENTS + FLYWHEEL_TIP_COUNT) +
+    spokes
+  );
+}
+
 function renderFlywheelForm(ir, env, opts) {
   const nodes = ir.nodes.map(label);
   const { ring, centers } = flywheelLayout(ir);
@@ -231,7 +246,6 @@ function renderFlywheelForm(ir, env, opts) {
   // rim arcs with arrowheads: one directed arc per consecutive ring pair.
   // Arc = short capsule segments along the circle; arrowhead = 3 shrinking
   // spheres at the arc's end (analytic tier: no cone primitive, no z-rotation).
-  const SEGS = 6;
   const arcMat = { ...EDGE_MAT, value: 0.7, glow: 0.14 };
   for (let k = 0; k < M; k++) {
     const a0 = angle(k);
@@ -239,9 +253,9 @@ function renderFlywheelForm(ir, env, opts) {
     const pad = 0.55 / R; // radians of clearance around each node
     const from = a0 - pad;
     const to = a1 + pad;
-    for (let s = 0; s < SEGS; s++) {
-      const t0 = from + ((to - from) * s) / SEGS;
-      const t1 = from + ((to - from) * (s + 1)) / SEGS;
+    for (let s = 0; s < FLYWHEEL_ARC_SEGMENTS; s++) {
+      const t0 = from + ((to - from) * s) / FLYWHEEL_ARC_SEGMENTS;
+      const t1 = from + ((to - from) * (s + 1)) / FLYWHEEL_ARC_SEGMENTS;
       const p0 = [Math.cos(t0) * R, RING_Y, Math.sin(t0) * R];
       const p1 = [Math.cos(t1) * R, RING_Y, Math.sin(t1) * R];
       subjects.push({
@@ -254,8 +268,8 @@ function renderFlywheelForm(ir, env, opts) {
     }
     // arrowhead: 3 shrinking spheres continuing PAST the arc end toward the
     // destination node (flow direction = decreasing angle)
-    for (let h = 0; h < 3; h++) {
-      const th = to - ((h + 1) * 0.55 * pad) / 3;
+    for (let h = 0; h < FLYWHEEL_TIP_COUNT; h++) {
+      const th = to - ((h + 1) * 0.55 * pad) / FLYWHEEL_TIP_COUNT;
       subjects.push({
         id: `fly-tip-${k}-${h}`,
         type: 'sphere',
@@ -399,8 +413,9 @@ export function renderNetwork(ir, opts = {}) {
     throw new Error(`renderNetwork: expected structure 'network', got '${ir.structure}'`);
   const env = getEnvironment(opts.env);
   if (ir.form === 'cycle' && (ir.relations || []).length >= 3) {
-    const { ring } = flywheelLayout(ir);
-    if (ring.length >= 3) return renderFlywheelForm(ir, env, opts);
+    const layout = flywheelLayout(ir);
+    if (layout.ring.length >= 3 && flywheelSubjectCount(ir, layout) <= FLYWHEEL_SUBJECT_BUDGET)
+      return renderFlywheelForm(ir, env, opts);
   }
 
   const nodes = ir.nodes.map(label);
