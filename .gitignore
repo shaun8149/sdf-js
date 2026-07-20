@@ -24,3 +24,7 @@ key.txt
 sdf-js/fixtures/pages/
 sdf-js/scenes/ir/*.slides-cache.json
 sdf-js/fixtures/wild/
+# concierge decks: strangers' files never enter the public repo
+sdf-js/scenes/ir/concierge-*
+sdf-js/scenes/assets/concierge-*
+sdf-js/fixtures/pages/concierge-*
