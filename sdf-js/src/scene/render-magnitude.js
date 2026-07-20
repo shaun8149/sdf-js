@@ -452,6 +452,11 @@ function renderGroupedBars(ir, opts, env) {
   for (let i = 0; i < N; i++) for (let s = 0; s < S; s++) mMax = Math.max(mMax, vOf(i, s));
   const emphasisIdx = ir.emphasis && ir.emphasis.length ? ir.emphasis[0] : N - 1;
   const unit = ir.unit ? String(ir.unit) : '';
+  // unitMismatch decks mix unit-scaled series (收入 0.08亿) with raw-count
+  // series (DAU 5,903,383) under ONE ir.unit — suffixing the raw counts
+  // produced "5903383亿" on camera (recording gate, 2026-07-20). A value
+  // already at raw magnitude never takes the scaled unit.
+  const unitFor = (v) => (ir.unitMismatch && Math.abs(v) >= 10000 ? '' : unit);
 
   const BW = 0.66; // bar width
   const BGAP = 0.14; // within-group gap
@@ -517,7 +522,9 @@ function renderGroupedBars(ir, opts, env) {
       const val = vOf(i, s);
       const h = (val / mMax) * H_MAX;
       const txt =
-        i === 0 && series[s]?.label ? `${series[s].label} ${val}${unit}` : `${val}${unit}`;
+        i === 0 && series[s]?.label
+          ? `${series[s].label} ${val}${unitFor(val)}`
+          : `${val}${unitFor(val)}`;
       overlay.push({
         text: txt,
         anchor: [barX(i, s), h + 0.5 + s * 0.02, 0],

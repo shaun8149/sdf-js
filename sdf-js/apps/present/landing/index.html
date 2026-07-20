@@ -56,6 +56,24 @@
         border-bottom: 1px solid currentColor;
         padding-bottom: 3px;
       }
+      /* concierge CTA: the one clickable .ui element (the class kills pointer
+         events so the canvas owns the stage — the CTA opts back in) */
+      #cta {
+        right: 30px;
+        bottom: 26px;
+        pointer-events: auto;
+        color: #dce6f5;
+        text-decoration: none;
+        font-size: 13px;
+        letter-spacing: 0.1em;
+        border: 1px solid rgba(180, 200, 230, 0.45);
+        padding: 8px 14px;
+        background: rgba(4, 6, 10, 0.55);
+      }
+      #cta:hover {
+        color: #fff;
+        border-color: #fff;
+      }
       #title {
         left: 30px;
         bottom: 12%;
@@ -196,12 +214,24 @@
     </div>
     <div id="title" class="ui">
       <h1>Spatial narrative,<br />not slides.</h1>
-      <p>You describe what you want to say. Atlas renders an <em>immersive 3D deck</em> — structure-aware, camera-driven, generated.</p>
+      <p>
+        You describe what you want to say. Atlas renders an <em>immersive 3D deck</em> —
+        structure-aware, camera-driven, generated.
+      </p>
     </div>
     <div id="enter-hint" class="ui" data-enter>click to enter ▸</div>
+    <a
+      id="cta"
+      class="ui"
+      href="mailto:stormspire100@gmail.com?subject=Atlas%20Present%20%E2%80%94%20my%20deck&body=Attach%20a%20PDF%20deck%20you%20have%20the%20right%20to%20share%20%E2%80%94%20you%20get%20a%20private%2C%20unlisted%203D%20link%20back."
+      >your deck in 3D — send a PDF ▸</a
+    >
     <div id="enter-logo">ATLAS<b>·</b>PRESENT</div>
     <div id="fade"></div>
-    <div id="loading"><div class="brand">ATLAS·PRESENT</div><div class="bar"></div></div>
+    <div id="loading">
+      <div class="brand">ATLAS·PRESENT</div>
+      <div class="bar"></div>
+    </div>
     <script type="module" src="./landing.js"></script>
   </body>
 </html>

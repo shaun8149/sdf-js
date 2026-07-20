@@ -416,8 +416,13 @@ export function createFigure({
       for (const o of stageItems)
         if (o.role === 'title' && o.revealAt <= t + 0.02 && o._ch > curCh) curCh = o._ch;
       // two independent narration columns — each side stacks its own slots so a
-      // comparison page reads as two facing lists, not one merged pile
-      const slots = { left: 0, right: 0 };
+      // comparison page reads as two facing lists, not one merged pile.
+      // Slots advance by MEASURED height, not a fixed 9.5vh: five multi-line
+      // summary bullets overprinted each other at fixed pitch (recording gate,
+      // 2026-07-20 — p8's ①-⑤ column was unreadable on camera).
+      const gapPx = Math.round(window.innerHeight * 0.022);
+      const budgetPx = Math.round(window.innerHeight * 0.68); // column floor ≈ 89vh
+      const bySide = { left: [], right: [] };
       let lastOn = -1;
       for (let i = 0; i < stageItems.length; i++) {
         const o = stageItems[i];
@@ -426,12 +431,34 @@ export function createFigure({
         // seeks honest in both directions.
         const on = o._ch === curCh && o.revealAt <= t + 0.02 && (o.hideAt == null || t < o.hideAt);
         if (o.role === 'screen' && on) {
-          const side = o.side === 'right' ? 'right' : 'left';
-          stageEls[i].style.top = `calc(21vh + ${slots[side]} * 9.5vh)`;
-          slots[side]++;
+          bySide[o.side === 'right' ? 'right' : 'left'].push(i);
           lastOn = i;
+        } else if (o.role === 'screen') {
+          stageEls[i].classList.remove('on');
         }
-        stageEls[i].classList.toggle('on', on);
+        if (o.role !== 'screen') stageEls[i].classList.toggle('on', on);
+      }
+      // Column layout per side: measured heights, oldest lines scroll OFF when
+      // the stack outgrows the viewport budget (a 7-bullet summary page must
+      // keep its CURRENT line on screen — spoken-already lines yield first).
+      for (const side of ['left', 'right']) {
+        const idxs = bySide[side];
+        const hOf = (i) => stageEls[i].offsetHeight || Math.round(window.innerHeight * 0.073);
+        let total = idxs.reduce((s, i) => s + hOf(i) + gapPx, 0);
+        let drop = 0;
+        while (drop < idxs.length - 1 && total > budgetPx) {
+          total -= hOf(idxs[drop]) + gapPx;
+          drop++;
+        }
+        let y = 0;
+        idxs.forEach((i, k) => {
+          const visible = k >= drop;
+          stageEls[i].classList.toggle('on', visible);
+          if (visible) {
+            stageEls[i].style.top = `calc(21vh + ${y}px)`;
+            y += hOf(i) + gapPx;
+          }
+        });
       }
       // The camera and the words move as ONE: the beat the camera is visiting
       // reads at full strength, spoken-already lines fall back. (`cur` is the
