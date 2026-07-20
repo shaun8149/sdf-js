@@ -1,16 +1,24 @@
 // test-script-spans.mjs — 讲稿对齐:script spans 的解析 + 「只切不改」验证。
 import { parseIRResponse, validateScript } from '../src/scene/text-to-ir.js';
 
-let pass = 0, fail = 0;
+let pass = 0,
+  fail = 0;
 const ok = (c, n) => (c ? (pass++, console.log(`  ✓ ${n}`)) : (fail++, console.log(`  ✗ ${n}`)));
 console.log('=== script spans (teleprompter fuel) ===\n');
 
-const ORIGINAL = '大家好。今天讲三件事。首先看漏斗:1200 个线索最终成交 45 单。这就是重点。谢谢大家。';
+const ORIGINAL =
+  '大家好。今天讲三件事。首先看漏斗:1200 个线索最终成交 45 单。这就是重点。谢谢大家。';
 
 const GOOD = JSON.stringify({
   title: 'T',
   slides: [
-    { structure: 'sequence', nodes: ['线索', '成交'], magnitude: [1200, 45], emphasis: [1], title: '漏斗' },
+    {
+      structure: 'sequence',
+      nodes: ['线索', '成交'],
+      magnitude: [1200, 45],
+      emphasis: [1],
+      title: '漏斗',
+    },
   ],
   script: [
     { text: '大家好。今天讲三件事。', station: 0, kind: 'hold' },
@@ -62,7 +70,11 @@ const GOOD = JSON.stringify({
   const bad = JSON.parse(GOOD);
   bad.script[1].text = '完全不同的话。';
   let e = null;
-  try { parseIRResponse(JSON.stringify(bad), ORIGINAL); } catch (x) { e = x; }
+  try {
+    parseIRResponse(JSON.stringify(bad), ORIGINAL);
+  } catch (x) {
+    e = x;
+  }
   ok(e && Array.isArray(e.validationErrors), 'bad script throws with validationErrors');
 }
 

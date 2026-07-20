@@ -15,8 +15,16 @@ const env = params.get('env') || 'studio';
 // deck theatre layer) — it's the product face. ?stage=0 opts out.
 const stage = params.get('stage') !== '0';
 const __atlasTheme = getTheme('pitch-spectrum');
-const __atlasPalette = __atlasTheme ? { anchor: __atlasTheme.accent, colors: __atlasTheme.colors } : null;
-const { studio, show } = createFigure({ outdoor: env !== 'studio', stage, renderMode: ['rich', 'stone'].includes(new URLSearchParams(location.search).get('mode')) ? new URLSearchParams(location.search).get('mode') : 'analytic' });
+const __atlasPalette = __atlasTheme
+  ? { anchor: __atlasTheme.accent, colors: __atlasTheme.colors }
+  : null;
+const { studio, show } = createFigure({
+  outdoor: env !== 'studio',
+  stage,
+  renderMode: ['rich', 'stone'].includes(new URLSearchParams(location.search).get('mode'))
+    ? new URLSearchParams(location.search).get('mode')
+    : 'analytic',
+});
 let presenter = null; // active presenter runtime (disposed on regenerate)
 
 const promptEl = document.getElementById('prompt');

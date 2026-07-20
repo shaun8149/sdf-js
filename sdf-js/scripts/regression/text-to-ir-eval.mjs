@@ -80,7 +80,8 @@ const OUT_DIR = resolve(__dirname, 'results');
 mkdirSync(OUT_DIR, { recursive: true });
 
 const rows = [];
-let pass = 0, fail = 0;
+let pass = 0,
+  fail = 0;
 
 for (const c of CASES) {
   const row = { id: c.id, ok: false };
@@ -130,4 +131,6 @@ for (const c of CASES) {
 
 const stamp = new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-');
 writeFileSync(resolve(OUT_DIR, `text-to-ir-${stamp}.json`), JSON.stringify(rows, null, 2));
-console.log(`\n${pass}/${CASES.length} pass — details in scripts/regression/results/text-to-ir-${stamp}.json`);
+console.log(
+  `\n${pass}/${CASES.length} pass — details in scripts/regression/results/text-to-ir-${stamp}.json`,
+);

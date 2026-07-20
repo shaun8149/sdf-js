@@ -3,51 +3,17 @@
   "slides": [
     {
       "structure": "magnitude",
-      "nodes": [
-        "EMEA",
-        "APAC",
-        "Americas",
-        "LATAM",
-        "ANZ"
-      ],
-      "magnitude": [
-        340,
-        620,
-        890,
-        150,
-        95
-      ],
-      "emphasis": [
-        2
-      ],
+      "nodes": ["EMEA", "APAC", "Americas", "LATAM", "ANZ"],
+      "magnitude": [340, 620, 890, 150, 95],
+      "emphasis": [2],
       "title": "Revenue by Region"
     },
     {
       "structure": "sequence",
-      "nodes": [
-        "Leads",
-        "Qualified",
-        "Proposal",
-        "Negotiation",
-        "Closed"
-      ],
-      "magnitude": [
-        1200,
-        520,
-        240,
-        110,
-        45
-      ],
-      "emphasis": [
-        4
-      ],
-      "order": [
-        0,
-        1,
-        2,
-        3,
-        4
-      ],
+      "nodes": ["Leads", "Qualified", "Proposal", "Negotiation", "Closed"],
+      "magnitude": [1200, 520, 240, 110, 45],
+      "emphasis": [4],
+      "order": [0, 1, 2, 3, 4],
       "title": "Sales Funnel"
     },
     {
@@ -64,53 +30,17 @@
         "Marketing"
       ],
       "relations": [
-        [
-          0,
-          1
-        ],
-        [
-          0,
-          2
-        ],
-        [
-          0,
-          3
-        ],
-        [
-          1,
-          4
-        ],
-        [
-          2,
-          5
-        ],
-        [
-          2,
-          6
-        ],
-        [
-          3,
-          7
-        ],
-        [
-          3,
-          8
-        ]
+        [0, 1],
+        [0, 2],
+        [0, 3],
+        [1, 4],
+        [2, 5],
+        [2, 6],
+        [3, 7],
+        [3, 8]
       ],
-      "magnitude": [
-        10,
-        5,
-        8,
-        5,
-        3,
-        4,
-        4,
-        3,
-        2
-      ],
-      "emphasis": [
-        2
-      ],
+      "magnitude": [10, 5, 8, 5, 3, 4, 4, 3, 2],
+      "emphasis": [2],
       "title": "Org Structure"
     }
   ],
