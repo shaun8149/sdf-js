@@ -18,6 +18,35 @@
         }
       ]
     },
+    "3": {
+      "label": "p4 过去/现在矩阵(时代绑定;曾 temp0 稳定反转,verifyMatrixBindings 修复)",
+      "checks": [
+        {
+          "type": "structure",
+          "anyOf": ["matrix"]
+        },
+        {
+          "type": "cellRow",
+          "node": "编辑挑选",
+          "row": "过去"
+        },
+        {
+          "type": "cellRow",
+          "node": "个性化",
+          "row": "现在"
+        },
+        {
+          "type": "cellRow",
+          "node": "PC",
+          "row": "过去"
+        },
+        {
+          "type": "cellRow",
+          "node": "移动终端",
+          "row": "现在"
+        }
+      ]
+    },
     "4": {
       "label": "p5 使用习惯 VS 表",
       "checks": [

@@ -170,7 +170,16 @@ function collectValues(ir) {
 }
 
 export function antiFabricationGate(ir, { hadImage = false, ladders = [] } = {}) {
-  if (hadImage || !ir) return ir;
+  if (!ir) return ir;
+  if (hadImage) {
+    // Vision mode: chart reads are legitimate, so the gates stand down — but
+    // a high overlap with the page's axis ticks is still worth surfacing.
+    // WARN, never demote: the audit block reads this flag; silence in vision
+    // mode otherwise hides exactly the failure class the gate exists for.
+    const vals = ir.magnitude || ir.series || ir.groups ? collectValues(ir) : [];
+    const overlap = ladderOverlap(vals, ladders);
+    return overlap >= 0.5 ? { ...ir, ladderWarning: true } : ir;
+  }
   const hasSeries = ir.magnitude || ir.series || ir.groups;
   const vals = hasSeries ? collectValues(ir) : [];
   const overlap = ladderOverlap(vals, ladders);
@@ -235,6 +244,73 @@ export function flagUnitMismatch(ir) {
   if (maxes.length < 2) return ir;
   if (Math.max(...maxes) / Math.min(...maxes) > 1000) return { ...ir, unitMismatch: true };
   return ir;
+}
+
+// Second-pass matrix binding verification, same pattern as the roadmap pass:
+// era/category matrices (过去/现在, before/after) get their cell assignments
+// re-derived from the 2× close-ups by VISUAL POSITION against the row/column
+// markers. The 2015 BP's p4 swap was temp0-stable through four prompt rounds
+// AND survived high-res input — the extractor's binding conviction only
+// yields to a dedicated verification question.
+export async function verifyMatrixBindings({ ir, callLLM, halves, imageBase64 = null }) {
+  if (
+    !ir ||
+    ir.structure !== 'matrix' ||
+    !Array.isArray(ir.axes) ||
+    ir.axes.length !== 2 ||
+    !Array.isArray(ir.cells) ||
+    !halves ||
+    halves.length === 0
+  )
+    return ir;
+  // Full page first: the half-crops cut the middle column in two, which
+  // wrecks COLUMN judgment; the full page restores column context while the
+  // halves give the 2× detail for the edge row markers.
+  const user = [
+    ...(imageBase64
+      ? [{ type: 'image', source: { type: 'base64', media_type: 'image/png', data: imageBase64 } }]
+      : []),
+    ...halves.map((data) => ({
+      type: 'image',
+      source: { type: 'base64', media_type: 'image/png', data },
+    })),
+    {
+      type: 'text',
+      text: `Images: the full matrix page, then 2× close-ups (left/right halves).\nColumn categories (x): ${JSON.stringify(ir.axes[0])}\nRow categories (y): ${JSON.stringify(ir.axes[1])}\nNodes: ${JSON.stringify(ir.nodes)}\n\nFor EACH node in order, locate its box and answer from PHYSICAL ALIGNMENT alone: (1) which column category (use the FULL page for column alignment) is directly above/below it? (2) which row marker printed on the page edge (use the close-ups) is at the SAME HEIGHT as its box? Note the rows on the page may be printed in reverse order of the category list (e.g. 现在 above 过去). End your answer with ONLY a JSON array: one [xIndex, yIndex] pair per node, indices into the category lists above.`,
+    },
+  ];
+  try {
+    const raw = await callLLM({
+      system:
+        'You verify matrix cell bindings in chart close-ups by visual alignment. Respond with only a JSON array of [column,row] index pairs.',
+      user,
+      maxTokens: 1500,
+      temperature: 0,
+    });
+    // The verifier reasons in prose before answering, and the prose itself
+    // contains [x,y] pairs — grab the LAST array-of-arrays block, not the
+    // first '[' (which killed the first p4 verification run silently).
+    const blocks = raw.match(/\[\s*\[[\s\S]*?\]\s*\]/g);
+    if (!blocks || !blocks.length) return ir;
+    const cells = JSON.parse(blocks[blocks.length - 1]);
+    const valid =
+      Array.isArray(cells) &&
+      cells.length === ir.cells.length &&
+      cells.every(
+        (c) =>
+          Array.isArray(c) &&
+          c.length === 2 &&
+          c[0] >= 0 &&
+          c[0] < ir.axes[0].length &&
+          c[1] >= 0 &&
+          c[1] < ir.axes[1].length,
+      );
+    if (!valid) return ir;
+    const changed = JSON.stringify(cells) !== JSON.stringify(ir.cells);
+    return { ...ir, cells, bindingVerified: true, ...(changed ? { bindingUncertain: true } : {}) };
+  } catch {
+    return ir;
+  }
 }
 
 /**
@@ -311,13 +387,27 @@ export async function extractSlideIR({
     const text = lastErrs
       ? `${digest}\n\nYour previous attempt failed validation:\n- ${lastErrs.join('\n- ')}\nReturn a corrected IR JSON.`
       : digest;
+    // Full page first (layout context), then L/R half-crops at 2× effective
+    // DPI. The halves are what make small logos, thin connectors and dense
+    // tick labels readable — p9's milestone pairing and p12's competitor-logo
+    // misread were both input-resolution failures, not prompt failures.
     const user = imageBase64
       ? [
           {
             type: 'image',
             source: { type: 'base64', media_type: 'image/png', data: imageBase64 },
           },
-          { type: 'text', text },
+          ...(halves || []).map((data) => ({
+            type: 'image',
+            source: { type: 'base64', media_type: 'image/png', data },
+          })),
+          {
+            type: 'text',
+            text:
+              halves && halves.length
+                ? `${text}\n\n(Images: full page, then LEFT and RIGHT half close-ups at 2× — read small logos, thin connector lines and dense labels from the close-ups.)`
+                : text,
+          },
         ]
       : text;
     try {
@@ -345,6 +435,7 @@ export async function extractSlideIR({
           antiFabricationGate(cand, { hadImage: !!imageBase64, ladders }),
         );
         gated = await verifyRoadmapPairings({ ir: gated, callLLM, halves });
+        gated = await verifyMatrixBindings({ ir: gated, callLLM, halves, imageBase64 });
         return { ir: gated, attempts: attempt + 1, demoted: !!gated.demoted };
       }
       lastErrs = v.errors;

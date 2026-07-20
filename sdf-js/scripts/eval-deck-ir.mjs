@@ -196,6 +196,14 @@ function runCheck(check, ir, { vision, chartGeometry }) {
       const hit = pairs.find(([label]) => label.includes(check.label));
       return !!hit && Math.abs(hit[1] - check.value) < 1e-9;
     }
+    case 'cellRow': {
+      // matrix binding: the node containing check.node must sit in the
+      // axes[1] row containing check.row (p4 过去/现在 swap regression lock)
+      if (ir.structure !== 'matrix' || !ir.axes || !ir.cells) return false;
+      const i = (ir.nodes || []).findIndex((n) => String(n).includes(check.node));
+      if (i < 0 || !ir.cells[i]) return false;
+      return String(ir.axes[1][ir.cells[i][1]] || '').includes(check.row);
+    }
     case 'milestone': {
       const ms = ir.milestones || [];
       return ms.some(
