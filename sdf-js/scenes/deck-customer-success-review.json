@@ -1,0 +1,36 @@
+{
+  "id": "deck-customer-success-review",
+  "name": "Customer Success Q3 Review",
+  "segments": [
+    {
+      "file": "hero-cs-0.json",
+      "title": "Journey",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "hero-cs-1.json",
+      "title": "Voice",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "hero-cs-2.json",
+      "title": "Funnel",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "hero-cs-3.json",
+      "title": "Radar",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "hero-cs-4.json",
+      "title": "KPI",
+      "kind": "slide",
+      "durationSec": 7
+    }
+  ]
+}

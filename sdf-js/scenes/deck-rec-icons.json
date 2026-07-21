@@ -1,0 +1,36 @@
+{
+  "id": "deck-rec-icons",
+  "name": "Line Icons - Business",
+  "segments": [
+    {
+      "file": "rec-icons-1.json",
+      "title": "Categories",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-icons-2.json",
+      "title": "Icon Grid",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-icons-3.json",
+      "title": "Concept Tiles",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-icons-4.json",
+      "title": "Themes",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-icons-5.json",
+      "title": "Toolkit",
+      "kind": "slide",
+      "durationSec": 7
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "slotIdx": 13,
+  "slotName": "summary",
+  "slotTitle": "Summary",
+  "slotPurpose": "The whole briefing in 3-5 takeaways",
+  "sourceSlideIdx": 14,
+  "sourceSlideTitle": "2026年展望总结",
+  "sceneData": {
+    "name": "news-briefing/summary",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "2026年展望总结",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "numbered-grid",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 480,
+        "args": {
+          "items": [
+            {
+              "label": "全球经济增长2.5%-3.3%",
+              "sublabel": "温和复苏态势"
+            },
+            {
+              "label": "货币政策转向宽松",
+              "sublabel": "地缘冲突构成主要下行风险"
+            },
+            {
+              "label": "区域分化明显",
+              "sublabel": "新兴市场与低收入国家增速较快，发达经济体增长乏力"
+            },
+            {
+              "label": "风险管理四大领域",
+              "sublabel": "能源供应、科技周期、就业与金融市场"
+            }
+          ],
+          "cols": 2,
+          "numberStyle": "circle",
+          "numberColor": [38, 70, 130]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["numbered-grid", "bullet-list", "stat-grid-large"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4520,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 403,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.023507399999999998,
+    "elapsedSec": 8.3,
+    "generatedAt": "2026-07-06T16:50:56.085Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

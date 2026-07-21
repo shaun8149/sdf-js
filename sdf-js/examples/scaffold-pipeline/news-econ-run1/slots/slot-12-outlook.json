@@ -1,0 +1,90 @@
+{
+  "slotIdx": 12,
+  "slotName": "outlook",
+  "slotTitle": "Outlook",
+  "slotPurpose": "What to watch next — timeline or conditions",
+  "sourceSlideIdx": 3,
+  "sourceSlideTitle": "OECD中期经济展望",
+  "sceneData": {
+    "name": "news-briefing/outlook",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Outlook",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 80,
+        "y": 200,
+        "w": 520,
+        "h": 420,
+        "args": {
+          "value": "2.9%",
+          "label": "全球GDP增速",
+          "sublabel": "OECD中期预测",
+          "icon": "chart-line",
+          "trend": "较IMF更谨慎",
+          "trendDirection": "flat",
+          "style": "dark"
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 680,
+        "y": 200,
+        "w": 520,
+        "h": 420,
+        "args": {
+          "title": "关键判断",
+          "items": [
+            {
+              "icon": "globe-hemisphere-west",
+              "label": "全球增速大致稳定",
+              "sublabel": "OECD中期报告"
+            },
+            {
+              "icon": "arrow-down",
+              "label": "预测较IMF谨慎",
+              "sublabel": "保守判断"
+            },
+            {
+              "icon": "buildings",
+              "label": "发达经济体前景保守",
+              "sublabel": "中期增长预期"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["timeline", "mountain-path", "bullet-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4446,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 469,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0242754,
+    "elapsedSec": 9,
+    "generatedAt": "2026-07-06T16:50:47.822Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "slotIdx": 1,
+  "slotName": "agenda",
+  "slotTitle": "Overview",
+  "slotPurpose": "One line per major theme of the briefing",
+  "sourceSlideIdx": 1,
+  "sourceSlideTitle": "Agenda",
+  "sceneData": {
+    "name": "news-briefing/agenda",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Overview"
+        }
+      },
+      {
+        "type": "agenda-list",
+        "x": 120,
+        "y": 180,
+        "w": 1040,
+        "h": 480,
+        "args": {
+          "items": [
+            {
+              "label": "Revenue distribution",
+              "sublabel": "Infrastructure vs applications"
+            },
+            {
+              "label": "Hardware leadership",
+              "sublabel": "Market dynamics"
+            },
+            {
+              "label": "Cost structures",
+              "sublabel": "AI companies"
+            },
+            {
+              "label": "Cloud infrastructure",
+              "sublabel": "Investment landscape"
+            },
+            {
+              "label": "Competitive positioning",
+              "sublabel": "Market moats"
+            },
+            {
+              "label": "Industry outlook",
+              "sublabel": "Market structure"
+            }
+          ],
+          "numbered": true,
+          "style": "showcase"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["agenda-list", "number-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4767,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 340,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0233034,
+    "elapsedSec": 6.2,
+    "generatedAt": "2026-07-07T05:16:21.931Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

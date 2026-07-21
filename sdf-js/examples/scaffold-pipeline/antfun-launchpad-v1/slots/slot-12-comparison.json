@@ -1,0 +1,105 @@
+{
+ "slotIdx": 12,
+ "slotName": "comparison",
+ "slotTitle": "Comparison",
+ "sourceSlideIdx": 2,
+ "sceneData": {
+  "name": "news-briefing/comparison",
+  "layout": "grid",
+  "subjects": [
+   {
+    "type": "cover",
+    "x": 0,
+    "y": 0,
+    "w": 1280,
+    "h": 120,
+    "args": {
+     "title": "pump.fun 机制基准",
+     "style": "gradient",
+     "subtitle": "行业定位与教训"
+    }
+   },
+   {
+    "type": "comparison-table",
+    "x": 40,
+    "y": 160,
+    "w": 1200,
+    "h": 520,
+    "args": {
+     "title": "pump.fun 机制基准与行业定位",
+     "columns": [
+      {
+       "label": "维度"
+      },
+      {
+       "label": "pump.fun 机制"
+      },
+      {
+       "label": "行业教训"
+      }
+     ],
+     "features": [
+      {
+       "label": "曲线毕业",
+       "values": [
+        "7.93亿代币 · 85 SOL确定性毕业",
+        "—"
+       ]
+      },
+      {
+       "label": "名义市值",
+       "values": [
+        "历史约 $69K (随SOL漂移)",
+        "—"
+       ]
+      },
+      {
+       "label": "变现模式",
+       "values": [
+        "2025.3 迁移费归零 → 外盘持续费用",
+        "—"
+       ]
+      },
+      {
+       "label": "市场份额",
+       "values": [
+        "Solana 73–80%",
+        "—"
+       ]
+      },
+      {
+       "label": "Dev分成",
+       "values": [
+        "2026.1 creator fee拆分至多10钱包",
+        "不给Dev分成被翻盘 (LetsBonk 2025.7反超)"
+       ]
+      },
+      {
+       "label": "激励设计",
+       "values": [
+        "交易者投票决定分成归属",
+        "只奖励发币养出rug dev (Dynamic Fees V1扭曲)"
+       ]
+      },
+      {
+       "label": "价值归因",
+       "values": [
+        "无社交图谱下逼近归因",
+        "收敛到奖励真正创造价值的网络"
+       ]
+      }
+     ]
+    }
+   }
+  ]
+ },
+ "meta": {
+  "bakedBy": "validate-auto-scaffold",
+  "model": "live"
+ },
+ "sectionAccent": [
+  96,
+  132,
+  92
+ ]
+}

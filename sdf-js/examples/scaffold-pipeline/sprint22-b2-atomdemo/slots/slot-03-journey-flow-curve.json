@@ -1,0 +1,28 @@
+{
+  "slotIdx": 3,
+  "slotName": "journey",
+  "slotTitle": "journey-flow-curve",
+  "sceneData": {
+    "subjects": [
+      {
+        "type": "journey-flow-curve",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 600,
+        "args": {
+          "title": "B2B Customer Onboarding Journey",
+          "touchpoints": [
+            { "label": "Discovery", "sublabel": "Finds us via SEO", "emotion": 0.2 },
+            { "label": "Demo Request", "sublabel": "Books a call", "emotion": 0.5 },
+            { "label": "Negotiation", "sublabel": "Procurement friction", "emotion": -0.3 },
+            { "label": "Contract Signed", "sublabel": "Closes deal", "emotion": 0.8 },
+            { "label": "Onboarding", "sublabel": "Setup complexity", "emotion": -0.1 },
+            { "label": "First Value", "sublabel": "Aha moment achieved", "emotion": 0.9 },
+            { "label": "Renewal", "sublabel": "Upsell conversation", "emotion": 0.7 }
+          ]
+        }
+      }
+    ]
+  }
+}

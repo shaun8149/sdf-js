@@ -1,0 +1,89 @@
+{
+  "slotIdx": 5,
+  "slotName": "outlook",
+  "slotTitle": "Outlook",
+  "slotPurpose": "Forecast + next-Q targets",
+  "sourceSlideIdx": 1,
+  "sourceSlideTitle": "Our Goal",
+  "sceneData": {
+    "name": "qbr/outlook",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Outlook",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "line",
+        "x": 40,
+        "y": 160,
+        "w": 1200,
+        "h": 280,
+        "args": {
+          "values": [0, 12, 27, 45],
+          "labels": ["Start", "Day 1", "Day 3", "Day 5"],
+          "format": "number",
+          "title": "Trail Miles Completed",
+          "showPoints": true
+        }
+      },
+      {
+        "type": "progression",
+        "x": 40,
+        "y": 480,
+        "w": 1200,
+        "h": 180,
+        "args": {
+          "steps": [
+            {
+              "label": "High Country",
+              "status": "todo"
+            },
+            {
+              "label": "Alpine Lakes",
+              "status": "todo"
+            },
+            {
+              "label": "Valley Base",
+              "status": "todo"
+            },
+            {
+              "label": "Waterfalls",
+              "status": "todo"
+            }
+          ],
+          "title": "Journey Phases"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "qbr",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["line", "progression", "kpi-card"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 2985,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 10550,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 372,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0177,
+    "elapsedSec": 5.5,
+    "generatedAt": "2026-06-25T03:06:15.771Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

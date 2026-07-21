@@ -1,0 +1,99 @@
+{
+  "deckDir": "/Users/hexiaoyang/Documents/sdf-main/sdf-js/examples/scaffold-pipeline/eval-yosemite-trip-2026",
+  "deckName": "eval-yosemite-trip-2026",
+  "structure": {
+    "slots_total": 7,
+    "slots_baked": 7,
+    "slots_empty": 0,
+    "slots_errored": 0,
+    "fill_rate": 1,
+    "pick_method": "llm",
+    "scaffold_id": "generic-deck",
+    "theme_id": "editorial-navy"
+  },
+  "atomQuality": {
+    "atom_instances": 12,
+    "atom_types_distinct": 6,
+    "variety_ratio": 0.5,
+    "unknown_atom_count": 0,
+    "unknown_atom_types": [],
+    "arg_violations": 0,
+    "arg_violations_top_offenders": []
+  },
+  "threeDReadiness": {
+    "twin_coverage": 1,
+    "untwinned_types": [],
+    "lift_success": 7,
+    "lift_attempted": 7,
+    "lift_errors": [],
+    "lifted_subject_rate": 1
+  },
+  "visual": {
+    "total": 1,
+    "counts": {
+      "SUBJECT_OVERLAP": 1
+    },
+    "slots_with_issues": [
+      {
+        "slotIdx": 6,
+        "slotName": "closing",
+        "issues": [
+          {
+            "kind": "SUBJECT_OVERLAP",
+            "detail": "timeline[1] × bullet-list[2] overlap 100%"
+          }
+        ]
+      }
+    ]
+  },
+  "textBudget": {
+    "chars_per_slot": 130.57142857142858,
+    "max_slot_chars": 170
+  },
+  "fidelity": {
+    "numbers_total": 53,
+    "numbers_found": 41,
+    "number_recall": 0.7735849056603774,
+    "missing_numbers": [
+      "654",
+      "44",
+      "23332244",
+      "120,180",
+      "220,260",
+      "340,160",
+      "460,250",
+      "560,140",
+      "640,220",
+      "0.6",
+      "23b",
+      "240,40"
+    ],
+    "deck_numbers_total": 9,
+    "derived_cited_count": 0,
+    "hallucinated_numbers": [
+      "0.5"
+    ],
+    "deck_entities_total": 18,
+    "hallucinated_entities": [
+      "Action Plan"
+    ],
+    "entity_precision": 0.9444444444444444,
+    "number_precision": 0.8888888888888888,
+    "entities_total": 6,
+    "entities_found": 6,
+    "entity_recall": 1,
+    "missing_entities": []
+  },
+  "score": {
+    "total": 100,
+    "breakdown": {
+      "structure": 25,
+      "variety": 15,
+      "hallucination": 15,
+      "twin": 20,
+      "lift": 15,
+      "text": 10
+    }
+  },
+  "generatedAt": "2026-07-10T07:29:14.100Z"
+}

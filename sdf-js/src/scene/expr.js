@@ -25,7 +25,7 @@
 // composite expressions return `{form:'sum', terms:[...]}`.
 // =============================================================================
 
-import { linearT, sinT, cosT, sumT, mulT, isTimeExpr } from '../sdf/time.js';
+import { linearT, sinT, cosT, sumT, mulT, isTimeExpr, callT, CALL_FN_NAMES } from '../sdf/time.js';
 
 // =============================================================================
 // Tokenizer
@@ -39,6 +39,7 @@ const TOKEN_TYPES = {
   STAR: 'STAR',
   LPAREN: 'LPAREN',
   RPAREN: 'RPAREN',
+  COMMA: 'COMMA',
   EOF: 'EOF',
 };
 
@@ -73,6 +74,11 @@ function tokenize(src) {
     }
     if (c === ')') {
       tokens.push({ type: TOKEN_TYPES.RPAREN, pos: i });
+      i++;
+      continue;
+    }
+    if (c === ',') {
+      tokens.push({ type: TOKEN_TYPES.COMMA, pos: i });
       i++;
       continue;
     }
@@ -185,16 +191,24 @@ class Parser {
       this.consume();
       // function call?
       if (this.peek().type === TOKEN_TYPES.LPAREN) {
-        if (t.value !== 'sin' && t.value !== 'cos') {
-          throw new Error(
-            `Unsupported function "${t.value}" at position ${t.pos} (v1 supports: sin, cos)`,
-          );
-        }
         this.consume(); // (
-        const arg = this.parseExpr();
+        const args = [this.parseExpr()];
+        while (this.peek().type === TOKEN_TYPES.COMMA) {
+          this.consume(); // ,
+          args.push(this.parseExpr());
+        }
         this.expect(TOKEN_TYPES.RPAREN);
-        // sin(arg) where arg is TimeExpr (typically `t*freq + phase`)
-        return makeSinOrCos(t.value, arg);
+        // sin/cos keep their structured single-arg form (amp·sin(freq·t+phase))
+        if ((t.value === 'sin' || t.value === 'cos') && args.length === 1) {
+          return makeSinOrCos(t.value, args[0]);
+        }
+        // GLSL-style builtins (smoothstep/clamp/step/…) → generic call form
+        if (CALL_FN_NAMES.includes(t.value)) {
+          return callT(t.value, ...args);
+        }
+        throw new Error(
+          `Unsupported function "${t.value}" at position ${t.pos} (supports: sin, cos, ${CALL_FN_NAMES.join(', ')})`,
+        );
       }
       // bare identifier — only `t` allowed
       if (t.value === 't') {

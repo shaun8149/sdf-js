@@ -1,0 +1,77 @@
+{
+  "slotIdx": 5,
+  "slotName": "theme-2-lead",
+  "slotTitle": "Theme 2 — Lead",
+  "slotPurpose": "Second major theme: the core facts",
+  "sourceSlideIdx": 3,
+  "sourceSlideTitle": "谷歌自研芯片进展",
+  "sceneData": {
+    "name": "news-briefing/theme-2-lead",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "谷歌自研芯片进展",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 80,
+        "y": 200,
+        "w": 520,
+        "h": 420,
+        "args": {
+          "value": "第七代",
+          "label": "自研TPU迭代",
+          "sublabel": "训练专用芯片",
+          "icon": "cpu",
+          "style": "dark"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 680,
+        "y": 200,
+        "w": 520,
+        "h": 420,
+        "args": {
+          "value": "降低约40%",
+          "label": "训练成本",
+          "sublabel": "较采购GPU方案",
+          "icon": "currency-dollar",
+          "trend": "down",
+          "trendValue": "-40%",
+          "style": "dark"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["process-arrows", "timeline", "stat-banner", "kpi-card"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4427,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 372,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.022763399999999996,
+    "elapsedSec": 8.2,
+    "generatedAt": "2026-07-06T16:22:05.953Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

@@ -1,0 +1,78 @@
+{
+ "slotIdx": 1,
+ "slotName": "exec-statement",
+ "slotTitle": "Executive Statement",
+ "sourceSlideIdx": 2,
+ "sceneData": {
+  "name": "financial-summary/exec-statement",
+  "layout": "stage",
+  "subjects": [
+   {
+    "type": "cover",
+    "x": 0,
+    "y": 0,
+    "w": 1280,
+    "h": 120,
+    "args": {
+     "title": "Executive Statement",
+     "style": "gradient"
+    }
+   },
+   {
+    "type": "quote-pull",
+    "x": 40,
+    "y": 160,
+    "w": 1200,
+    "h": 280,
+    "args": {
+     "quote": "Third-quarter results reinforce confidence in the strength and continuing momentum of the business. Results set the company up well for what should be a record fourth quarter.",
+     "author": "Mike Rosenbaum",
+     "attribution": "Chief Executive Officer",
+     "align": "left"
+    }
+   },
+   {
+    "type": "bullet-list",
+    "x": 40,
+    "y": 460,
+    "w": 580,
+    "h": 220,
+    "args": {
+     "title": "Strategic Momentum",
+     "items": [
+      {
+       "icon": "gear-six",
+       "label": "Modernizing core systems"
+      },
+      {
+       "icon": "cloud",
+       "label": "Cloud platform migration"
+      },
+      {
+       "icon": "brain",
+       "label": "AI adoption across applications"
+      }
+     ]
+    }
+   },
+   {
+    "type": "kpi-card",
+    "x": 660,
+    "y": 460,
+    "w": 580,
+    "h": 220,
+    "args": {
+     "value": "1.7M shares",
+     "label": "Q3 Share Repurchase",
+     "sublabel": "Avg price $147.07 · $240.5M authorization remaining",
+     "icon": "arrow-square-in",
+     "style": "light"
+    }
+   }
+  ]
+ },
+ "meta": {
+  "bakedBy": "validate-auto-scaffold",
+  "model": "live"
+ }
+}

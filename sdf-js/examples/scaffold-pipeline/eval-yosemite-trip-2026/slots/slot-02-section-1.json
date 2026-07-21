@@ -1,0 +1,71 @@
+{
+  "slotIdx": 2,
+  "slotName": "section-1",
+  "slotTitle": "Section 1",
+  "slotPurpose": "First main content section — any topic",
+  "sourceSlideIdx": 2,
+  "sourceSlideTitle": "El Capitan",
+  "sceneData": {
+    "name": "generic-deck/section-1",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Section 1",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "image-split",
+        "x": 40,
+        "y": 160,
+        "w": 1200,
+        "h": 520,
+        "args": {
+          "src": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 360'><rect width='640' height='360' fill='%23b8c8d8'/><polygon fill='%23556677' points='80,360 240,40 320,360'/><polygon fill='%23445566' points='240,40 320,360 380,360'/><circle cx='500' cy='80' r='28' fill='%23ffe' opacity='0.7'/><text x='320' y='340' fill='%23223' font-size='14' text-anchor='middle' opacity='0.55'>El Capitan (embedded photo placeholder)</text></svg>",
+          "title": "El Capitan",
+          "body": "Day 2 — granite monolith on the north side of Yosemite Valley",
+          "bullets": [
+            "Hiked the base trail (3 miles round trip)",
+            "Spotted 4 climbers attempting the Nose route"
+          ],
+          "imageSide": "right",
+          "imageWidthPct": 0.5
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "generic-deck",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "bullet-list",
+      "icon-grid",
+      "kpi-card",
+      "timeline",
+      "pillar-3up"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5349,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 464,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0269094,
+    "elapsedSec": 10.7,
+    "generatedAt": "2026-07-10T07:22:36.204Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

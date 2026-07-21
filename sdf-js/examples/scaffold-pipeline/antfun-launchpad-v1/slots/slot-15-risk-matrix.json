@@ -1,0 +1,85 @@
+{
+ "slotIdx": 15,
+ "slotName": "risk-matrix",
+ "slotTitle": "ANT 需求五重来源:毕业锁仓",
+ "sourceSlideIdx": 18,
+ "sceneData": {
+  "name": "news-briefing/demand-source-graduation-lock",
+  "layout": "stage",
+  "subjects": [
+   {
+    "type": "cover",
+    "x": 0,
+    "y": 0,
+    "w": 1280,
+    "h": 120,
+    "args": {
+     "title": "需求五重来源:毕业锁仓",
+     "style": "gradient"
+    }
+   },
+   {
+    "type": "kpi-card",
+    "x": 40,
+    "y": 160,
+    "w": 560,
+    "h": 240,
+    "args": {
+     "value": "100%",
+     "label": "LP 永久锁定",
+     "sublabel": "每次毕业锁入等值 ANT",
+     "icon": "lock-laminated",
+     "style": "dark"
+    }
+   },
+   {
+    "type": "stat-banner",
+    "x": 640,
+    "y": 160,
+    "w": 600,
+    "h": 240,
+    "args": {
+     "value": "毕业数 × 门槛",
+     "label": "永久锁仓曲线公式",
+     "trend": "只升不降",
+     "trendDirection": "up",
+     "bg": [
+      70,
+      128,
+      148
+     ]
+    }
+   },
+   {
+    "type": "bullet-list",
+    "x": 40,
+    "y": 440,
+    "w": 1200,
+    "h": 240,
+    "args": {
+     "items": [
+      {
+       "icon": "lock-key",
+       "label": "比销毁更机械",
+       "sublabel": "销毁靠平台执行,锁仓是毕业的自动结果"
+      },
+      {
+       "icon": "equals",
+       "label": "与 Virtuals 同构",
+       "sublabel": "42,000 VIRTUAL × 10 年锁,而我们锁得更死"
+      }
+     ]
+    }
+   }
+  ]
+ },
+ "meta": {
+  "bakedBy": "validate-auto-scaffold",
+  "model": "live"
+ },
+ "sectionAccent": [
+  70,
+  128,
+  148
+ ]
+}

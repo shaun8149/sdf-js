@@ -1,0 +1,42 @@
+{
+  "id": "deck-charts-3d-3",
+  "name": "3D Charts & Diagrams — PresentationLoad (batch 3, lifted from data)",
+  "segments": [
+    {
+      "file": "lifted-charts-step-diagram.json",
+      "title": "Step Diagram 3D",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "lifted-charts-round-plates.json",
+      "title": "3D Round Plates",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "lifted-charts-layer-objects.json",
+      "title": "3D Layer Objects",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "lifted-charts-circle-segments.json",
+      "title": "Circle Segments 3D",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "lifted-charts-graphs.json",
+      "title": "3D Graphs",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "lifted-charts-timeline-spheres.json",
+      "title": "Timelines — 3D Spheres",
+      "kind": "slide",
+      "durationSec": 7
+    }
+  ]
+}

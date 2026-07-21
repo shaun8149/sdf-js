@@ -1,0 +1,178 @@
+{
+  "v": 1,
+  "name": "(lifted) cost-benefit",
+  "subjects": [
+    {
+      "id": "cost-benefit-matrix",
+      "type": "matrix-grid-3d",
+      "args": {
+        "rows": 2,
+        "cols": 2
+      },
+      "transform": {
+        "translate": [
+          0,
+          1.5,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.57,
+        "sat": 0.55,
+        "value": 0.64,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      }
+    }
+  ],
+  "overlay": [
+    {
+      "text": "2026 INITIATIVE PRIORITIZATION",
+      "anchor": [
+        0,
+        3.9,
+        0
+      ],
+      "role": "title"
+    },
+    {
+      "text": "2026 INITIATIVE PRIORITIZATION",
+      "anchor": [
+        0,
+        3.9,
+        0
+      ],
+      "role": "title"
+    },
+    {
+      "text": "Quick Wins",
+      "anchor": [
+        -2.2,
+        2.8,
+        0
+      ],
+      "role": "card",
+      "align": "center"
+    },
+    {
+      "text": "Strategic Bets",
+      "anchor": [
+        2.2,
+        2.8,
+        0
+      ],
+      "role": "card",
+      "align": "center"
+    },
+    {
+      "text": "Low Priority",
+      "anchor": [
+        -2.2,
+        0.2,
+        0
+      ],
+      "role": "card",
+      "align": "center"
+    },
+    {
+      "text": "Question Marks",
+      "anchor": [
+        2.2,
+        0.2,
+        0
+      ],
+      "role": "card",
+      "align": "center"
+    },
+    {
+      "text": "AI Customer Support (low cost · high benefit)",
+      "anchor": [
+        3,
+        2.6,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "ERP Migration (high cost · high benefit)",
+      "anchor": [
+        3,
+        1.8800000000000001,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "Email Automation (low cost · low benefit)",
+      "anchor": [
+        3,
+        1.1600000000000001,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "Brand Refresh (high cost · low benefit)",
+      "anchor": [
+        3,
+        0.43999999999999995,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    }
+  ],
+  "cameraSequence": {
+    "loop": false,
+    "shots": [
+      {
+        "duration": 0.01,
+        "pos": [
+          1,
+          2.1,
+          9.799999999999999
+        ],
+        "target": [
+          0,
+          1.6,
+          0
+        ],
+        "fov": 50,
+        "aperture": 0,
+        "focalDistance": 8.2,
+        "ease": "smooth"
+      },
+      {
+        "duration": 13,
+        "pos": [
+          0,
+          1.8,
+          8.2
+        ],
+        "target": [
+          0,
+          1.6,
+          0
+        ],
+        "fov": 46,
+        "transition": "blend",
+        "aperture": 0,
+        "focalDistance": 8.2,
+        "ease": "smooth"
+      }
+    ]
+  },
+  "defaults": {
+    "stage": {
+      "size": [
+        18,
+        9,
+        11
+      ]
+    }
+  }
+}

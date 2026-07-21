@@ -1,0 +1,101 @@
+{
+  "deckDir": "/Users/hexiaoyang/Documents/sdf-main/sdf-js/examples/scaffold-pipeline/eval-strategy-batch2-validation",
+  "deckName": "eval-strategy-batch2-validation",
+  "structure": {
+    "slots_total": 8,
+    "slots_baked": 8,
+    "slots_empty": 0,
+    "slots_errored": 0,
+    "fill_rate": 1,
+    "pick_method": "llm",
+    "scaffold_id": "change-roadmap",
+    "theme_id": "consulting-charcoal"
+  },
+  "atomQuality": {
+    "atom_instances": 15,
+    "atom_types_distinct": 13,
+    "variety_ratio": 0.8666666666666667,
+    "unknown_atom_count": 0,
+    "unknown_atom_types": [],
+    "arg_violations": 0,
+    "arg_violations_top_offenders": []
+  },
+  "threeDReadiness": {
+    "twin_coverage": 1,
+    "untwinned_types": [],
+    "lift_success": 8,
+    "lift_attempted": 8,
+    "lift_errors": [],
+    "lifted_subject_rate": 1
+  },
+  "visual": {
+    "total": 1,
+    "counts": {
+      "TEXT_OVERFLOW": 1
+    },
+    "slots_with_issues": [
+      {
+        "slotIdx": 4,
+        "slotName": "journey-phases",
+        "issues": [
+          {
+            "kind": "TEXT_OVERFLOW",
+            "subject": 2,
+            "type": "traffic-light",
+            "detail": "\"Data migration errors (MEDIUM)\" ends at x=1314"
+          }
+        ]
+      }
+    ]
+  },
+  "textBudget": {
+    "chars_per_slot": 303.5,
+    "max_slot_chars": 424
+  },
+  "fidelity": {
+    "numbers_total": 23,
+    "numbers_found": 23,
+    "number_recall": 1,
+    "missing_numbers": [],
+    "deck_numbers_total": 32,
+    "derived_cited_count": 0,
+    "hallucinated_numbers": [
+      "156",
+      "142",
+      "110",
+      "100",
+      "95",
+      "82",
+      "200",
+      "193",
+      "174",
+      "60",
+      "72",
+      "220"
+    ],
+    "deck_entities_total": 33,
+    "hallucinated_entities": [
+      "Market Performance",
+      "Strategic Foundation",
+      "Risk Matrix"
+    ],
+    "entity_precision": 0.9090909090909091,
+    "number_precision": 0.59375,
+    "entities_total": 10,
+    "entities_found": 10,
+    "entity_recall": 1,
+    "missing_entities": []
+  },
+  "score": {
+    "total": 99.3,
+    "breakdown": {
+      "structure": 25,
+      "variety": 15,
+      "hallucination": 15,
+      "twin": 20,
+      "lift": 15,
+      "text": 9.3
+    }
+  },
+  "generatedAt": "2026-07-10T07:29:14.075Z"
+}

@@ -1,0 +1,125 @@
+{
+  "slotIdx": 4,
+  "slotName": "journey-phases",
+  "slotTitle": "Change Journey",
+  "slotPurpose": "Phase-by-phase transition path with milestones",
+  "sourceSlideIdx": 7,
+  "sourceSlideTitle": "Change Journey & Risk Mitigation",
+  "sceneData": {
+    "name": "change-roadmap/journey-phases",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Change Journey",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "progression",
+        "x": 80,
+        "y": 160,
+        "w": 1120,
+        "h": 180,
+        "args": {
+          "steps": [
+            {
+              "label": "Q1: Mobilise",
+              "status": "done"
+            },
+            {
+              "label": "Q2-Q3: Transform",
+              "status": "current"
+            },
+            {
+              "label": "Q4: Sustain",
+              "status": "todo"
+            }
+          ],
+          "title": "Implementation Phases"
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 80,
+        "y": 380,
+        "w": 520,
+        "h": 280,
+        "args": {
+          "title": "Phase Details",
+          "items": [
+            {
+              "icon": "rocket-launch",
+              "label": "Governance & quick wins",
+              "sublabel": "Q1 Mobilise"
+            },
+            {
+              "icon": "gear-six",
+              "label": "Core system migration",
+              "sublabel": "Q2-Q3 Transform"
+            },
+            {
+              "icon": "chart-line-up",
+              "label": "Embed & measure outcomes",
+              "sublabel": "Q4 Sustain"
+            }
+          ]
+        }
+      },
+      {
+        "type": "traffic-light",
+        "x": 680,
+        "y": 380,
+        "w": 520,
+        "h": 280,
+        "args": {
+          "title": "Risk Dashboard",
+          "lights": [
+            {
+              "color": "red",
+              "active": true,
+              "label": "Change fatigue (HIGH)"
+            },
+            {
+              "color": "amber",
+              "active": true,
+              "label": "Data migration (MEDIUM)"
+            },
+            {
+              "color": "green",
+              "active": true,
+              "label": "Vendor delays (LOW)"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "change-roadmap",
+    "theme": "consulting-charcoal",
+    "recommendedAtoms": ["change-curve-chart", "progression", "timeline"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 3050,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 11000,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 649,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.022185,
+    "elapsedSec": 8.4,
+    "generatedAt": "2026-06-25T04:33:03.207Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

@@ -1,0 +1,485 @@
+{
+  "format": "atlas-deck",
+  "version": 1,
+  "title": "eval-nonprofit-annual-report",
+  "theme": {
+    "id": "financial-navy-cerulean",
+    "label": "Financial Navy",
+    "macroCluster": "pitch",
+    "bg": [26, 40, 66],
+    "silhouetteColor": [240, 248, 255],
+    "accent": [58, 138, 200],
+    "colors": [
+      [58, 138, 200],
+      [26, 40, 66],
+      [100, 150, 200],
+      [180, 210, 235],
+      [240, 248, 255]
+    ],
+    "font": {
+      "heading": "\"Inter Display\", Inter, system-ui, sans-serif",
+      "body": "Inter, system-ui, sans-serif"
+    },
+    "featured": true
+  },
+  "scaffold": {
+    "id": "financial-summary",
+    "label": "Financial Summary"
+  },
+  "decor": null,
+  "shared": null,
+  "slots": [
+    {
+      "slotIdx": 0,
+      "slotName": "cover",
+      "slotTitle": "Title",
+      "sceneData": {
+        "name": "financial-summary/cover",
+        "layout": "cover",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 720,
+            "args": {
+              "title": "Clearwater Trust — 2026 Annual Report",
+              "subtitle": "Clean water access for rural communities",
+              "author": "Fiscal Year 2026",
+              "date": "Prepared for donors and board",
+              "style": "gradient"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 1,
+      "slotName": "exec-statement",
+      "slotTitle": "Executive Statement",
+      "sceneData": {
+        "name": "financial-summary/exec-statement",
+        "layout": "stage",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Executive Statement",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "quote-pull",
+            "x": 80,
+            "y": 180,
+            "w": 1120,
+            "h": 280,
+            "args": {
+              "quote": "Access to clean water is a human right, not a privilege",
+              "author": "Clearwater Trust",
+              "align": "center"
+            }
+          },
+          {
+            "type": "icon-row",
+            "x": 140,
+            "y": 500,
+            "w": 1000,
+            "h": 160,
+            "args": {
+              "items": [
+                {
+                  "icon": "drop",
+                  "label": "Clean Water",
+                  "sublabel": "Rural infrastructure"
+                },
+                {
+                  "icon": "calendar",
+                  "label": "Since 2011",
+                  "sublabel": "15 years operations"
+                },
+                {
+                  "icon": "globe",
+                  "label": "4 Countries",
+                  "sublabel": "Kenya · Tanzania · Malawi · Mozambique"
+                }
+              ],
+              "iconSize": "medium",
+              "iconStyle": "circle"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 2,
+      "slotName": "highlights-kpi",
+      "slotTitle": "Financial Highlights",
+      "sceneData": {
+        "name": "financial-summary/highlights-kpi",
+        "layout": "grid",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Financial Highlights",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "dashboard-multi-kpi-composite",
+            "x": 40,
+            "y": 160,
+            "w": 1200,
+            "h": 280,
+            "args": {
+              "kpis": [
+                {
+                  "value": "$4.2M",
+                  "label": "Total Donations",
+                  "sublabel": "2026",
+                  "trend": "up",
+                  "trendValue": "+18%",
+                  "color": [58, 138, 200]
+                },
+                {
+                  "value": "1,340",
+                  "label": "Active Volunteers",
+                  "sublabel": "4 countries",
+                  "trend": "neutral",
+                  "color": [100, 150, 200]
+                },
+                {
+                  "value": "87",
+                  "label": "Wells Constructed",
+                  "sublabel": "new this year",
+                  "trend": "neutral",
+                  "color": [58, 138, 200]
+                },
+                {
+                  "value": "210,000",
+                  "label": "People Served",
+                  "sublabel": "water access",
+                  "trend": "neutral",
+                  "color": [100, 150, 200]
+                },
+                {
+                  "value": "84%",
+                  "label": "Program Cost Ratio",
+                  "sublabel": "direct to programs",
+                  "trend": "neutral",
+                  "color": [58, 138, 200]
+                }
+              ]
+            }
+          },
+          {
+            "type": "testimonial-wall",
+            "x": 40,
+            "y": 460,
+            "w": 1200,
+            "h": 220,
+            "args": {
+              "testimonials": [
+                {
+                  "quote": "Seeing the well go live in Kilifi was the proudest moment of my giving career — clean water changed that village overnight.",
+                  "name": "Margaret Ho",
+                  "role": "Monthly donor since 2019"
+                },
+                {
+                  "quote": "Clearwater didn't just build a well, they trained our own people to keep it running for the next 50 years.",
+                  "name": "Chief Amara Kessy",
+                  "role": "Village Chief, Tanzania"
+                },
+                {
+                  "quote": "Their financial transparency is why our foundation renewed for a third consecutive year.",
+                  "name": "Daniel Reyes",
+                  "role": "Foundation Program Officer"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 3,
+      "slotName": "income",
+      "slotTitle": "Income Statement",
+      "sceneData": {
+        "name": "financial-summary/income",
+        "layout": "grid",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Income Statement"
+            }
+          },
+          {
+            "type": "pie",
+            "x": 40,
+            "y": 160,
+            "w": 580,
+            "h": 520,
+            "args": {
+              "title": "Spending Breakdown",
+              "values": [3530000, 378000, 294000],
+              "labels": [
+                "Program Services · $3.53M",
+                "Fundraising · $378K",
+                "Administrative · $294K"
+              ],
+              "format": "percent",
+              "donutRatio": 0.5,
+              "centerLabel": "$4.2M Total"
+            }
+          },
+          {
+            "type": "pie",
+            "x": 660,
+            "y": 160,
+            "w": 580,
+            "h": 520,
+            "args": {
+              "title": "Revenue Sources",
+              "values": [52, 31, 17],
+              "labels": [
+                "Individual Donors · 52%",
+                "Foundation Grants · 31%",
+                "Corporate Partners · 17%"
+              ],
+              "format": "percent",
+              "donutRatio": 0.5
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 7,
+      "slotName": "segments",
+      "slotTitle": "Segment Analysis",
+      "sceneData": {
+        "name": "financial-summary/segments",
+        "layout": "grid",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Segment Analysis",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "icon-grid",
+            "x": 80,
+            "y": 180,
+            "w": 1120,
+            "h": 480,
+            "args": {
+              "title": "Program Highlights",
+              "items": [
+                {
+                  "icon": "wrench",
+                  "label": "Rapid Repair",
+                  "sublabel": "6 weeks → 9 days"
+                },
+                {
+                  "icon": "graduation-cap",
+                  "label": "School Hydration",
+                  "sublabel": "40 new stations"
+                },
+                {
+                  "icon": "solar-panel",
+                  "label": "Solar Pumps",
+                  "sublabel": "12 villages, 60% cost cut"
+                },
+                {
+                  "icon": "users",
+                  "label": "Technician Training",
+                  "sublabel": "210 local experts"
+                },
+                {
+                  "icon": "handshake",
+                  "label": "Policy Advocacy",
+                  "sublabel": "3 regional governments"
+                }
+              ],
+              "cols": 3,
+              "iconStyle": "card",
+              "iconSize": "medium",
+              "colorMode": "brand"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 8,
+      "slotName": "outlook",
+      "slotTitle": "Outlook & Forecast",
+      "sceneData": {
+        "name": "financial-summary/outlook",
+        "layout": "grid",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Outlook & Forecast",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "kpi-card",
+            "x": 40,
+            "y": 160,
+            "w": 280,
+            "h": 240,
+            "args": {
+              "value": "110",
+              "label": "New Wells",
+              "sublabel": "+26% vs 2026",
+              "icon": "drop",
+              "style": "light",
+              "trend": "up",
+              "trendValue": "+26%"
+            }
+          },
+          {
+            "type": "kpi-card",
+            "x": 340,
+            "y": 160,
+            "w": 280,
+            "h": 240,
+            "args": {
+              "value": "5",
+              "label": "Countries",
+              "sublabel": "Uganda pilot launch",
+              "icon": "globe",
+              "style": "light",
+              "trend": "up",
+              "trendValue": "+1"
+            }
+          },
+          {
+            "type": "kpi-card",
+            "x": 640,
+            "y": 160,
+            "w": 280,
+            "h": 240,
+            "args": {
+              "value": "50",
+              "label": "Solar Villages",
+              "sublabel": "Pump deployment",
+              "icon": "sun",
+              "style": "light"
+            }
+          },
+          {
+            "type": "kpi-card",
+            "x": 940,
+            "y": 160,
+            "w": 280,
+            "h": 240,
+            "args": {
+              "value": "350",
+              "label": "Technicians",
+              "sublabel": "Training graduates",
+              "icon": "wrench",
+              "style": "light"
+            }
+          },
+          {
+            "type": "kpi-card",
+            "x": 340,
+            "y": 420,
+            "w": 600,
+            "h": 260,
+            "args": {
+              "value": "$5.5M",
+              "label": "Funding Target",
+              "sublabel": "+31% expansion capital",
+              "icon": "currency-dollar",
+              "style": "dark",
+              "trend": "up",
+              "trendValue": "+31%"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 9,
+      "slotName": "appendix",
+      "slotTitle": "Appendix",
+      "sceneData": {
+        "name": "financial-summary/appendix",
+        "layout": "grid",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Appendix",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "bullet-list",
+            "x": 80,
+            "y": 180,
+            "w": 1120,
+            "h": 480,
+            "args": {
+              "title": "How to Help & Resources",
+              "items": [
+                {
+                  "icon": "drop",
+                  "label": "$25 = clean water for one person yearly",
+                  "status": "highlight"
+                },
+                {
+                  "icon": "hand-heart",
+                  "label": "Volunteer opportunities open in 4 countries"
+                },
+                {
+                  "icon": "briefcase",
+                  "label": "Corporate matching programs available — contact partnerships team"
+                },
+                {
+                  "icon": "file-text",
+                  "label": "Board of Directors & full audit at clearwatertrust.org/reports"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "slotIdx": 0,
+  "slotName": "cover",
+  "slotTitle": "Headline",
+  "slotPurpose": "Article headline + source and date context",
+  "sourceSlideIdx": 0,
+  "sourceSlideTitle": "Leaders, gainers and unexpected winners in the Enterprise AI arms race",
+  "sceneData": {
+    "name": "news-briefing/cover",
+    "layout": "cover",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 720,
+        "args": {
+          "title": "Leaders, gainers and unexpected winners in the Enterprise AI arms race",
+          "subtitle": "Survey of enterprise CIOs on AI model adoption and spending",
+          "author": "Data covering production usage, testing, and wallet share across frontier labs",
+          "style": "gradient"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["cover"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4390,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 164,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0195324,
+    "elapsedSec": 7.8,
+    "generatedAt": "2026-07-07T03:52:27.019Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

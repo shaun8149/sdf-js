@@ -1,0 +1,67 @@
+{
+  "deckName": "sprint22-b4-atomdemo",
+  "scaffold": {
+    "id": "demo",
+    "label": "Sprint 22 B4 Atom Demo",
+    "description": "Direct render of 4 PL-rec atoms (funnel-with-conversion / pillar-3up / testimonial-wall / balance-scale)",
+    "pickScore": 0,
+    "pickSignals": ["manual demo"],
+    "fallback": false,
+    "pickerMethod": "manual"
+  },
+  "theme": {
+    "id": "finance-navy-gold",
+    "label": "Finance Navy Gold",
+    "macroCluster": "editorial",
+    "bg": [20, 28, 50],
+    "accent": [200, 160, 50],
+    "colors": [
+      [80, 130, 220],
+      [200, 160, 50],
+      [60, 180, 140],
+      [180, 80, 160],
+      [220, 100, 60]
+    ],
+    "silhouetteColor": [240, 240, 240]
+  },
+  "meta": { "model": "manual-demo", "timestamp": "2026-06-28" },
+  "totals": { "slotsBaked": 4, "slotsEmpty": 0, "totalCostUSD": 0 },
+  "slots": [
+    {
+      "slotIdx": 0,
+      "slotName": "funnel",
+      "slotTitle": "funnel-with-conversion",
+      "slotPurpose": "SaaS conversion funnel with % chips between stages",
+      "sourceSlideIdx": 0,
+      "subjectTypes": ["funnel-with-conversion"],
+      "liftFile": "slots/slot-00-funnel-with-conversion.json"
+    },
+    {
+      "slotIdx": 1,
+      "slotName": "pillars",
+      "slotTitle": "pillar-3up",
+      "slotPurpose": "Three pillars hero card layout",
+      "sourceSlideIdx": 1,
+      "subjectTypes": ["pillar-3up"],
+      "liftFile": "slots/slot-01-pillar-3up.json"
+    },
+    {
+      "slotIdx": 2,
+      "slotName": "testimonials",
+      "slotTitle": "testimonial-wall",
+      "slotPurpose": "Social proof 3-card testimonial grid",
+      "sourceSlideIdx": 2,
+      "subjectTypes": ["testimonial-wall"],
+      "liftFile": "slots/slot-02-testimonial-wall.json"
+    },
+    {
+      "slotIdx": 3,
+      "slotName": "balance",
+      "slotTitle": "balance-scale",
+      "slotPurpose": "Build vs Buy decision balance scale",
+      "sourceSlideIdx": 3,
+      "subjectTypes": ["balance-scale"],
+      "liftFile": "slots/slot-03-balance-scale.json"
+    }
+  ]
+}

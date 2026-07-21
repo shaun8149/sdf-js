@@ -1,0 +1,102 @@
+{
+  "slotIdx": 5,
+  "slotName": "next-quarter",
+  "slotTitle": "Next Quarter",
+  "slotPurpose": "Plan and priorities for the coming quarter",
+  "sourceSlideIdx": 6,
+  "sourceSlideTitle": "Q4 2026 Portfolio Priorities",
+  "sceneData": {
+    "name": "investor-update/next-quarter",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Next Quarter",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "kanban-board",
+        "x": 40,
+        "y": 160,
+        "w": 1200,
+        "h": 520,
+        "args": {
+          "title": "Q4 2026 Portfolio Priorities",
+          "columns": [
+            {
+              "name": "Series B Prep",
+              "cards": [
+                {
+                  "title": "ANTFUN bridge preparation"
+                },
+                {
+                  "title": "NovaTech bridge preparation"
+                }
+              ]
+            },
+            {
+              "name": "Geographic Expansion",
+              "cards": [
+                {
+                  "title": "Southeast Asia LP program review"
+                }
+              ]
+            },
+            {
+              "name": "Portfolio Operations",
+              "cards": [
+                {
+                  "title": "AI transformation audit — 12 companies"
+                },
+                {
+                  "title": "Fund I exit roadmap — 3 candidates"
+                }
+              ]
+            },
+            {
+              "name": "Fundraising",
+              "cards": [
+                {
+                  "title": "Fund III final close — $300M by Dec 2026"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "investor-update",
+    "theme": "financial-navy-cerulean",
+    "recommendedAtoms": [
+      "kanban-board",
+      "bullet-list",
+      "timeline",
+      "progression"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5205,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 425,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0258924,
+    "elapsedSec": 10.3,
+    "generatedAt": "2026-07-10T07:21:19.049Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

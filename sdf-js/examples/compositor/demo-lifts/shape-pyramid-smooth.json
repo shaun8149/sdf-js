@@ -1,0 +1,67 @@
+{
+  "id": "shape-pyramid-smooth",
+  "title": "Pyramids · Smooth 4-level",
+  "prompt": "pyramids: Pyramids · Smooth 4-level",
+  "code2d": "// vision-authored showcase — PresentationLoad shape category \"pyramids\".",
+  "sceneData": {
+    "v": 1,
+    "name": "Pyramids · Smooth 4-level",
+    "source": {
+      "format": "vision-authored",
+      "prompt": "pyramids shape showcase"
+    },
+    "subjects": [
+      {
+        "id": "s0",
+        "type": "pyramid-3d",
+        "args": {
+          "levels": 4,
+          "baseWidth": 2,
+          "topWidth": 0.3,
+          "layerHeight": 0.4,
+          "gap": 0.04,
+          "depth": 0.6
+        },
+        "transform": {
+          "translate": [0, 0.1, 0]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.72,
+          "metal": 0.3,
+          "glow": 0
+        }
+      }
+    ],
+    "defaults": {
+      "camera": {
+        "yaw": 0.5,
+        "pitch": 0.3,
+        "distance": 10,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 0.1,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": 0.6,
+        "altitude": 0.55,
+        "distance": 25,
+        "intensity": 1.2
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.4
+      },
+      "studioBg": "dark"
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-06-21",
+    "model": "vision-authored",
+    "pattern": "pyramids",
+    "costUSD": 0
+  }
+}

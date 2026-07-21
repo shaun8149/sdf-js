@@ -1,0 +1,89 @@
+{
+  "slotIdx": 6,
+  "slotName": "closing",
+  "slotTitle": "Closing",
+  "slotPurpose": "Summary, next steps, thanks, or call to action",
+  "sourceSlideIdx": 6,
+  "sourceSlideTitle": "What's Next",
+  "sceneData": {
+    "name": "generic-deck/closing",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "What's Next",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "timeline",
+        "x": 40,
+        "y": 180,
+        "w": 1200,
+        "h": 480,
+        "args": {
+          "events": [
+            {
+              "date": "Jan 2027",
+              "label": "Permits Open",
+              "sublabel": "Set calendar reminders"
+            },
+            {
+              "date": "Spring 2027",
+              "label": "Return Visit",
+              "sublabel": "Waterfall season"
+            }
+          ],
+          "title": "Action Plan"
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 880,
+        "y": 180,
+        "w": 360,
+        "h": 160,
+        "args": {
+          "items": [
+            {
+              "icon": "camera",
+              "label": "Bring real camera",
+              "sublabel": "Not just phone"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "generic-deck",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "call-to-action",
+      "bullet-list",
+      "timeline"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5136,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 367,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.024815399999999998,
+    "elapsedSec": 6.3,
+    "generatedAt": "2026-07-10T07:22:36.206Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

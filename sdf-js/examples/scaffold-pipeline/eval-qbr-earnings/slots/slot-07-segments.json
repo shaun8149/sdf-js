@@ -1,0 +1,145 @@
+{
+  "slotIdx": 7,
+  "slotName": "segments",
+  "slotTitle": "Segment Analysis",
+  "slotPurpose": "Revenue by business unit or geography",
+  "sourceSlideIdx": 8,
+  "sourceSlideTitle": "Annual Recurring Revenue (ARR) Growth",
+  "sceneData": {
+    "name": "financial-summary/segments",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Segment Analysis",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "donut-with-center",
+        "x": 40,
+        "y": 160,
+        "w": 520,
+        "h": 520,
+        "args": {
+          "title": "ARR Growth",
+          "centerValue": "$1,147M",
+          "centerLabel": "Q3 FY2026 ARR",
+          "segments": [
+            {
+              "label": "Q3 FY2026 · $1,147M",
+              "value": 1147,
+              "color": [
+                58,
+                138,
+                200
+              ]
+            },
+            {
+              "label": "FY2025 End · $1,041M",
+              "value": 1041,
+              "color": [
+                100,
+                150,
+                200
+              ]
+            }
+          ],
+          "showPct": false
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 600,
+        "y": 160,
+        "w": 280,
+        "h": 240,
+        "args": {
+          "value": "19%",
+          "label": "ARR Growth",
+          "sublabel": "Subscription strength",
+          "trend": "up",
+          "trendValue": "+$106M",
+          "icon": "chart-line-up",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 900,
+        "y": 160,
+        "w": 280,
+        "h": 240,
+        "args": {
+          "value": "27%",
+          "label": "Total Revenue Growth",
+          "sublabel": "FY2026 momentum",
+          "trend": "up",
+          "icon": "trend-up",
+          "style": "light"
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 600,
+        "y": 440,
+        "w": 580,
+        "h": 240,
+        "args": {
+          "title": "FY2026 Outlook",
+          "items": [
+            {
+              "icon": "rocket-launch",
+              "label": "Strong Q3 foundation for record Q4",
+              "status": "highlight"
+            },
+            {
+              "icon": "cloud",
+              "label": "Cloud platform and AI adoption driving modernization",
+              "status": "done"
+            },
+            {
+              "icon": "trend-up",
+              "label": "Raised full-year guidance reflecting momentum",
+              "status": "done"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "financial-summary",
+    "theme": "financial-navy-cerulean",
+    "recommendedAtoms": [
+      "donut-with-center",
+      "cost-benefit-matrix",
+      "comparison-table",
+      "pie",
+      "bar",
+      "stacked-area"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5311,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 770,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0313854,
+    "elapsedSec": 12.8,
+    "generatedAt": "2026-07-10T07:28:22.396Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

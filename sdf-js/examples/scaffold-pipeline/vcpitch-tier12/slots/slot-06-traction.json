@@ -1,0 +1,101 @@
+{
+  "slotIdx": 6,
+  "slotName": "traction",
+  "slotTitle": "Traction",
+  "slotPurpose": "Revenue / users / growth charts",
+  "sourceSlideIdx": 5,
+  "sourceSlideTitle": "Traction",
+  "sceneData": {
+    "name": "pitch-deck-vc/traction",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Traction"
+        }
+      },
+      {
+        "type": "line",
+        "x": 60,
+        "y": 180,
+        "w": 740,
+        "h": 440,
+        "args": {
+          "values": [0, 0.12, 0.74, 2.4],
+          "labels": ["Q1 2026", "Q2 2026", "Q3 2026", "Q4 2026F"],
+          "format": "currency",
+          "title": "ARR Growth ($M)",
+          "showPoints": true,
+          "tension": 0.3
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 860,
+        "y": 180,
+        "w": 360,
+        "h": 140,
+        "args": {
+          "label": "Current ARR",
+          "value": "$740K",
+          "icon": "chart-line-up",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 860,
+        "y": 340,
+        "w": 360,
+        "h": 140,
+        "args": {
+          "label": "Customer Teams",
+          "value": "47",
+          "sublabel": "+ 3 agencies",
+          "icon": "users-three",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 860,
+        "y": 500,
+        "w": 360,
+        "h": 140,
+        "args": {
+          "label": "Net Retention",
+          "value": "110%",
+          "icon": "arrow-clockwise",
+          "style": "light"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "pitch-deck-vc",
+    "theme": "pitch-cobalt-orange",
+    "recommendedAtoms": ["line", "bar", "kpi-card", "dashboard-multi-kpi-composite"],
+    "forbiddenAtoms": ["mindmap", "venn"],
+    "tokenUsage": {
+      "input_tokens": 2498,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 5921,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 557,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0176253,
+    "elapsedSec": 7.6,
+    "generatedAt": "2026-06-24T04:47:40.872Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

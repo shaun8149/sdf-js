@@ -1,0 +1,149 @@
+{
+  "slotIdx": 1,
+  "slotName": "mission",
+  "slotTitle": "Mission",
+  "slotPurpose": "Why we exist",
+  "sourceSlideIdx": 1,
+  "sourceSlideTitle": "Our Mission",
+  "sceneData": {
+    "name": "company-overview/mission",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Mission",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "pillar-3up",
+        "x": 40,
+        "y": 160,
+        "w": 1200,
+        "h": 240,
+        "args": {
+          "pillars": [
+            {
+              "icon": "chat-circle",
+              "heading": "Natural Trading",
+              "body": "Make on-chain trading as natural as messaging"
+            },
+            {
+              "icon": "shield-check",
+              "heading": "Self-Custodial",
+              "body": "Replace centralized exchanges with self-custodial UX"
+            },
+            {
+              "icon": "users",
+              "heading": "100M Users",
+              "body": "Lower the barrier to DeFi for the next 100 million users"
+            }
+          ],
+          "accentLine": true
+        }
+      },
+      {
+        "type": "icon-grid",
+        "x": 40,
+        "y": 440,
+        "w": 580,
+        "h": 240,
+        "args": {
+          "title": "Team Heritage",
+          "items": [
+            {
+              "icon": "briefcase",
+              "label": "Ex-Binance + Coinbase",
+              "sublabel": "Core engineering team"
+            },
+            {
+              "icon": "clock",
+              "label": "5 Years",
+              "sublabel": "Crypto-native product experience"
+            },
+            {
+              "icon": "users-three",
+              "label": "10M+ Users",
+              "sublabel": "Previously shipped wallets"
+            },
+            {
+              "icon": "trophy",
+              "label": "Sequoia, Paradigm",
+              "sublabel": "Backed by Multicoin"
+            },
+            {
+              "icon": "globe",
+              "label": "NYC, Singapore",
+              "sublabel": "Based in Lisbon"
+            }
+          ],
+          "cols": 3,
+          "iconStyle": "circle",
+          "iconSize": "small"
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 660,
+        "y": 440,
+        "w": 580,
+        "h": 240,
+        "args": {
+          "title": "Our Focus",
+          "items": [
+            {
+              "icon": "device-mobile",
+              "label": "Mobile-first wallet with embedded trading"
+            },
+            {
+              "icon": "brain",
+              "label": "AI co-pilot for portfolio decisions"
+            },
+            {
+              "icon": "lock-key",
+              "label": "Privacy by default, zero-knowledge architecture"
+            },
+            {
+              "icon": "arrows-merge",
+              "label": "Cross-chain liquidity aggregation"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "company-overview",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "testimonial-wall",
+      "quote-pull",
+      "icon-row",
+      "icon-grid",
+      "bullet-list",
+      "icon-badge"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5298,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 818,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.032066399999999995,
+    "elapsedSec": 13.3,
+    "generatedAt": "2026-07-10T07:19:01.665Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

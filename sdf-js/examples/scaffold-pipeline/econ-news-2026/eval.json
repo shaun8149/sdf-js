@@ -1,0 +1,57 @@
+{
+  "deckDir": "/Users/hexiaoyang/Documents/sdf-main/sdf-js/examples/scaffold-pipeline/econ-news-2026",
+  "deckName": "econ-news-2026",
+  "structure": {
+    "slots_total": 8,
+    "slots_baked": 6,
+    "slots_empty": 2,
+    "slots_errored": 0,
+    "fill_rate": 0.75,
+    "pick_method": "llm",
+    "scaffold_id": "analysis-report",
+    "theme_id": "editorial-navy"
+  },
+  "atomQuality": {
+    "atom_instances": 12,
+    "atom_types_distinct": 8,
+    "variety_ratio": 0.6666666666666666,
+    "unknown_atom_count": 0,
+    "unknown_atom_types": [],
+    "arg_violations": 0,
+    "arg_violations_top_offenders": []
+  },
+  "threeDReadiness": {
+    "twin_coverage": 1,
+    "untwinned_types": [],
+    "lift_success": 6,
+    "lift_attempted": 6,
+    "lift_errors": [],
+    "lifted_subject_rate": 1
+  },
+  "textBudget": {
+    "chars_per_slot": 207.83333333333334,
+    "max_slot_chars": 367
+  },
+  "fidelity": {
+    "numbers_total": 11,
+    "numbers_found": 11,
+    "number_recall": 1,
+    "missing_numbers": [],
+    "entities_total": 6,
+    "entities_found": 4,
+    "entity_recall": 0.6666666666666666,
+    "missing_entities": ["英国央行", "欧洲央行"]
+  },
+  "score": {
+    "total": 93.8,
+    "breakdown": {
+      "structure": 18.8,
+      "variety": 15,
+      "hallucination": 15,
+      "twin": 20,
+      "lift": 15,
+      "text": 10
+    }
+  },
+  "generatedAt": "2026-07-06T15:33:48.137Z"
+}

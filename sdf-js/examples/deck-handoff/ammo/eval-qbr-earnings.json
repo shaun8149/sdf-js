@@ -1,0 +1,893 @@
+{
+  "format": "atlas-deck",
+  "version": 1,
+  "title": "eval-qbr-earnings",
+  "theme": {
+    "id": "financial-navy-cerulean",
+    "label": "Financial Navy",
+    "macroCluster": "pitch",
+    "bg": [26, 40, 66],
+    "silhouetteColor": [240, 248, 255],
+    "accent": [58, 138, 200],
+    "colors": [
+      [58, 138, 200],
+      [26, 40, 66],
+      [100, 150, 200],
+      [180, 210, 235],
+      [240, 248, 255]
+    ],
+    "font": {
+      "heading": "\"Inter Display\", Inter, system-ui, sans-serif",
+      "body": "Inter, system-ui, sans-serif"
+    },
+    "featured": true
+  },
+  "scaffold": {
+    "id": "financial-summary",
+    "label": "Financial Summary"
+  },
+  "decor": null,
+  "shared": null,
+  "slots": [
+    {
+      "slotIdx": 0,
+      "slotName": "cover",
+      "slotTitle": "Title",
+      "sceneData": {
+        "name": "financial-summary/cover",
+        "layout": "cover",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 720,
+            "args": {
+              "title": "Guidewire Q3 FY2026 Financial Results",
+              "subtitle": "Fiscal quarter ended April 30, 2026",
+              "author": "NYSE: GWRE",
+              "style": "gradient"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 1,
+      "slotName": "exec-statement",
+      "slotTitle": "Executive Statement",
+      "sceneData": {
+        "name": "financial-summary/exec-statement",
+        "layout": "stage",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Executive Statement",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "quote-pull",
+            "x": 40,
+            "y": 160,
+            "w": 1200,
+            "h": 280,
+            "args": {
+              "quote": "Third-quarter results reinforce confidence in the strength and continuing momentum of the business. Results set the company up well for what should be a record fourth quarter.",
+              "author": "CEO",
+              "align": "left"
+            }
+          },
+          {
+            "type": "bullet-list",
+            "x": 40,
+            "y": 460,
+            "w": 580,
+            "h": 220,
+            "args": {
+              "title": "Strategic Position",
+              "items": [
+                {
+                  "icon": "target",
+                  "label": "Strategy resonating with insurers"
+                },
+                {
+                  "icon": "gear-six",
+                  "label": "Focus on modernizing core systems"
+                }
+              ]
+            }
+          },
+          {
+            "type": "kpi-card",
+            "x": 660,
+            "y": 460,
+            "w": 280,
+            "h": 100,
+            "args": {
+              "value": "1,696,180",
+              "label": "Shares Repurchased",
+              "sublabel": "Q3 Activity",
+              "icon": "arrow-fat-down",
+              "style": "light"
+            }
+          },
+          {
+            "type": "kpi-card",
+            "x": 960,
+            "y": 460,
+            "w": 280,
+            "h": 100,
+            "args": {
+              "value": "$147.07",
+              "label": "Average Price",
+              "sublabel": "Per Share",
+              "icon": "currency-dollar",
+              "style": "light"
+            }
+          },
+          {
+            "type": "kpi-card",
+            "x": 660,
+            "y": 580,
+            "w": 580,
+            "h": 100,
+            "args": {
+              "value": "$240.5M",
+              "label": "Remaining Authorization",
+              "sublabel": "Share Repurchase Program",
+              "icon": "wallet",
+              "style": "accent-border"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 2,
+      "slotName": "highlights-kpi",
+      "slotTitle": "Financial Highlights",
+      "sceneData": {
+        "name": "financial-summary/highlights-kpi",
+        "layout": "grid",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Financial Highlights",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "stat-banner",
+            "x": 40,
+            "y": 140,
+            "w": 1200,
+            "h": 100,
+            "args": {
+              "value": "ARR +19% · Revenue +27%",
+              "label": "Q3 Growth Metrics",
+              "bg": "accent"
+            }
+          },
+          {
+            "type": "dashboard-multi-kpi-composite",
+            "x": 40,
+            "y": 260,
+            "w": 590,
+            "h": 200,
+            "args": {
+              "title": "Revenue Components",
+              "kpis": [
+                {
+                  "value": "$56.0M",
+                  "label": "License Revenue",
+                  "sublabel": "Q3",
+                  "trend": "down",
+                  "trendValue": "-2%",
+                  "color": [100, 150, 200]
+                },
+                {
+                  "value": "$71.8M",
+                  "label": "Services Revenue",
+                  "sublabel": "Q3",
+                  "trend": "up",
+                  "trendValue": "+32%",
+                  "color": [58, 138, 200]
+                }
+              ]
+            }
+          },
+          {
+            "type": "dashboard-multi-kpi-composite",
+            "x": 650,
+            "y": 260,
+            "w": 590,
+            "h": 200,
+            "args": {
+              "title": "GAAP Performance",
+              "kpis": [
+                {
+                  "value": "$30.6M",
+                  "label": "Operating Income",
+                  "sublabel": "+580% (30.6 vs 4.5)",
+                  "trend": "up",
+                  "color": [58, 138, 200]
+                },
+                {
+                  "value": "$16.5M",
+                  "label": "Net Income",
+                  "sublabel": "-64% (16.5 vs 46.0)",
+                  "trend": "down",
+                  "color": [100, 150, 200]
+                },
+                {
+                  "value": "$0.19",
+                  "label": "EPS",
+                  "sublabel": "vs $0.54 prior year",
+                  "trend": "down",
+                  "color": [100, 150, 200]
+                }
+              ]
+            }
+          },
+          {
+            "type": "dashboard-multi-kpi-composite",
+            "x": 40,
+            "y": 480,
+            "w": 590,
+            "h": 200,
+            "args": {
+              "title": "Non-GAAP Performance",
+              "kpis": [
+                {
+                  "value": "$77.8M",
+                  "label": "Operating Income",
+                  "sublabel": "+69% (77.8 vs 46.1)",
+                  "trend": "up",
+                  "color": [58, 138, 200]
+                },
+                {
+                  "value": "$69.6M",
+                  "label": "Net Income",
+                  "sublabel": "+47% (69.6 vs 47.4)",
+                  "trend": "up",
+                  "color": [58, 138, 200]
+                },
+                {
+                  "value": "$0.82",
+                  "label": "EPS",
+                  "sublabel": "vs $0.55 prior year",
+                  "trend": "up",
+                  "color": [58, 138, 200]
+                }
+              ]
+            }
+          },
+          {
+            "type": "dashboard-multi-kpi-composite",
+            "x": 650,
+            "y": 480,
+            "w": 590,
+            "h": 200,
+            "args": {
+              "title": "Q4 FY26 Guidance",
+              "kpis": [
+                {
+                  "value": "$1,229-$1,237M",
+                  "label": "Ending ARR",
+                  "color": [180, 210, 235]
+                },
+                {
+                  "value": "$259-$265M",
+                  "label": "Subscription & Support",
+                  "color": [180, 210, 235]
+                },
+                {
+                  "value": "$396-$406M",
+                  "label": "Total Revenue",
+                  "color": [180, 210, 235]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 3,
+      "slotName": "income",
+      "slotTitle": "Income Statement",
+      "sceneData": {
+        "name": "financial-summary/income",
+        "layout": "grid",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Income Statement",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "kpi-card",
+            "x": 40,
+            "y": 160,
+            "w": 360,
+            "h": 240,
+            "args": {
+              "value": "$372.5M",
+              "label": "Q3 Total Revenue",
+              "trend": "up",
+              "trendValue": "+27% YoY",
+              "icon": "chart-line-up",
+              "style": "dark"
+            }
+          },
+          {
+            "type": "kpi-card",
+            "x": 440,
+            "y": 160,
+            "w": 360,
+            "h": 240,
+            "args": {
+              "value": "$36-46M",
+              "label": "Q4 GAAP Operating Income",
+              "sublabel": "Guidance",
+              "icon": "currency-dollar",
+              "style": "light"
+            }
+          },
+          {
+            "type": "kpi-card",
+            "x": 840,
+            "y": 160,
+            "w": 360,
+            "h": 240,
+            "args": {
+              "value": "$86-96M",
+              "label": "Q4 Non-GAAP Operating Income",
+              "sublabel": "Guidance",
+              "icon": "chart-bar",
+              "style": "light"
+            }
+          },
+          {
+            "type": "stat-banner",
+            "x": 40,
+            "y": 440,
+            "w": 1160,
+            "h": 220,
+            "args": {
+              "value": "Record Q4 Projected",
+              "label": "CEO guidance supports record fourth quarter performance",
+              "bg": [58, 138, 200]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 4,
+      "slotName": "balance-sheet",
+      "slotTitle": "Balance Sheet",
+      "sceneData": {
+        "name": "financial-summary/balance-sheet",
+        "layout": "grid",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Balance Sheet",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "kpi-card",
+            "x": 40,
+            "y": 180,
+            "w": 560,
+            "h": 240,
+            "args": {
+              "value": "$1,146.8M",
+              "label": "Current Cash Position",
+              "sublabel": "Cash, equivalents, and investments",
+              "icon": "currency-dollar",
+              "style": "dark"
+            }
+          },
+          {
+            "type": "kpi-card",
+            "x": 680,
+            "y": 180,
+            "w": 560,
+            "h": 240,
+            "args": {
+              "value": "$1,483.2M",
+              "label": "Prior Year-End",
+              "sublabel": "Fiscal year 2025 close",
+              "icon": "calendar",
+              "style": "light"
+            }
+          },
+          {
+            "type": "kpi-card",
+            "x": 360,
+            "y": 440,
+            "w": 560,
+            "h": 240,
+            "args": {
+              "value": "-22.7%",
+              "label": "Quarter Change",
+              "sublabel": "Capital allocation activities",
+              "trend": "down",
+              "trendValue": "-$336.4M (1,483.2 vs 1,146.8)",
+              "icon": "arrow-down",
+              "style": "accent-border"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 5,
+      "slotName": "cashflow",
+      "slotTitle": "Cash Flow",
+      "sceneData": {
+        "name": "financial-summary/cashflow",
+        "layout": "row",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Cash Flow",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "kpi-card",
+            "x": 40,
+            "y": 180,
+            "w": 360,
+            "h": 200,
+            "args": {
+              "value": "$124-134M",
+              "label": "GAAP Operating Income",
+              "sublabel": "FY 2026 Outlook",
+              "icon": "chart-line",
+              "style": "light"
+            }
+          },
+          {
+            "type": "kpi-card",
+            "x": 460,
+            "y": 180,
+            "w": 360,
+            "h": 200,
+            "args": {
+              "value": "$314-324M",
+              "label": "Non-GAAP Operating Income",
+              "sublabel": "FY 2026 Outlook",
+              "icon": "chart-bar",
+              "style": "light"
+            }
+          },
+          {
+            "type": "kpi-card",
+            "x": 880,
+            "y": 180,
+            "w": 360,
+            "h": 200,
+            "args": {
+              "value": "$365-380M",
+              "label": "Operating Cash Flow",
+              "sublabel": "FY 2026 Outlook",
+              "icon": "currency-dollar",
+              "style": "dark",
+              "trend": "up"
+            }
+          },
+          {
+            "type": "bar",
+            "x": 40,
+            "y": 420,
+            "w": 1200,
+            "h": 260,
+            "args": {
+              "values": [129, 319, 372.5],
+              "labels": [
+                "GAAP Operating Income",
+                "Non-GAAP Operating Income",
+                "Operating Cash Flow"
+              ],
+              "format": "currency",
+              "title": "FY 2026 Outlook (Midpoints)"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 6,
+      "slotName": "ratios",
+      "slotTitle": "Key Ratios",
+      "sceneData": {
+        "name": "financial-summary/ratios",
+        "layout": "grid",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Key Ratios",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "dashboard-multi-kpi-composite",
+            "x": 40,
+            "y": 160,
+            "w": 1200,
+            "h": 520,
+            "args": {
+              "title": "Profitability Metrics",
+              "kpis": [
+                {
+                  "value": "+69%",
+                  "label": "Non-GAAP Operating Income",
+                  "sublabel": "Year over year growth",
+                  "trend": "up",
+                  "trendValue": "+69%",
+                  "color": [58, 138, 200]
+                },
+                {
+                  "value": "+49%",
+                  "label": "Non-GAAP EPS",
+                  "sublabel": "Year over year growth",
+                  "trend": "up",
+                  "trendValue": "+49%",
+                  "color": [100, 150, 200]
+                },
+                {
+                  "value": "Q3",
+                  "label": "Sharp Improvement",
+                  "sublabel": "Profitability gained momentum",
+                  "trend": "up",
+                  "color": [180, 210, 235]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 7,
+      "slotName": "segments",
+      "slotTitle": "Segment Analysis",
+      "sceneData": {
+        "name": "financial-summary/segments",
+        "layout": "grid",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Segment Analysis",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "kpi-card",
+            "x": 40,
+            "y": 160,
+            "w": 360,
+            "h": 240,
+            "args": {
+              "value": "$244.7M",
+              "label": "Subscription & Support Revenue",
+              "trend": "up",
+              "trendValue": "+35%",
+              "icon": "chart-line-up",
+              "style": "dark"
+            }
+          },
+          {
+            "type": "kpi-card",
+            "x": 460,
+            "y": 160,
+            "w": 360,
+            "h": 240,
+            "args": {
+              "value": "$1,147M",
+              "label": "Annual Recurring Revenue",
+              "sublabel": "vs $1,041M prior year",
+              "trend": "up",
+              "trendValue": "+10.2% ($1,147 vs $1,041)",
+              "icon": "currency-dollar",
+              "style": "dark"
+            }
+          },
+          {
+            "type": "stat-banner",
+            "x": 880,
+            "y": 160,
+            "w": 360,
+            "h": 240,
+            "args": {
+              "value": "Strongest Growth",
+              "label": "Subscription segment leads revenue mix",
+              "trend": "Market modernization demand",
+              "trendDirection": "up",
+              "bg": [58, 138, 200]
+            }
+          },
+          {
+            "type": "icon-grid",
+            "x": 40,
+            "y": 440,
+            "w": 1200,
+            "h": 240,
+            "args": {
+              "title": "Strategic Market Position",
+              "items": [
+                {
+                  "icon": "cloud",
+                  "label": "Cloud Migration",
+                  "sublabel": "Critical business functions to cloud platform"
+                },
+                {
+                  "icon": "brain",
+                  "label": "AI Adoption",
+                  "sublabel": "Customers adopting AI across applications"
+                },
+                {
+                  "icon": "trend-up",
+                  "label": "Market Resonance",
+                  "sublabel": "Strategy aligns with modernization demand"
+                },
+                {
+                  "icon": "arrow-clockwise",
+                  "label": "Recurring Model",
+                  "sublabel": "Expansion of subscription-based business"
+                }
+              ],
+              "cols": 4,
+              "iconStyle": "card",
+              "iconSize": "medium",
+              "colorMode": "auto"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 8,
+      "slotName": "outlook",
+      "slotTitle": "Outlook & Forecast",
+      "sceneData": {
+        "name": "financial-summary/outlook",
+        "layout": "grid",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Outlook & Forecast",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "kpi-card",
+            "x": 40,
+            "y": 160,
+            "w": 360,
+            "h": 180,
+            "args": {
+              "value": "$963–969M",
+              "label": "Subscription & Support Revenue",
+              "sublabel": "FY2026 Expected",
+              "icon": "chart-line-up",
+              "style": "light"
+            }
+          },
+          {
+            "type": "kpi-card",
+            "x": 460,
+            "y": 160,
+            "w": 360,
+            "h": 180,
+            "args": {
+              "value": "$1,460–1,470M",
+              "label": "Total Revenue",
+              "sublabel": "FY2026 Expected",
+              "icon": "currency-dollar",
+              "style": "light"
+            }
+          },
+          {
+            "type": "kpi-card",
+            "x": 880,
+            "y": 160,
+            "w": 360,
+            "h": 180,
+            "args": {
+              "value": "27%",
+              "label": "Revenue Growth",
+              "sublabel": "Q3 Performance",
+              "trend": "up",
+              "trendValue": "+27%",
+              "icon": "trend-up",
+              "style": "light"
+            }
+          },
+          {
+            "type": "kpi-card",
+            "x": 40,
+            "y": 360,
+            "w": 360,
+            "h": 180,
+            "args": {
+              "value": "19%",
+              "label": "ARR Growth",
+              "sublabel": "Q3 Performance",
+              "trend": "up",
+              "trendValue": "+19%",
+              "icon": "arrow-fat-up",
+              "style": "light"
+            }
+          },
+          {
+            "type": "bullet-list",
+            "x": 460,
+            "y": 360,
+            "w": 780,
+            "h": 320,
+            "args": {
+              "title": "FY2026 Positioning",
+              "items": [
+                {
+                  "icon": "chart-line-up",
+                  "label": "Raised full-year guidance",
+                  "sublabel": "Revenue, operating income, and cash flow"
+                },
+                {
+                  "icon": "trophy",
+                  "label": "Record Q4 expected",
+                  "sublabel": "Positioned for strongest quarter"
+                },
+                {
+                  "icon": "cloud",
+                  "label": "Cloud adoption momentum",
+                  "sublabel": "Continued growth driver"
+                },
+                {
+                  "icon": "brain",
+                  "label": "AI adoption momentum",
+                  "sublabel": "Strategic growth catalyst"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 9,
+      "slotName": "appendix",
+      "slotTitle": "Appendix",
+      "sceneData": {
+        "name": "financial-summary/appendix",
+        "layout": "grid",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Appendix",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "bullet-list",
+            "x": 40,
+            "y": 160,
+            "w": 560,
+            "h": 520,
+            "args": {
+              "title": "Methodology Notes",
+              "items": [
+                {
+                  "icon": "chart-line",
+                  "label": "Revenue growth YoY comparison",
+                  "sublabel": "Constant currency basis"
+                },
+                {
+                  "icon": "calculator",
+                  "label": "Profitability metrics normalized",
+                  "sublabel": "Excludes one-time items"
+                },
+                {
+                  "icon": "calendar",
+                  "label": "Fiscal 2026 projections",
+                  "sublabel": "Based on current run rate"
+                },
+                {
+                  "icon": "database",
+                  "label": "Segment reporting aligned",
+                  "sublabel": "Per GAAP standards"
+                }
+              ]
+            }
+          },
+          {
+            "type": "bullet-list",
+            "x": 680,
+            "y": 160,
+            "w": 560,
+            "h": 520,
+            "args": {
+              "title": "Key Assumptions",
+              "items": [
+                {
+                  "icon": "globe",
+                  "label": "Macroeconomic conditions stable",
+                  "sublabel": "No major disruptions"
+                },
+                {
+                  "icon": "currency-dollar",
+                  "label": "Currency fluctuation normalized",
+                  "sublabel": "Within historical ranges"
+                },
+                {
+                  "icon": "users",
+                  "label": "Customer retention sustained",
+                  "sublabel": "At current levels"
+                },
+                {
+                  "icon": "chart-bar",
+                  "label": "Market share trajectory",
+                  "sublabel": "Continues current trend"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

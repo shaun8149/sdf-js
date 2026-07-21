@@ -1,0 +1,86 @@
+{
+  "slotIdx": 6,
+  "slotName": "recommendations",
+  "slotTitle": "Recommendations",
+  "slotPurpose": "Actionable next steps based on findings",
+  "sourceSlideIdx": 6,
+  "sourceSlideTitle": "Recommendations",
+  "sceneData": {
+    "name": "analysis-report/recommendations",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Recommendations",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 40,
+        "y": 160,
+        "w": 1200,
+        "h": 520,
+        "args": {
+          "items": [
+            {
+              "icon": "building",
+              "label": "Open Berlin office Q1 2027",
+              "sublabel": "Double down on EMEA hiring"
+            },
+            {
+              "icon": "currency-dollar",
+              "label": "3-tier pricing with usage add-ons",
+              "sublabel": "Restructure pricing model"
+            },
+            {
+              "icon": "briefcase",
+              "label": "Acquire 1-2 healthcare AI specialists",
+              "sublabel": "Vertical market expansion"
+            },
+            {
+              "icon": "headset",
+              "label": "SLA target: 2h response time",
+              "sublabel": "Invest in customer support"
+            },
+            {
+              "icon": "handshake",
+              "label": "Partner with 10 systems integrators",
+              "sublabel": "Launch channel program"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "analysis-report",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "bullet-list",
+      "icon-grid"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5168,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 400,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.025406400000000003,
+    "elapsedSec": 7.5,
+    "generatedAt": "2026-07-10T07:20:44.446Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

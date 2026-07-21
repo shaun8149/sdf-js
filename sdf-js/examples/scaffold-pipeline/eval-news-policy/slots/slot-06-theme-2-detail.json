@@ -1,0 +1,79 @@
+{
+  "slotIdx": 6,
+  "slotName": "theme-2-detail",
+  "slotTitle": "Theme 2 — Detail",
+  "slotPurpose": "Second theme drill-down: sequence, conditions, thresholds",
+  "sourceSlideIdx": 5,
+  "sourceSlideTitle": "国家充电设施覆盖目标",
+  "sceneData": {
+    "name": "news-briefing/theme-2-detail",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "国家充电设施覆盖目标",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "timeline",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 460,
+        "args": {
+          "events": [
+            {
+              "date": "现状",
+              "label": "县乡充电难问题",
+              "sublabel": "充电基础设施覆盖不足"
+            },
+            {
+              "date": "建设期",
+              "label": "充电基础设施建设",
+              "sublabel": "国家能源局推进覆盖工程"
+            },
+            {
+              "date": "2026年底",
+              "label": "县县全覆盖、乡乡有站点",
+              "sublabel": "实现全面覆盖目标"
+            }
+          ],
+          "axisLabel": "充电设施覆盖推进时间线"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "timeline",
+      "funnel-with-conversion",
+      "bullet-list",
+      "flow-chart"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5186,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 374,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0250704,
+    "elapsedSec": 7,
+    "generatedAt": "2026-07-10T07:27:23.285Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

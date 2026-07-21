@@ -1,0 +1,93 @@
+{
+  "slotIdx": 5,
+  "slotName": "enablers",
+  "slotTitle": "Enablers",
+  "slotPurpose": "People, process, and technology levers that enable change",
+  "sourceSlideIdx": 3,
+  "sourceSlideTitle": "Five Core Strategic Pillars",
+  "sceneData": {
+    "name": "change-roadmap/enablers",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Enablers",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "icon-grid",
+        "x": 80,
+        "y": 160,
+        "w": 1120,
+        "h": 500,
+        "args": {
+          "title": "Five Strategic Pillars",
+          "items": [
+            {
+              "icon": "gear-six",
+              "label": "Digitise Core",
+              "sublabel": "Automate top 20 workflows",
+              "color": [156, 142, 110]
+            },
+            {
+              "icon": "database",
+              "label": "Data First",
+              "sublabel": "Unified platform",
+              "color": [100, 95, 82]
+            },
+            {
+              "icon": "user-focus",
+              "label": "Customer 360",
+              "sublabel": "Real-time personalisation",
+              "color": [200, 193, 174]
+            },
+            {
+              "icon": "graduation-cap",
+              "label": "Talent Uplift",
+              "sublabel": "800 employees upskilled",
+              "color": [156, 142, 110]
+            },
+            {
+              "icon": "plugs-connected",
+              "label": "Ecosystem Play",
+              "sublabel": "12 fintech partnerships",
+              "color": [100, 95, 82]
+            }
+          ],
+          "cols": 3,
+          "iconStyle": "card",
+          "iconSize": "large",
+          "colorMode": "auto"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "change-roadmap",
+    "theme": "consulting-charcoal",
+    "recommendedAtoms": ["icon-grid", "bullet-list", "value-chain-diagram"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 3092,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 11000,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 498,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.020046,
+    "elapsedSec": 6.7,
+    "generatedAt": "2026-06-25T04:33:09.957Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

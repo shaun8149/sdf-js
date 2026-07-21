@@ -1,0 +1,88 @@
+{
+  "slotIdx": 3,
+  "slotName": "wins",
+  "slotTitle": "Wins",
+  "slotPurpose": "What went well this quarter",
+  "sourceSlideIdx": 3,
+  "sourceSlideTitle": "Shipped Features",
+  "sceneData": {
+    "name": "qbr/wins",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Wins",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 40,
+        "y": 160,
+        "w": 1200,
+        "h": 520,
+        "args": {
+          "title": "Shipped Features",
+          "items": [
+            {
+              "icon": "users-three",
+              "label": "Real-time collaboration engine",
+              "sublabel": "Launched to 100% users Aug 3"
+            },
+            {
+              "icon": "rocket-launch",
+              "label": "New onboarding flow",
+              "sublabel": "Reduced time-to-first-value from 12 min to 4 min"
+            },
+            {
+              "icon": "device-mobile",
+              "label": "Mobile offline mode",
+              "sublabel": "Now supports 30-day offline sync"
+            },
+            {
+              "icon": "shield-check",
+              "label": "Admin audit log",
+              "sublabel": "SOC 2 compliance requirement, shipped 2 weeks early"
+            },
+            {
+              "icon": "plugs-connected",
+              "label": "API v3",
+              "sublabel": "Breaking change migration, 92% of customers migrated by quarter end"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "qbr",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "bullet-list",
+      "kpi-card",
+      "icon-badge"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5194,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 430,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0259344,
+    "elapsedSec": 9.8,
+    "generatedAt": "2026-07-10T07:24:27.466Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

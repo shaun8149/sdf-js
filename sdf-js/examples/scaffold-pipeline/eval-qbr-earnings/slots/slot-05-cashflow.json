@@ -1,0 +1,110 @@
+{
+  "slotIdx": 5,
+  "slotName": "cashflow",
+  "slotTitle": "Cash Flow",
+  "slotPurpose": "Operating / investing / financing cash flows",
+  "sourceSlideIdx": 16,
+  "sourceSlideTitle": "Updated Full Year FY2026 Profitability and Cash Flow Outlook",
+  "sceneData": {
+    "name": "financial-summary/cashflow",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Cash Flow",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 40,
+        "y": 180,
+        "w": 360,
+        "h": 200,
+        "args": {
+          "value": "$365-380M",
+          "label": "Operating Cash Flow",
+          "sublabel": "FY2026 Outlook",
+          "icon": "currency-dollar",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 460,
+        "y": 180,
+        "w": 360,
+        "h": 200,
+        "args": {
+          "value": "$124-134M",
+          "label": "GAAP Operating Income",
+          "sublabel": "FY2026 Expected",
+          "icon": "chart-line",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 880,
+        "y": 180,
+        "w": 360,
+        "h": 200,
+        "args": {
+          "value": "$314-324M",
+          "label": "Non-GAAP Operating Income",
+          "sublabel": "FY2026 Expected",
+          "icon": "chart-line-up",
+          "style": "light"
+        }
+      },
+      {
+        "type": "stat-banner",
+        "x": 40,
+        "y": 440,
+        "w": 1200,
+        "h": 120,
+        "args": {
+          "value": "Improved Outlook",
+          "label": "Across all profitability and cash flow metrics",
+          "trendDirection": "up",
+          "bg": [
+            58,
+            138,
+            200
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "financial-summary",
+    "theme": "financial-navy-cerulean",
+    "recommendedAtoms": [
+      "line",
+      "column",
+      "bar"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5174,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 566,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0279144,
+    "elapsedSec": 10.6,
+    "generatedAt": "2026-07-10T07:28:22.396Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

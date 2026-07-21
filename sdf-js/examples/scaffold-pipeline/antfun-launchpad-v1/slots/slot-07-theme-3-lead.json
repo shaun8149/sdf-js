@@ -1,0 +1,104 @@
+{
+ "slotIdx": 7,
+ "slotName": "theme-3-lead",
+ "slotTitle": "Theme 3 — Lead",
+ "sourceSlideIdx": 6,
+ "sceneData": {
+  "name": "news-briefing/theme-3-lead",
+  "layout": "grid",
+  "subjects": [
+   {
+    "type": "cover",
+    "x": 0,
+    "y": 0,
+    "w": 1280,
+    "h": 120,
+    "args": {
+     "title": "发币即建群",
+     "subtitle": "代币的家是群"
+    }
+   },
+   {
+    "type": "icon-grid",
+    "x": 40,
+    "y": 160,
+    "w": 580,
+    "h": 520,
+    "args": {
+     "title": "核心机制",
+     "items": [
+      {
+       "icon": "users",
+       "label": "自动建群",
+       "sublabel": "发币时平台创建官方群"
+      },
+      {
+       "icon": "chart-line",
+       "label": "原生看板",
+       "sublabel": "价格、毕业进度、持仓排行"
+      },
+      {
+       "icon": "shopping-cart",
+       "label": "群内交易",
+       "sublabel": "直接买卖入口"
+      },
+      {
+       "icon": "network",
+       "label": "完整社交图谱",
+       "sublabel": "聊天、群聊、语音房、信息流"
+      }
+     ],
+     "cols": 2,
+     "iconStyle": "card",
+     "iconSize": "medium"
+    }
+   },
+   {
+    "type": "bullet-list",
+    "x": 660,
+    "y": 160,
+    "w": 580,
+    "h": 520,
+    "args": {
+     "title": "成员机制",
+     "items": [
+      {
+       "icon": "eye",
+       "label": "买入即获群进出权",
+       "sublabel": "零确认围观,不入成员列表"
+      },
+      {
+       "icon": "user-check",
+       "label": "点常驻或发消息转常驻",
+       "sublabel": "接收推送、计入群活跃"
+      },
+      {
+       "icon": "users-four",
+       "label": "社区买入默认常驻",
+       "sublabel": "K线页买入默认游客"
+      },
+      {
+       "icon": "shield-check",
+       "label": "卖出不取消常驻",
+       "sublabel": "OG与卖飞者留得住"
+      },
+      {
+       "icon": "lock",
+       "label": "余额变动不触发动作",
+       "sublabel": "堵死粉尘空投攻击"
+      }
+     ]
+    }
+   }
+  ]
+ },
+ "meta": {
+  "bakedBy": "validate-auto-scaffold",
+  "model": "live"
+ },
+ "sectionAccent": [
+  118,
+  84,
+  138
+ ]
+}

@@ -1,0 +1,238 @@
+{
+  "v": 1,
+  "name": "(scaffold) pitch-deck-vc/market-size",
+  "subjects": [
+    {
+      "id": "pyramid-0",
+      "type": "pyramid-3d",
+      "args": {
+        "levels": 3,
+        "colors": [
+          {
+            "hue": 0.06201550387596899,
+            "sat": 0.7,
+            "value": 0.88
+          },
+          {
+            "hue": 0.06201550387596899,
+            "sat": 0.74,
+            "value": 0.73
+          },
+          {
+            "hue": 0.06201550387596899,
+            "sat": 0.7799999999999999,
+            "value": 0.5800000000000001
+          }
+        ]
+      },
+      "transform": {
+        "translate": [
+          2.4375,
+          2.35,
+          0
+        ],
+        "scale": 1.6956521739130437
+      },
+      "material": {
+        "hue": 0.06201550387596899,
+        "sat": 0.72,
+        "value": 0.72,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      }
+    },
+    {
+      "id": "kpi-card-1",
+      "type": "kpi-card-3d",
+      "args": {
+        "value": "18M",
+        "label": "Knowledge Workers"
+      },
+      "transform": {
+        "translate": [
+          -2.4375,
+          3.175,
+          0
+        ],
+        "scale": 0.5869565217391305
+      },
+      "material": {
+        "hue": 0.625,
+        "sat": 0.72,
+        "value": 0.7058823529411765,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      }
+    },
+    {
+      "id": "kpi-card-2",
+      "type": "kpi-card-3d",
+      "args": {
+        "value": "$4.8B",
+        "label": "Core Market"
+      },
+      "transform": {
+        "translate": [
+          -1.340625,
+          1.6,
+          0
+        ],
+        "scale": 0.55
+      },
+      "material": {
+        "hue": 0.638888888888889,
+        "sat": 0.5,
+        "value": 0.5,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      }
+    },
+    {
+      "id": "kpi-card-3",
+      "type": "kpi-card-3d",
+      "args": {
+        "value": "$48B",
+        "label": "TAM 2028"
+      },
+      "transform": {
+        "translate": [
+          -3.5343750000000003,
+          1.6,
+          0
+        ],
+        "scale": 0.55
+      },
+      "material": {
+        "hue": 0.06201550387596899,
+        "sat": 0.72,
+        "value": 0.72,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      }
+    }
+  ],
+  "overlay": [
+    {
+      "text": "AI-augmented productivity",
+      "anchor": [
+        4.574021739130435,
+        5.7413043478260875,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "PPT/Keynote/Google Slides",
+      "anchor": [
+        4.574021739130435,
+        4.520434782608696,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "Editorial illustration + infographic",
+      "anchor": [
+        4.574021739130435,
+        3.299565217391305,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "18M",
+      "anchor": [
+        -2.4375,
+        3.3510869565217387,
+        0.3521739130434783
+      ],
+      "role": "value",
+      "radius": 0.36
+    },
+    {
+      "text": "$4.8B",
+      "anchor": [
+        -1.340625,
+        1.7650000000000001,
+        0.33
+      ],
+      "role": "value",
+      "radius": 0.36
+    },
+    {
+      "text": "$48B",
+      "anchor": [
+        -3.5343750000000003,
+        1.7650000000000001,
+        0.33
+      ],
+      "role": "value",
+      "radius": 0.36
+    },
+    {
+      "text": "MARKET SIZE",
+      "anchor": [
+        0,
+        4.9,
+        0
+      ],
+      "role": "title"
+    }
+  ],
+  "cameraSequence": {
+    "loop": false,
+    "shots": [
+      {
+        "duration": 0.01,
+        "pos": [
+          1.4,
+          3.5,
+          14
+        ],
+        "target": [
+          0,
+          2.5,
+          0
+        ],
+        "fov": 48,
+        "aperture": 0,
+        "focalDistance": 12.5,
+        "ease": "smooth"
+      },
+      {
+        "duration": 14,
+        "pos": [
+          0,
+          2.85,
+          11.8
+        ],
+        "target": [
+          0,
+          2.5,
+          0
+        ],
+        "fov": 46,
+        "transition": "blend",
+        "aperture": 0,
+        "focalDistance": 11.8,
+        "ease": "smooth"
+      }
+    ]
+  },
+  "defaults": {
+    "stage": {
+      "size": [
+        24,
+        12,
+        13
+      ]
+    }
+  }
+}

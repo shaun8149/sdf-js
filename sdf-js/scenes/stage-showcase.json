@@ -1,0 +1,74 @@
+{
+  "id": "stage-showcase",
+  "title": "Studio Stage — metals in a lit room",
+  "prompt": "three metal objects on a studio stage, lit by ceiling softboxes",
+  "code2d": "// defaults.stage:true → expandStage injects room + panel area lights + camera.",
+  "sceneData": {
+    "v": 1,
+    "name": "studio stage showcase",
+    "subjects": [
+      {
+        "id": "gold_sphere",
+        "type": "sphere",
+        "args": { "r": 0.9 },
+        "transform": { "translate": [-2.5, 0.9, 0.2] },
+        "material": "gold"
+      },
+      {
+        "id": "silver_torus",
+        "type": "torus",
+        "args": { "R": 0.8, "r": 0.3 },
+        "transform": { "translate": [0.1, 0.9, -0.3] },
+        "material": "silver"
+      },
+      {
+        "id": "copper_box",
+        "type": "rounded_box",
+        "args": { "dims": [1.3, 1.3, 1.3], "radius": 0.12 },
+        "transform": { "translate": [2.6, 0.75, 0.2] },
+        "material": "copper"
+      }
+    ],
+    "cameraSequence": {
+      "loop": true,
+      "shots": [
+        {
+          "duration": 4.2,
+          "pos": [5.0, 3.4, 12.0],
+          "target": [-1.1, 1.1, 0],
+          "fov": 42,
+          "aperture": 0.4,
+          "focalDistance": 12.0,
+          "ease": "out",
+          "exposure": [0, 1]
+        },
+        {
+          "duration": 4.6,
+          "pos": [6.0, 1.6, 4.2],
+          "target": [0, 0.9, 0],
+          "fov": 38,
+          "aperture": 0.85,
+          "focalDistance": [5.2, 9.3],
+          "ease": "smooth",
+          "transition": "blend"
+        },
+        {
+          "duration": 5.2,
+          "pos": [-1.6, 2.2, 8.6],
+          "target": [-1.0, 0.95, 0],
+          "fov": 44,
+          "aperture": 0.5,
+          "focalDistance": 8.6,
+          "ease": "out",
+          "transition": "blend"
+        }
+      ]
+    },
+    "defaults": {
+      "stage": { "show": true }
+    }
+  },
+  "meta": {
+    "thesisPoint": "scene-level stage: defaults.stage expands to a lit studio room (area lights + reflection-retrace)."
+  }
+}

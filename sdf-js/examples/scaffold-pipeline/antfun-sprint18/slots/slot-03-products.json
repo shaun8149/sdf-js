@@ -1,0 +1,97 @@
+{
+  "slotIdx": 3,
+  "slotName": "products",
+  "slotTitle": "Products",
+  "slotPurpose": "Feature lineup",
+  "sourceSlideIdx": 4,
+  "sourceSlideTitle": "Strategic Position",
+  "sceneData": {
+    "name": "company-overview/products",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Products",
+          "bg": "rgb(248, 246, 240)",
+          "fg": "rgb(22, 35, 70)"
+        }
+      },
+      {
+        "type": "icon-grid",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 480,
+        "args": {
+          "items": [
+            {
+              "icon": "users-three",
+              "label": "User Persona",
+              "sublabel": "Competitive Position"
+            },
+            {
+              "icon": "target",
+              "label": "Market Gap",
+              "sublabel": "Beyond For"
+            },
+            {
+              "icon": "robot",
+              "label": "OpenClaw",
+              "sublabel": "AI Integration"
+            },
+            {
+              "icon": "chats-circle",
+              "label": "Agent Mentions",
+              "sublabel": "Community Features"
+            },
+            {
+              "icon": "currency-dollar",
+              "label": "Perp DEX",
+              "sublabel": "$300K Daily Volume"
+            },
+            {
+              "icon": "code-block",
+              "label": "Smart Money",
+              "sublabel": "Prototype Ready"
+            }
+          ],
+          "colorMode": "auto",
+          "accentColor": "rgb(38, 70, 130)"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "company-overview",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "device-mockup-row",
+      "magazine-column-grid",
+      "icon-row",
+      "icon-grid",
+      "bullet-list"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 1688,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 5921,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 447,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0135453,
+    "elapsedSec": 6.9,
+    "generatedAt": "2026-06-24T03:34:35.979Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

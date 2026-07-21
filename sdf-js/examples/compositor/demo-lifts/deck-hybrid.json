@@ -1,0 +1,24 @@
+{
+  "id": "deck-hybrid",
+  "name": "Hybrid spatial deck (light chapter + heavy slides)",
+  "segments": [
+    {
+      "file": "deck-seg-light.json",
+      "title": "Chapter · light continuous world",
+      "kind": "chapter",
+      "durationSec": 17
+    },
+    {
+      "file": "deck-seg-gears.json",
+      "title": "Slide · gear mechanism (heavy)",
+      "kind": "slide",
+      "durationSec": 6.5
+    },
+    {
+      "file": "deck-seg-pyramid.json",
+      "title": "Slide · pyramid (heavy)",
+      "kind": "slide",
+      "durationSec": 6.5
+    }
+  ]
+}

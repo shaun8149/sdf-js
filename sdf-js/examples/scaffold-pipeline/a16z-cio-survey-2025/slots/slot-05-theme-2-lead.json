@@ -1,0 +1,91 @@
+{
+  "slotIdx": 5,
+  "slotName": "theme-2-lead",
+  "slotTitle": "Theme 2 — Lead",
+  "slotPurpose": "Second major theme: the core facts",
+  "sourceSlideIdx": 4,
+  "sourceSlideTitle": "Multi-Model Strategy Becomes Standard",
+  "sceneData": {
+    "name": "news-briefing/theme-2-lead",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Multi-Model Strategy",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "stat-banner",
+        "x": 40,
+        "y": 160,
+        "w": 1200,
+        "h": 140,
+        "args": {
+          "value": "37%",
+          "label": "Use 5+ models",
+          "trend": "+8pp YoY",
+          "trendDirection": "up",
+          "bg": [38, 70, 130]
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 80,
+        "y": 340,
+        "w": 520,
+        "h": 280,
+        "args": {
+          "value": "29%",
+          "label": "Last Year",
+          "sublabel": "Used 5+ models",
+          "icon": "chart-line",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 680,
+        "y": 340,
+        "w": 520,
+        "h": 280,
+        "args": {
+          "value": "37%",
+          "label": "This Year",
+          "sublabel": "Use 5+ models",
+          "icon": "chart-line-up",
+          "trend": "+27%",
+          "trendDirection": "up",
+          "style": "light"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["process-arrows", "timeline", "stat-banner", "kpi-card"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4434,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 470,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0242544,
+    "elapsedSec": 8.1,
+    "generatedAt": "2026-07-07T03:45:51.191Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

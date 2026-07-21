@@ -8,6 +8,7 @@
 
 import { capped_cone } from '../../../../sdf/d3.js';
 import { union } from '../../../../sdf/dn.js';
+import { resolveMaterial } from '../../../spec.js';
 
 /**
  * @param {object} opts
@@ -16,6 +17,9 @@ import { union } from '../../../../sdf/dn.js';
  * @param {number} [opts.bottomRadius=0.22] radius at the bottom
  * @param {number} [opts.stageHeight=0.4] height of each stage
  * @param {number} [opts.gap=0.06]       gap between stages
+ * @param {number[]|null} [opts.radii=null] per-boundary radii (length stages+1,
+ *   top→bottom). When given, stage i spans radii[i]→radii[i+1] — lets magnitude
+ *   data drive stage widths (structure renderers). Absent → linear taper.
  * @returns {SDF3}
  */
 export function funnel3dSDF({
@@ -24,17 +28,25 @@ export function funnel3dSDF({
   bottomRadius = 0.22,
   stageHeight = 0.4,
   gap = 0.06,
+  colors = null,
+  radii = null,
 } = {}) {
   const N = Math.max(1, Math.floor(stages));
   const totalH = N * stageHeight + (N - 1) * gap;
+  const useRadii = Array.isArray(radii) && radii.length >= N + 1;
   const radAt = (frac) => topRadius + frac * (bottomRadius - topRadius);
   const parts = [];
   for (let i = 0; i < N; i++) {
-    const rT = radAt(i / N);
-    const rB = radAt((i + 1) / N);
+    const rT = useRadii ? radii[i] : radAt(i / N);
+    const rB = useRadii ? radii[i + 1] : radAt((i + 1) / N);
     const yTop = totalH / 2 - i * (stageHeight + gap);
     const yBot = yTop - stageHeight;
-    parts.push(capped_cone([0, yTop, 0], [0, yBot, 0], rT, rB));
+    const seg = capped_cone([0, yTop, 0], [0, yBot, 0], rT, rB);
+    if (colors && colors[i] != null) {
+      const m = resolveMaterial(colors[i]);
+      if (m) seg._subjectMaterial = m;
+    }
+    parts.push(seg);
   }
   return parts.length === 1 ? parts[0] : union(...parts);
 }
@@ -48,6 +60,11 @@ export const funnel3dSpec = {
     bottomRadius: { type: 'number', default: 0.22, doc: 'Radius at the bottom' },
     stageHeight: { type: 'number', default: 0.4, doc: 'Height of each stage' },
     gap: { type: 'number', default: 0.06, doc: 'Gap between stages' },
+    radii: {
+      type: 'array',
+      default: null,
+      doc: 'Per-boundary radii (length stages+1, top→bottom) — magnitude-driven widths; overrides the linear taper',
+    },
   },
   examples: [
     { name: 'Sales funnel (4)', args: { stages: 4 } },

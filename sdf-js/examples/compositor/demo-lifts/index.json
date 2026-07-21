@@ -3,6 +3,26 @@
   "description": "Atlas demo gallery — 12 pre-lifted 3D scenes spanning 4 thesis patterns: (1) Generator-S scatter (1 prompt → N instances; carrier/cathedral/forest/coastal/village), (2) atmospheric / 1-primitive scenes (open-ocean/snow-mountain), (3) GPU-internal SDF rep distinct from generator-level scatter (canal-day1), (4) single-object precision (vase/clock/bicycle/dining). Each demo proves a specific claim in the vs-diffusion / vs-neural-world-model thesis.\n\nPROMPT-WRITING LESSON (learned 2026-05-18 the hard way): keep prompts SHORT. The LLM has cultural / visual priors (e.g. '中国航母' → 辽宁/福建号 with starboard island, 3/4 angle). Heavy 'prompt engineering' with explicit angle / parts list overrides those priors and produces worse compositions. Trust the model.",
   "demos": [
     {
+      "id": "agenda-list-3d",
+      "title": "Chart · Agenda",
+      "thesisPoint": "Atlas taxonomy chart atom (Sprint 5 Wave A) — composite, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "agenda-list-3d.json",
+      "renderer": "studio",
+      "prompt": "Chart · Agenda"
+    },
+    {
+      "id": "arrow-3d",
+      "title": "Arrow",
+      "thesisPoint": "Atlas Shape atom (Sprint 3 simple shapes) — composite atom, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "arrow-3d.json",
+      "renderer": "studio",
+      "prompt": "Arrow"
+    },
+    {
       "id": "bonsai-mountain",
       "title": "盆景蚀刻山地",
       "thesisPoint": "Sprint 12 (Rune Skovbo Johansen Advanced Terrain Erosion Filter, MPL-2.0) — Atlas's first CPU-baked-heightmap-to-GPU-texture pipeline. compile() bakes a 512² heightmap (height + ridgeMap + treeAmount + erosionOffset packed into RGBA32F) via Phacelle noise + 5-octave erosion, uploaded to flyLambert as sampler2D u_heightmap. New material kind='eroded-terrain' (kind=7) renders cliff/dirt/grass/snow/sand/tree/drainage by reading the 4 channels. Hash-driven (?tokenHash=0x... or scene.defaults.seed): different hashes produce visually distinct mountains via 1-3 random initial bumps + 6 jittered visual erosion params + per-hash Phacelle domain offset. NFT-ready primitive — Phase 2 adds Blueprint + BOB GPU views for the on-chain generative art triple-view product.",
@@ -10,6 +30,16 @@
       "status": "ready",
       "file": "bonsai-mountain.json",
       "prompt": "盆景式蚀刻山地"
+    },
+    {
+      "id": "bullet-list-3d",
+      "title": "Chart · Bullet List",
+      "thesisPoint": "Atlas taxonomy chart atom (Sprint 5 Wave A) — composite, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "bullet-list-3d.json",
+      "renderer": "studio",
+      "prompt": "Chart · Bullet List"
     },
     {
       "id": "canal-day1",
@@ -30,6 +60,296 @@
       "prompt": "夕阳红岩峡谷"
     },
     {
+      "id": "chart-7s",
+      "title": "7-S Model",
+      "thesisPoint": "Charts & Diagrams category cover — Atlas chart atom + dark studio.",
+      "category": "chart-product",
+      "status": "ready",
+      "file": "chart-7s.json",
+      "renderer": "studio",
+      "prompt": "7-S Model"
+    },
+    {
+      "id": "chart-autolabel-bar",
+      "title": "Bar chart · auto-labels from args.labels (#84 connector)",
+      "thesisPoint": "#84 connector: chart args.labels auto-expand into SDF text-3d-pipe labels at load (expandChartLabels).",
+      "category": "data-labels",
+      "status": "ready",
+      "file": "chart-autolabel-bar.json",
+      "renderer": "studio",
+      "prompt": "Bar chart · auto-labels from args.labels (#84 connector)"
+    },
+    {
+      "id": "chart-autolabel-column",
+      "title": "Column chart · auto-labels (#84 connector)",
+      "thesisPoint": "#84 connector verified across chart types — one atom + args.labels, labels auto-injected.",
+      "category": "data-labels",
+      "status": "ready",
+      "file": "chart-autolabel-column.json",
+      "renderer": "studio",
+      "prompt": "Column chart · auto-labels (#84 connector)"
+    },
+    {
+      "id": "chart-autolabel-line",
+      "title": "Line chart · auto-labels (#84 connector)",
+      "thesisPoint": "#84 connector verified across chart types — one atom + args.labels, labels auto-injected.",
+      "category": "data-labels",
+      "status": "ready",
+      "file": "chart-autolabel-line.json",
+      "renderer": "studio",
+      "prompt": "Line chart · auto-labels (#84 connector)"
+    },
+    {
+      "id": "chart-autolabel-matrix",
+      "title": "Matrix (SWOT) · auto-labels (#84 connector)",
+      "thesisPoint": "#84 connector verified across chart types — one atom + args.labels, labels auto-injected.",
+      "category": "data-labels",
+      "status": "ready",
+      "file": "chart-autolabel-matrix.json",
+      "renderer": "studio",
+      "prompt": "Matrix (SWOT) · auto-labels (#84 connector)"
+    },
+    {
+      "id": "chart-autolabel-pie",
+      "title": "Pie chart · auto-labels (#84 connector)",
+      "thesisPoint": "#84 connector verified across chart types — one atom + args.labels, labels auto-injected.",
+      "category": "data-labels",
+      "status": "ready",
+      "file": "chart-autolabel-pie.json",
+      "renderer": "studio",
+      "prompt": "Pie chart · auto-labels (#84 connector)"
+    },
+    {
+      "id": "chart-autolabel-spherefill",
+      "title": "Sphere-fill · auto-labels (#84 connector)",
+      "thesisPoint": "#84 connector verified across chart types — one atom + args.labels, labels auto-injected.",
+      "category": "data-labels",
+      "status": "ready",
+      "file": "chart-autolabel-spherefill.json",
+      "renderer": "studio",
+      "prompt": "Sphere-fill · auto-labels (#84 connector)"
+    },
+    {
+      "id": "chart-bcg-matrix",
+      "title": "BCG Matrix (2×2)",
+      "thesisPoint": "Charts & Diagrams category cover — Atlas chart atom + dark studio.",
+      "category": "chart-product",
+      "status": "ready",
+      "file": "chart-bcg-matrix.json",
+      "renderer": "studio",
+      "prompt": "BCG Matrix (2×2)"
+    },
+    {
+      "id": "chart-break-even",
+      "title": "Break-Even Analysis",
+      "thesisPoint": "Charts & Diagrams category cover — Atlas chart atom + dark studio.",
+      "category": "chart-product",
+      "status": "ready",
+      "file": "chart-break-even.json",
+      "renderer": "studio",
+      "prompt": "Break-Even Analysis"
+    },
+    {
+      "id": "chart-cockpit",
+      "title": "Cockpit Dashboard · gauges",
+      "thesisPoint": "Charts & Diagrams category cover — Atlas chart atom + dark studio.",
+      "category": "chart-product",
+      "status": "ready",
+      "file": "chart-cockpit.json",
+      "renderer": "studio",
+      "prompt": "Cockpit Dashboard · gauges"
+    },
+    {
+      "id": "chart-data-bars",
+      "title": "Data Driven · 3D Bars",
+      "thesisPoint": "Charts & Diagrams category cover — Atlas chart atom + dark studio.",
+      "category": "chart-product",
+      "status": "ready",
+      "file": "chart-data-bars.json",
+      "renderer": "studio",
+      "prompt": "Data Driven · 3D Bars"
+    },
+    {
+      "id": "chart-data-columns",
+      "title": "Data Driven · Columns",
+      "thesisPoint": "Charts & Diagrams category cover — Atlas chart atom + dark studio.",
+      "category": "chart-product",
+      "status": "ready",
+      "file": "chart-data-columns.json",
+      "renderer": "studio",
+      "prompt": "Data Driven · Columns"
+    },
+    {
+      "id": "chart-fishbone",
+      "title": "Fishbone / Ishikawa",
+      "thesisPoint": "Charts & Diagrams category cover — Atlas chart atom + dark studio.",
+      "category": "chart-product",
+      "status": "ready",
+      "file": "chart-fishbone.json",
+      "renderer": "studio",
+      "prompt": "Fishbone / Ishikawa"
+    },
+    {
+      "id": "chart-gantt",
+      "title": "Gantt Chart",
+      "thesisPoint": "Charts & Diagrams category cover — Atlas chart atom + dark studio.",
+      "category": "chart-product",
+      "status": "ready",
+      "file": "chart-gantt.json",
+      "renderer": "studio",
+      "prompt": "Gantt Chart"
+    },
+    {
+      "id": "chart-gauge",
+      "title": "KPI Gauge",
+      "thesisPoint": "Charts & Diagrams category cover — Atlas chart atom + dark studio.",
+      "category": "chart-product",
+      "status": "ready",
+      "file": "chart-gauge.json",
+      "renderer": "studio",
+      "prompt": "KPI Gauge"
+    },
+    {
+      "id": "chart-layers",
+      "title": "3D Layers Parallel",
+      "thesisPoint": "Charts & Diagrams category cover — Atlas chart atom + dark studio.",
+      "category": "chart-product",
+      "status": "ready",
+      "file": "chart-layers.json",
+      "renderer": "studio",
+      "prompt": "3D Layers Parallel"
+    },
+    {
+      "id": "chart-line",
+      "title": "Line / Trend Chart",
+      "thesisPoint": "Charts & Diagrams category cover — Atlas chart atom + dark studio.",
+      "category": "chart-product",
+      "status": "ready",
+      "file": "chart-line.json",
+      "renderer": "studio",
+      "prompt": "Line / Trend Chart"
+    },
+    {
+      "id": "chart-list",
+      "title": "List Templates",
+      "thesisPoint": "Charts & Diagrams category cover — Atlas chart atom + dark studio.",
+      "category": "chart-product",
+      "status": "ready",
+      "file": "chart-list.json",
+      "renderer": "studio",
+      "prompt": "List Templates"
+    },
+    {
+      "id": "chart-multiple-arrows",
+      "title": "Multiple Arrows",
+      "thesisPoint": "Charts & Diagrams category cover — Atlas chart atom + dark studio.",
+      "category": "chart-product",
+      "status": "ready",
+      "file": "chart-multiple-arrows.json",
+      "renderer": "studio",
+      "prompt": "Multiple Arrows"
+    },
+    {
+      "id": "chart-nine-field",
+      "title": "Nine-Field Matrix (3×3)",
+      "thesisPoint": "Charts & Diagrams category cover — Atlas chart atom + dark studio.",
+      "category": "chart-product",
+      "status": "ready",
+      "file": "chart-nine-field.json",
+      "renderer": "studio",
+      "prompt": "Nine-Field Matrix (3×3)"
+    },
+    {
+      "id": "chart-org",
+      "title": "Org Chart 3D",
+      "thesisPoint": "Charts & Diagrams category cover — Atlas chart atom + dark studio.",
+      "category": "chart-product",
+      "status": "ready",
+      "file": "chart-org.json",
+      "renderer": "studio",
+      "prompt": "Org Chart 3D"
+    },
+    {
+      "id": "chart-pie",
+      "title": "Pie / Donut Chart",
+      "thesisPoint": "Charts & Diagrams category cover — Atlas chart atom + dark studio.",
+      "category": "chart-product",
+      "status": "ready",
+      "file": "chart-pie.json",
+      "renderer": "studio",
+      "prompt": "Pie / Donut Chart"
+    },
+    {
+      "id": "chart-radial",
+      "title": "Radial Diagram",
+      "thesisPoint": "Charts & Diagrams category cover — Atlas chart atom + dark studio.",
+      "category": "chart-product",
+      "status": "ready",
+      "file": "chart-radial.json",
+      "renderer": "studio",
+      "prompt": "Radial Diagram"
+    },
+    {
+      "id": "chart-scatter",
+      "title": "Scatter Plot",
+      "thesisPoint": "Charts & Diagrams category cover — Atlas chart atom + dark studio.",
+      "category": "chart-product",
+      "status": "ready",
+      "file": "chart-scatter.json",
+      "renderer": "studio",
+      "prompt": "Scatter Plot"
+    },
+    {
+      "id": "chart-timeline",
+      "title": "Project Timeline",
+      "thesisPoint": "Charts & Diagrams category cover — Atlas chart atom + dark studio.",
+      "category": "chart-product",
+      "status": "ready",
+      "file": "chart-timeline.json",
+      "renderer": "studio",
+      "prompt": "Project Timeline"
+    },
+    {
+      "id": "chart-traffic-light",
+      "title": "Traffic Light Chart",
+      "thesisPoint": "Charts & Diagrams category cover — Atlas chart atom + dark studio.",
+      "category": "chart-product",
+      "status": "ready",
+      "file": "chart-traffic-light.json",
+      "renderer": "studio",
+      "prompt": "Traffic Light Chart"
+    },
+    {
+      "id": "chart-tree",
+      "title": "Tree Diagram",
+      "thesisPoint": "Charts & Diagrams category cover — Atlas chart atom + dark studio.",
+      "category": "chart-product",
+      "status": "ready",
+      "file": "chart-tree.json",
+      "renderer": "studio",
+      "prompt": "Tree Diagram"
+    },
+    {
+      "id": "chart-venn",
+      "title": "Venn Diagram",
+      "thesisPoint": "Charts & Diagrams category cover — Atlas chart atom + dark studio.",
+      "category": "chart-product",
+      "status": "ready",
+      "file": "chart-venn.json",
+      "renderer": "studio",
+      "prompt": "Venn Diagram"
+    },
+    {
+      "id": "chart-waterfall",
+      "title": "Waterfall Diagram",
+      "thesisPoint": "Charts & Diagrams category cover — Atlas chart atom + dark studio.",
+      "category": "chart-product",
+      "status": "ready",
+      "file": "chart-waterfall.json",
+      "renderer": "studio",
+      "prompt": "Waterfall Diagram"
+    },
+    {
       "id": "china-carrier",
       "title": "中国航空母舰",
       "thesisPoint": "#1 precision · regression test",
@@ -37,6 +357,46 @@
       "status": "ready",
       "file": "china-carrier.json",
       "prompt": "一艘中国的航空母舰"
+    },
+    {
+      "id": "circle-frame-3d",
+      "title": "Circle · Frame",
+      "thesisPoint": "Atlas Shape atom (Sprint 3 circle family) — composite atom, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "circle-frame-3d.json",
+      "renderer": "studio",
+      "prompt": "Circle · Frame"
+    },
+    {
+      "id": "circle-loop-3d",
+      "title": "Circle · Loop",
+      "thesisPoint": "Atlas Shape atom (Sprint 3 circle family) — composite atom, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "circle-loop-3d.json",
+      "renderer": "studio",
+      "prompt": "Circle · Loop"
+    },
+    {
+      "id": "circle-segmented-3d",
+      "title": "Circle · Segmented",
+      "thesisPoint": "Atlas Shape atom (Sprint 3 circle family) — composite atom, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "circle-segmented-3d.json",
+      "renderer": "studio",
+      "prompt": "Circle · Segmented"
+    },
+    {
+      "id": "circle-stack-3d",
+      "title": "Circle · Stack",
+      "thesisPoint": "Atlas Shape atom (Sprint 3 circle family) — composite atom, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "circle-stack-3d.json",
+      "renderer": "studio",
+      "prompt": "Circle · Stack"
     },
     {
       "id": "city-skyline",
@@ -66,6 +426,65 @@
       "prompt": "海边的灯塔"
     },
     {
+      "id": "cube-3d-showcase",
+      "title": "Cube-3D atom showcase",
+      "thesisPoint": "Atlas cube-3d atom L3 showcase — 4 scenes cover 5 PresentationLoad templates (Connected pipe-through row + Buzzword 4W cluster + Glass Rubik 3x3x3 grid3d + Hub-spokes selective connectorIndices). One atom × 5 templates = renderer-as-preset thesis applied to slide-deck geometry vocabulary.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "cube-3d-showcase.json",
+      "prompt": "Cube-3D atom showcase"
+    },
+    {
+      "id": "cube-segmented-3d",
+      "title": "Cube · Segmented",
+      "thesisPoint": "Atlas Shape atom (Sprint 3 simple shapes) — composite atom, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "cube-segmented-3d.json",
+      "renderer": "studio",
+      "prompt": "Cube · Segmented"
+    },
+    {
+      "id": "data-labels-proto",
+      "title": "Data labels (SDF) — prototype",
+      "thesisPoint": "Data labels bound to geometry → SDF text-3d (the in-scene half of the two-text-systems split).",
+      "category": "prototype",
+      "status": "ready",
+      "file": "data-labels-proto.json",
+      "renderer": "studio",
+      "prompt": "bar chart with SDF value labels"
+    },
+    {
+      "id": "deck-business",
+      "title": "Quarterly business review (data deck)",
+      "thesisPoint": "Convergence: connector-labelled real-data charts strung into a spatial-narrative deck.",
+      "category": "data-deck",
+      "status": "ready",
+      "file": "deck-business.json",
+      "renderer": "studio",
+      "prompt": "business data deck"
+    },
+    {
+      "id": "deck-tour",
+      "title": "Spatial Deck · camera tour (Step 2)",
+      "thesisPoint": "Step 2 — spatial narrative: multi-slide deck in one 3D world + cameraSequence tour.",
+      "category": "spatial-deck",
+      "status": "ready",
+      "file": "deck-tour.json",
+      "renderer": "studio",
+      "prompt": "Spatial Deck · camera tour (Step 2)"
+    },
+    {
+      "id": "diamond-3d",
+      "title": "Diamond",
+      "thesisPoint": "Atlas Shape atom (Sprint 3 simple shapes) — composite atom, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "diamond-3d.json",
+      "renderer": "studio",
+      "prompt": "Diamond"
+    },
+    {
       "id": "dining-setting",
       "title": "餐桌摆设",
       "thesisPoint": "#2 semantic combinatorics",
@@ -73,6 +492,226 @@
       "status": "ready",
       "file": "dining-setting.json",
       "prompt": "餐桌上摆着一个盘子、刀叉和酒杯"
+    },
+    {
+      "id": "fill-slide-01",
+      "title": "Fill Levels · Cover (20/40/80)",
+      "thesisPoint": "Vision-authored lift of PDF chart slide (D0961 3D Spheres Fill Levels) — sphere-fill-3d atom, studio auto-framed.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "fill-slide-01.json",
+      "renderer": "studio",
+      "prompt": "Fill Levels · Cover (20/40/80)"
+    },
+    {
+      "id": "fill-slide-02",
+      "title": "Fill Levels · Row of 4",
+      "thesisPoint": "Vision-authored lift of PDF chart slide (D0961 3D Spheres Fill Levels) — sphere-fill-3d atom, studio auto-framed.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "fill-slide-02.json",
+      "renderer": "studio",
+      "prompt": "Fill Levels · Row of 4"
+    },
+    {
+      "id": "fill-slide-03",
+      "title": "Fill Levels · Framed row + arrows (10/60/50)",
+      "thesisPoint": "Vision-authored lift of PDF chart slide (D0961 3D Spheres Fill Levels) — two-tone fill spheres, studio auto-framed.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "fill-slide-03.json",
+      "renderer": "studio",
+      "prompt": "Fill Levels · Framed row + arrows (10/60/50)"
+    },
+    {
+      "id": "fill-slide-04",
+      "title": "Fill Levels · Hero 60%",
+      "thesisPoint": "Vision-authored lift of PDF chart slide (D0961 3D Spheres Fill Levels) — two-tone fill spheres, studio auto-framed.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "fill-slide-04.json",
+      "renderer": "studio",
+      "prompt": "Fill Levels · Hero 60%"
+    },
+    {
+      "id": "fill-slide-05",
+      "title": "Fill Levels · Hero 100% + legend",
+      "thesisPoint": "Vision-authored lift of PDF chart slide (D0961 3D Spheres Fill Levels) — two-tone fill spheres, studio auto-framed.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "fill-slide-05.json",
+      "renderer": "studio",
+      "prompt": "Fill Levels · Hero 100% + legend"
+    },
+    {
+      "id": "fill-slide-06",
+      "title": "Fill Levels · Cluster of 5",
+      "thesisPoint": "Vision-authored lift of PDF chart slide (D0961 3D Spheres Fill Levels) — sphere-fill-3d atom, studio auto-framed.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "fill-slide-06.json",
+      "renderer": "studio",
+      "prompt": "Fill Levels · Cluster of 5"
+    },
+    {
+      "id": "fill-slide-07",
+      "title": "Fill Levels · Row of 3 (50/100/80)",
+      "thesisPoint": "Vision-authored lift of PDF chart slide (D0961 3D Spheres Fill Levels) — two-tone fill spheres, studio auto-framed.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "fill-slide-07.json",
+      "renderer": "studio",
+      "prompt": "Fill Levels · Row of 3 (50/100/80)"
+    },
+    {
+      "id": "fill-slide-08",
+      "title": "Fill Levels · Cluster of 3 (60/50/80)",
+      "thesisPoint": "Vision-authored lift of PDF chart slide (D0961 3D Spheres Fill Levels) — two-tone fill spheres, studio auto-framed.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "fill-slide-08.json",
+      "renderer": "studio",
+      "prompt": "Fill Levels · Cluster of 3 (60/50/80)"
+    },
+    {
+      "id": "fill-slide-09",
+      "title": "Fill Levels · Row of 5 (10..90)",
+      "thesisPoint": "Vision-authored lift of PDF chart slide (D0961 3D Spheres Fill Levels) — two-tone fill spheres, studio auto-framed.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "fill-slide-09.json",
+      "renderer": "studio",
+      "prompt": "Fill Levels · Row of 5 (10..90)"
+    },
+    {
+      "id": "fill-slide-10",
+      "title": "Fill Levels · Grid of 6 (framed)",
+      "thesisPoint": "Vision-authored lift of PDF chart slide (D0961 3D Spheres Fill Levels) — two-tone fill spheres, studio auto-framed.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "fill-slide-10.json",
+      "renderer": "studio",
+      "prompt": "Fill Levels · Grid of 6 (framed)"
+    },
+    {
+      "id": "fill-slide-11",
+      "title": "Fill Levels · Hero 30% + list",
+      "thesisPoint": "Vision-authored lift of PDF chart slide (D0961 3D Spheres Fill Levels) — two-tone fill spheres, studio auto-framed.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "fill-slide-11.json",
+      "renderer": "studio",
+      "prompt": "Fill Levels · Hero 30% + list"
+    },
+    {
+      "id": "fill-slide-12",
+      "title": "Fill Levels · Row of 5 + captions",
+      "thesisPoint": "Vision-authored lift of PDF chart slide (D0961 3D Spheres Fill Levels) — two-tone fill spheres, studio auto-framed.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "fill-slide-12.json",
+      "renderer": "studio",
+      "prompt": "Fill Levels · Row of 5 + captions"
+    },
+    {
+      "id": "fill-slide-13",
+      "title": "Fill Levels · Hero 90% + list",
+      "thesisPoint": "Vision-authored lift of PDF chart slide (D0961 3D Spheres Fill Levels) — two-tone fill spheres, studio auto-framed.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "fill-slide-13.json",
+      "renderer": "studio",
+      "prompt": "Fill Levels · Hero 90% + list"
+    },
+    {
+      "id": "fill-slide-14",
+      "title": "Fill Levels · Bullet list of 4",
+      "thesisPoint": "Vision-authored lift of PDF chart slide (D0961 3D Spheres Fill Levels) — two-tone fill spheres, studio auto-framed.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "fill-slide-14.json",
+      "renderer": "studio",
+      "prompt": "Fill Levels · Bullet list of 4"
+    },
+    {
+      "id": "fill-slide-15",
+      "title": "Fill Levels · Hero 100% + 4 labels",
+      "thesisPoint": "Vision-authored lift of PDF chart slide (D0961 3D Spheres Fill Levels) — two-tone fill spheres, studio auto-framed.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "fill-slide-15.json",
+      "renderer": "studio",
+      "prompt": "Fill Levels · Hero 100% + 4 labels"
+    },
+    {
+      "id": "fill-slide-16",
+      "title": "Fill Levels · Vertical 3 (30/80/70)",
+      "thesisPoint": "Vision-authored lift of PDF chart slide (D0961 3D Spheres Fill Levels) — two-tone fill spheres, studio auto-framed.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "fill-slide-16.json",
+      "renderer": "studio",
+      "prompt": "Fill Levels · Vertical 3 (30/80/70)"
+    },
+    {
+      "id": "fill-slide-17",
+      "title": "Fill Levels · Two heroes (80/90)",
+      "thesisPoint": "Vision-authored lift of PDF chart slide (D0961 3D Spheres Fill Levels) — two-tone fill spheres, studio auto-framed.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "fill-slide-17.json",
+      "renderer": "studio",
+      "prompt": "Fill Levels · Two heroes (80/90)"
+    },
+    {
+      "id": "fill-slide-18",
+      "title": "Fill Levels · Progression grid 2×4",
+      "thesisPoint": "Vision-authored lift of PDF chart slide (D0961 3D Spheres Fill Levels) — two-tone fill spheres, studio auto-framed.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "fill-slide-18.json",
+      "renderer": "studio",
+      "prompt": "Fill Levels · Progression grid 2×4"
+    },
+    {
+      "id": "fill-slide-19",
+      "title": "Fill Levels · Row of 5 (20..100)",
+      "thesisPoint": "Vision-authored lift of PDF chart slide (D0961 3D Spheres Fill Levels) — two-tone fill spheres, studio auto-framed.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "fill-slide-19.json",
+      "renderer": "studio",
+      "prompt": "Fill Levels · Row of 5 (20..100)"
+    },
+    {
+      "id": "fill-slide-20",
+      "title": "Fill Levels · Grid 2×5",
+      "thesisPoint": "Vision-authored lift of PDF chart slide (D0961 3D Spheres Fill Levels) — two-tone fill spheres, studio auto-framed.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "fill-slide-20.json",
+      "renderer": "studio",
+      "prompt": "Fill Levels · Grid 2×5"
+    },
+    {
+      "id": "fishbone-3d",
+      "title": "Chart · Fishbone",
+      "thesisPoint": "Atlas atom (Sprint 5 Wave C) — composite, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "fishbone-3d.json",
+      "renderer": "studio",
+      "prompt": "Chart · Fishbone"
+    },
+    {
+      "id": "flow-chart-3d",
+      "title": "Diagram · Flow Chart",
+      "thesisPoint": "Atlas node-edge chart atom (Sprint 4) — nodes + capsule edges, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "flow-chart-3d.json",
+      "renderer": "studio",
+      "prompt": "Diagram · Flow Chart"
     },
     {
       "id": "forest-meteors",
@@ -84,6 +723,36 @@
       "prompt": "树·山·花·流星"
     },
     {
+      "id": "funnel-3d",
+      "title": "Chart · Funnel",
+      "thesisPoint": "Atlas data-viz chart atom (Sprint 5 Wave B) — composite, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "funnel-3d.json",
+      "renderer": "studio",
+      "prompt": "Chart · Funnel"
+    },
+    {
+      "id": "gantt-3d",
+      "title": "Chart · Gantt",
+      "thesisPoint": "Atlas data-viz chart atom (Sprint 5 Wave B) — composite, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "gantt-3d.json",
+      "renderer": "studio",
+      "prompt": "Chart · Gantt"
+    },
+    {
+      "id": "gear-3d",
+      "title": "Gear",
+      "thesisPoint": "Atlas Shape atom (Sprint 3 simple shapes) — composite atom, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "gear-3d.json",
+      "renderer": "studio",
+      "prompt": "Gear"
+    },
+    {
       "id": "gothic-cathedral",
       "title": "哥特式大教堂",
       "thesisPoint": "#1 structural precision",
@@ -91,6 +760,36 @@
       "status": "ready",
       "file": "gothic-cathedral.json",
       "prompt": "一座哥特式大教堂"
+    },
+    {
+      "id": "graphics-isometric-business",
+      "title": "Isometric Business · Object cluster",
+      "thesisPoint": "Graphics category — the 3D-geometric subset (rest is flat illustration, out of Atlas scope).",
+      "category": "graphics-product",
+      "status": "ready",
+      "file": "graphics-isometric-business.json",
+      "renderer": "studio",
+      "prompt": "Isometric Business · Object cluster"
+    },
+    {
+      "id": "graphics-isometric-city",
+      "title": "Isometric City · Skyline grid",
+      "thesisPoint": "Graphics category — the 3D-geometric subset (rest is flat illustration, out of Atlas scope).",
+      "category": "graphics-product",
+      "status": "ready",
+      "file": "graphics-isometric-city.json",
+      "renderer": "studio",
+      "prompt": "Isometric City · Skyline grid"
+    },
+    {
+      "id": "graphics-mountain",
+      "title": "Mountain Path · Peaks + summit flag",
+      "thesisPoint": "Graphics category — the 3D-geometric subset (rest is flat illustration, out of Atlas scope).",
+      "category": "graphics-product",
+      "status": "ready",
+      "file": "graphics-mountain.json",
+      "renderer": "studio",
+      "prompt": "Mountain Path · Peaks + summit flag"
     },
     {
       "id": "jet-aircraft",
@@ -102,6 +801,26 @@
       "prompt": "一架巡航中的战斗机"
     },
     {
+      "id": "labels-bar",
+      "title": "Bar chart · value labels (box bars)",
+      "thesisPoint": "Data labels bound to chart geometry → SDF (non-loop atoms / box charts only; loop atoms overflow).",
+      "category": "data-labels",
+      "status": "ready",
+      "file": "labels-bar.json",
+      "renderer": "studio",
+      "prompt": "Bar chart · value labels (box bars)"
+    },
+    {
+      "id": "labels-pie",
+      "title": "Pie chart · slice labels",
+      "thesisPoint": "Data labels bound to chart geometry → SDF (non-loop atoms / box charts only; loop atoms overflow).",
+      "category": "data-labels",
+      "status": "ready",
+      "file": "labels-pie.json",
+      "renderer": "studio",
+      "prompt": "Pie chart · slice labels"
+    },
+    {
       "id": "lake-district",
       "title": "湖区俯瞰",
       "thesisPoint": "Recipe-only port of IQ Rainforest envelope() — terrain-with-lakes primitive carves lake-floor pockets into elevated-terrain heightfield using low-freq mask noise. Lakes are PART of the terrain (continuous Lipschitz), so ridges + valleys form naturally around them. Paired with sea-surface for actual water plane + Sprint A4 snow Schlick + Fresnel rim for crystalline alpine look. Aerial cinematic 4-shot showcase.",
@@ -109,6 +828,36 @@
       "status": "ready",
       "file": "lake-district.json",
       "prompt": "湖光山色"
+    },
+    {
+      "id": "layer-stack-3d",
+      "title": "Chart · Layer Stack",
+      "thesisPoint": "Atlas taxonomy chart atom (Sprint 5 Wave A) — composite, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "layer-stack-3d.json",
+      "renderer": "studio",
+      "prompt": "Chart · Layer Stack"
+    },
+    {
+      "id": "matrix-grid-3d",
+      "title": "Chart · Matrix Grid",
+      "thesisPoint": "Atlas taxonomy chart atom (Sprint 5 Wave A) — composite, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "matrix-grid-3d.json",
+      "renderer": "studio",
+      "prompt": "Chart · Matrix Grid"
+    },
+    {
+      "id": "mindmap-3d",
+      "title": "Diagram · Mind Map",
+      "thesisPoint": "Atlas node-edge chart atom (Sprint 4b) — nodes + capsule edges, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "mindmap-3d.json",
+      "renderer": "studio",
+      "prompt": "Diagram · Mind Map"
     },
     {
       "id": "mountain-village",
@@ -129,6 +878,396 @@
       "prompt": "开阔的海面"
     },
     {
+      "id": "org-chart-3d",
+      "title": "Diagram · Org Chart",
+      "thesisPoint": "Atlas node-edge chart atom (Sprint 4) — nodes + capsule edges, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "org-chart-3d.json",
+      "renderer": "studio",
+      "prompt": "Diagram · Org Chart"
+    },
+    {
+      "id": "pdf-slide-0",
+      "title": "Slide 0: 3D SPHERES",
+      "thesisPoint": "M1.5 Step 2b — PDF deck slide 0 lifted via v3.17 prompt. Pattern: percent-list. End-to-end PDF→2D→lift→3D pipeline.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "pdf-slide-0.json",
+      "prompt": "Presentation slide 0: \"3D SPHERES\". A chart of 3 percentage values (20%, 40%, 80%). Geometric, axis-aligned. In 3D, lift to a clean bar/column chart on a stage with the title floating above — corporate keynote aesthetic, not naturalistic."
+    },
+    {
+      "id": "pdf-slide-1",
+      "title": "Slide 1: 3D SPHERES",
+      "thesisPoint": "M1.5 Step 2b — PDF deck slide 1 lifted via v3.17 prompt. Pattern: percent-list. End-to-end PDF→2D→lift→3D pipeline.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "pdf-slide-1.json",
+      "prompt": "Presentation slide 1: \"3D SPHERES\". A chart of 4 percentage values (20%, 50%, 80%, 90%). Geometric, axis-aligned. In 3D, lift to a clean bar/column chart on a stage with the title floating above — corporate keynote aesthetic, not naturalistic."
+    },
+    {
+      "id": "pdf-slide-10",
+      "title": "Slide 10: 3D SPHERES",
+      "thesisPoint": "M1.5 Step 2b — PDF deck slide 10 lifted via v3.17 prompt. Pattern: percent-list. End-to-end PDF→2D→lift→3D pipeline.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "pdf-slide-10.json",
+      "prompt": "Presentation slide 10: \"3D SPHERES\". A chart of 4 percentage values (50%, 30%, 30%, 20%). Geometric, axis-aligned. In 3D, lift to sphere fill-level gauges — one sphere per value, each filled to its percentage (the sphere-fill atom), equal radii so the FILL carries the value on a stage with the title floating above — corporate keynote aesthetic, not naturalistic."
+    },
+    {
+      "id": "pdf-slide-11",
+      "title": "Slide 11: 3D SPHERES",
+      "thesisPoint": "M1.5 Step 2b — PDF deck slide 11 lifted via v3.17 prompt. Pattern: percent-list. End-to-end PDF→2D→lift→3D pipeline.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "pdf-slide-11.json",
+      "prompt": "Presentation slide 11: \"3D SPHERES\". A chart of 5 percentage values (10%, 20%, 30%, 40%, 50%). Geometric, axis-aligned. In 3D, lift to sphere fill-level gauges — one sphere per value, each filled to its percentage (the sphere-fill atom), equal radii so the FILL carries the value on a stage with the title floating above — corporate keynote aesthetic, not naturalistic."
+    },
+    {
+      "id": "pdf-slide-12",
+      "title": "Slide 12: 2D SPHERES",
+      "thesisPoint": "M1.5 Step 2b — PDF deck slide 12 lifted via v3.17 prompt. Pattern: kpi-feature. End-to-end PDF→2D→lift→3D pipeline.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "pdf-slide-12.json",
+      "prompt": "Presentation slide 12: \"2D SPHERES\". A single hero KPI value of 90%. Lift to a 3D scene where the number itself is the monumental subject — extruded text on a pedestal, dramatic single-light cinematic feel, title hovering above. Keynote / TED-stage aesthetic."
+    },
+    {
+      "id": "pdf-slide-13",
+      "title": "Slide 13: 2D SPHERES",
+      "thesisPoint": "M1.5 Step 2b — PDF deck slide 13 lifted via v3.17 prompt. Pattern: fallback. End-to-end PDF→2D→lift→3D pipeline.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "pdf-slide-13.json",
+      "prompt": "Presentation slide 13: text-only slide with title \"2D SPHERES\". Lift to a minimal 3D scene with the title as the only subject on a clean stage."
+    },
+    {
+      "id": "pdf-slide-14",
+      "title": "Slide 14: 3D SPHERES",
+      "thesisPoint": "M1.5 Step 2b — PDF deck slide 14 lifted via v3.17 prompt. Pattern: kpi-feature. End-to-end PDF→2D→lift→3D pipeline.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "pdf-slide-14.json",
+      "prompt": "Presentation slide 14: \"3D SPHERES\". A single hero KPI value of 100%. Lift to a 3D scene where the number itself is the monumental subject — extruded text on a pedestal, dramatic single-light cinematic feel, title hovering above. Keynote / TED-stage aesthetic."
+    },
+    {
+      "id": "pdf-slide-15",
+      "title": "Slide 15: 2D SPHERES",
+      "thesisPoint": "M1.5 Step 2b — PDF deck slide 15 lifted via v3.17 prompt. Pattern: percent-list. End-to-end PDF→2D→lift→3D pipeline.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "pdf-slide-15.json",
+      "prompt": "Presentation slide 15: \"2D SPHERES\". A chart of 3 percentage values (80%, 60%, 70%). Geometric, axis-aligned. In 3D, lift to sphere fill-level gauges — one sphere per value, each filled to its percentage (the sphere-fill atom), equal radii so the FILL carries the value on a stage with the title floating above — corporate keynote aesthetic, not naturalistic."
+    },
+    {
+      "id": "pdf-slide-16",
+      "title": "Slide 16: 3D SPHERES",
+      "thesisPoint": "M1.5 Step 2b — PDF deck slide 16 lifted via v3.17 prompt. Pattern: percent-list. End-to-end PDF→2D→lift→3D pipeline.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "pdf-slide-16.json",
+      "prompt": "Presentation slide 16: \"3D SPHERES\". A chart of 3 percentage values (20%, 40%, 90%). Geometric, axis-aligned. In 3D, lift to a clean bar/column chart on a stage with the title floating above — corporate keynote aesthetic, not naturalistic."
+    },
+    {
+      "id": "pdf-slide-17",
+      "title": "Slide 17: 3D SPHERES",
+      "thesisPoint": "M1.5 Step 2b — PDF deck slide 17 lifted via v3.17 prompt. Pattern: percent-list. End-to-end PDF→2D→lift→3D pipeline.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "pdf-slide-17.json",
+      "prompt": "Presentation slide 17: \"3D SPHERES\". A chart of 10 percentage values (10%, 20%, 30%, 40%, 50%, 60%, 70%, 80%, 90%, 100%). Geometric, axis-aligned. In 3D, lift to sphere fill-level gauges — one sphere per value, each filled to its percentage (the sphere-fill atom), equal radii so the FILL carries the value on a stage with the title floating above — corporate keynote aesthetic, not naturalistic."
+    },
+    {
+      "id": "pdf-slide-18",
+      "title": "Slide 18: 3D SPHERES",
+      "thesisPoint": "M1.5 Step 2b — PDF deck slide 18 lifted via v3.17 prompt. Pattern: percent-list. End-to-end PDF→2D→lift→3D pipeline.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "pdf-slide-18.json",
+      "prompt": "Presentation slide 18: \"3D SPHERES\". A chart of 10 percentage values (10%, 20%, 30%, 40%, 50%, 60%, 70%, 80%, 90%, 100%). Geometric, axis-aligned. In 3D, lift to sphere fill-level gauges — one sphere per value, each filled to its percentage (the sphere-fill atom), equal radii so the FILL carries the value on a stage with the title floating above — corporate keynote aesthetic, not naturalistic."
+    },
+    {
+      "id": "pdf-slide-19",
+      "title": "Slide 19: 2D SPHERES",
+      "thesisPoint": "M1.5 Step 2b — PDF deck slide 19 lifted via v3.17 prompt. Pattern: percent-list. End-to-end PDF→2D→lift→3D pipeline.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "pdf-slide-19.json",
+      "prompt": "Presentation slide 19: \"2D SPHERES\". A chart of 10 percentage values (10%, 20%, 30%, 40%, 50%, 60%, 70%, 80%, 90%, 100%). Geometric, axis-aligned. In 3D, lift to sphere fill-level gauges — one sphere per value, each filled to its percentage (the sphere-fill atom), equal radii so the FILL carries the value on a stage with the title floating above — corporate keynote aesthetic, not naturalistic."
+    },
+    {
+      "id": "pdf-slide-2",
+      "title": "Slide 2: 3D SPHERES",
+      "thesisPoint": "M1.5 Step 2b — PDF deck slide 2 lifted via v3.17 prompt. Pattern: percent-list. End-to-end PDF→2D→lift→3D pipeline.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "pdf-slide-2.json",
+      "prompt": "Presentation slide 2: \"3D SPHERES\". A chart of 3 percentage values (10%, 60%, 50%). Geometric, axis-aligned. In 3D, lift to sphere fill-level gauges — one sphere per value, each filled to its percentage (the sphere-fill atom), equal radii so the FILL carries the value on a stage with the title floating above — corporate keynote aesthetic, not naturalistic."
+    },
+    {
+      "id": "pdf-slide-3",
+      "title": "Slide 3: 3D SPHERES",
+      "thesisPoint": "M1.5 Step 2b — PDF deck slide 3 lifted via v3.17 prompt. Pattern: kpi-feature. End-to-end PDF→2D→lift→3D pipeline.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "pdf-slide-3.json",
+      "prompt": "Presentation slide 3: \"3D SPHERES\". A single hero KPI value of 50%. Lift to a 3D scene where the number itself is the monumental subject — extruded text on a pedestal, dramatic single-light cinematic feel, title hovering above. Keynote / TED-stage aesthetic."
+    },
+    {
+      "id": "pdf-slide-4",
+      "title": "Slide 4: 3D SPHERES",
+      "thesisPoint": "M1.5 Step 2b — PDF deck slide 4 lifted via v3.17 prompt. Pattern: kpi-feature. End-to-end PDF→2D→lift→3D pipeline.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "pdf-slide-4.json",
+      "prompt": "Presentation slide 4: \"3D SPHERES\". A single hero KPI value of 100%. Lift to a 3D scene where the number itself is the monumental subject — extruded text on a pedestal, dramatic single-light cinematic feel, title hovering above. Keynote / TED-stage aesthetic."
+    },
+    {
+      "id": "pdf-slide-5",
+      "title": "Slide 5: 3D SPHERES",
+      "thesisPoint": "M1.5 Step 2b — PDF deck slide 5 lifted via v3.17 prompt. Pattern: percent-list. End-to-end PDF→2D→lift→3D pipeline.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "pdf-slide-5.json",
+      "prompt": "Presentation slide 5: \"3D SPHERES\". A chart of 5 percentage values (20%, 40%, 50%, 100%, 80%). Geometric, axis-aligned. In 3D, lift to sphere fill-level gauges — one sphere per value, each filled to its percentage (the sphere-fill atom), equal radii so the FILL carries the value on a stage with the title floating above — corporate keynote aesthetic, not naturalistic."
+    },
+    {
+      "id": "pdf-slide-6",
+      "title": "Slide 6: 3D SPHERES",
+      "thesisPoint": "M1.5 Step 2b — PDF deck slide 6 lifted via v3.17 prompt. Pattern: percent-list. End-to-end PDF→2D→lift→3D pipeline.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "pdf-slide-6.json",
+      "prompt": "Presentation slide 6: \"3D SPHERES\". A chart of 3 percentage values (50%, 100%, 80%). Geometric, axis-aligned. In 3D, lift to sphere fill-level gauges — one sphere per value, each filled to its percentage (the sphere-fill atom), equal radii so the FILL carries the value on a stage with the title floating above — corporate keynote aesthetic, not naturalistic."
+    },
+    {
+      "id": "pdf-slide-7",
+      "title": "Slide 7: 3D SPHERES",
+      "thesisPoint": "M1.5 Step 2b — PDF deck slide 7 lifted via v3.17 prompt. Pattern: percent-list. End-to-end PDF→2D→lift→3D pipeline.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "pdf-slide-7.json",
+      "prompt": "Presentation slide 7: \"3D SPHERES\". A chart of 3 percentage values (80%, 50%, 60%). Geometric, axis-aligned. In 3D, lift to sphere fill-level gauges — one sphere per value, each filled to its percentage (the sphere-fill atom), equal radii so the FILL carries the value on a stage with the title floating above — corporate keynote aesthetic, not naturalistic."
+    },
+    {
+      "id": "pdf-slide-8",
+      "title": "Slide 8: 3D SPHERES",
+      "thesisPoint": "M1.5 Step 2b — PDF deck slide 8 lifted via v3.17 prompt. Pattern: percent-list. End-to-end PDF→2D→lift→3D pipeline.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "pdf-slide-8.json",
+      "prompt": "Presentation slide 8: \"3D SPHERES\". A chart of 5 percentage values (10%, 20%, 30%, 40%, 50%). Geometric, axis-aligned. In 3D, lift to sphere fill-level gauges — one sphere per value, each filled to its percentage (the sphere-fill atom), equal radii so the FILL carries the value on a stage with the title floating above — corporate keynote aesthetic, not naturalistic."
+    },
+    {
+      "id": "pdf-slide-9",
+      "title": "Slide 9: 3D SPHERES",
+      "thesisPoint": "M1.5 Step 2b — PDF deck slide 9 lifted via v3.17 prompt. Pattern: percent-list. End-to-end PDF→2D→lift→3D pipeline.",
+      "category": "presentation-slide",
+      "status": "ready",
+      "file": "pdf-slide-9.json",
+      "prompt": "Presentation slide 9: \"3D SPHERES\". A chart of 5 percentage values (60%, 70%, 80%, 90%, 100%). Geometric, axis-aligned. In 3D, lift to sphere fill-level gauges — one sphere per value, each filled to its percentage (the sphere-fill atom), equal radii so the FILL carries the value on a stage with the title floating above — corporate keynote aesthetic, not naturalistic."
+    },
+    {
+      "id": "product-arrow",
+      "title": "Arrow Toolbox · Rising arrow",
+      "thesisPoint": "Pixel-align recreation of PresentationLoad \"arrows\" product cover — Atlas atoms + dark studio.",
+      "category": "product-pixel-align",
+      "status": "ready",
+      "file": "product-arrow.json",
+      "renderer": "studio",
+      "prompt": "Arrow Toolbox · Rising arrow"
+    },
+    {
+      "id": "product-chrome-spheres",
+      "title": "Chrome Spheres · Receding row",
+      "thesisPoint": "Pixel-align recreation of PresentationLoad \"spheres\" product cover — Atlas atoms + dark studio.",
+      "category": "product-pixel-align",
+      "status": "ready",
+      "file": "product-chrome-spheres.json",
+      "renderer": "studio",
+      "prompt": "Chrome Spheres · Receding row"
+    },
+    {
+      "id": "product-circle-looping",
+      "title": "Circle Charts · Looping cycle",
+      "thesisPoint": "Pixel-align recreation of PresentationLoad \"circles\" product cover — Atlas atoms + dark studio.",
+      "category": "product-pixel-align",
+      "status": "ready",
+      "file": "product-circle-looping.json",
+      "renderer": "studio",
+      "prompt": "Circle Charts · Looping cycle"
+    },
+    {
+      "id": "product-circle-shapes",
+      "title": "3D Circle Shapes · Layered stack",
+      "thesisPoint": "Pixel-align recreation of PresentationLoad \"circles\" product cover — Atlas atoms + dark studio.",
+      "category": "product-pixel-align",
+      "status": "ready",
+      "file": "product-circle-shapes.json",
+      "renderer": "studio",
+      "prompt": "3D Circle Shapes · Layered stack"
+    },
+    {
+      "id": "product-circles-segmented",
+      "title": "3D Circles · Segmented ring",
+      "thesisPoint": "Pixel-align recreation of PresentationLoad \"circles\" product cover — Atlas atoms + dark studio.",
+      "category": "product-pixel-align",
+      "status": "ready",
+      "file": "product-circles-segmented.json",
+      "renderer": "studio",
+      "prompt": "3D Circles · Segmented ring"
+    },
+    {
+      "id": "product-cubes-arc",
+      "title": "Cubes Semi-Circle · Arc of 7",
+      "thesisPoint": "Pixel-align recreation of PresentationLoad \"cubes\" product cover — Atlas atoms + dark studio.",
+      "category": "product-pixel-align",
+      "status": "ready",
+      "file": "product-cubes-arc.json",
+      "renderer": "studio",
+      "prompt": "Cubes Semi-Circle · Arc of 7"
+    },
+    {
+      "id": "product-cubes-flow",
+      "title": "Cubes Flow · Process row",
+      "thesisPoint": "Pixel-align recreation of PresentationLoad \"cubes\" product cover — Atlas atoms + dark studio.",
+      "category": "product-pixel-align",
+      "status": "ready",
+      "file": "product-cubes-flow.json",
+      "renderer": "studio",
+      "prompt": "Cubes Flow · Process row"
+    },
+    {
+      "id": "product-cubes-grid",
+      "title": "Cubes Shapes · 3×3×3 + accents",
+      "thesisPoint": "Pixel-align recreation of PresentationLoad \"cubes\" product cover — Atlas atoms + dark studio.",
+      "category": "product-pixel-align",
+      "status": "ready",
+      "file": "product-cubes-grid.json",
+      "renderer": "studio",
+      "prompt": "Cubes Shapes · 3×3×3 + accents"
+    },
+    {
+      "id": "product-cubes-segmented",
+      "title": "3D Cubes · Segmented",
+      "thesisPoint": "Pixel-align recreation of PresentationLoad \"cubes\" product cover — Atlas atoms + dark studio.",
+      "category": "product-pixel-align",
+      "status": "ready",
+      "file": "product-cubes-segmented.json",
+      "renderer": "studio",
+      "prompt": "3D Cubes · Segmented"
+    },
+    {
+      "id": "product-diamond",
+      "title": "Diamond Charts · 3 gems",
+      "thesisPoint": "Pixel-align recreation of PresentationLoad \"diamonds\" product cover — Atlas atoms + dark studio.",
+      "category": "product-pixel-align",
+      "status": "ready",
+      "file": "product-diamond.json",
+      "renderer": "studio",
+      "prompt": "Diamond Charts · 3 gems"
+    },
+    {
+      "id": "product-gearwheels",
+      "title": "Gear Wheels 3D · Meshing (grey + blue)",
+      "thesisPoint": "Pixel-align recreation of PresentationLoad \"gear wheels\" product cover — Atlas atoms + dark studio.",
+      "category": "product-pixel-align",
+      "status": "ready",
+      "file": "product-gearwheels.json",
+      "renderer": "studio",
+      "prompt": "Gear Wheels 3D · Meshing (grey + blue)"
+    },
+    {
+      "id": "product-puzzle",
+      "title": "Puzzle 3D · Interlocking + lifted",
+      "thesisPoint": "Pixel-align recreation of PresentationLoad \"puzzles\" product cover — Atlas atoms + dark studio.",
+      "category": "product-pixel-align",
+      "status": "ready",
+      "file": "product-puzzle.json",
+      "renderer": "studio",
+      "prompt": "Puzzle 3D · Interlocking + lifted"
+    },
+    {
+      "id": "product-puzzle-toolbox",
+      "title": "Puzzle Toolbox 3D · Row of 5",
+      "thesisPoint": "Pixel-align recreation of PresentationLoad \"puzzles\" product cover — Atlas atoms + dark studio.",
+      "category": "product-pixel-align",
+      "status": "ready",
+      "file": "product-puzzle-toolbox.json",
+      "renderer": "studio",
+      "prompt": "Puzzle Toolbox 3D · Row of 5"
+    },
+    {
+      "id": "product-spheres",
+      "title": "3D Spheres · Colour cluster",
+      "thesisPoint": "Pixel-align recreation of PresentationLoad \"spheres\" product cover — Atlas atoms + dark studio.",
+      "category": "product-pixel-align",
+      "status": "ready",
+      "file": "product-spheres.json",
+      "renderer": "studio",
+      "prompt": "3D Spheres · Colour cluster"
+    },
+    {
+      "id": "product-spheres-network",
+      "title": "3D Spheres · Network",
+      "thesisPoint": "Pixel-align recreation of PresentationLoad \"spheres\" product cover — Atlas atoms + dark studio.",
+      "category": "product-pixel-align",
+      "status": "ready",
+      "file": "product-spheres-network.json",
+      "renderer": "studio",
+      "prompt": "3D Spheres · Network"
+    },
+    {
+      "id": "product-spheres-sliced",
+      "title": "Spheres Sliced · Nested cross-section",
+      "thesisPoint": "Pixel-align recreation of PresentationLoad \"spheres\" product cover — Atlas atoms + dark studio.",
+      "category": "product-pixel-align",
+      "status": "ready",
+      "file": "product-spheres-sliced.json",
+      "renderer": "studio",
+      "prompt": "Spheres Sliced · Nested cross-section"
+    },
+    {
+      "id": "product-spheres-tree",
+      "title": "3D Spheres · Tree structure",
+      "thesisPoint": "Pixel-align recreation of PresentationLoad \"spheres\" product cover — Atlas atoms + dark studio.",
+      "category": "product-pixel-align",
+      "status": "ready",
+      "file": "product-spheres-tree.json",
+      "renderer": "studio",
+      "prompt": "3D Spheres · Tree structure"
+    },
+    {
+      "id": "progression-3d",
+      "title": "Chart · Progression",
+      "thesisPoint": "Atlas taxonomy chart atom (Sprint 5 Wave A) — composite, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "progression-3d.json",
+      "renderer": "studio",
+      "prompt": "Chart · Progression"
+    },
+    {
+      "id": "puzzle-piece-3d",
+      "title": "Shape · Puzzle Piece",
+      "thesisPoint": "Atlas atom (Sprint 5 Wave C) — composite, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "puzzle-piece-3d.json",
+      "renderer": "studio",
+      "prompt": "Shape · Puzzle Piece"
+    },
+    {
+      "id": "radial-spoke-3d",
+      "title": "Chart · Radial Spoke",
+      "thesisPoint": "Atlas atom (Sprint 5 Wave C) — composite, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "radial-spoke-3d.json",
+      "renderer": "studio",
+      "prompt": "Chart · Radial Spoke"
+    },
+    {
       "id": "rainforest-hills",
       "title": "雨林山岭",
       "thesisPoint": "Sprint A6 (recipe-only IQ Rainforest XlsBR4) — adds 5 mountain shader idioms in one batch: (1) cliff smoothstep injection (terrain-elevated new args, structural rock faces) (2) canopy mosaic (per-cell hash variation, distant terrain reads as dense tree canopy) (3) wavelength-dependent fog (RGB different extinction, distant terrain desaturates + blue) (4) cliff bump (fbm normal perturbation masked by 1-|n.y|) (5) cloud shadow projection (projected noise density gives dappled forest light). All backward-compat — existing scenes unchanged.",
@@ -138,6 +1277,16 @@
       "prompt": "雨林山岭"
     },
     {
+      "id": "relationship-graph-3d",
+      "title": "Diagram · Relationship Graph",
+      "thesisPoint": "Atlas node-edge chart atom (Sprint 4) — nodes + capsule edges, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "relationship-graph-3d.json",
+      "renderer": "studio",
+      "prompt": "Diagram · Relationship Graph"
+    },
+    {
       "id": "rocket-launch",
       "title": "火箭发射",
       "thesisPoint": "Sprint 1 cinematic showcase · HDR bloom on engine glow + DoF + lens flare + ACES tonemap. Inspired by MttGz4 jet sequence; built on the same Atlas primitives as every other demo. Proves the cinematic post-FX layer translates without changing the SDF authoring path.",
@@ -145,6 +1294,146 @@
       "status": "ready",
       "file": "rocket-launch.json",
       "prompt": "一枚正在升空的火箭"
+    },
+    {
+      "id": "scatter-3d",
+      "title": "Chart · Scatter",
+      "thesisPoint": "Atlas data-viz chart atom (Sprint 5 Wave B) — composite, studio auto-framed.",
+      "category": "primitive-showcase",
+      "status": "ready",
+      "file": "scatter-3d.json",
+      "renderer": "studio",
+      "prompt": "Chart · Scatter"
+    },
+    {
+      "id": "shape-arrows-cycle",
+      "title": "Arrows · Cycle (4 stage)",
+      "thesisPoint": "Atlas shape showcase — PresentationLoad \"arrows\" category, quality material + composition, studio auto-framed.",
+      "category": "shape-showcase",
+      "status": "ready",
+      "file": "shape-arrows-cycle.json",
+      "renderer": "studio",
+      "prompt": "Arrows · Cycle (4 stage)"
+    },
+    {
+      "id": "shape-arrows-row",
+      "title": "Arrows · Process row",
+      "thesisPoint": "Atlas shape showcase — PresentationLoad \"arrows\" category, quality material + composition, studio auto-framed.",
+      "category": "shape-showcase",
+      "status": "ready",
+      "file": "shape-arrows-row.json",
+      "renderer": "studio",
+      "prompt": "Arrows · Process row"
+    },
+    {
+      "id": "shape-circles-dial",
+      "title": "Circles · Segmented dial (6)",
+      "thesisPoint": "Atlas shape showcase — PresentationLoad \"circles\" category, quality material + composition, studio auto-framed.",
+      "category": "shape-showcase",
+      "status": "ready",
+      "file": "shape-circles-dial.json",
+      "renderer": "studio",
+      "prompt": "Circles · Segmented dial (6)"
+    },
+    {
+      "id": "shape-circles-frames",
+      "title": "Circles · Avatar frames (3)",
+      "thesisPoint": "Atlas shape showcase — PresentationLoad \"circles\" category, quality material + composition, studio auto-framed.",
+      "category": "shape-showcase",
+      "status": "ready",
+      "file": "shape-circles-frames.json",
+      "renderer": "studio",
+      "prompt": "Circles · Avatar frames (3)"
+    },
+    {
+      "id": "shape-circles-stack",
+      "title": "Circles · Tiered stack",
+      "thesisPoint": "Atlas shape showcase — PresentationLoad \"circles\" category, quality material + composition, studio auto-framed.",
+      "category": "shape-showcase",
+      "status": "ready",
+      "file": "shape-circles-stack.json",
+      "renderer": "studio",
+      "prompt": "Circles · Tiered stack"
+    },
+    {
+      "id": "shape-cubes-grid",
+      "title": "Cubes · 3×3×3 grid",
+      "thesisPoint": "Atlas shape showcase — PresentationLoad \"cubes\" category, quality material + composition, studio auto-framed.",
+      "category": "shape-showcase",
+      "status": "ready",
+      "file": "shape-cubes-grid.json",
+      "renderer": "studio",
+      "prompt": "Cubes · 3×3×3 grid"
+    },
+    {
+      "id": "shape-cubes-row",
+      "title": "Cubes · Connected row",
+      "thesisPoint": "Atlas shape showcase — PresentationLoad \"cubes\" category, quality material + composition, studio auto-framed.",
+      "category": "shape-showcase",
+      "status": "ready",
+      "file": "shape-cubes-row.json",
+      "renderer": "studio",
+      "prompt": "Cubes · Connected row"
+    },
+    {
+      "id": "shape-gear-hero",
+      "title": "Gears · Single hero gear",
+      "thesisPoint": "Atlas shape showcase — PresentationLoad \"gear wheels\" category, quality material + composition, studio auto-framed.",
+      "category": "shape-showcase",
+      "status": "ready",
+      "file": "shape-gear-hero.json",
+      "renderer": "studio",
+      "prompt": "Gears · Single hero gear"
+    },
+    {
+      "id": "shape-gear-mechanism",
+      "title": "Gears · Meshing mechanism",
+      "thesisPoint": "Atlas shape showcase — PresentationLoad \"gear wheels\" category, quality material + composition, studio auto-framed.",
+      "category": "shape-showcase",
+      "status": "ready",
+      "file": "shape-gear-mechanism.json",
+      "renderer": "studio",
+      "prompt": "Gears · Meshing mechanism"
+    },
+    {
+      "id": "shape-puzzle-pair",
+      "title": "Puzzles · Two-piece fit",
+      "thesisPoint": "Atlas shape showcase — PresentationLoad \"puzzles\" category, quality material + composition, studio auto-framed.",
+      "category": "shape-showcase",
+      "status": "ready",
+      "file": "shape-puzzle-pair.json",
+      "renderer": "studio",
+      "prompt": "Puzzles · Two-piece fit"
+    },
+    {
+      "id": "shape-puzzle-row",
+      "title": "Puzzles · Interlocking row of 4",
+      "thesisPoint": "Atlas shape showcase — PresentationLoad \"puzzles\" category, quality material + composition, studio auto-framed.",
+      "category": "shape-showcase",
+      "status": "ready",
+      "file": "shape-puzzle-row.json",
+      "renderer": "studio",
+      "prompt": "Puzzles · Interlocking row of 4"
+    },
+    {
+      "id": "shape-pyramid-smooth",
+      "title": "Pyramids · Smooth 4-level",
+      "thesisPoint": "Atlas shape showcase — PresentationLoad \"pyramids\" category, quality material + composition, studio auto-framed.",
+      "category": "shape-showcase",
+      "status": "ready",
+      "file": "shape-pyramid-smooth.json",
+      "renderer": "studio",
+      "prompt": "Pyramids · Smooth 4-level"
+    },
+    {
+      "id": "shape-pyramid-stepped",
+      "title": "Pyramids · Stepped 5-level",
+      "thesisPoint": "Atlas shape showcase — PresentationLoad \"pyramids\" category, quality material + composition, studio auto-framed.",
+      "category": "shape-showcase",
+      "status": "ready",
+      "file": "shape-pyramid-stepped.json",
+      "renderer": "studio",
+      "prompt": "Pyramids · Stepped 5-level"
     },
     {
       "id": "snow-bridge",
@@ -163,51 +1452,6 @@
       "status": "ready",
       "file": "snow-mountain.json",
       "prompt": "雪山全景"
-    },
-    {
-      "id": "spiral-vase",
-      "title": "花瓶",
-      "thesisPoint": "P1 milestone · revolution lift",
-      "category": "revolution",
-      "status": "ready",
-      "file": "spiral-vase.json",
-      "prompt": "一只花瓶"
-    },
-    {
-      "id": "vintage-bicycle",
-      "title": "复古自行车",
-      "thesisPoint": "#1 precision-content",
-      "category": "model",
-      "status": "ready",
-      "file": "vintage-bicycle.json",
-      "prompt": "一辆复古自行车"
-    },
-    {
-      "id": "wave-1-extruded-showcase",
-      "title": "Wave 1-extruded typography",
-      "thesisPoint": "Atlas typography Wave 1-extruded atom showcase. Same 16 glyphs as Wave 1-pipe but rendered as 2D outlines extruded along Z (flat faces, sharp edges). Side-by-side with wave-1-pipe-showcase = visual proof of the extruded vs pipe atom dichotomy.",
-      "category": "primitive-showcase",
-      "status": "ready",
-      "file": "wave-1-extruded-showcase.json",
-      "prompt": "Wave 1-extruded atom showcase"
-    },
-    {
-      "id": "wave-1-pipe-showcase",
-      "title": "Wave 1-pipe typography",
-      "thesisPoint": "Atlas typography Wave 1-pipe atom showcase — 16 glyphs (digits + KPI symbols) rendered as true 3D capsule/torus/sphere unions, not extruded 2D outlines. Demonstrates the architectural distinction (text-3d-pipe vs text-3d-extruded) shipped 2026-06-19.",
-      "category": "primitive-showcase",
-      "status": "ready",
-      "file": "wave-1-pipe-showcase.json",
-      "prompt": "Wave 1-pipe atom showcase — all 16 supported glyphs in true 3D pipe style"
-    },
-    {
-      "id": "cube-3d-showcase",
-      "title": "Cube-3D atom showcase",
-      "thesisPoint": "Atlas cube-3d atom L3 showcase — 4 scenes cover 5 PresentationLoad templates (Connected pipe-through row + Buzzword 4W cluster + Glass Rubik 3x3x3 grid3d + Hub-spokes selective connectorIndices). One atom × 5 templates = renderer-as-preset thesis applied to slide-deck geometry vocabulary.",
-      "category": "primitive-showcase",
-      "status": "ready",
-      "file": "cube-3d-showcase.json",
-      "prompt": "Cube-3D atom showcase"
     },
     {
       "id": "sphere-fill",
@@ -230,16 +1474,6 @@
       "prompt": "Sphere network"
     },
     {
-      "id": "sphere-tree",
-      "title": "Sphere · Tree",
-      "thesisPoint": "Atlas sphere atom family (Sprint 2) · sphere-tree-3d — top-down hierarchical sphere tree with parent→child links (org / taxonomy). Composite atom.",
-      "category": "primitive-showcase",
-      "status": "ready",
-      "file": "sphere-tree.json",
-      "renderer": "studio",
-      "prompt": "Sphere tree"
-    },
-    {
       "id": "sphere-segmented",
       "title": "Sphere · Divisions",
       "thesisPoint": "Atlas sphere atom family (Sprint 2) · sphere-segmented-3d — sphere split into exploded longitudinal wedges (divisions / exploded view). sphere ∩ half-planes per wedge.",
@@ -250,134 +1484,23 @@
       "prompt": "Sphere divisions"
     },
     {
-      "id": "arrow-3d",
-      "title": "Arrow",
-      "thesisPoint": "Atlas Shape atom (Sprint 3 simple shapes) — composite atom, studio auto-framed.",
+      "id": "sphere-tree",
+      "title": "Sphere · Tree",
+      "thesisPoint": "Atlas sphere atom family (Sprint 2) · sphere-tree-3d — top-down hierarchical sphere tree with parent→child links (org / taxonomy). Composite atom.",
       "category": "primitive-showcase",
       "status": "ready",
-      "file": "arrow-3d.json",
+      "file": "sphere-tree.json",
       "renderer": "studio",
-      "prompt": "Arrow"
+      "prompt": "Sphere tree"
     },
     {
-      "id": "diamond-3d",
-      "title": "Diamond",
-      "thesisPoint": "Atlas Shape atom (Sprint 3 simple shapes) — composite atom, studio auto-framed.",
-      "category": "primitive-showcase",
+      "id": "spiral-vase",
+      "title": "花瓶",
+      "thesisPoint": "P1 milestone · revolution lift",
+      "category": "revolution",
       "status": "ready",
-      "file": "diamond-3d.json",
-      "renderer": "studio",
-      "prompt": "Diamond"
-    },
-    {
-      "id": "gear-3d",
-      "title": "Gear",
-      "thesisPoint": "Atlas Shape atom (Sprint 3 simple shapes) — composite atom, studio auto-framed.",
-      "category": "primitive-showcase",
-      "status": "ready",
-      "file": "gear-3d.json",
-      "renderer": "studio",
-      "prompt": "Gear"
-    },
-    {
-      "id": "cube-segmented-3d",
-      "title": "Cube · Segmented",
-      "thesisPoint": "Atlas Shape atom (Sprint 3 simple shapes) — composite atom, studio auto-framed.",
-      "category": "primitive-showcase",
-      "status": "ready",
-      "file": "cube-segmented-3d.json",
-      "renderer": "studio",
-      "prompt": "Cube · Segmented"
-    },
-    {
-      "id": "circle-frame-3d",
-      "title": "Circle · Frame",
-      "thesisPoint": "Atlas Shape atom (Sprint 3 circle family) — composite atom, studio auto-framed.",
-      "category": "primitive-showcase",
-      "status": "ready",
-      "file": "circle-frame-3d.json",
-      "renderer": "studio",
-      "prompt": "Circle · Frame"
-    },
-    {
-      "id": "circle-stack-3d",
-      "title": "Circle · Stack",
-      "thesisPoint": "Atlas Shape atom (Sprint 3 circle family) — composite atom, studio auto-framed.",
-      "category": "primitive-showcase",
-      "status": "ready",
-      "file": "circle-stack-3d.json",
-      "renderer": "studio",
-      "prompt": "Circle · Stack"
-    },
-    {
-      "id": "circle-segmented-3d",
-      "title": "Circle · Segmented",
-      "thesisPoint": "Atlas Shape atom (Sprint 3 circle family) — composite atom, studio auto-framed.",
-      "category": "primitive-showcase",
-      "status": "ready",
-      "file": "circle-segmented-3d.json",
-      "renderer": "studio",
-      "prompt": "Circle · Segmented"
-    },
-    {
-      "id": "circle-loop-3d",
-      "title": "Circle · Loop",
-      "thesisPoint": "Atlas Shape atom (Sprint 3 circle family) — composite atom, studio auto-framed.",
-      "category": "primitive-showcase",
-      "status": "ready",
-      "file": "circle-loop-3d.json",
-      "renderer": "studio",
-      "prompt": "Circle · Loop"
-    },
-    {
-      "id": "relationship-graph-3d",
-      "title": "Diagram · Relationship Graph",
-      "thesisPoint": "Atlas node-edge chart atom (Sprint 4) — nodes + capsule edges, studio auto-framed.",
-      "category": "primitive-showcase",
-      "status": "ready",
-      "file": "relationship-graph-3d.json",
-      "renderer": "studio",
-      "prompt": "Diagram · Relationship Graph"
-    },
-    {
-      "id": "org-chart-3d",
-      "title": "Diagram · Org Chart",
-      "thesisPoint": "Atlas node-edge chart atom (Sprint 4) — nodes + capsule edges, studio auto-framed.",
-      "category": "primitive-showcase",
-      "status": "ready",
-      "file": "org-chart-3d.json",
-      "renderer": "studio",
-      "prompt": "Diagram · Org Chart"
-    },
-    {
-      "id": "flow-chart-3d",
-      "title": "Diagram · Flow Chart",
-      "thesisPoint": "Atlas node-edge chart atom (Sprint 4) — nodes + capsule edges, studio auto-framed.",
-      "category": "primitive-showcase",
-      "status": "ready",
-      "file": "flow-chart-3d.json",
-      "renderer": "studio",
-      "prompt": "Diagram · Flow Chart"
-    },
-    {
-      "id": "tree-diagram-3d",
-      "title": "Diagram · Tree",
-      "thesisPoint": "Atlas node-edge chart atom (Sprint 4b) — nodes + capsule edges, studio auto-framed.",
-      "category": "primitive-showcase",
-      "status": "ready",
-      "file": "tree-diagram-3d.json",
-      "renderer": "studio",
-      "prompt": "Diagram · Tree"
-    },
-    {
-      "id": "mindmap-3d",
-      "title": "Diagram · Mind Map",
-      "thesisPoint": "Atlas node-edge chart atom (Sprint 4b) — nodes + capsule edges, studio auto-framed.",
-      "category": "primitive-showcase",
-      "status": "ready",
-      "file": "mindmap-3d.json",
-      "renderer": "studio",
-      "prompt": "Diagram · Mind Map"
+      "file": "spiral-vase.json",
+      "prompt": "一只花瓶"
     },
     {
       "id": "timeline-3d",
@@ -390,64 +1513,24 @@
       "prompt": "Diagram · Timeline"
     },
     {
-      "id": "matrix-grid-3d",
-      "title": "Chart · Matrix Grid",
-      "thesisPoint": "Atlas taxonomy chart atom (Sprint 5 Wave A) — composite, studio auto-framed.",
+      "id": "traffic-light-3d",
+      "title": "Chart · Traffic Light",
+      "thesisPoint": "Atlas atom (Sprint 5 Wave C) — composite, studio auto-framed.",
       "category": "primitive-showcase",
       "status": "ready",
-      "file": "matrix-grid-3d.json",
+      "file": "traffic-light-3d.json",
       "renderer": "studio",
-      "prompt": "Chart · Matrix Grid"
+      "prompt": "Chart · Traffic Light"
     },
     {
-      "id": "progression-3d",
-      "title": "Chart · Progression",
-      "thesisPoint": "Atlas taxonomy chart atom (Sprint 5 Wave A) — composite, studio auto-framed.",
+      "id": "tree-diagram-3d",
+      "title": "Diagram · Tree",
+      "thesisPoint": "Atlas node-edge chart atom (Sprint 4b) — nodes + capsule edges, studio auto-framed.",
       "category": "primitive-showcase",
       "status": "ready",
-      "file": "progression-3d.json",
+      "file": "tree-diagram-3d.json",
       "renderer": "studio",
-      "prompt": "Chart · Progression"
-    },
-    {
-      "id": "agenda-list-3d",
-      "title": "Chart · Agenda",
-      "thesisPoint": "Atlas taxonomy chart atom (Sprint 5 Wave A) — composite, studio auto-framed.",
-      "category": "primitive-showcase",
-      "status": "ready",
-      "file": "agenda-list-3d.json",
-      "renderer": "studio",
-      "prompt": "Chart · Agenda"
-    },
-    {
-      "id": "layer-stack-3d",
-      "title": "Chart · Layer Stack",
-      "thesisPoint": "Atlas taxonomy chart atom (Sprint 5 Wave A) — composite, studio auto-framed.",
-      "category": "primitive-showcase",
-      "status": "ready",
-      "file": "layer-stack-3d.json",
-      "renderer": "studio",
-      "prompt": "Chart · Layer Stack"
-    },
-    {
-      "id": "bullet-list-3d",
-      "title": "Chart · Bullet List",
-      "thesisPoint": "Atlas taxonomy chart atom (Sprint 5 Wave A) — composite, studio auto-framed.",
-      "category": "primitive-showcase",
-      "status": "ready",
-      "file": "bullet-list-3d.json",
-      "renderer": "studio",
-      "prompt": "Chart · Bullet List"
-    },
-    {
-      "id": "funnel-3d",
-      "title": "Chart · Funnel",
-      "thesisPoint": "Atlas data-viz chart atom (Sprint 5 Wave B) — composite, studio auto-framed.",
-      "category": "primitive-showcase",
-      "status": "ready",
-      "file": "funnel-3d.json",
-      "renderer": "studio",
-      "prompt": "Chart · Funnel"
+      "prompt": "Diagram · Tree"
     },
     {
       "id": "venn-3d",
@@ -460,6 +1543,15 @@
       "prompt": "Chart · Venn"
     },
     {
+      "id": "vintage-bicycle",
+      "title": "复古自行车",
+      "thesisPoint": "#1 precision-content",
+      "category": "model",
+      "status": "ready",
+      "file": "vintage-bicycle.json",
+      "prompt": "一辆复古自行车"
+    },
+    {
       "id": "waterfall-3d",
       "title": "Chart · Waterfall",
       "thesisPoint": "Atlas data-viz chart atom (Sprint 5 Wave B) — composite, studio auto-framed.",
@@ -470,64 +1562,22 @@
       "prompt": "Chart · Waterfall"
     },
     {
-      "id": "scatter-3d",
-      "title": "Chart · Scatter",
-      "thesisPoint": "Atlas data-viz chart atom (Sprint 5 Wave B) — composite, studio auto-framed.",
+      "id": "wave-1-extruded-showcase",
+      "title": "Wave 1-extruded typography",
+      "thesisPoint": "Atlas typography Wave 1-extruded atom showcase. Same 16 glyphs as Wave 1-pipe but rendered as 2D outlines extruded along Z (flat faces, sharp edges). Side-by-side with wave-1-pipe-showcase = visual proof of the extruded vs pipe atom dichotomy.",
       "category": "primitive-showcase",
       "status": "ready",
-      "file": "scatter-3d.json",
-      "renderer": "studio",
-      "prompt": "Chart · Scatter"
+      "file": "wave-1-extruded-showcase.json",
+      "prompt": "Wave 1-extruded atom showcase"
     },
     {
-      "id": "gantt-3d",
-      "title": "Chart · Gantt",
-      "thesisPoint": "Atlas data-viz chart atom (Sprint 5 Wave B) — composite, studio auto-framed.",
+      "id": "wave-1-pipe-showcase",
+      "title": "Wave 1-pipe typography",
+      "thesisPoint": "Atlas typography Wave 1-pipe atom showcase — 16 glyphs (digits + KPI symbols) rendered as true 3D capsule/torus/sphere unions, not extruded 2D outlines. Demonstrates the architectural distinction (text-3d-pipe vs text-3d-extruded) shipped 2026-06-19.",
       "category": "primitive-showcase",
       "status": "ready",
-      "file": "gantt-3d.json",
-      "renderer": "studio",
-      "prompt": "Chart · Gantt"
-    },
-    {
-      "id": "fishbone-3d",
-      "title": "Chart · Fishbone",
-      "thesisPoint": "Atlas atom (Sprint 5 Wave C) — composite, studio auto-framed.",
-      "category": "primitive-showcase",
-      "status": "ready",
-      "file": "fishbone-3d.json",
-      "renderer": "studio",
-      "prompt": "Chart · Fishbone"
-    },
-    {
-      "id": "traffic-light-3d",
-      "title": "Chart · Traffic Light",
-      "thesisPoint": "Atlas atom (Sprint 5 Wave C) — composite, studio auto-framed.",
-      "category": "primitive-showcase",
-      "status": "ready",
-      "file": "traffic-light-3d.json",
-      "renderer": "studio",
-      "prompt": "Chart · Traffic Light"
-    },
-    {
-      "id": "radial-spoke-3d",
-      "title": "Chart · Radial Spoke",
-      "thesisPoint": "Atlas atom (Sprint 5 Wave C) — composite, studio auto-framed.",
-      "category": "primitive-showcase",
-      "status": "ready",
-      "file": "radial-spoke-3d.json",
-      "renderer": "studio",
-      "prompt": "Chart · Radial Spoke"
-    },
-    {
-      "id": "puzzle-piece-3d",
-      "title": "Shape · Puzzle Piece",
-      "thesisPoint": "Atlas atom (Sprint 5 Wave C) — composite, studio auto-framed.",
-      "category": "primitive-showcase",
-      "status": "ready",
-      "file": "puzzle-piece-3d.json",
-      "renderer": "studio",
-      "prompt": "Shape · Puzzle Piece"
+      "file": "wave-1-pipe-showcase.json",
+      "prompt": "Wave 1-pipe atom showcase — all 16 supported glyphs in true 3D pipe style"
     }
   ]
 }

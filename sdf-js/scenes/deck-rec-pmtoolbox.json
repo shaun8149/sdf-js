@@ -1,0 +1,36 @@
+{
+  "id": "deck-rec-pmtoolbox",
+  "name": "Project Management Toolbox",
+  "segments": [
+    {
+      "file": "rec-pmtoolbox-1.json",
+      "title": "PM Toolbox",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-pmtoolbox-2.json",
+      "title": "Schedule",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-pmtoolbox-3.json",
+      "title": "Phases",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-pmtoolbox-4.json",
+      "title": "Milestones",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-pmtoolbox-5.json",
+      "title": "Risk Matrix",
+      "kind": "slide",
+      "durationSec": 7
+    }
+  ]
+}

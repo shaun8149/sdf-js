@@ -1,0 +1,89 @@
+{
+  "slotIdx": 7,
+  "slotName": "timeline",
+  "slotTitle": "Delivery Timeline",
+  "slotPurpose": "Programme timeline with key deliverables and gates",
+  "sourceSlideIdx": 8,
+  "sourceSlideTitle": "Programme Timeline 2026",
+  "sceneData": {
+    "name": "change-roadmap/timeline",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Delivery Timeline",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "timeline",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 480,
+        "args": {
+          "events": [
+            {
+              "date": "Jan 2026",
+              "label": "Programme Launch",
+              "sublabel": "Steering committee formed"
+            },
+            {
+              "date": "Mar 2026",
+              "label": "Design Complete",
+              "sublabel": "Core systems architecture"
+            },
+            {
+              "date": "Jun 2026",
+              "label": "Wave 1 Go-Live",
+              "sublabel": "Finance + HR modules"
+            },
+            {
+              "date": "Sep 2026",
+              "label": "Wave 2 Go-Live",
+              "sublabel": "Operations + Customer"
+            },
+            {
+              "date": "Dec 2026",
+              "label": "Programme Completion",
+              "sublabel": "Retrospective conducted"
+            },
+            {
+              "date": "Q1 2027",
+              "label": "Benefits Review",
+              "sublabel": "Realisation assessment"
+            }
+          ],
+          "title": "Programme Timeline 2026"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "change-roadmap",
+    "theme": "consulting-charcoal",
+    "recommendedAtoms": ["timeline", "progression", "gantt"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 3033,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 11000,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 430,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.018849,
+    "elapsedSec": 5.8,
+    "generatedAt": "2026-06-25T04:33:24.167Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

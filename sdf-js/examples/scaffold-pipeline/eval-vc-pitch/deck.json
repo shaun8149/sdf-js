@@ -1,0 +1,259 @@
+{
+  "deckName": "eval-vc-pitch",
+  "sourceFile": "sdf-js/scripts/scaffold-pipeline-fixtures/vc-pitch.json",
+  "scaffold": {
+    "id": "pitch-deck-vc",
+    "label": "VC Pitch Deck",
+    "description": "Seed/Series A fundraise pitch (Sequoia / YC structure)",
+    "pickScore": 10,
+    "pickSignals": [
+      "Perfect structural match: title explicitly states 'Series A Pitch', content covers all 10 canonical VC pitch slots in order (problem, market, solution, product, traction, business model, team, ask)",
+      "Classic fundraise narrative: '$15M to scale supply + distribution', ARR progression, break-even projection, team credentials — all standard Series A investor diligence points",
+      "Slide count aligns: source has ~9-10 distinct sections matching the 10-slot scaffold (cover → problem → market-size → solution → product → traction → business-model → team → ask)"
+    ],
+    "fallback": false,
+    "pickerMethod": "llm"
+  },
+  "theme": {
+    "id": "pitch-cobalt-orange",
+    "label": "Pitch · Cobalt Orange",
+    "macroCluster": "pitch",
+    "bg": [
+      255,
+      255,
+      255
+    ],
+    "accent": [
+      255,
+      120,
+      40
+    ],
+    "colors": [
+      [
+        255,
+        120,
+        40
+      ],
+      [
+        20,
+        60,
+        180
+      ],
+      [
+        220,
+        220,
+        235
+      ],
+      [
+        60,
+        65,
+        90
+      ]
+    ],
+    "font": {
+      "heading": "\"Inter Display\", Inter, system-ui, sans-serif",
+      "body": "Inter, system-ui, sans-serif"
+    }
+  },
+  "slots": [
+    {
+      "slotIdx": 0,
+      "slotName": "cover",
+      "slotTitle": "Title",
+      "slotPurpose": "Company name + one-line tagline + author/date",
+      "sourceSlideIdx": 0,
+      "sourceSlideTitle": "Atlas Series A Pitch",
+      "mappingScore": 10,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-00-cover.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover"
+      ]
+    },
+    {
+      "slotIdx": 1,
+      "slotName": "problem",
+      "slotTitle": "Problem",
+      "slotPurpose": "Pain point — who hurts and how much",
+      "sourceSlideIdx": 1,
+      "sourceSlideTitle": "The Problem",
+      "mappingScore": 10,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-01-problem.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "icon-grid"
+      ]
+    },
+    {
+      "slotIdx": 2,
+      "slotName": "market-size",
+      "slotTitle": "Market Size",
+      "slotPurpose": "TAM/SAM/SOM with numbers",
+      "sourceSlideIdx": 2,
+      "sourceSlideTitle": "Total Addressable Market",
+      "mappingScore": 10,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-02-market-size.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "pyramid",
+        "kpi-card"
+      ]
+    },
+    {
+      "slotIdx": 3,
+      "slotName": "solution",
+      "slotTitle": "Our Solution",
+      "slotPurpose": "Product overview + value prop",
+      "sourceSlideIdx": 3,
+      "sourceSlideTitle": "Our Solution",
+      "mappingScore": 10,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-03-solution.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "flow-chart",
+        "icon-grid"
+      ]
+    },
+    {
+      "slotIdx": 4,
+      "slotName": "product",
+      "slotTitle": "Product Demo",
+      "slotPurpose": "Screenshot mockup or feature highlight",
+      "sourceSlideIdx": 4,
+      "sourceSlideTitle": "Product Demo",
+      "mappingScore": 10,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-04-product.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "device-mockup-frame",
+        "bullet-list"
+      ]
+    },
+    {
+      "slotIdx": 6,
+      "slotName": "traction",
+      "slotTitle": "Traction",
+      "slotPurpose": "Revenue / users / growth charts",
+      "sourceSlideIdx": 5,
+      "sourceSlideTitle": "Traction",
+      "mappingScore": 10,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-06-traction.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "line",
+        "kpi-card",
+        "kpi-card"
+      ]
+    },
+    {
+      "slotIdx": 7,
+      "slotName": "business-model",
+      "slotTitle": "Business Model",
+      "slotPurpose": "How we make money — unit economics",
+      "sourceSlideIdx": 6,
+      "sourceSlideTitle": "Business Model",
+      "mappingScore": 10,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-07-business-model.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "comparison-table",
+        "break-even",
+        "kpi-card"
+      ]
+    },
+    {
+      "slotIdx": 8,
+      "slotName": "team",
+      "slotTitle": "Team",
+      "slotPurpose": "Founders + key hires with credentials",
+      "sourceSlideIdx": 7,
+      "sourceSlideTitle": "The Team",
+      "mappingScore": 10,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-08-team.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "circle-image-hub-spoke",
+        "bullet-list"
+      ]
+    },
+    {
+      "slotIdx": 9,
+      "slotName": "ask",
+      "slotTitle": "The Ask",
+      "slotPurpose": "Funding amount + use of funds + milestones",
+      "sourceSlideIdx": 8,
+      "sourceSlideTitle": "The Ask",
+      "mappingScore": 10,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-09-ask.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "kpi-card",
+        "pie",
+        "bullet-list"
+      ]
+    }
+  ],
+  "droppedSlots": [
+    {
+      "slotIdx": 5,
+      "slotName": "section-divider",
+      "slotTitle": "Section Break",
+      "reason": "no-source-content"
+    }
+  ],
+  "totals": {
+    "slotsBaked": 9,
+    "slotsEmpty": 1,
+    "slotsErrored": 0,
+    "totalCostUSD": 0.23688659999999997
+  },
+  "meta": {
+    "generatedAt": "2026-07-10T07:21:59.805Z",
+    "model": "claude-sonnet-4-5-20250929",
+    "pipelineVersion": "sprint-16-v1"
+  }
+}

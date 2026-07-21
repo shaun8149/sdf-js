@@ -1,0 +1,221 @@
+{
+  "slotIdx": 2,
+  "slotName": "kpis",
+  "slotTitle": "KPI Dashboard",
+  "slotPurpose": "Critical metrics quarter-over-quarter",
+  "sourceSlideIdx": 1,
+  "sourceSlideTitle": "Velocity Metrics",
+  "sceneData": {
+    "name": "qbr/kpis",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "KPI Dashboard",
+          "style": "section"
+        }
+      },
+      {
+        "type": "dashboard-multi-kpi-composite",
+        "x": 40,
+        "y": 150,
+        "w": 1200,
+        "h": 180,
+        "args": {
+          "title": "Velocity Metrics",
+          "kpis": [
+            {
+              "value": "412",
+              "label": "Story Points",
+              "sublabel": "Target 380",
+              "trend": "up",
+              "trendValue": "+8%",
+              "color": [
+                38,
+                70,
+                130
+              ]
+            },
+            {
+              "value": "34",
+              "label": "Deploys/Week",
+              "sublabel": "Was 21/wk Q2",
+              "trend": "up",
+              "trendValue": "+62% (34 vs 21)",
+              "color": [
+                38,
+                70,
+                130
+              ]
+            },
+            {
+              "value": "4.2h",
+              "label": "Lead Time",
+              "sublabel": "Was 11h Q2",
+              "trend": "down",
+              "trendValue": "-62% (4.2 vs 11)",
+              "color": [
+                110,
+                95,
+                75
+              ]
+            },
+            {
+              "value": "3.1%",
+              "label": "Failure Rate",
+              "sublabel": "Target <5%",
+              "trend": "neutral",
+              "color": [
+                110,
+                95,
+                75
+              ]
+            },
+            {
+              "value": "22min",
+              "label": "MTTR",
+              "sublabel": "Target <30min",
+              "trend": "neutral",
+              "color": [
+                165,
+                130,
+                90
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "type": "bar",
+        "x": 40,
+        "y": 360,
+        "w": 580,
+        "h": 320,
+        "args": {
+          "title": "Tech Debt Progress",
+          "values": [
+            43,
+            74,
+            67
+          ],
+          "labels": [
+            "Monolith Decomp",
+            "Test Coverage",
+            "DB Sharding"
+          ],
+          "format": "percent",
+          "max": 100
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 660,
+        "y": 360,
+        "w": 280,
+        "h": 150,
+        "args": {
+          "value": "6min",
+          "label": "Build Time",
+          "sublabel": "Was 18min",
+          "trend": "down",
+          "trendValue": "-67% (6 vs 18)",
+          "icon": "rocket",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 960,
+        "y": 360,
+        "w": 280,
+        "h": 150,
+        "args": {
+          "value": "Node 22",
+          "label": "Standard Runtime",
+          "sublabel": "Was Node 16",
+          "icon": "check-circle",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 660,
+        "y": 530,
+        "w": 180,
+        "h": 150,
+        "args": {
+          "value": "31",
+          "label": "Engineers",
+          "sublabel": "Was 24",
+          "trend": "up",
+          "trendValue": "+29% (31 vs 24)",
+          "icon": "users",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 860,
+        "y": 530,
+        "w": 180,
+        "h": 150,
+        "args": {
+          "value": "4",
+          "label": "Promotions",
+          "sublabel": "3 Senior, 1 Staff",
+          "icon": "trophy",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 1060,
+        "y": 530,
+        "w": 180,
+        "h": 150,
+        "args": {
+          "value": "68",
+          "label": "Eng NPS",
+          "sublabel": "Was 54",
+          "trend": "up",
+          "trendValue": "+26% (68 vs 54)",
+          "icon": "heart",
+          "style": "light"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "qbr",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "radar-chart",
+      "dashboard-multi-kpi-composite",
+      "kpi-card",
+      "line",
+      "bar"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5535,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 1279,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0396924,
+    "elapsedSec": 19,
+    "generatedAt": "2026-07-10T07:24:27.466Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

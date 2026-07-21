@@ -1,0 +1,124 @@
+{
+  "slotIdx": 6,
+  "slotName": "team",
+  "slotTitle": "Team",
+  "slotPurpose": "Leadership and culture",
+  "sourceSlideIdx": 4,
+  "sourceSlideTitle": "Strategic Position",
+  "sceneData": {
+    "name": "company-overview/team",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Team",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 80,
+        "y": 180,
+        "w": 520,
+        "h": 480,
+        "args": {
+          "title": "Strategic Position",
+          "items": [
+            {
+              "icon": "user-focus",
+              "label": "User Persona",
+              "sublabel": "Competitive Position"
+            },
+            {
+              "icon": "compass",
+              "label": "Beyond For",
+              "sublabel": "Market Gap"
+            },
+            {
+              "icon": "brain",
+              "label": "OpenClaw",
+              "sublabel": "AI Integration"
+            },
+            {
+              "icon": "users-three",
+              "label": "Agent Mentions",
+              "sublabel": "Community Features"
+            }
+          ]
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 680,
+        "y": 180,
+        "w": 520,
+        "h": 140,
+        "args": {
+          "value": "1-2 Months",
+          "label": "Timeline",
+          "icon": "clock",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 680,
+        "y": 340,
+        "w": 520,
+        "h": 140,
+        "args": {
+          "value": "4 Weeks",
+          "label": "Perp DEX Launch",
+          "icon": "rocket-launch",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 680,
+        "y": 500,
+        "w": 520,
+        "h": 140,
+        "args": {
+          "value": "$300K Daily",
+          "label": "Self-built Perp DEX",
+          "sublabel": "Prototype Ready Smart Money System",
+          "icon": "chart-line-up",
+          "style": "light"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "company-overview",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "org-chart",
+      "circle-image-hub-spoke",
+      "icon-row",
+      "bullet-list"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5188,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 639,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.029051399999999998,
+    "elapsedSec": 12.7,
+    "generatedAt": "2026-07-10T07:19:01.666Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

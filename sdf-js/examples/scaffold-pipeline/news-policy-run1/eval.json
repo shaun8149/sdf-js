@@ -1,0 +1,63 @@
+{
+  "deckDir": "/Users/hexiaoyang/Documents/sdf-main/sdf-js/examples/scaffold-pipeline/news-policy-run1",
+  "deckName": "news-policy-run1",
+  "structure": {
+    "slots_total": 14,
+    "slots_baked": 13,
+    "slots_empty": 1,
+    "slots_errored": 0,
+    "fill_rate": 0.9285714285714286,
+    "pick_method": "forced",
+    "scaffold_id": "news-briefing",
+    "theme_id": "editorial-navy"
+  },
+  "atomQuality": {
+    "atom_instances": 27,
+    "atom_types_distinct": 13,
+    "variety_ratio": 0.48148148148148145,
+    "unknown_atom_count": 0,
+    "unknown_atom_types": [],
+    "arg_violations": 2,
+    "arg_violations_top_offenders": [
+      {
+        "type": "kpi-card",
+        "key": "trendDirection",
+        "count": 2
+      }
+    ]
+  },
+  "threeDReadiness": {
+    "twin_coverage": 1,
+    "untwinned_types": [],
+    "lift_success": 13,
+    "lift_attempted": 13,
+    "lift_errors": [],
+    "lifted_subject_rate": 1
+  },
+  "textBudget": {
+    "chars_per_slot": 69.15384615384616,
+    "max_slot_chars": 111
+  },
+  "fidelity": {
+    "numbers_total": 21,
+    "numbers_found": 21,
+    "number_recall": 1,
+    "missing_numbers": [],
+    "entities_total": 0,
+    "entities_found": 0,
+    "entity_recall": 1,
+    "missing_entities": []
+  },
+  "score": {
+    "total": 98.2,
+    "breakdown": {
+      "structure": 23.2,
+      "variety": 15,
+      "hallucination": 15,
+      "twin": 20,
+      "lift": 15,
+      "text": 10
+    }
+  },
+  "generatedAt": "2026-07-06T16:55:11.573Z"
+}

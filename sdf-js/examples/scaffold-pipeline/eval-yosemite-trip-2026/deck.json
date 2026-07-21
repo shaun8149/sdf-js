@@ -1,0 +1,210 @@
+{
+  "deckName": "eval-yosemite-trip-2026",
+  "sourceFile": "sdf-js/scripts/scaffold-pipeline-fixtures/yosemite-trip-2026.json",
+  "scaffold": {
+    "id": "generic-deck",
+    "label": "Generic Deck",
+    "description": "Flexible any-topic deck — opening, 4 content sections, a numbers section, and a closing. The fallback when no specialized scaffold fits.",
+    "pickScore": 9,
+    "pickSignals": [
+      "This is a personal trip report / travel narrative with 7 distinct sections (goal, El Capitan, Tuolumne, Half Dome, stats, next steps). It does not match any specialized business, academic, or strategic scaffold.",
+      "The content is experiential storytelling about a backcountry hiking trip — no fundraising, no training, no analysis, no quarterly review. None of the 20 specialized scaffolds semantically fit.",
+      "The 7-section structure (cover + 6 content blocks) maps cleanly to generic-deck's 7 slots: cover → opening (goal) → section-1 (El Cap) → section-2 (Tuolumne) → section-3 (Half Dome) → numbers (trip stats) → closing (what's next). This is a perfect slot-count fit and avoids empty slots."
+    ],
+    "fallback": false,
+    "pickerMethod": "llm"
+  },
+  "theme": {
+    "id": "editorial-navy",
+    "label": "Editorial · Navy",
+    "macroCluster": "editorial",
+    "bg": [
+      248,
+      246,
+      240
+    ],
+    "accent": [
+      38,
+      70,
+      130
+    ],
+    "colors": [
+      [
+        38,
+        70,
+        130
+      ],
+      [
+        110,
+        95,
+        75
+      ],
+      [
+        165,
+        130,
+        90
+      ],
+      [
+        200,
+        195,
+        180
+      ]
+    ],
+    "font": {
+      "heading": "Georgia, \"Source Serif Pro\", serif",
+      "body": "Inter, system-ui, sans-serif"
+    }
+  },
+  "slots": [
+    {
+      "slotIdx": 0,
+      "slotName": "cover",
+      "slotTitle": "Title",
+      "slotPurpose": "Deck title + subtitle + author/date",
+      "sourceSlideIdx": 0,
+      "sourceSlideTitle": "Yosemite Trip Report",
+      "mappingScore": 10,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-00-cover.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover"
+      ]
+    },
+    {
+      "slotIdx": 1,
+      "slotName": "opening",
+      "slotTitle": "Opening",
+      "slotPurpose": "Context, overview, or agenda — whatever the deck opens with",
+      "sourceSlideIdx": 1,
+      "sourceSlideTitle": "Our Goal",
+      "mappingScore": 10,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-01-opening.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "bullet-list"
+      ]
+    },
+    {
+      "slotIdx": 2,
+      "slotName": "section-1",
+      "slotTitle": "Section 1",
+      "slotPurpose": "First main content section — any topic",
+      "sourceSlideIdx": 2,
+      "sourceSlideTitle": "El Capitan",
+      "mappingScore": 8,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-02-section-1.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "image-split"
+      ]
+    },
+    {
+      "slotIdx": 3,
+      "slotName": "section-2",
+      "slotTitle": "Section 2",
+      "slotPurpose": "Second main content section — any topic",
+      "sourceSlideIdx": 3,
+      "sourceSlideTitle": "Tuolumne Meadows",
+      "mappingScore": 8,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-03-section-2.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "bullet-list"
+      ]
+    },
+    {
+      "slotIdx": 4,
+      "slotName": "section-3",
+      "slotTitle": "Section 3",
+      "slotPurpose": "Third main content section — any topic",
+      "sourceSlideIdx": 4,
+      "sourceSlideTitle": "Half Dome Ascent",
+      "mappingScore": 8,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-04-section-3.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "image",
+        "bullet-list"
+      ]
+    },
+    {
+      "slotIdx": 5,
+      "slotName": "numbers",
+      "slotTitle": "By the Numbers",
+      "slotPurpose": "Any quantitative content — stats, metrics, breakdowns, comparisons",
+      "sourceSlideIdx": 5,
+      "sourceSlideTitle": "Trip Stats",
+      "mappingScore": 10,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-05-numbers.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "kpi-card",
+        "kpi-card",
+        "kpi-card",
+        "kpi-card",
+        "callout-banner"
+      ]
+    },
+    {
+      "slotIdx": 6,
+      "slotName": "closing",
+      "slotTitle": "Closing",
+      "slotPurpose": "Summary, next steps, thanks, or call to action",
+      "sourceSlideIdx": 6,
+      "sourceSlideTitle": "What's Next",
+      "mappingScore": 10,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-06-closing.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "timeline",
+        "bullet-list"
+      ]
+    }
+  ],
+  "droppedSlots": [],
+  "totals": {
+    "slotsBaked": 7,
+    "slotsEmpty": 0,
+    "slotsErrored": 0,
+    "totalCostUSD": 0.18038279999999998
+  },
+  "meta": {
+    "generatedAt": "2026-07-10T07:22:36.206Z",
+    "model": "claude-sonnet-4-5-20250929",
+    "pipelineVersion": "sprint-16-v1"
+  }
+}

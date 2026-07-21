@@ -1,0 +1,65 @@
+{
+  "id": "chart-bcg-matrix",
+  "title": "BCG Matrix (2×2)",
+  "prompt": "matrix: BCG Matrix (2×2)",
+  "code2d": "// vision-authored chart-product cover (PresentationLoad Charts & Diagrams).",
+  "sceneData": {
+    "v": 1,
+    "name": "BCG Matrix (2×2)",
+    "source": {
+      "format": "vision-authored",
+      "prompt": "matrix chart product"
+    },
+    "subjects": [
+      {
+        "id": "s0",
+        "type": "matrix-grid-3d",
+        "args": {
+          "rows": 2,
+          "cols": 2,
+          "cardW": 0.95,
+          "cardH": 0.75
+        },
+        "transform": {
+          "translate": [0, 0.95, 0]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.75,
+          "metal": 0.3,
+          "glow": 0
+        }
+      }
+    ],
+    "defaults": {
+      "camera": {
+        "yaw": 0.5,
+        "pitch": 0.3,
+        "distance": 10,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 0.95,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": 0.6,
+        "altitude": 0.55,
+        "distance": 25,
+        "intensity": 1.2
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.4
+      },
+      "studioBg": "dark"
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-06-21",
+    "model": "vision-authored",
+    "pattern": "matrix",
+    "costUSD": 0
+  }
+}

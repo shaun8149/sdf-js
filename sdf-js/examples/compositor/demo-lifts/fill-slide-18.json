@@ -1,0 +1,289 @@
+{
+  "id": "fill-slide-18",
+  "title": "Fill Levels · Progression grid 2×4",
+  "prompt": "sequence: Two rows of four spheres showing a fill progression up to 100%.",
+  "code2d": "// vision-authored from PDF slide (D0961 3D Spheres Fill Levels).",
+  "sceneData": {
+    "v": 1,
+    "name": "sequence: Fill Levels · Progression grid 2×4",
+    "source": {
+      "format": "vision-authored",
+      "prompt": "Two rows of four spheres showing a fill progression up to 100%."
+    },
+    "subjects": [
+      {
+        "id": "liq0",
+        "type": "sphere-fill-3d",
+        "args": {
+          "levels": [0.15],
+          "radius": 0.42,
+          "cage": false,
+          "fillScale": 1
+        },
+        "transform": {
+          "translate": [-1.935, 1.695, 0]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.72,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "emp0",
+        "type": "cut-sphere",
+        "args": {
+          "radius": 0.42,
+          "h": -0.294
+        },
+        "transform": {
+          "translate": [-1.935, 1.695, 0]
+        },
+        "material": "porcelain"
+      },
+      {
+        "id": "liq1",
+        "type": "sphere-fill-3d",
+        "args": {
+          "levels": [0.25],
+          "radius": 0.42,
+          "cage": false,
+          "fillScale": 1
+        },
+        "transform": {
+          "translate": [-0.645, 1.695, 0]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.72,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "emp1",
+        "type": "cut-sphere",
+        "args": {
+          "radius": 0.42,
+          "h": -0.21
+        },
+        "transform": {
+          "translate": [-0.645, 1.695, 0]
+        },
+        "material": "porcelain"
+      },
+      {
+        "id": "liq2",
+        "type": "sphere-fill-3d",
+        "args": {
+          "levels": [0.35],
+          "radius": 0.42,
+          "cage": false,
+          "fillScale": 1
+        },
+        "transform": {
+          "translate": [0.645, 1.695, 0]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.72,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "emp2",
+        "type": "cut-sphere",
+        "args": {
+          "radius": 0.42,
+          "h": -0.126
+        },
+        "transform": {
+          "translate": [0.645, 1.695, 0]
+        },
+        "material": "porcelain"
+      },
+      {
+        "id": "liq3",
+        "type": "sphere-fill-3d",
+        "args": {
+          "levels": [0.45],
+          "radius": 0.42,
+          "cage": false,
+          "fillScale": 1
+        },
+        "transform": {
+          "translate": [1.935, 1.695, 0]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.72,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "emp3",
+        "type": "cut-sphere",
+        "args": {
+          "radius": 0.42,
+          "h": -0.04199999999999999
+        },
+        "transform": {
+          "translate": [1.935, 1.695, 0]
+        },
+        "material": "porcelain"
+      },
+      {
+        "id": "liq4",
+        "type": "sphere-fill-3d",
+        "args": {
+          "levels": [0.6],
+          "radius": 0.42,
+          "cage": false,
+          "fillScale": 1
+        },
+        "transform": {
+          "translate": [-1.935, 0.30499999999999994, 0]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.72,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "emp4",
+        "type": "cut-sphere",
+        "args": {
+          "radius": 0.42,
+          "h": 0.08399999999999998
+        },
+        "transform": {
+          "translate": [-1.935, 0.30499999999999994, 0]
+        },
+        "material": "porcelain"
+      },
+      {
+        "id": "liq5",
+        "type": "sphere-fill-3d",
+        "args": {
+          "levels": [0.8],
+          "radius": 0.42,
+          "cage": false,
+          "fillScale": 1
+        },
+        "transform": {
+          "translate": [-0.645, 0.30499999999999994, 0]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.72,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "emp5",
+        "type": "cut-sphere",
+        "args": {
+          "radius": 0.42,
+          "h": 0.252
+        },
+        "transform": {
+          "translate": [-0.645, 0.30499999999999994, 0]
+        },
+        "material": "porcelain"
+      },
+      {
+        "id": "liq6",
+        "type": "sphere-fill-3d",
+        "args": {
+          "levels": [0.9],
+          "radius": 0.42,
+          "cage": false,
+          "fillScale": 1
+        },
+        "transform": {
+          "translate": [0.645, 0.30499999999999994, 0]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.72,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "emp6",
+        "type": "cut-sphere",
+        "args": {
+          "radius": 0.42,
+          "h": 0.336
+        },
+        "transform": {
+          "translate": [0.645, 0.30499999999999994, 0]
+        },
+        "material": "porcelain"
+      },
+      {
+        "id": "liq7",
+        "type": "sphere-fill-3d",
+        "args": {
+          "levels": [1],
+          "radius": 0.42,
+          "cage": false,
+          "fillScale": 1
+        },
+        "transform": {
+          "translate": [1.935, 0.30499999999999994, 0]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.72,
+          "metal": 0.3,
+          "glow": 0
+        }
+      }
+    ],
+    "defaults": {
+      "camera": {
+        "yaw": 0.5,
+        "pitch": 0.28,
+        "distance": 10,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 0.9999999999999999,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": 0.6,
+        "altitude": 0.55,
+        "distance": 25,
+        "intensity": 1.2
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.4
+      },
+      "studioBg": "dark"
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-06-21",
+    "model": "vision-authored",
+    "pattern": "sequence",
+    "costUSD": 0
+  }
+}

@@ -1,0 +1,97 @@
+{
+  "name": "d0961",
+  "source": {
+    "slidedata": "sdf-js/examples/pdf-demo/slidedata.json"
+  },
+  "note": "Ground truth = rendered-page adjudications from the 2026-07-19 audits (template deck; pairing + multiset traps). Page keys are 0-based indices.",
+  "pages": {
+    "1": {
+      "label": "四档量表 20/50/80/90",
+      "checks": [
+        {
+          "type": "structure",
+          "anyOf": ["magnitude"]
+        },
+        {
+          "type": "values",
+          "equals": [20, 50, 80, 90]
+        }
+      ]
+    },
+    "5": {
+      "label": "五球配对(审计真值 D3=50 D4=100 D5=80)",
+      "checks": [
+        {
+          "type": "values",
+          "equals": [20, 40, 50, 100, 80]
+        },
+        {
+          "type": "pair",
+          "label": "3",
+          "value": 50
+        },
+        {
+          "type": "pair",
+          "label": "4",
+          "value": 100
+        },
+        {
+          "type": "pair",
+          "label": "5",
+          "value": 80
+        }
+      ]
+    },
+    "6": {
+      "label": "三球配对(渲染页裁决 D1=50 D2=100 D3=80)",
+      "checks": [
+        {
+          "type": "pair",
+          "label": "1",
+          "value": 50
+        },
+        {
+          "type": "pair",
+          "label": "2",
+          "value": 100
+        },
+        {
+          "type": "pair",
+          "label": "3",
+          "value": 80
+        }
+      ]
+    },
+    "10": {
+      "label": "双 30 多重集陷阱",
+      "checks": [
+        {
+          "type": "values",
+          "equals": [30, 30, 50, 20]
+        }
+      ]
+    },
+    "14": {
+      "label": "hero 100% 不许丢",
+      "checks": [
+        {
+          "type": "mentions",
+          "text": "100"
+        }
+      ]
+    },
+    "18": {
+      "label": "十档均匀(数据或模板装饰均可,给值必须全对)",
+      "checks": [
+        {
+          "type": "structure",
+          "anyOf": ["magnitude", "hold"]
+        },
+        {
+          "type": "valuesIfAny",
+          "equals": [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+        }
+      ]
+    }
+  }
+}

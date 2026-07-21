@@ -1,0 +1,109 @@
+{
+  "v": 1,
+  "name": "(lifted) lifted-risk-heatmap",
+  "subjects": [
+    {
+      "id": "risk-heatmap",
+      "type": "matrix-grid-3d",
+      "args": {
+        "rows": 5,
+        "cols": 5
+      },
+      "transform": {
+        "translate": [
+          0,
+          1.8,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.57,
+        "sat": 0.55,
+        "value": 0.64,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      }
+    }
+  ],
+  "overlay": [
+    {
+      "text": "CYBERSECURITY RISK ASSESSMENT",
+      "anchor": [
+        0,
+        3.9,
+        0
+      ],
+      "role": "title"
+    },
+    {
+      "text": "Data breach",
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "Compliance fine",
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "Vendor delay",
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "DDoS attack",
+      "role": "card",
+      "align": "left"
+    }
+  ],
+  "cameraSequence": {
+    "loop": false,
+    "shots": [
+      {
+        "duration": 0.01,
+        "pos": [
+          1,
+          2.1,
+          9.799999999999999
+        ],
+        "target": [
+          0,
+          1.6,
+          0
+        ],
+        "fov": 50,
+        "aperture": 0,
+        "focalDistance": 8.2,
+        "ease": "smooth"
+      },
+      {
+        "duration": 13,
+        "pos": [
+          0,
+          1.8,
+          8.2
+        ],
+        "target": [
+          0,
+          1.6,
+          0
+        ],
+        "fov": 46,
+        "transition": "blend",
+        "aperture": 0,
+        "focalDistance": 8.2,
+        "ease": "smooth"
+      }
+    ]
+  },
+  "defaults": {
+    "stage": {
+      "size": [
+        18,
+        9,
+        11
+      ]
+    }
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "slotIdx": 7,
+  "slotName": "theme-3-lead",
+  "slotTitle": "Theme 3 — Lead",
+  "slotPurpose": "Third major theme: the core facts",
+  "sourceSlideIdx": 6,
+  "sourceSlideTitle": "Capability Advantage",
+  "sceneData": {
+    "name": "news-briefing/theme-3-lead",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Capability Advantage",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "pillar-3up",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 480,
+        "args": {
+          "pillars": [
+            {
+              "icon": "rocket",
+              "heading": "Commercial-First",
+              "body": "Commercial-first strategy produces better capabilities than isolated defense development",
+              "accent": [38, 70, 130]
+            },
+            {
+              "icon": "chart-line-up",
+              "heading": "Market Competition",
+              "body": "Competition in commercial markets drives continuous innovation and performance improvements",
+              "accent": [110, 95, 75]
+            },
+            {
+              "icon": "lightbulb",
+              "heading": "Cutting-Edge Tech",
+              "body": "Access to cutting-edge civilian technology provides superior technical solutions",
+              "accent": [165, 130, 90]
+            }
+          ],
+          "accentLine": true
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["stat-banner", "kpi-card", "bar", "bullet-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4654,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 373,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0234594,
+    "elapsedSec": 7.8,
+    "generatedAt": "2026-07-07T04:21:23.509Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

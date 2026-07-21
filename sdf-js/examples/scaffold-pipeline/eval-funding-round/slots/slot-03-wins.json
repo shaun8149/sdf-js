@@ -1,0 +1,97 @@
+{
+  "slotIdx": 3,
+  "slotName": "wins",
+  "slotTitle": "Wins",
+  "slotPurpose": "Top accomplishments this quarter",
+  "sourceSlideIdx": 2,
+  "sourceSlideTitle": "Series B Financing Round",
+  "sceneData": {
+    "name": "investor-update/wins",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Wins",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "stat-banner",
+        "x": 40,
+        "y": 180,
+        "w": 1200,
+        "h": 160,
+        "args": {
+          "value": "$81M",
+          "label": "Series B Financing",
+          "trend": "June 23, 2026",
+          "trendDirection": "up",
+          "bg": [
+            58,
+            138,
+            200
+          ]
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 40,
+        "y": 380,
+        "w": 580,
+        "h": 280,
+        "args": {
+          "value": "$1.25B",
+          "label": "Valuation",
+          "sublabel": "Post-Series B",
+          "icon": "trophy",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 660,
+        "y": 380,
+        "w": 580,
+        "h": 280,
+        "args": {
+          "value": "Draper, Utah",
+          "label": "Headquarters",
+          "sublabel": "Announced June 2026",
+          "icon": "map-pin",
+          "style": "light"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "investor-update",
+    "theme": "financial-navy-cerulean",
+    "recommendedAtoms": [
+      "bullet-list",
+      "icon-grid",
+      "quote-pull"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5146,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 447,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0260454,
+    "elapsedSec": 9.2,
+    "generatedAt": "2026-07-10T07:29:13.906Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

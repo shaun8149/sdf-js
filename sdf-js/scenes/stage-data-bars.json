@@ -1,0 +1,57 @@
+{
+  "id": "stage-data-bars",
+  "title": "Revenue · on the studio stage",
+  "prompt": "quarterly revenue bar chart presented on a studio stage",
+  "code2d": "// bar-3d + defaults.stage:true → chart presented inside a lit studio room.",
+  "sceneData": {
+    "v": 1,
+    "name": "staged revenue bars",
+    "subjects": [
+      {
+        "id": "bars",
+        "type": "bar-3d",
+        "args": {
+          "values": [0.4, 0.66, 1, 0.6, 0.78],
+          "labels": ["$1.2M", "$2.0M", "$3.4M", "$1.8M", "$2.6M"],
+          "barWidth": 0.5,
+          "barDepth": 0.5,
+          "gap": 0.45,
+          "maxHeight": 2.2
+        },
+        "transform": { "translate": [0, 0, 0] },
+        "material": { "hue": 0.58, "sat": 0.85, "value": 0.78, "metal": 0.45 }
+      }
+    ],
+    "cameraSequence": {
+      "loop": false,
+      "shots": [
+        {
+          "duration": 2.4,
+          "pos": [-3.0, 3.4, -10.5],
+          "target": [0, 1.2, 0],
+          "fov": 46,
+          "aperture": 0,
+          "focalDistance": 10.5,
+          "ease": "smooth",
+          "exposure": [0, 1]
+        },
+        {
+          "duration": 5.0,
+          "pos": [-1.6, 2.7, -8.6],
+          "target": [0, 1.05, 0],
+          "fov": 47,
+          "aperture": 0,
+          "focalDistance": 8.6,
+          "ease": "smooth",
+          "transition": "blend"
+        }
+      ]
+    },
+    "defaults": {
+      "stage": { "size": [12, 5.5, 13], "facing": "-z" }
+    }
+  },
+  "meta": {
+    "thesisPoint": "stage composes with data atoms — a labelled bar chart presented in a lit studio room."
+  }
+}

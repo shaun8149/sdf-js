@@ -30,37 +30,44 @@ function ok(cond, name) {
 
 console.log('=== branding-palettes Sprint 9 smoke ===\n');
 
-console.log('--- built-in 5 still present (backward compat) ---');
+// Sprint 15B: BRANDING_PALETTES order is now [9 atlas + 5 built-in + 23 chromotome]
+// (atlas-first so UI surfaces them prioritally). Tests below use lookup-by-id
+// rather than fixed slice indices for forward-compat as new themes/palettes ship.
+
+console.log('--- built-in 5 still present (backward compat by id lookup) ---');
 {
   ok(Array.isArray(BRANDING_PALETTES), 'BRANDING_PALETTES is array');
-  const ids = BRANDING_PALETTES.slice(0, 5).map((p) => p.id);
-  const expected = ['mono-light', 'mono-dark', 'warm-paper', 'cool-mint', 'high-contrast'];
+  const builtInIds = ['mono-light', 'mono-dark', 'warm-paper', 'cool-mint', 'high-contrast'];
+  const found = builtInIds.map((id) => BRANDING_PALETTES.find((p) => p.id === id));
   ok(
-    JSON.stringify(ids) === JSON.stringify(expected),
-    `first 5 are built-in in order (got ${ids.join(',')})`,
+    found.every((p) => p),
+    `all 5 built-in still resolvable by id (${builtInIds.join(',')})`,
   );
+  const monoLight = getPalette('mono-light');
   ok(
-    BRANDING_PALETTES[0].bg.length === 3 && BRANDING_PALETTES[0].silhouetteColor.length === 3,
+    monoLight.bg.length === 3 && monoLight.silhouetteColor.length === 3,
     'built-in shape unchanged: {bg, silhouetteColor} as [r,g,b]',
   );
-  ok(
-    BRANDING_PALETTES[0].colors === undefined,
-    'built-in palettes have no colors[] field (backward compat)',
-  );
+  ok(monoLight.colors === undefined, 'built-in palettes have no colors[] field (backward compat)');
 }
 
-console.log('\n--- chromotome appended (Sprint 9) ---');
+console.log('\n--- chromotome present (Sprint 9) ---');
 {
   ok(BRANDING_PALETTES.length >= 5 + 20, `total ≥ 25 palettes (got ${BRANDING_PALETTES.length})`);
+  // Sprint 15B: total = atlas themes + 5 built-in + chromotome count
+  // Sprint 19: added consulting-charcoal + financial-navy-cerulean → 11 atlas themes
+  const { getAtlasThemes } = await import('../src/present/themes.js');
+  const atlasThemeCount = getAtlasThemes().length;
+  const expectedTotal = atlasThemeCount + 5 + CHROMOTOME_BRANDING_PALETTES.length;
   ok(
-    BRANDING_PALETTES.length === 5 + CHROMOTOME_BRANDING_PALETTES.length,
-    `total = 5 + chromotome count (${5 + CHROMOTOME_BRANDING_PALETTES.length})`,
+    BRANDING_PALETTES.length === expectedTotal,
+    `total = 9 atlas + 5 built-in + chromotome (${expectedTotal})`,
   );
 
-  const chromo = BRANDING_PALETTES.slice(5);
+  const chromo = BRANDING_PALETTES.filter((p) => p.id.startsWith('chromotome:'));
   ok(
-    chromo.every((p) => p.id.startsWith('chromotome:')),
-    'all appended palettes have chromotome: id prefix',
+    chromo.length === CHROMOTOME_BRANDING_PALETTES.length,
+    `chromotome palette count matches source (${chromo.length})`,
   );
   ok(
     chromo.every((p) => Array.isArray(p.colors) && p.colors.length >= 3),

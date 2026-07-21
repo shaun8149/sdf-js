@@ -86,6 +86,7 @@ import {
   vesicaSegment,
   cylinderInf,
   coneInf,
+  noiseField,
 } from '../sdf/d3.js';
 import { solidAngleSDF } from './components/community/iq-solid-angle.js';
 import { linkSDF } from './components/community/iq-link.js';
@@ -128,6 +129,9 @@ import { cubeSegmented3dSDF } from './components/shapes/cube-segmented-3d.js';
 import { circleFrame3dSDF } from './components/shapes/circle-frame-3d.js';
 import { circleStack3dSDF } from './components/shapes/circle-stack-3d.js';
 import { circleSegmented3dSDF } from './components/shapes/circle-segmented-3d.js';
+import { mountain3dSDF } from './components/shapes/mountain-3d.js';
+import { iconGrid3dSDF } from './components/shapes/icon-grid-3d.js';
+import { deviceMockup3dSDF } from './components/shapes/device-mockup-3d.js';
 import { circleLoop3dSDF } from './components/shapes/circle-loop-3d.js';
 import { relationshipGraph3dSDF } from './components/charts/diagrams/relationship-graph-3d.js';
 import { orgChart3dSDF } from './components/charts/diagrams/org-chart-3d.js';
@@ -145,6 +149,7 @@ import { venn3dSDF } from './components/charts/data/venn-3d.js';
 import { waterfall3dSDF } from './components/charts/data/waterfall-3d.js';
 import { scatter3dSDF } from './components/charts/data/scatter-3d.js';
 import { gantt3dSDF } from './components/charts/data/gantt-3d.js';
+import { gauge3dSDF } from './components/charts/data/gauge-3d.js';
 import { fishbone3dSDF } from './components/charts/diagrams/fishbone-3d.js';
 import { trafficLight3dSDF } from './components/charts/data/traffic-light-3d.js';
 import { radialSpoke3dSDF } from './components/charts/data/radial-spoke-3d.js';
@@ -242,6 +247,8 @@ import {
   engrave,
   groove,
   tongue,
+  mirrorAxis,
+  displace,
 } from '../sdf/dn.js';
 import { evalT } from '../sdf/time.js';
 import {
@@ -321,8 +328,20 @@ const PRIMITIVE_FACTORIES = {
   box: (a) => box(a.dims ?? a.size ?? 1, a.center),
   rounded_box: (a) => rounded_box(a.dims ?? a.size ?? 0.6, a.cornerR ?? a.radius ?? 0.05),
   torus: (a) => torus(a.majorR ?? a.radius ?? 0.4, a.minorR ?? a.thickness ?? 0.1),
-  capsule: (a) => capsule(a.a, a.b, a.radius ?? a.r ?? 0.1),
+  // {a,b} 端点形态优先；{radius,height} = 竖直、端点跨度 height、局部原点居中
+  // （height 形态此前被静默丢弃：a.a/a.b undefined → GPU 编译 vec3(undefined) 崩）
+  capsule: (a) => {
+    const r = a.radius ?? a.r ?? 0.1;
+    if (a.a || a.b) return capsule(a.a ?? [0, 0, 0], a.b ?? [0, 1, 0], r);
+    const h = a.height ?? 1;
+    return capsule([0, -h / 2, 0], [0, h / 2, 0], r);
+  },
   cylinder: (a) => cylinder(a.radius ?? 0.3, a.height ?? 1.0),
+  // pie-chart coin: analytic renderer colors its angular slices (analytic.js).
+  // ('pie' is already taken by the wedge primitive above.) The raymarch
+  // fallback just needs the geometry — a thin disc; slice color is analytic
+  // only, so this fallback is a plain flat disc (deck runs analytic).
+  'pie-chart': (a) => cylinder(a.radius ?? 1.0, a.thickness ?? 0.3),
   capped_cylinder: (a) => capped_cylinder(a.a, a.b, a.radius ?? 0.1),
   cone: (a) => cone(a.height ?? 0.5, a.baseRadius ?? a.radius ?? 0.3),
   capped_cone: (a) => capped_cone(a.a, a.b, a.r1 ?? a.ra ?? 0.3, a.r2 ?? a.rb ?? 0.1),
@@ -354,6 +373,7 @@ const PRIMITIVE_FACTORIES = {
       layerHeight: a.layerHeight ?? a.thickness ?? 0.3,
       gap: a.gap ?? 0.05,
       depth: a.depth ?? 0.6,
+      colors: a.colors ?? null,
     }),
   'bar-3d': (a) =>
     bar3dSDF({
@@ -363,6 +383,7 @@ const PRIMITIVE_FACTORIES = {
       barDepth: a.barDepth ?? a.depth ?? 0.4,
       gap: a.gap ?? 0.1,
       maxHeight: a.maxHeight ?? a.scale ?? 2.0,
+      colors: a.colors ?? null,
     }),
   'column-3d': (a) =>
     column3dSDF({
@@ -460,6 +481,8 @@ const PRIMITIVE_FACTORIES = {
       count: a.count ?? null,
       radius: a.radius ?? 0.6,
       spacing: a.spacing ?? a.gap ?? 0.3,
+      colors: a.colors ?? null,
+      radii: a.radii ?? null,
       cage: a.cage ?? true,
       cageThickness: a.cageThickness ?? 0.025,
       fillScale: a.fillScale ?? 0.92,
@@ -536,6 +559,33 @@ const PRIMITIVE_FACTORIES = {
       taper: a.taper ?? 0.85,
       diskHeight: a.diskHeight ?? a.thickness ?? 0.18,
       gap: a.gap ?? 0.06,
+      colors: a.colors ?? null,
+    }),
+  'mountain-3d': (a) =>
+    mountain3dSDF({
+      height: a.height ?? 2.4,
+      baseRadius: a.baseRadius ?? 1.5,
+      sidePeaks: a.sidePeaks ?? 2,
+      spread: a.spread ?? 1.7,
+      sideScale: a.sideScale ?? 0.6,
+      pathMarkers: a.pathMarkers ?? 4,
+      markerRadius: a.markerRadius ?? 0.13,
+    }),
+  'icon-grid-3d': (a) =>
+    iconGrid3dSDF({
+      rows: a.rows ?? 2,
+      cols: a.cols ?? 4,
+      tileSize: a.tileSize ?? 0.8,
+      gap: a.gap ?? 0.22,
+      tileDepth: a.tileDepth ?? 0.22,
+      glyphs: a.glyphs ?? null,
+    }),
+  'device-mockup-3d': (a) =>
+    deviceMockup3dSDF({
+      device: a.device ?? 'phone',
+      scale: a.scale ?? 1,
+      depth: a.depth ?? 0.16,
+      bezel: a.bezel ?? 0.1,
     }),
   'circle-segmented-3d': (a) =>
     circleSegmented3dSDF({
@@ -644,6 +694,7 @@ const PRIMITIVE_FACTORIES = {
       layerH: a.layerH ?? 0.22,
       gap: a.gap ?? 0.12,
       taper: a.taper ?? 1.0,
+      colors: a.colors ?? null,
     }),
   'bullet-list-3d': (a) =>
     bulletList3dSDF({
@@ -661,6 +712,8 @@ const PRIMITIVE_FACTORIES = {
       bottomRadius: a.bottomRadius ?? 0.22,
       stageHeight: a.stageHeight ?? 0.4,
       gap: a.gap ?? 0.06,
+      colors: a.colors ?? null,
+      radii: a.radii ?? null,
     }),
   'venn-3d': (a) =>
     venn3dSDF({
@@ -694,6 +747,15 @@ const PRIMITIVE_FACTORIES = {
       depth: a.depth ?? 0.18,
       trackLength: a.trackLength ?? 3.0,
     }),
+  'gauge-3d': (a) =>
+    gauge3dSDF({
+      value: a.value ?? 0.7,
+      radius: a.radius ?? 0.9,
+      tube: a.tube ?? 0.1,
+      needleLen: a.needleLen ?? 0.8,
+      needleWidth: a.needleWidth ?? 0.07,
+      depth: a.depth ?? 0.2,
+    }),
   'fishbone-3d': (a) =>
     fishbone3dSDF({
       ribs: a.ribs ?? a.count ?? 6,
@@ -710,6 +772,7 @@ const PRIMITIVE_FACTORIES = {
       spacing: a.spacing ?? 0.55,
       housingPad: a.housingPad ?? 0.12,
       depth: a.depth ?? 0.3,
+      colors: a.colors ?? null,
     }),
   'radial-spoke-3d': (a) =>
     radialSpoke3dSDF({
@@ -1038,6 +1101,15 @@ const PRIMITIVE_FACTORIES = {
 };
 
 const PSEUDO_PRIMITIVES = new Set(['extrude', 'revolve', 'extrude_to']);
+
+// Exported for the registry-sync test (scripts/test-primitive-registry-sync.mjs):
+// the canonical types that have a real factory, and the pseudo (2D-source-wrap)
+// types. Lets the test assert spec.PRIMITIVE_TYPES ↔ factories stay in sync so a
+// type can't pass validate() but then throw in compile() for a missing factory.
+export const PRIMITIVE_FACTORY_TYPES = Object.keys(PRIMITIVE_FACTORIES).filter(
+  (k) => PRIMITIVE_FACTORIES[k] != null,
+);
+export const PSEUDO_PRIMITIVE_TYPES = [...PSEUDO_PRIMITIVES];
 
 // =============================================================================
 // Public API
@@ -1383,8 +1455,43 @@ function compilePrimitive(subj, defaultRegion, subjectInfos) {
   if (!factory) throw new Error(`compile: no factory for primitive "${subj.type}"`);
   let sdf = factory(resolvedArgs);
 
-  // 3. Apply transform
-  sdf = applyTransform(sdf, subj.transform, subj.animation);
+  // A single-leaf atom can carry its per-leaf tags on the factory SDF itself
+  // (e.g. sphere-fill-3d with ONE sphere returns the bare sphere with its fill
+  // fraction on _subjectPattern). The non-union applyTransform branch below wraps
+  // the SDF and drops those tags (same as the union branch, which re-attaches per
+  // child) — capture them now so we can re-attach after transform. Without this a
+  // lone fill gauge loses its fill and renders as plain glass (fill=0).
+  const factoryMat = sdf?._subjectMaterial;
+  const factoryPat = sdf?._subjectPattern;
+
+  // 3. Apply transform. If the factory returned a UNION (a multi-leaf atom such
+  // as sphere-fill-3d, where each leaf carries its own _subjectMaterial /
+  // _subjectPattern), push the transform DOWN onto each union child instead of
+  // wrapping the union — otherwise applyTransform wraps the union AST in a
+  // translate/rotate/scale op node that flattenUnion (sdf3.compile) can't descend,
+  // collapsing all leaves into one and dropping their per-leaf material/pattern
+  // (same failure mode as the compileBoolean union push-down below). This is
+  // mathematically equivalent: the transform acts on the query point and min()
+  // distributes over union, so the geometry is unchanged.
+  const hasOuterTransform = subj.transform != null || hasTransformAnim(subj.animation);
+  const isUnion = sdf?.ast?.kind === 'op' && sdf.ast.name === 'union';
+  if (isUnion && hasOuterTransform) {
+    const k = sdf.ast.opts?.k;
+    const kids = sdf.ast.children.map((c) => {
+      const t = applyTransform(c, subj.transform, subj.animation);
+      // applyTransform wrappers drop leaf tags — re-attach from the inner child.
+      if (c._subjectMaterial !== undefined) t._subjectMaterial = c._subjectMaterial;
+      if (c._subjectPattern !== undefined) t._subjectPattern = c._subjectPattern;
+      return t;
+    });
+    sdf = k != null ? union(...kids, { k }) : union(...kids);
+  } else {
+    sdf = applyTransform(sdf, subj.transform, subj.animation);
+    // Re-attach leaf tags the applyTransform wrapper dropped (mirrors the union
+    // branch above). Subject-level material/pattern in step 4 still overrides.
+    if (factoryMat !== undefined) sdf._subjectMaterial = factoryMat;
+    if (factoryPat !== undefined) sdf._subjectPattern = factoryPat;
+  }
 
   // 4. Attach material/pattern at leaf level. Required when a primitive is
   // nested inside DomainGroup ops (rep / curve / mirror / twist / bend) —
@@ -1594,6 +1701,14 @@ function compileDomain(subj, defaultRegion, subjectInfos) {
     sdf = modPolar(source.sdf, { axis: args.axis, repetitions: args.repetitions });
   } else if (subj.type === 'mirrorOctant') {
     sdf = mirrorOctant(source.sdf, { plane: args.plane, dist: args.dist });
+  } else if (subj.type === 'displace') {
+    // Infinigen 研读第二课:表面噪声位移。schema 里躺了两个月的 DOMAIN op 首次
+    // 落地 —— source = 宿主,args 描述噪声场(kind/freq/amp/offset)。amp 必须
+    // 远小于宿主尺寸:位移破坏 Lipschitz-1,raymarcher 靠步长冗余吸收。
+    sdf = displace(
+      source.sdf,
+      noiseField(args.kind ?? 'vfbm', args.freq ?? 1, args.amp ?? 0.05, args.offset ?? [0, 0, 0]),
+    );
   } else {
     throw new Error(`compile: unknown domain op "${subj.type}"`);
   }
@@ -1622,16 +1737,20 @@ function compileDomain(subj, defaultRegion, subjectInfos) {
   return { sdf, region };
 }
 
-// Mirror is not a chain op in sdf-js currently. v0: CPU-only wrapper.
-// TODO: M0 Day 4-5 — extend src/sdf/dn.js with `mirror()` chain op + GLSL emit.
+// 3D path goes through dn.js mirrorAxis (ast-carrying → GPU emits mirX3/Y3/Z3);
+// the old raw-lambda wrapper had no .ast and killed GPU compiles the moment a
+// mirror DomainGroup reached the raymarch tiers (Wave C lowering did exactly that).
+// 2D stays a CPU lambda — the 2D pipeline never GPU-compiles domain ops.
 function applyMirror(sourceSdf, axis) {
   const idx = axis === 'x' ? 0 : axis === 'y' ? 1 : 2;
   if (sourceSdf instanceof SDF3 || (sourceSdf && sourceSdf.f && sourceSdf.f.length === 1)) {
-    return new SDF3((p) => {
-      const q = [...p];
-      q[idx] = Math.abs(q[idx]);
-      return sourceSdf.f(q);
-    });
+    return sourceSdf instanceof SDF3
+      ? mirrorAxis(sourceSdf, idx)
+      : new SDF3((p) => {
+          const q = [...p];
+          q[idx] = Math.abs(q[idx]);
+          return sourceSdf.f(q);
+        });
   }
   return new SDF2((p) => {
     const q = [p[0], p[1]];

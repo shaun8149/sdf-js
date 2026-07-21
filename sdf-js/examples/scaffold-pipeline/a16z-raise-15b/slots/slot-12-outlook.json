@@ -1,0 +1,118 @@
+{
+  "slotIdx": 12,
+  "slotName": "outlook",
+  "slotTitle": "Outlook",
+  "slotPurpose": "What to watch next — timeline or conditions",
+  "sourceSlideIdx": 14,
+  "sourceSlideTitle": "Outlook: The Responsibility Ahead",
+  "sceneData": {
+    "name": "news-briefing/outlook",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Outlook",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "mountain-path",
+        "x": 40,
+        "y": 150,
+        "w": 1200,
+        "h": 280,
+        "args": {
+          "title": "The Responsibility Ahead",
+          "summit": "$15B+ American Tech Future",
+          "milestones": [
+            {
+              "label": "Apps Fund",
+              "sublabel": "$1.7B · Next-gen applications"
+            },
+            {
+              "label": "Infrastructure Fund",
+              "sublabel": "$1.7B · Foundational platforms"
+            },
+            {
+              "label": "Multi-Sector Strategy",
+              "sublabel": "National competitiveness"
+            },
+            {
+              "label": "Mission-Driven VC",
+              "sublabel": "Great power competition era"
+            }
+          ]
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 40,
+        "y": 460,
+        "w": 370,
+        "h": 220,
+        "args": {
+          "value": "$1.7B",
+          "label": "Apps Fund",
+          "sublabel": "Consumer & enterprise software",
+          "icon": "device-mobile",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 455,
+        "y": 460,
+        "w": 370,
+        "h": 220,
+        "args": {
+          "value": "$1.7B",
+          "label": "Infrastructure Fund",
+          "sublabel": "Foundational technology platforms",
+          "icon": "circuitry",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 870,
+        "y": 460,
+        "w": 370,
+        "h": 220,
+        "args": {
+          "value": "$15B+",
+          "label": "Total Deployment",
+          "sublabel": "Comprehensive national strategy",
+          "icon": "flag",
+          "style": "light"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["timeline", "mountain-path", "bullet-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5071,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 656,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0289554,
+    "elapsedSec": 10.4,
+    "generatedAt": "2026-07-07T06:41:46.576Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

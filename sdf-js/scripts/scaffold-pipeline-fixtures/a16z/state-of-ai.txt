@@ -1,0 +1,3 @@
+State of AI: An Empirical 100 Trillion Token Study with OpenRouter
+
+OpenRouter has grown to serve over 5+ million developers and routes traffic across 300+ models from more than 60 providers. The platform expanded from handling roughly 10 trillion tokens per year to more than 100 trillion as of mid-2025, and recently processed more than 1 trillion tokens every single day. For comparison, OpenAI's entire API averaged about 8.6 trillion tokens per day in October.

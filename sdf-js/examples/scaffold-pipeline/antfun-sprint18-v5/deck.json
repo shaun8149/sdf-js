@@ -1,0 +1,175 @@
+{
+  "deckName": "antfun-sprint18-v5",
+  "sourceFile": "sdf-js/scripts/scaffold-pipeline-fixtures/antfun-company.json",
+  "scaffold": {
+    "id": "company-overview",
+    "label": "Company Overview",
+    "description": "Intro deck for prospects, partners, or recruits",
+    "pickScore": 9,
+    "pickSignals": [
+      "Deck structure follows classic company overview pattern: mission → market → product → team → technology → contact, matching the 'company-overview' slot sequence closely",
+      "Audience is clearly prospects/partners/recruits — describes team heritage, backing, product suite, and differentiators without fundraising ask or metrics-focused QBR content",
+      "Contains 'Company Overview' and '2026-Q3' labels, 'Get in Touch' CTA, team credentials, and product descriptions — all hallmarks of an introductory deck rather than a VC pitch (no problem/solution/traction/ask structure)"
+    ],
+    "fallback": false,
+    "pickerMethod": "llm"
+  },
+  "theme": {
+    "id": "editorial-navy",
+    "label": "Editorial · Navy",
+    "macroCluster": "editorial",
+    "bg": [248, 246, 240],
+    "accent": [38, 70, 130],
+    "colors": [
+      [38, 70, 130],
+      [110, 95, 75],
+      [165, 130, 90],
+      [200, 195, 180]
+    ],
+    "font": {
+      "heading": "Georgia, \"Source Serif Pro\", serif",
+      "body": "Inter, system-ui, sans-serif"
+    }
+  },
+  "slots": [
+    {
+      "slotIdx": 0,
+      "slotName": "cover",
+      "slotTitle": "Title",
+      "slotPurpose": "Company name + tagline",
+      "sourceSlideIdx": 0,
+      "sourceSlideTitle": "ANTFUN",
+      "mappingScore": 0,
+      "mappingFallback": true,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-00-cover.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": ["cover"]
+    },
+    {
+      "slotIdx": 1,
+      "slotName": "mission",
+      "slotTitle": "Mission",
+      "slotPurpose": "Why we exist",
+      "sourceSlideIdx": 1,
+      "sourceSlideTitle": "Our Mission",
+      "mappingScore": 1,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-01-mission.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": ["cover", "icon-row", "bullet-list", "bullet-list"]
+    },
+    {
+      "slotIdx": 2,
+      "slotName": "what-we-do",
+      "slotTitle": "What We Do",
+      "slotPurpose": "Products + service overview",
+      "sourceSlideIdx": 2,
+      "sourceSlideTitle": "Market Opportunity",
+      "mappingScore": 0,
+      "mappingFallback": true,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-02-what-we-do.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": ["cover", "icon-grid", "bullet-list"]
+    },
+    {
+      "slotIdx": 3,
+      "slotName": "products",
+      "slotTitle": "Products",
+      "slotPurpose": "Feature lineup",
+      "sourceSlideIdx": 4,
+      "sourceSlideTitle": "Strategic Position",
+      "mappingScore": 1,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-03-products.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": ["cover", "kpi-card", "kpi-card", "kpi-card", "icon-grid"]
+    },
+    {
+      "slotIdx": 4,
+      "slotName": "market",
+      "slotTitle": "Market",
+      "slotPurpose": "Where we play",
+      "sourceSlideIdx": 3,
+      "sourceSlideTitle": "Product Suite",
+      "mappingScore": 0,
+      "mappingFallback": true,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-04-market.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": ["cover", "kpi-card", "kpi-card", "kpi-card", "kpi-card", "icon-grid", "pie"]
+    },
+    {
+      "slotIdx": 5,
+      "slotName": "values",
+      "slotTitle": "Values",
+      "slotPurpose": "Company values 3-6 items",
+      "sourceSlideIdx": 5,
+      "sourceSlideTitle": "Technology Stack",
+      "mappingScore": 0,
+      "mappingFallback": true,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-05-values.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": ["cover", "icon-grid"]
+    },
+    {
+      "slotIdx": 6,
+      "slotName": "team",
+      "slotTitle": "Team",
+      "slotPurpose": "Leadership and culture",
+      "sourceSlideIdx": 6,
+      "sourceSlideTitle": "Get in Touch",
+      "mappingScore": 1,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-06-team.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": ["cover", "circle-image-hub-spoke", "bullet-list"]
+    },
+    {
+      "slotIdx": 7,
+      "slotName": "contact",
+      "slotTitle": "Get in Touch",
+      "slotPurpose": "Contact + CTA — mail/phone/globe/location",
+      "sourceSlideIdx": -1,
+      "sourceSlideTitle": null,
+      "mappingScore": 0,
+      "mappingFallback": false,
+      "mappingEmpty": true,
+      "liftFile": null,
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": []
+    }
+  ],
+  "totals": {
+    "slotsBaked": 7,
+    "slotsEmpty": 1,
+    "slotsErrored": 0,
+    "totalCostUSD": 0.13659255
+  },
+  "meta": {
+    "generatedAt": "2026-06-24T03:42:42.570Z",
+    "model": "claude-sonnet-4-5-20250929",
+    "pipelineVersion": "sprint-16-v1"
+  }
+}

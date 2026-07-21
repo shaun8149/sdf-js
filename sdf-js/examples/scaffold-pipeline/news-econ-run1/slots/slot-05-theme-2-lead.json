@@ -1,0 +1,103 @@
+{
+  "slotIdx": 5,
+  "slotName": "theme-2-lead",
+  "slotTitle": "Theme 2 — Lead",
+  "slotPurpose": "Second major theme: the core facts",
+  "sourceSlideIdx": 8,
+  "sourceSlideTitle": "主要央行货币政策转向",
+  "sceneData": {
+    "name": "news-briefing/theme-2-lead",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "主要央行货币政策转向",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "process-arrows",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 240,
+        "args": {
+          "steps": [
+            {
+              "label": "通胀持续回落",
+              "sublabel": "多数主要经济体"
+            },
+            {
+              "label": "央行降息空间",
+              "sublabel": "美联储·英国央行·欧洲央行"
+            },
+            {
+              "label": "宽松周期开启",
+              "sublabel": "全球货币政策转向"
+            },
+            {
+              "label": "支持性金融环境",
+              "sublabel": "为经济增长提供支持"
+            }
+          ],
+          "color": "gradient"
+        }
+      },
+      {
+        "type": "icon-row",
+        "x": 240,
+        "y": 480,
+        "w": 800,
+        "h": 180,
+        "args": {
+          "items": [
+            {
+              "icon": "trend-down",
+              "label": "通胀回落",
+              "sublabel": "主要经济体"
+            },
+            {
+              "icon": "arrow-down",
+              "label": "降息空间",
+              "sublabel": "美联储·英国央行·欧洲央行"
+            },
+            {
+              "icon": "arrows-clockwise",
+              "label": "政策周期",
+              "sublabel": "转向宽松"
+            }
+          ],
+          "iconSize": "large",
+          "iconStyle": "circle"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["process-arrows", "timeline", "stat-banner", "kpi-card"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4475,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 567,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0258324,
+    "elapsedSec": 9.3,
+    "generatedAt": "2026-07-06T16:49:45.995Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

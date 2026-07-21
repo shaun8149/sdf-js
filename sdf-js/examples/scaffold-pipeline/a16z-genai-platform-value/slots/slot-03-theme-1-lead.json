@@ -1,0 +1,87 @@
+{
+  "slotIdx": 3,
+  "slotName": "theme-1-lead",
+  "slotTitle": "Theme 1 — Lead",
+  "slotPurpose": "First major theme: the core facts and figures",
+  "sourceSlideIdx": 3,
+  "sourceSlideTitle": "Nvidia's Hardware Leadership",
+  "sceneData": {
+    "name": "news-briefing/theme-1-lead",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Hardware Leadership",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "stat-banner",
+        "x": 40,
+        "y": 160,
+        "w": 1200,
+        "h": 140,
+        "args": {
+          "value": "$3.8B",
+          "label": "Q3 FY2023 Data Center GPU Revenue",
+          "bg": [38, 70, 130]
+        }
+      },
+      {
+        "type": "icon-row",
+        "x": 40,
+        "y": 340,
+        "w": 1200,
+        "h": 320,
+        "args": {
+          "items": [
+            {
+              "icon": "crown",
+              "label": "Generative AI",
+              "sublabel": "Market leader"
+            },
+            {
+              "icon": "cpu",
+              "label": "Data Center GPUs",
+              "sublabel": "Core AI infrastructure"
+            },
+            {
+              "icon": "chart-line-up",
+              "label": "$3.8B Revenue",
+              "sublabel": "Q3 fiscal 2023"
+            }
+          ],
+          "iconSize": "large",
+          "iconStyle": "circle"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["bar", "column", "stat-banner", "kpi-card"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4787,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 421,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0245784,
+    "elapsedSec": 7.1,
+    "generatedAt": "2026-07-07T05:16:21.934Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

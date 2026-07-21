@@ -1,0 +1,133 @@
+{
+  "v": 1,
+  "name": "(lifted) grow-Coaching Cycle",
+  "subjects": [
+    {
+      "id": "circle-loop",
+      "type": "circle-loop-3d",
+      "args": {
+        "segments": 4
+      },
+      "transform": {
+        "translate": [
+          0,
+          1.6,
+          0
+        ],
+        "rotate": [
+          1.5708,
+          0,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.5,
+        "sat": 0.55,
+        "value": 0.64,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      }
+    }
+  ],
+  "overlay": [
+    {
+      "text": "COACHING CYCLE",
+      "anchor": [
+        0,
+        3.9,
+        0
+      ],
+      "role": "title"
+    },
+    {
+      "text": "Goal",
+      "anchor": [
+        3,
+        2.6,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "Reality",
+      "anchor": [
+        3,
+        1.8800000000000001,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "Options",
+      "anchor": [
+        3,
+        1.1600000000000001,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "Will",
+      "anchor": [
+        3,
+        0.43999999999999995,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    }
+  ],
+  "cameraSequence": {
+    "loop": false,
+    "shots": [
+      {
+        "pos": [
+          6.5520000000000005,
+          2.3,
+          5.208
+        ],
+        "target": [
+          0,
+          1.6,
+          0
+        ],
+        "fov": 48,
+        "focalDistance": 8.4,
+        "duration": 0.01,
+        "aperture": 0,
+        "ease": "smooth"
+      },
+      {
+        "pos": [
+          0,
+          1.8,
+          8.4
+        ],
+        "target": [
+          0,
+          1.6,
+          0
+        ],
+        "fov": 46,
+        "focalDistance": 8.4,
+        "duration": 14,
+        "transition": "blend",
+        "aperture": 0,
+        "ease": "smooth"
+      }
+    ]
+  },
+  "defaults": {
+    "stage": {
+      "size": [
+        18,
+        9,
+        11
+      ]
+    }
+  }
+}

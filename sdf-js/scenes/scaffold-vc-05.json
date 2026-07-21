@@ -1,0 +1,168 @@
+{
+  "v": 1,
+  "name": "(scaffold) pitch-deck-vc/traction",
+  "subjects": [
+    {
+      "id": "line-0",
+      "type": "line-3d",
+      "args": {
+        "values": [
+          0.1,
+          0.14500000000000002,
+          0.37750000000000006,
+          1
+        ],
+        "pointSpacing": 0.7,
+        "pointRadius": 0.11,
+        "lineThickness": 0.06,
+        "maxHeight": 2
+      },
+      "transform": {
+        "translate": [
+          0,
+          2.725,
+          0
+        ],
+        "scale": 1.3695652173913047
+      },
+      "material": {
+        "hue": 0.06201550387596899,
+        "sat": 0.72,
+        "value": 0.72,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      }
+    },
+    {
+      "id": "kpi-card-1",
+      "type": "kpi-card-3d",
+      "args": {
+        "value": "$2.4M",
+        "label": "Q4 2026 ARR Forecast",
+        "trend": "up"
+      },
+      "transform": {
+        "translate": [
+          2.275,
+          0.5499999999999996,
+          0
+        ],
+        "scale": 0.55
+      },
+      "material": {
+        "hue": 0.625,
+        "sat": 0.72,
+        "value": 0.7058823529411765,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      }
+    },
+    {
+      "id": "kpi-card-2",
+      "type": "kpi-card-3d",
+      "args": {
+        "value": "110%",
+        "label": "Net Retention",
+        "trend": "up"
+      },
+      "transform": {
+        "translate": [
+          -2.275,
+          0.5499999999999996,
+          0
+        ],
+        "scale": 0.55
+      },
+      "material": {
+        "hue": 0.638888888888889,
+        "sat": 0.5,
+        "value": 0.5,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      }
+    }
+  ],
+  "overlay": [
+    {
+      "text": "$2.4M",
+      "anchor": [
+        2.275,
+        0.7149999999999995,
+        0.33
+      ],
+      "role": "value",
+      "radius": 0.36
+    },
+    {
+      "text": "110%",
+      "anchor": [
+        -2.275,
+        0.7149999999999995,
+        0.33
+      ],
+      "role": "value",
+      "radius": 0.36
+    },
+    {
+      "text": "TRACTION",
+      "anchor": [
+        0,
+        4.9,
+        0
+      ],
+      "role": "title"
+    }
+  ],
+  "cameraSequence": {
+    "loop": false,
+    "shots": [
+      {
+        "duration": 0.01,
+        "pos": [
+          1.4,
+          3.5,
+          14
+        ],
+        "target": [
+          0,
+          2.5,
+          0
+        ],
+        "fov": 48,
+        "aperture": 0,
+        "focalDistance": 12.5,
+        "ease": "smooth"
+      },
+      {
+        "duration": 14,
+        "pos": [
+          0,
+          2.85,
+          11.8
+        ],
+        "target": [
+          0,
+          2.5,
+          0
+        ],
+        "fov": 46,
+        "transition": "blend",
+        "aperture": 0,
+        "focalDistance": 11.8,
+        "ease": "smooth"
+      }
+    ]
+  },
+  "defaults": {
+    "stage": {
+      "size": [
+        24,
+        12,
+        13
+      ]
+    }
+  }
+}

@@ -1,0 +1,76 @@
+[
+  {
+    "title": "Strategic Portfolio Analysis 2026",
+    "body": [
+      "Independent analyst review — Q3 2026",
+      "Prepared by: Strategy Team",
+      "Framework: SWOT + Porter Value Chain"
+    ]
+  },
+  {
+    "title": "Scope of Analysis",
+    "body": [
+      "Reviewed: 6 product lines across NA + EMEA + APAC markets",
+      "Time window: 2024-Q1 through 2026-Q3 (11 quarters)",
+      "Data sources: internal KPI dashboard + 32 customer interviews + Gartner Magic Quadrant 2025",
+      "Frameworks applied: SWOT analysis, Porter value chain, change curve assessment"
+    ]
+  },
+  {
+    "title": "Framework Definition: Value Chain Analysis",
+    "body": [
+      "Porter value chain decomposes the firm into 5 primary activities and 4 support activities.",
+      "Primary activities create direct customer value; support activities enable them.",
+      "Margin = total value created minus total cost of activities.",
+      "We analyze each primary activity for differentiation and cost advantage."
+    ]
+  },
+  {
+    "title": "SWOT Analysis Results",
+    "body": [
+      "Strengths: market-leading retention 92%, top-tier engineering velocity, proprietary ML pipeline, founder-led culture",
+      "Weaknesses: thin EMEA presence, slow enterprise sales cycle, customer support response time, technical debt in billing layer",
+      "Opportunities: regulatory tailwind in EU AI Act, partner channel under-leveraged, vertical expansion to healthcare and education, acquisition targets cheap post-2025 correction",
+      "Threats: new entrants well-funded (3 Series B in 2026), incumbent platforms bundling, talent retention pressure from AI labs, fx headwind from USD strength"
+    ]
+  },
+  {
+    "title": "Voice of the Customer",
+    "body": [
+      "\"This platform changed how our team coordinates across timezones — we no longer lose context in handoffs.\"",
+      "— Sarah Chen, VP Engineering at Meridian Analytics",
+      "Quote sourced from 32-customer interview round, Aug 2026"
+    ]
+  },
+  {
+    "title": "Change Journey Forecast",
+    "body": [
+      "Org transformation will follow a Kübler-Ross-style curve over 9 months.",
+      "Phase 1 — Shock: leadership announcement, Q1 2027",
+      "Phase 2 — Denial: middle-management push-back, Q1-Q2 2027",
+      "Phase 3 — Frustration: process friction, Q2 2027",
+      "Phase 4 — Experimentation: pilot teams adopt, Q3 2027",
+      "Phase 5 — Decision: org-wide rollout, Q4 2027",
+      "Phase 6 — Integration: new normal, Q1 2028"
+    ]
+  },
+  {
+    "title": "Recommendations",
+    "body": [
+      "Double down on EMEA hiring — open Berlin office Q1 2027",
+      "Restructure pricing into 3-tier model with usage-based add-ons",
+      "Acquire 1-2 vertical specialists in healthcare AI space",
+      "Invest in customer support: SLA target 2h response time",
+      "Launch partner channel program with 10 named systems integrators"
+    ]
+  },
+  {
+    "title": "Appendix",
+    "body": [
+      "Full SWOT scoring matrix available on request",
+      "Customer interview transcripts redacted for confidentiality",
+      "Porter value chain breakdown per product line in supplementary deck",
+      "Change curve model based on Bridges (2017) revision of Kübler-Ross framework"
+    ]
+  }
+]

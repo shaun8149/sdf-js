@@ -1,0 +1,93 @@
+{
+  "slotIdx": 1,
+  "slotName": "problem",
+  "slotTitle": "Problem",
+  "slotPurpose": "Pain point — who hurts and how much",
+  "sourceSlideIdx": 1,
+  "sourceSlideTitle": "The Problem",
+  "sceneData": {
+    "name": "pitch-deck-vc/problem",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Problem",
+          "style": "section"
+        }
+      },
+      {
+        "type": "icon-grid",
+        "x": 40,
+        "y": 180,
+        "w": 1200,
+        "h": 480,
+        "args": {
+          "title": "Presentation visuals are stuck in 2008",
+          "items": [
+            {
+              "icon": "presentation",
+              "label": "PowerPoint clipart",
+              "sublabel": "Icons + GIFs from 2008"
+            },
+            {
+              "icon": "robot",
+              "label": "AI-PPT tools",
+              "sublabel": "Fixed text, visuals still dead"
+            },
+            {
+              "icon": "clock",
+              "label": "60% layout busywork",
+              "sublabel": "Designers waste time on positioning"
+            },
+            {
+              "icon": "eye-slash",
+              "label": "Dead visuals",
+              "sublabel": "No theatrical impact in 3D"
+            }
+          ],
+          "cols": 2,
+          "iconStyle": "card",
+          "iconSize": "large",
+          "colorMode": "brand"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "pitch-deck-vc",
+    "theme": "pitch-cobalt-orange",
+    "recommendedAtoms": [
+      "quote-pull",
+      "bullet-list",
+      "icon-row",
+      "icon-grid",
+      "kpi-card",
+      "icon-badge"
+    ],
+    "forbiddenAtoms": [
+      "org-chart",
+      "gantt"
+    ],
+    "tokenUsage": {
+      "input_tokens": 5215,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 399,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0255324,
+    "elapsedSec": 7.3,
+    "generatedAt": "2026-07-10T07:21:59.801Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

@@ -1,0 +1,157 @@
+{
+  "slotIdx": 2,
+  "slotName": "what-we-do",
+  "slotTitle": "What We Do",
+  "slotPurpose": "Products + service overview",
+  "sourceSlideIdx": 2,
+  "sourceSlideTitle": "Market Opportunity",
+  "sceneData": {
+    "name": "company-overview/what-we-do",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "What We Do",
+          "bgColor": "rgb(248, 246, 240)",
+          "titleColor": "rgb(22, 35, 70)"
+        }
+      },
+      {
+        "type": "icon-row",
+        "x": 60,
+        "y": 160,
+        "w": 560,
+        "h": 220,
+        "args": {
+          "title": "Target Users",
+          "items": [
+            {
+              "icon": "currency-btc",
+              "label": "Crypto Natives",
+              "sublabel": "Fast execution"
+            },
+            {
+              "icon": "rocket",
+              "label": "DeFi Power Users",
+              "sublabel": "Unified UX"
+            },
+            {
+              "icon": "user-circle",
+              "label": "Mainstream",
+              "sublabel": "All-in-one"
+            },
+            {
+              "icon": "chart-line-up",
+              "label": "Smart Money",
+              "sublabel": "On-chain alpha"
+            }
+          ],
+          "colorMode": "auto",
+          "accentColor": "rgb(38, 70, 130)"
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 660,
+        "y": 160,
+        "w": 560,
+        "h": 500,
+        "args": {
+          "title": "Core Differentiators",
+          "items": [
+            {
+              "icon": "lightning",
+              "label": "Sub-second DEX aggregation"
+            },
+            {
+              "icon": "brain",
+              "label": "AI strategy automation"
+            },
+            {
+              "icon": "lock-key",
+              "label": "Self-custodial speed"
+            },
+            {
+              "icon": "chats-circle",
+              "label": "Embedded alpha groups"
+            },
+            {
+              "icon": "microphone",
+              "label": "Live audio trading rooms"
+            },
+            {
+              "icon": "code",
+              "label": "Open developer API"
+            }
+          ],
+          "iconColor": "rgb(38, 70, 130)",
+          "textColor": "rgb(22, 35, 70)"
+        }
+      },
+      {
+        "type": "icon-grid",
+        "x": 60,
+        "y": 420,
+        "w": 560,
+        "h": 240,
+        "args": {
+          "items": [
+            {
+              "icon": "currency-eth",
+              "label": "DEX Routing"
+            },
+            {
+              "icon": "robot",
+              "label": "AI Agents"
+            },
+            {
+              "icon": "shield-check",
+              "label": "Self-Custody"
+            },
+            {
+              "icon": "users-three",
+              "label": "Social Alpha"
+            },
+            {
+              "icon": "broadcast",
+              "label": "Audio Rooms"
+            },
+            {
+              "icon": "plugs-connected",
+              "label": "API Access"
+            }
+          ],
+          "colorMode": "auto",
+          "accentColor": "rgb(110, 95, 75)"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "company-overview",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["flow-chart", "magazine-column-grid", "icon-row", "bullet-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 1737,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 5921,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 780,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0186873,
+    "elapsedSec": 10.2,
+    "generatedAt": "2026-06-24T03:34:29.046Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

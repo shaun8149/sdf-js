@@ -1,0 +1,149 @@
+{
+  "slotIdx": 2,
+  "slotName": "kpis",
+  "slotTitle": "KPI Dashboard",
+  "slotPurpose": "Critical metrics quarter-over-quarter",
+  "sourceSlideIdx": 2,
+  "sourceSlideTitle": "KPI Dashboard",
+  "sceneData": {
+    "name": "qbr/kpis",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "KPI Dashboard",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 40,
+        "y": 160,
+        "w": 380,
+        "h": 240,
+        "args": {
+          "value": "$740K",
+          "label": "ARR",
+          "sublabel": "Target $600K",
+          "trend": "up",
+          "trendValue": "+23%",
+          "icon": "chart-line-up",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 450,
+        "y": 160,
+        "w": 380,
+        "h": 240,
+        "args": {
+          "value": "12,500",
+          "label": "DAU",
+          "sublabel": "Target 8,000",
+          "trend": "up",
+          "trendValue": "+56%",
+          "icon": "users",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 860,
+        "y": 160,
+        "w": 380,
+        "h": 240,
+        "args": {
+          "value": "$4.2M",
+          "label": "Trading Volume Daily",
+          "sublabel": "Target $3M",
+          "trend": "up",
+          "trendValue": "+40%",
+          "icon": "chart-bar",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 40,
+        "y": 430,
+        "w": 380,
+        "h": 240,
+        "args": {
+          "value": "92%",
+          "label": "Retention D30",
+          "sublabel": "Target 85%",
+          "trend": "up",
+          "trendValue": "+7pt",
+          "icon": "heart",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 450,
+        "y": 430,
+        "w": 380,
+        "h": 240,
+        "args": {
+          "value": "72",
+          "label": "NPS",
+          "sublabel": "Target 60",
+          "trend": "up",
+          "trendValue": "+12pt",
+          "icon": "thumbs-up",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 860,
+        "y": 430,
+        "w": 380,
+        "h": 240,
+        "args": {
+          "value": "$180K/mo",
+          "label": "Burn",
+          "sublabel": "Budget $250K",
+          "trend": "down",
+          "trendValue": "Under by $70K",
+          "icon": "currency-dollar",
+          "style": "light"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "qbr",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "radar-chart",
+      "dashboard-multi-kpi-composite",
+      "kpi-card",
+      "line",
+      "bar"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5234,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 875,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0327294,
+    "elapsedSec": 12.9,
+    "generatedAt": "2026-07-10T07:19:33.835Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

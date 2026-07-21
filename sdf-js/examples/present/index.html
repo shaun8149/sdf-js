@@ -13,16 +13,19 @@
   </div>
 
   <script type="module">
-    // Inline router — Sprint 1 v4 has two modes:
-    //   /examples/present/             → library page (list decks + Import PDF)
-    //   /examples/present/?deck=<id>   → deck-view (info graphic + Export PNG)
-    //
-    // Sprint 2 will re-add editor / present mode routes.
+    // Inline router — modes:
+    //   /examples/present/                          → library page (PDF upload + list)
+    //   /examples/present/?deck=<id>                → document view (Napkin paragraph ⚡)
+    //   /examples/present/?deck=<id>&mode=scaffold  → scaffold view (Sprint 16 deck-level pipeline)
     const params = new URLSearchParams(location.search);
     const deckId = params.get('deck');
+    const mode = params.get('mode');
     const target = document.getElementById('route-target');
 
-    if (deckId) {
+    if (deckId && mode === 'scaffold') {
+      const { mountScaffoldView } = await import('../../src/present/scaffold-view.js');
+      await mountScaffoldView(target, deckId);
+    } else if (deckId) {
       const { mountDocumentView } = await import('../../src/present/document-view.js');
       await mountDocumentView(target, deckId);
     } else {

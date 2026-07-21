@@ -1,0 +1,99 @@
+{
+  "slotIdx": 12,
+  "slotName": "outlook",
+  "slotTitle": "Outlook",
+  "slotPurpose": "What to watch next — timeline or conditions",
+  "sourceSlideIdx": 2,
+  "sourceSlideTitle": "Contributors: Industry Leaders",
+  "sceneData": {
+    "name": "news-briefing/outlook",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Outlook",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 80,
+        "y": 180,
+        "w": 520,
+        "h": 460,
+        "args": {
+          "title": "Sources & Validation",
+          "items": [
+            {
+              "icon": "users-three",
+              "label": "14 founders and partners contributed",
+              "sublabel": "Flock Safety, Applied Intuition, Decagon"
+            },
+            {
+              "icon": "briefcase",
+              "label": "Industry leaders validated insights",
+              "sublabel": "Databricks, Kalshi, Abridge included"
+            },
+            {
+              "icon": "book-open",
+              "label": "Good to Great framework applied",
+              "sublabel": "Jim Collins' transformation research"
+            }
+          ]
+        }
+      },
+      {
+        "type": "mountain-path",
+        "x": 680,
+        "y": 180,
+        "w": 520,
+        "h": 460,
+        "args": {
+          "title": "What to Watch",
+          "summit": "Great Companies",
+          "milestones": [
+            {
+              "label": "Gather insights",
+              "sublabel": "Industry leaders"
+            },
+            {
+              "label": "Apply frameworks",
+              "sublabel": "Transformation research"
+            },
+            {
+              "label": "Execute strategy",
+              "sublabel": "Good to great"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["timeline", "mountain-path", "bullet-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4995,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 493,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.026282399999999997,
+    "elapsedSec": 8.8,
+    "generatedAt": "2026-07-07T06:42:33.804Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

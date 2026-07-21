@@ -1,0 +1,104 @@
+{
+  "slotIdx": 1,
+  "slotName": "scope",
+  "slotTitle": "Scope & Methodology",
+  "slotPurpose": "What was analyzed and how data was collected",
+  "sourceSlideIdx": 0,
+  "sourceSlideTitle": "全球经济2026年中展望",
+  "sceneData": {
+    "name": "analysis-report/scope",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Scope & Methodology",
+          "style": "section"
+        }
+      },
+      {
+        "type": "icon-row",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 200,
+        "args": {
+          "title": "Data Sources",
+          "items": [
+            {
+              "icon": "globe-hemisphere-west",
+              "label": "IMF",
+              "sublabel": "International Monetary Fund"
+            },
+            {
+              "icon": "buildings",
+              "label": "OECD",
+              "sublabel": "Organisation for Economic Co-operation"
+            },
+            {
+              "icon": "bank",
+              "label": "World Bank",
+              "sublabel": "Global Development Data"
+            }
+          ],
+          "iconSize": "large",
+          "iconStyle": "card",
+          "colorMode": "brand"
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 80,
+        "y": 420,
+        "w": 1120,
+        "h": 240,
+        "args": {
+          "title": "Methodology",
+          "items": [
+            {
+              "icon": "newspaper",
+              "label": "Media & institutional reports synthesized",
+              "sublabel": "Financial press and official publications"
+            },
+            {
+              "icon": "chart-line",
+              "label": "Cross-institution comparative analysis",
+              "sublabel": "IMF, OECD, World Bank data triangulation"
+            },
+            {
+              "icon": "calendar",
+              "label": "Mid-2026 outlook horizon",
+              "sublabel": "Forward-looking economic projections"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "analysis-report",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["bullet-list", "icon-row"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4216,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 538,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0246204,
+    "elapsedSec": 8.1,
+    "generatedAt": "2026-07-06T12:38:03.962Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

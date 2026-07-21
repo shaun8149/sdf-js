@@ -1,0 +1,3173 @@
+{
+  "v": 1,
+  "name": "(deck) VC Pitch Deck",
+  "subjects": [
+    {
+      "id": "s0-plinth-0",
+      "type": "box",
+      "args": {
+        "dims": [
+          1.06,
+          0.12,
+          1.06
+        ]
+      },
+      "transform": {
+        "translate": [
+          -1.27,
+          0.06,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.1,
+        "value": 0.55,
+        "kind": "normal",
+        "roughness": 0.6,
+        "clearcoat": 0.1
+      }
+    },
+    {
+      "id": "s0-mono-0",
+      "type": "rounded_box",
+      "args": {
+        "dims": [
+          0.72,
+          3.4,
+          0.72
+        ],
+        "cornerR": 0.045
+      },
+      "transform": {
+        "translate": [
+          -1.27,
+          1.7,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.11,
+        "sat": 0.78,
+        "value": 0.95,
+        "metal": 0,
+        "glow": 0.22,
+        "kind": "normal",
+        "roughness": 0.22,
+        "clearcoat": 0.6
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "-2.000 + 3.700 * smoothstep(1.65, 2.25, t)"
+        }
+      ]
+    },
+    {
+      "id": "s0-plinth-1",
+      "type": "box",
+      "args": {
+        "dims": [
+          1.06,
+          0.12,
+          1.06
+        ]
+      },
+      "transform": {
+        "translate": [
+          0,
+          0.06,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.1,
+        "value": 0.55,
+        "kind": "normal",
+        "roughness": 0.6,
+        "clearcoat": 0.1
+      }
+    },
+    {
+      "id": "s0-mono-1",
+      "type": "rounded_box",
+      "args": {
+        "dims": [
+          0.72,
+          0.33999999999999997,
+          0.72
+        ],
+        "cornerR": 0.045
+      },
+      "transform": {
+        "translate": [
+          0,
+          0.16999999999999998,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.5950000000000001,
+        "sat": 0.69,
+        "value": 0.71,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "-0.470 + 0.640 * smoothstep(2.75, 3.35, t)"
+        }
+      ],
+      "pattern": "cracked"
+    },
+    {
+      "id": "s0-plinth-2",
+      "type": "box",
+      "args": {
+        "dims": [
+          1.06,
+          0.12,
+          1.06
+        ]
+      },
+      "transform": {
+        "translate": [
+          1.27,
+          0.06,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.1,
+        "value": 0.55,
+        "kind": "normal",
+        "roughness": 0.6,
+        "clearcoat": 0.1
+      }
+    },
+    {
+      "id": "s0-mono-2",
+      "type": "rounded_box",
+      "args": {
+        "dims": [
+          0.72,
+          0.14875000000000002,
+          0.72
+        ],
+        "cornerR": 0.045
+      },
+      "transform": {
+        "translate": [
+          1.27,
+          0.07437500000000001,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.64,
+        "sat": 0.76,
+        "value": 0.6,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "-0.374 + 0.449 * smoothstep(3.85, 4.45, t)"
+        }
+      ],
+      "pattern": "cracked"
+    },
+    {
+      "id": "path-0-1",
+      "type": "box",
+      "args": {
+        "dims": [
+          0.9,
+          0.06,
+          0.28
+        ]
+      },
+      "transform": {
+        "translate": [
+          2.6666666666666665,
+          0.03,
+          0
+        ],
+        "rotate": [
+          0,
+          0,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.75,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-0-2",
+      "type": "box",
+      "args": {
+        "dims": [
+          0.9,
+          0.06,
+          0.28
+        ]
+      },
+      "transform": {
+        "translate": [
+          5.333333333333333,
+          0.03,
+          0
+        ],
+        "rotate": [
+          0,
+          0,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.75,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-0-3",
+      "type": "box",
+      "args": {
+        "dims": [
+          0.9,
+          0.06,
+          0.28
+        ]
+      },
+      "transform": {
+        "translate": [
+          8,
+          0.03,
+          0
+        ],
+        "rotate": [
+          0,
+          0,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.75,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-0-4",
+      "type": "box",
+      "args": {
+        "dims": [
+          0.9,
+          0.06,
+          0.28
+        ]
+      },
+      "transform": {
+        "translate": [
+          10.666666666666666,
+          0.03,
+          0
+        ],
+        "rotate": [
+          0,
+          0,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.75,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-0-5",
+      "type": "box",
+      "args": {
+        "dims": [
+          0.9,
+          0.06,
+          0.28
+        ]
+      },
+      "transform": {
+        "translate": [
+          13.333333333333334,
+          0.03,
+          0
+        ],
+        "rotate": [
+          0,
+          0,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.75,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "s1-stage-0",
+      "type": "funnel-3d",
+      "args": {
+        "stages": 1,
+        "radii": [
+          1.4,
+          1.4
+        ],
+        "stageHeight": 0.55,
+        "gap": 0
+      },
+      "transform": {
+        "translate": [
+          16,
+          2.605,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.55,
+        "sat": 0.62,
+        "value": 0.85,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "3.505 - 0.9 * smoothstep(10.25, 10.85, t)"
+        }
+      ]
+    },
+    {
+      "id": "s1-stage-1",
+      "type": "funnel-3d",
+      "args": {
+        "stages": 1,
+        "radii": [
+          1.4,
+          1.4
+        ],
+        "stageHeight": 0.55,
+        "gap": 0
+      },
+      "transform": {
+        "translate": [
+          16,
+          1.935,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.5800000000000001,
+        "sat": 0.6733333333333333,
+        "value": 0.75,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "2.835 - 0.9 * smoothstep(10.60, 11.20, t)"
+        }
+      ]
+    },
+    {
+      "id": "s1-stage-2",
+      "type": "funnel-3d",
+      "args": {
+        "stages": 1,
+        "radii": [
+          1.4,
+          1.4
+        ],
+        "stageHeight": 0.55,
+        "gap": 0
+      },
+      "transform": {
+        "translate": [
+          16,
+          1.265,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.6100000000000001,
+        "sat": 0.7266666666666667,
+        "value": 0.65,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "2.165 - 0.9 * smoothstep(10.95, 11.55, t)"
+        }
+      ]
+    },
+    {
+      "id": "s1-stage-3",
+      "type": "funnel-3d",
+      "args": {
+        "stages": 1,
+        "radii": [
+          1.4,
+          0.12
+        ],
+        "stageHeight": 0.55,
+        "gap": 0
+      },
+      "transform": {
+        "translate": [
+          16,
+          0.5949999999999998,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.11,
+        "sat": 0.78,
+        "value": 0.95,
+        "metal": 0,
+        "glow": 0.22,
+        "kind": "normal",
+        "roughness": 0.22,
+        "clearcoat": 0.6
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "1.495 - 0.9 * smoothstep(11.30, 11.90, t)"
+        }
+      ]
+    },
+    {
+      "id": "path-1-1",
+      "type": "box",
+      "args": {
+        "dims": [
+          0.9,
+          0.06,
+          0.28
+        ]
+      },
+      "transform": {
+        "translate": [
+          18.666666666666668,
+          0.03,
+          0
+        ],
+        "rotate": [
+          0,
+          0,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.75,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-1-2",
+      "type": "box",
+      "args": {
+        "dims": [
+          0.9,
+          0.06,
+          0.28
+        ]
+      },
+      "transform": {
+        "translate": [
+          21.333333333333332,
+          0.03,
+          0
+        ],
+        "rotate": [
+          0,
+          0,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.75,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-1-3",
+      "type": "box",
+      "args": {
+        "dims": [
+          0.9,
+          0.06,
+          0.28
+        ]
+      },
+      "transform": {
+        "translate": [
+          24,
+          0.03,
+          0
+        ],
+        "rotate": [
+          0,
+          0,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.75,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-1-4",
+      "type": "box",
+      "args": {
+        "dims": [
+          0.9,
+          0.06,
+          0.28
+        ]
+      },
+      "transform": {
+        "translate": [
+          26.666666666666664,
+          0.03,
+          0
+        ],
+        "rotate": [
+          0,
+          0,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.75,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-1-5",
+      "type": "box",
+      "args": {
+        "dims": [
+          0.9,
+          0.06,
+          0.28
+        ]
+      },
+      "transform": {
+        "translate": [
+          29.333333333333336,
+          0.03,
+          0
+        ],
+        "rotate": [
+          0,
+          0,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.75,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "s2-plinth-0",
+      "type": "box",
+      "args": {
+        "dims": [
+          1.06,
+          0.12,
+          1.06
+        ]
+      },
+      "transform": {
+        "translate": [
+          30.73,
+          0.06,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.1,
+        "value": 0.55,
+        "kind": "normal",
+        "roughness": 0.6,
+        "clearcoat": 0.1
+      }
+    },
+    {
+      "id": "s2-mono-0",
+      "type": "rounded_box",
+      "args": {
+        "dims": [
+          0.72,
+          0.12,
+          0.72
+        ],
+        "cornerR": 0.045
+      },
+      "transform": {
+        "translate": [
+          30.73,
+          0.06,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.55,
+        "sat": 0.62,
+        "value": 0.82,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "-0.360 + 0.420 * smoothstep(23.25, 23.85, t)"
+        }
+      ],
+      "pattern": "cracked"
+    },
+    {
+      "id": "s2-plinth-1",
+      "type": "box",
+      "args": {
+        "dims": [
+          1.06,
+          0.12,
+          1.06
+        ]
+      },
+      "transform": {
+        "translate": [
+          32,
+          0.06,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.1,
+        "value": 0.55,
+        "kind": "normal",
+        "roughness": 0.6,
+        "clearcoat": 0.1
+      }
+    },
+    {
+      "id": "s2-mono-1",
+      "type": "rounded_box",
+      "args": {
+        "dims": [
+          0.72,
+          0.12,
+          0.72
+        ],
+        "cornerR": 0.045
+      },
+      "transform": {
+        "translate": [
+          32,
+          0.06,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.5950000000000001,
+        "sat": 0.69,
+        "value": 0.71,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "-0.360 + 0.420 * smoothstep(24.35, 24.95, t)"
+        }
+      ],
+      "pattern": "cracked"
+    },
+    {
+      "id": "s2-plinth-2",
+      "type": "box",
+      "args": {
+        "dims": [
+          1.06,
+          0.12,
+          1.06
+        ]
+      },
+      "transform": {
+        "translate": [
+          33.27,
+          0.06,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.1,
+        "value": 0.55,
+        "kind": "normal",
+        "roughness": 0.6,
+        "clearcoat": 0.1
+      }
+    },
+    {
+      "id": "s2-mono-2",
+      "type": "rounded_box",
+      "args": {
+        "dims": [
+          0.72,
+          3.4,
+          0.72
+        ],
+        "cornerR": 0.045
+      },
+      "transform": {
+        "translate": [
+          33.27,
+          1.7,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.11,
+        "sat": 0.78,
+        "value": 0.95,
+        "metal": 0,
+        "glow": 0.22,
+        "kind": "normal",
+        "roughness": 0.22,
+        "clearcoat": 0.6
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "-2.000 + 3.700 * smoothstep(25.45, 26.05, t)"
+        }
+      ]
+    },
+    {
+      "id": "path-2-1",
+      "type": "box",
+      "args": {
+        "dims": [
+          0.9,
+          0.06,
+          0.28
+        ]
+      },
+      "transform": {
+        "translate": [
+          34.666666666666664,
+          0.03,
+          0
+        ],
+        "rotate": [
+          0,
+          0,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.75,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-2-2",
+      "type": "box",
+      "args": {
+        "dims": [
+          0.9,
+          0.06,
+          0.28
+        ]
+      },
+      "transform": {
+        "translate": [
+          37.333333333333336,
+          0.03,
+          0
+        ],
+        "rotate": [
+          0,
+          0,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.75,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-2-3",
+      "type": "box",
+      "args": {
+        "dims": [
+          0.9,
+          0.06,
+          0.28
+        ]
+      },
+      "transform": {
+        "translate": [
+          40,
+          0.03,
+          0
+        ],
+        "rotate": [
+          0,
+          0,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.75,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-2-4",
+      "type": "box",
+      "args": {
+        "dims": [
+          0.9,
+          0.06,
+          0.28
+        ]
+      },
+      "transform": {
+        "translate": [
+          42.666666666666664,
+          0.03,
+          0
+        ],
+        "rotate": [
+          0,
+          0,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.75,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-2-5",
+      "type": "box",
+      "args": {
+        "dims": [
+          0.9,
+          0.06,
+          0.28
+        ]
+      },
+      "transform": {
+        "translate": [
+          45.333333333333336,
+          0.03,
+          0
+        ],
+        "rotate": [
+          0,
+          0,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.75,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "s3-net-node-0",
+      "type": "sphere",
+      "args": {
+        "radius": 0.33999999999999997
+      },
+      "transform": {
+        "translate": [
+          48,
+          3.31378414901835,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.11,
+        "sat": 0.78,
+        "value": 0.95,
+        "metal": 0,
+        "glow": 0.22,
+        "kind": "normal",
+        "roughness": 0.22,
+        "clearcoat": 0.6
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "4.414 - 1.1 * smoothstep(31.85, 32.35, t) + 0.018 * sin(1.3 * t + -41.08)"
+        }
+      ]
+    },
+    {
+      "id": "s3-net-node-1",
+      "type": "sphere",
+      "args": {
+        "radius": 0.33999999999999997
+      },
+      "transform": {
+        "translate": [
+          45.9967389213689,
+          3.610442324700232,
+          1.8899991526810829
+        ]
+      },
+      "material": {
+        "hue": 0.61,
+        "sat": 0.7266666666666667,
+        "value": 0.65,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "4.710 - 1.1 * smoothstep(31.97, 32.47, t) + 0.018 * sin(1.3 * t + -38.98)"
+        }
+      ]
+    },
+    {
+      "id": "s3-net-node-2",
+      "type": "sphere",
+      "args": {
+        "radius": 0.33999999999999997
+      },
+      "transform": {
+        "translate": [
+          48.188889482343214,
+          2.474812722873115,
+          -2.6298275902042088
+        ]
+      },
+      "material": {
+        "hue": 0.61,
+        "sat": 0.7266666666666667,
+        "value": 0.65,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "3.575 - 1.1 * smoothstep(32.09, 32.59, t) + 0.018 * sin(1.3 * t + -36.88)"
+        }
+      ]
+    },
+    {
+      "id": "s3-net-node-3",
+      "type": "sphere",
+      "args": {
+        "radius": 0.33999999999999997
+      },
+      "transform": {
+        "translate": [
+          48.15554283760545,
+          0.6000000000000001,
+          0.5294788816155364
+        ]
+      },
+      "material": {
+        "hue": 0.61,
+        "sat": 0.7266666666666667,
+        "value": 0.65,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "1.700 - 1.1 * smoothstep(32.21, 32.71, t) + 0.018 * sin(1.3 * t + -34.78)"
+        }
+      ]
+    },
+    {
+      "id": "s3-net-edge-0",
+      "type": "capsule",
+      "args": {
+        "a": [
+          0,
+          0,
+          0
+        ],
+        "b": [
+          -2.0032610786310996,
+          0.2966581756818818,
+          1.8899991526810829
+        ],
+        "radius": 0.035
+      },
+      "transform": {
+        "translate": [
+          48,
+          3.31378414901835,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.8,
+        "glow": 0.08,
+        "kind": "normal",
+        "roughness": 0.35,
+        "clearcoat": 0.3
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "4.414 - 1.1 * smoothstep(32.53, 32.98, t)"
+        }
+      ]
+    },
+    {
+      "id": "s3-net-edge-1",
+      "type": "capsule",
+      "args": {
+        "a": [
+          0,
+          0,
+          0
+        ],
+        "b": [
+          0.18888948234321554,
+          -0.838971426145235,
+          -2.6298275902042088
+        ],
+        "radius": 0.035
+      },
+      "transform": {
+        "translate": [
+          48,
+          3.31378414901835,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.8,
+        "glow": 0.08,
+        "kind": "normal",
+        "roughness": 0.35,
+        "clearcoat": 0.3
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "4.414 - 1.1 * smoothstep(32.67, 33.12, t)"
+        }
+      ]
+    },
+    {
+      "id": "s3-net-edge-2",
+      "type": "capsule",
+      "args": {
+        "a": [
+          0,
+          0,
+          0
+        ],
+        "b": [
+          0.15554283760545182,
+          -2.71378414901835,
+          0.5294788816155364
+        ],
+        "radius": 0.035
+      },
+      "transform": {
+        "translate": [
+          48,
+          3.31378414901835,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.8,
+        "glow": 0.08,
+        "kind": "normal",
+        "roughness": 0.35,
+        "clearcoat": 0.3
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "4.414 - 1.1 * smoothstep(32.81, 33.26, t)"
+        }
+      ]
+    },
+    {
+      "id": "path-3-1",
+      "type": "box",
+      "args": {
+        "dims": [
+          0.9,
+          0.06,
+          0.28
+        ]
+      },
+      "transform": {
+        "translate": [
+          50.666666666666664,
+          0.03,
+          0
+        ],
+        "rotate": [
+          0,
+          0,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.75,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-3-2",
+      "type": "box",
+      "args": {
+        "dims": [
+          0.9,
+          0.06,
+          0.28
+        ]
+      },
+      "transform": {
+        "translate": [
+          53.333333333333336,
+          0.03,
+          0
+        ],
+        "rotate": [
+          0,
+          0,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.75,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-3-3",
+      "type": "box",
+      "args": {
+        "dims": [
+          0.9,
+          0.06,
+          0.28
+        ]
+      },
+      "transform": {
+        "translate": [
+          56,
+          0.03,
+          0
+        ],
+        "rotate": [
+          0,
+          0,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.75,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-3-4",
+      "type": "box",
+      "args": {
+        "dims": [
+          0.9,
+          0.06,
+          0.28
+        ]
+      },
+      "transform": {
+        "translate": [
+          58.666666666666664,
+          0.03,
+          0
+        ],
+        "rotate": [
+          0,
+          0,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.75,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "path-3-5",
+      "type": "box",
+      "args": {
+        "dims": [
+          0.9,
+          0.06,
+          0.28
+        ]
+      },
+      "transform": {
+        "translate": [
+          61.333333333333336,
+          0.03,
+          0
+        ],
+        "rotate": [
+          0,
+          0,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.25,
+        "value": 0.75,
+        "kind": "normal",
+        "roughness": 0.5,
+        "clearcoat": 0.2
+      }
+    },
+    {
+      "id": "s4-plinth-0",
+      "type": "box",
+      "args": {
+        "dims": [
+          1.06,
+          0.12,
+          1.06
+        ]
+      },
+      "transform": {
+        "translate": [
+          62.73,
+          0.06,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.1,
+        "value": 0.55,
+        "kind": "normal",
+        "roughness": 0.6,
+        "clearcoat": 0.1
+      }
+    },
+    {
+      "id": "s4-mono-0",
+      "type": "rounded_box",
+      "args": {
+        "dims": [
+          0.72,
+          3.4,
+          0.72
+        ],
+        "cornerR": 0.045
+      },
+      "transform": {
+        "translate": [
+          62.73,
+          1.7,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.11,
+        "sat": 0.78,
+        "value": 0.95,
+        "metal": 0,
+        "glow": 0.22,
+        "kind": "normal",
+        "roughness": 0.22,
+        "clearcoat": 0.6
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "-2.000 + 3.700 * smoothstep(43.75, 44.35, t)"
+        }
+      ]
+    },
+    {
+      "id": "s4-plinth-1",
+      "type": "box",
+      "args": {
+        "dims": [
+          1.06,
+          0.12,
+          1.06
+        ]
+      },
+      "transform": {
+        "translate": [
+          64,
+          0.06,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.1,
+        "value": 0.55,
+        "kind": "normal",
+        "roughness": 0.6,
+        "clearcoat": 0.1
+      }
+    },
+    {
+      "id": "s4-mono-1",
+      "type": "rounded_box",
+      "args": {
+        "dims": [
+          0.72,
+          1.4166666666666667,
+          0.72
+        ],
+        "cornerR": 0.045
+      },
+      "transform": {
+        "translate": [
+          64,
+          0.7083333333333334,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.5950000000000001,
+        "sat": 0.69,
+        "value": 0.71,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "-1.008 + 1.717 * smoothstep(44.85, 45.45, t)"
+        }
+      ],
+      "pattern": "cracked"
+    },
+    {
+      "id": "s4-plinth-2",
+      "type": "box",
+      "args": {
+        "dims": [
+          1.06,
+          0.12,
+          1.06
+        ]
+      },
+      "transform": {
+        "translate": [
+          65.27,
+          0.06,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.1,
+        "value": 0.55,
+        "kind": "normal",
+        "roughness": 0.6,
+        "clearcoat": 0.1
+      }
+    },
+    {
+      "id": "s4-mono-2",
+      "type": "rounded_box",
+      "args": {
+        "dims": [
+          0.72,
+          0.85,
+          0.72
+        ],
+        "cornerR": 0.045
+      },
+      "transform": {
+        "translate": [
+          65.27,
+          0.425,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.64,
+        "sat": 0.76,
+        "value": 0.6,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      },
+      "animation": [
+        {
+          "channel": "transform.translate.y",
+          "expr": "-0.725 + 1.150 * smoothstep(45.95, 46.55, t)"
+        }
+      ],
+      "pattern": "cracked"
+    },
+    {
+      "id": "horizon-0",
+      "type": "ellipsoid",
+      "args": {
+        "dims": [
+          38.13727924718674,
+          13.215912874692448,
+          26.696095473030717
+        ]
+      },
+      "transform": {
+        "translate": [
+          32,
+          -7.268752081080847,
+          149.4873849663741
+        ]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.3,
+        "value": 0.3,
+        "metal": 0,
+        "glow": 0,
+        "kind": "normal",
+        "roughness": 0.85
+      }
+    },
+    {
+      "id": "horizon-1",
+      "type": "ellipsoid",
+      "args": {
+        "dims": [
+          37.52483816920971,
+          14.338825549215796,
+          26.267386718446794
+        ]
+      },
+      "transform": {
+        "translate": [
+          103.56684028028803,
+          -7.886354052068689,
+          104.97304017873017
+        ]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.3,
+        "value": 0.3,
+        "metal": 0,
+        "glow": 0,
+        "kind": "normal",
+        "roughness": 0.85
+      }
+    },
+    {
+      "id": "horizon-2",
+      "type": "ellipsoid",
+      "args": {
+        "dims": [
+          36.95026224801879,
+          9.147324207562857,
+          25.86518357361315
+        ]
+      },
+      "transform": {
+        "translate": [
+          91.75924111207317,
+          -5.031028314159571,
+          82.4573973625209
+        ]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.3,
+        "value": 0.3,
+        "metal": 0,
+        "glow": 0,
+        "kind": "normal",
+        "roughness": 0.85
+      }
+    },
+    {
+      "id": "horizon-3",
+      "type": "ellipsoid",
+      "args": {
+        "dims": [
+          36.41752513919053,
+          9.18889152114572,
+          25.49226759743337
+        ]
+      },
+      "transform": {
+        "translate": [
+          171.64714305397118,
+          -5.053890336630147,
+          -16.13936109603344
+        ]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.3,
+        "value": 0.3,
+        "metal": 0,
+        "glow": 0,
+        "kind": "normal",
+        "roughness": 0.85
+      }
+    },
+    {
+      "id": "horizon-4",
+      "type": "ellipsoid",
+      "args": {
+        "dims": [
+          35.93031114919384,
+          14.371069104286219,
+          25.15121780443569
+        ]
+      },
+      "transform": {
+        "translate": [
+          171.7457789393791,
+          -7.904088007357421,
+          16.69851650009929
+        ]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.3,
+        "value": 0.3,
+        "metal": 0,
+        "glow": 0,
+        "kind": "normal",
+        "roughness": 0.85
+      }
+    },
+    {
+      "id": "horizon-5",
+      "type": "ellipsoid",
+      "args": {
+        "dims": [
+          35.49198975544141,
+          13.167113168752554,
+          24.844392828808985
+        ]
+      },
+      "transform": {
+        "translate": [
+          90.89384281368567,
+          -7.241912242813905,
+          -83.14840635485335
+        ]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.3,
+        "value": 0.3,
+        "metal": 0,
+        "glow": 0,
+        "kind": "normal",
+        "roughness": 0.85
+      }
+    },
+    {
+      "id": "horizon-6",
+      "type": "ellipsoid",
+      "args": {
+        "dims": [
+          35.105592303637735,
+          8.254988986589172,
+          24.573914612546414
+        ]
+      },
+      "transform": {
+        "translate": [
+          105.0971923834581,
+          -4.540243942624045,
+          -103.66792263452328
+        ]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.3,
+        "value": 0.3,
+        "metal": 0,
+        "glow": 0,
+        "kind": "normal",
+        "roughness": 0.85
+      }
+    },
+    {
+      "id": "horizon-7",
+      "type": "ellipsoid",
+      "args": {
+        "dims": [
+          34.77379104358041,
+          10.56075920141966,
+          24.341653730506284
+        ]
+      },
+      "transform": {
+        "translate": [
+          29.36072236533958,
+          -5.808417560780814,
+          -149.536065887123
+        ]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.3,
+        "value": 0.3,
+        "metal": 0,
+        "glow": 0,
+        "kind": "normal",
+        "roughness": 0.85
+      }
+    },
+    {
+      "id": "horizon-8",
+      "type": "ellipsoid",
+      "args": {
+        "dims": [
+          34.49888064839919,
+          14.955687471333393,
+          24.14921645387943
+        ]
+      },
+      "transform": {
+        "translate": [
+          -28.44412567299632,
+          -8.225628109233368,
+          -91.80877229827446
+        ]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.3,
+        "value": 0.3,
+        "metal": 0,
+        "glow": 0,
+        "kind": "normal",
+        "roughness": 0.85
+      }
+    },
+    {
+      "id": "horizon-9",
+      "type": "ellipsoid",
+      "args": {
+        "dims": [
+          34.282762345041725,
+          11.66411263416465,
+          23.997933641529205
+        ]
+      },
+      "transform": {
+        "translate": [
+          -35.26628918333596,
+          -6.415261948790558,
+          -90.59592022307277
+        ]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.3,
+        "value": 0.3,
+        "metal": 0,
+        "glow": 0,
+        "kind": "normal",
+        "roughness": 0.85
+      }
+    },
+    {
+      "id": "horizon-10",
+      "type": "ellipsoid",
+      "args": {
+        "dims": [
+          34.12693076575705,
+          8.007501235419541,
+          23.888851536029936
+        ]
+      },
+      "transform": {
+        "translate": [
+          -117.6750233575849,
+          -4.404125679480748,
+          16.581296589816493
+        ]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.3,
+        "value": 0.3,
+        "metal": 0,
+        "glow": 0,
+        "kind": "normal",
+        "roughness": 0.85
+      }
+    },
+    {
+      "id": "horizon-11",
+      "type": "ellipsoid",
+      "args": {
+        "dims": [
+          34.032463611508966,
+          12.119272489365873,
+          23.822724528056273
+        ]
+      },
+      "transform": {
+        "translate": [
+          -90.34736116270167,
+          -6.66559986915123,
+          -14.991066199015563
+        ]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.3,
+        "value": 0.3,
+        "metal": 0,
+        "glow": 0,
+        "kind": "normal",
+        "roughness": 0.85
+      }
+    },
+    {
+      "id": "horizon-12",
+      "type": "ellipsoid",
+      "args": {
+        "dims": [
+          34.00001419880521,
+          14.853592815492972,
+          23.800009939163647
+        ]
+      },
+      "transform": {
+        "translate": [
+          -26.7805809230263,
+          -8.169476048521135,
+          84.79880368810014
+        ]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.3,
+        "value": 0.3,
+        "metal": 0,
+        "glow": 0,
+        "kind": "normal",
+        "roughness": 0.85
+      }
+    },
+    {
+      "id": "horizon-13",
+      "type": "ellipsoid",
+      "args": {
+        "dims": [
+          34.02980694148735,
+          10.128499693496575,
+          23.820864859041144
+        ]
+      },
+      "transform": {
+        "translate": [
+          -52.47905988961341,
+          -5.570674831423117,
+          115.98928845605614
+        ]
+      },
+      "material": {
+        "hue": 0.62,
+        "sat": 0.3,
+        "value": 0.3,
+        "metal": 0,
+        "glow": 0,
+        "kind": "normal",
+        "roughness": 0.85
+      }
+    }
+  ],
+  "overlay": [
+    {
+      "text": "TAM / SAM / SOM",
+      "anchor": [
+        0,
+        4.7,
+        0
+      ],
+      "role": "title",
+      "revealAt": 0
+    },
+    {
+      "text": "AI Productivity",
+      "anchor": [
+        -1.27,
+        -0.02,
+        0.71
+      ],
+      "role": "card",
+      "revealAt": 2.45
+    },
+    {
+      "text": "48",
+      "anchor": [
+        -1.27,
+        3.7199999999999998,
+        0
+      ],
+      "role": "value",
+      "radius": 0.5,
+      "revealAt": 2.45
+    },
+    {
+      "text": "Presentation Software",
+      "anchor": [
+        0,
+        -0.02,
+        0.71
+      ],
+      "role": "card",
+      "revealAt": 3.5500000000000003
+    },
+    {
+      "text": "4.8",
+      "anchor": [
+        0,
+        0.6599999999999999,
+        0
+      ],
+      "role": "value",
+      "radius": 0.36,
+      "revealAt": 3.5500000000000003
+    },
+    {
+      "text": "Editorial + Infographic",
+      "anchor": [
+        1.27,
+        -0.02,
+        0.71
+      ],
+      "role": "card",
+      "revealAt": 4.65
+    },
+    {
+      "text": "2.1",
+      "anchor": [
+        1.27,
+        0.46875,
+        0
+      ],
+      "role": "value",
+      "radius": 0.36,
+      "revealAt": 4.65
+    },
+    {
+      "text": "LLM WRITES INTENT",
+      "anchor": [
+        16,
+        4.279999999999999,
+        0
+      ],
+      "role": "title",
+      "revealAt": 10
+    },
+    {
+      "text": "LLM writes intent",
+      "anchor": [
+        17.9,
+        2.605,
+        0
+      ],
+      "role": "card",
+      "align": "left",
+      "revealAt": 12.65
+    },
+    {
+      "text": "1",
+      "anchor": [
+        16,
+        2.605,
+        1.5999999999999999
+      ],
+      "role": "value",
+      "radius": 0.36,
+      "revealAt": 12.65
+    },
+    {
+      "text": "Atlas renders",
+      "anchor": [
+        17.9,
+        1.935,
+        0
+      ],
+      "role": "card",
+      "align": "left",
+      "revealAt": 13.850000000000001
+    },
+    {
+      "text": "1",
+      "anchor": [
+        16,
+        1.935,
+        1.5999999999999999
+      ],
+      "role": "value",
+      "radius": 0.36,
+      "revealAt": 13.850000000000001
+    },
+    {
+      "text": "Choose renderer",
+      "anchor": [
+        17.9,
+        1.265,
+        0
+      ],
+      "role": "card",
+      "align": "left",
+      "revealAt": 15.05
+    },
+    {
+      "text": "1",
+      "anchor": [
+        16,
+        1.265,
+        1.5999999999999999
+      ],
+      "role": "value",
+      "radius": 0.36,
+      "revealAt": 15.05
+    },
+    {
+      "text": "Edit & regenerate",
+      "anchor": [
+        17.9,
+        0.5949999999999998,
+        0
+      ],
+      "role": "card",
+      "align": "left",
+      "revealAt": 16.25
+    },
+    {
+      "text": "1",
+      "anchor": [
+        16,
+        0.5949999999999998,
+        1.5999999999999999
+      ],
+      "role": "value",
+      "radius": 0.5,
+      "revealAt": 16.25
+    },
+    {
+      "text": "UNIT ECONOMICS",
+      "anchor": [
+        32,
+        4.7,
+        0
+      ],
+      "role": "title",
+      "revealAt": 21.599999999999998
+    },
+    {
+      "text": "Pro",
+      "anchor": [
+        30.73,
+        -0.02,
+        0.71
+      ],
+      "role": "card",
+      "revealAt": 24.049999999999997
+    },
+    {
+      "text": "30",
+      "anchor": [
+        30.73,
+        0.44,
+        0
+      ],
+      "role": "value",
+      "radius": 0.36,
+      "revealAt": 24.049999999999997
+    },
+    {
+      "text": "Team",
+      "anchor": [
+        32,
+        -0.02,
+        0.71
+      ],
+      "role": "card",
+      "revealAt": 25.15
+    },
+    {
+      "text": "200",
+      "anchor": [
+        32,
+        0.44,
+        0
+      ],
+      "role": "value",
+      "radius": 0.36,
+      "revealAt": 25.15
+    },
+    {
+      "text": "Studio",
+      "anchor": [
+        33.27,
+        -0.02,
+        0.71
+      ],
+      "role": "card",
+      "revealAt": 26.25
+    },
+    {
+      "text": "50000",
+      "anchor": [
+        33.27,
+        3.7199999999999998,
+        0
+      ],
+      "role": "value",
+      "radius": 0.5,
+      "revealAt": 26.25
+    },
+    {
+      "text": "LEADERSHIP",
+      "anchor": [
+        48,
+        4.810442324700232,
+        0
+      ],
+      "role": "title",
+      "revealAt": 31.599999999999998
+    },
+    {
+      "text": "Leadership",
+      "anchor": [
+        48.64,
+        3.31378414901835,
+        0
+      ],
+      "role": "card",
+      "align": "left",
+      "revealAt": 32.449999999999996
+    },
+    {
+      "text": "Sarah Chen · CEO",
+      "anchor": [
+        46.6367389213689,
+        3.610442324700232,
+        1.8899991526810829
+      ],
+      "role": "card",
+      "align": "left",
+      "revealAt": 32.57
+    },
+    {
+      "text": "Alex Wu · CTO",
+      "anchor": [
+        48.828889482343214,
+        2.474812722873115,
+        -2.6298275902042088
+      ],
+      "role": "card",
+      "align": "left",
+      "revealAt": 32.69
+    },
+    {
+      "text": "Diana Liu · Design",
+      "anchor": [
+        48.79554283760545,
+        0.6000000000000001,
+        0.5294788816155364
+      ],
+      "role": "card",
+      "align": "left",
+      "revealAt": 32.809999999999995
+    },
+    {
+      "text": "USE OF FUNDS",
+      "anchor": [
+        64,
+        4.7,
+        0
+      ],
+      "role": "title",
+      "revealAt": 42.1
+    },
+    {
+      "text": "Engineering · 60%",
+      "anchor": [
+        62.73,
+        -0.02,
+        0.71
+      ],
+      "role": "card",
+      "revealAt": 44.550000000000004
+    },
+    {
+      "text": "60",
+      "anchor": [
+        62.73,
+        3.7199999999999998,
+        0
+      ],
+      "role": "value",
+      "radius": 0.5,
+      "revealAt": 44.550000000000004
+    },
+    {
+      "text": "Sales + Community · 25%",
+      "anchor": [
+        64,
+        -0.02,
+        0.71
+      ],
+      "role": "card",
+      "revealAt": 45.65
+    },
+    {
+      "text": "25",
+      "anchor": [
+        64,
+        1.7366666666666668,
+        0
+      ],
+      "role": "value",
+      "radius": 0.36,
+      "revealAt": 45.65
+    },
+    {
+      "text": "Reserve · 15%",
+      "anchor": [
+        65.27,
+        -0.02,
+        0.71
+      ],
+      "role": "card",
+      "revealAt": 46.75
+    },
+    {
+      "text": "15",
+      "anchor": [
+        65.27,
+        1.17,
+        0
+      ],
+      "role": "value",
+      "radius": 0.36,
+      "revealAt": 46.75
+    }
+  ],
+  "cameraSequence": {
+    "loop": false,
+    "shots": [
+      {
+        "duration": 0.9,
+        "pos": [
+          0.33000000000000007,
+          0.5,
+          3.6
+        ],
+        "target": [
+          -1.27,
+          2.448,
+          0
+        ],
+        "fov": 54,
+        "aperture": 0.55,
+        "focalDistance": 4,
+        "ease": "out"
+      },
+      {
+        "duration": 1.2,
+        "pos": [
+          0.6,
+          5.6,
+          4.23
+        ],
+        "target": [
+          0,
+          1.53,
+          0
+        ],
+        "fov": 48,
+        "transition": "blend",
+        "aperture": 0.3,
+        "focalDistance": 4.9559999999999995,
+        "ease": "inout"
+      },
+      {
+        "duration": 1.1,
+        "pos": [
+          -0.37,
+          1.1,
+          2.5
+        ],
+        "target": [
+          -1.27,
+          1.87,
+          0
+        ],
+        "fov": 46,
+        "transition": "blend",
+        "aperture": 0.25,
+        "focalDistance": 2.7,
+        "shake": 0.05,
+        "ease": "smooth"
+      },
+      {
+        "duration": 1.1,
+        "pos": [
+          0.9,
+          0.5369999999999999,
+          2.5
+        ],
+        "target": [
+          0,
+          0.5,
+          0
+        ],
+        "fov": 46,
+        "transition": "blend",
+        "aperture": 0.25,
+        "focalDistance": 2.7,
+        "shake": 0.05,
+        "ease": "smooth"
+      },
+      {
+        "duration": 1.1,
+        "pos": [
+          2.17,
+          0.4318125,
+          2.5
+        ],
+        "target": [
+          1.27,
+          0.5,
+          0
+        ],
+        "fov": 46,
+        "transition": "blend",
+        "aperture": 0.25,
+        "focalDistance": 2.7,
+        "shake": 0.05,
+        "ease": "smooth"
+      },
+      {
+        "duration": 1,
+        "pos": [
+          -0.52,
+          0.35,
+          1.35
+        ],
+        "target": [
+          -1.27,
+          2.8899999999999997,
+          0
+        ],
+        "fov": 44,
+        "transition": "cut",
+        "aperture": [
+          0.9,
+          0.45
+        ],
+        "focalDistance": 1.8,
+        "shake": [
+          0.5,
+          0.06
+        ],
+        "ambient": [
+          0.15,
+          1
+        ],
+        "exposure": [
+          1.45,
+          1
+        ],
+        "ease": "out"
+      },
+      {
+        "duration": 2.4,
+        "pos": [
+          1.2,
+          2.87,
+          5.971
+        ],
+        "target": [
+          0,
+          1.36,
+          0
+        ],
+        "fov": 44,
+        "transition": "blend",
+        "aperture": 0.12,
+        "focalDistance": 5.971,
+        "ease": "out"
+      },
+      {
+        "duration": 1.2,
+        "pos": [
+          9.75,
+          4.470000000000001,
+          7.971
+        ],
+        "target": [
+          8,
+          2.6799999999999997,
+          0
+        ],
+        "fov": 50,
+        "transition": "blend",
+        "aperture": 0,
+        "focalDistance": 12.8,
+        "shake": [
+          0.14,
+          0.05
+        ],
+        "ease": "whip"
+      },
+      {
+        "duration": 0.9,
+        "pos": [
+          18.3,
+          0.55,
+          5.2
+        ],
+        "target": [
+          16,
+          2.6799999999999997,
+          0
+        ],
+        "fov": 54,
+        "aperture": 0.55,
+        "focalDistance": 5.5,
+        "ease": "out"
+      },
+      {
+        "duration": 1.3,
+        "pos": [
+          16.9,
+          5.38,
+          4.4
+        ],
+        "target": [
+          16,
+          2.58,
+          0
+        ],
+        "fov": 50,
+        "transition": "blend",
+        "aperture": 0.3,
+        "focalDistance": 5,
+        "ease": "inout"
+      },
+      {
+        "duration": 1.2,
+        "pos": [
+          21.23262375631159,
+          3.455,
+          4.152354588048038
+        ],
+        "target": [
+          16,
+          2.605,
+          0
+        ],
+        "fov": 46,
+        "transition": "blend",
+        "aperture": 0.25,
+        "focalDistance": 6.68,
+        "shake": 0.05,
+        "ease": "smooth"
+      },
+      {
+        "duration": 1.2,
+        "pos": [
+          22.505302174266344,
+          2.785,
+          -1.5177099925498219
+        ],
+        "target": [
+          16,
+          1.935,
+          0
+        ],
+        "fov": 46,
+        "transition": "blend",
+        "aperture": 0.25,
+        "focalDistance": 6.68,
+        "shake": 0.05,
+        "ease": "smooth"
+      },
+      {
+        "duration": 1.2,
+        "pos": [
+          18.854897599961983,
+          2.1149999999999998,
+          -6.039201908673968
+        ],
+        "target": [
+          16,
+          1.265,
+          0
+        ],
+        "fov": 46,
+        "transition": "blend",
+        "aperture": 0.25,
+        "focalDistance": 6.68,
+        "shake": 0.05,
+        "ease": "smooth"
+      },
+      {
+        "duration": 1.2,
+        "pos": [
+          13.043963438790385,
+          1.4449999999999998,
+          -5.990346221112102
+        ],
+        "target": [
+          16,
+          0.5949999999999998,
+          0
+        ],
+        "fov": 46,
+        "transition": "blend",
+        "aperture": 0.25,
+        "focalDistance": 6.68,
+        "shake": 0.05,
+        "ease": "smooth"
+      },
+      {
+        "duration": 1,
+        "pos": [
+          16.55,
+          0.44499999999999973,
+          1.9
+        ],
+        "target": [
+          16,
+          0.7149999999999997,
+          0
+        ],
+        "fov": 40,
+        "transition": "cut",
+        "aperture": [
+          0.9,
+          0.45
+        ],
+        "focalDistance": 2,
+        "shake": [
+          0.5,
+          0.06
+        ],
+        "ambient": [
+          0.15,
+          1
+        ],
+        "exposure": [
+          1.45,
+          1
+        ],
+        "ease": "out"
+      },
+      {
+        "duration": 2.4,
+        "pos": [
+          17.4,
+          2.7,
+          7.992
+        ],
+        "target": [
+          16,
+          1.7999999999999998,
+          0
+        ],
+        "fov": 44,
+        "transition": "blend",
+        "aperture": 0.12,
+        "focalDistance": 7.992,
+        "ease": "out"
+      },
+      {
+        "duration": 1.2,
+        "pos": [
+          26.134999999999998,
+          4.300000000000001,
+          9.992
+        ],
+        "target": [
+          24.635,
+          2.448,
+          0
+        ],
+        "fov": 50,
+        "transition": "blend",
+        "aperture": 0,
+        "focalDistance": 12.8,
+        "shake": [
+          0.14,
+          0.05
+        ],
+        "ease": "whip"
+      },
+      {
+        "duration": 0.9,
+        "pos": [
+          34.87,
+          0.5,
+          3.6
+        ],
+        "target": [
+          33.27,
+          2.448,
+          0
+        ],
+        "fov": 54,
+        "aperture": 0.55,
+        "focalDistance": 4,
+        "ease": "out"
+      },
+      {
+        "duration": 1.2,
+        "pos": [
+          32.6,
+          5.6,
+          4.23
+        ],
+        "target": [
+          32,
+          1.53,
+          0
+        ],
+        "fov": 48,
+        "transition": "blend",
+        "aperture": 0.3,
+        "focalDistance": 4.9559999999999995,
+        "ease": "inout"
+      },
+      {
+        "duration": 1.1,
+        "pos": [
+          31.63,
+          0.416,
+          2.5
+        ],
+        "target": [
+          30.73,
+          0.5,
+          0
+        ],
+        "fov": 46,
+        "transition": "blend",
+        "aperture": 0.25,
+        "focalDistance": 2.7,
+        "shake": 0.05,
+        "ease": "smooth"
+      },
+      {
+        "duration": 1.1,
+        "pos": [
+          32.9,
+          0.416,
+          2.5
+        ],
+        "target": [
+          32,
+          0.5,
+          0
+        ],
+        "fov": 46,
+        "transition": "blend",
+        "aperture": 0.25,
+        "focalDistance": 2.7,
+        "shake": 0.05,
+        "ease": "smooth"
+      },
+      {
+        "duration": 1.1,
+        "pos": [
+          34.17,
+          1.1,
+          2.5
+        ],
+        "target": [
+          33.27,
+          1.87,
+          0
+        ],
+        "fov": 46,
+        "transition": "blend",
+        "aperture": 0.25,
+        "focalDistance": 2.7,
+        "shake": 0.05,
+        "ease": "smooth"
+      },
+      {
+        "duration": 1,
+        "pos": [
+          34.02,
+          0.35,
+          1.35
+        ],
+        "target": [
+          33.27,
+          2.8899999999999997,
+          0
+        ],
+        "fov": 44,
+        "transition": "cut",
+        "aperture": [
+          0.9,
+          0.45
+        ],
+        "focalDistance": 1.8,
+        "shake": [
+          0.5,
+          0.06
+        ],
+        "ambient": [
+          0.15,
+          1
+        ],
+        "exposure": [
+          1.45,
+          1
+        ],
+        "ease": "out"
+      },
+      {
+        "duration": 2.4,
+        "pos": [
+          33.2,
+          2.87,
+          5.971
+        ],
+        "target": [
+          32,
+          1.36,
+          0
+        ],
+        "fov": 44,
+        "transition": "blend",
+        "aperture": 0.12,
+        "focalDistance": 5.971,
+        "ease": "out"
+      },
+      {
+        "duration": 1.2,
+        "pos": [
+          41.43852885498238,
+          4.470000000000001,
+          7.971
+        ],
+        "target": [
+          40,
+          3.31378414901835,
+          0
+        ],
+        "fov": 50,
+        "transition": "blend",
+        "aperture": 0,
+        "focalDistance": 12.8,
+        "shake": [
+          0.14,
+          0.05
+        ],
+        "ease": "whip"
+      },
+      {
+        "duration": 1,
+        "pos": [
+          49.67705770996475,
+          2.71378414901835,
+          1.8447634809612252
+        ],
+        "target": [
+          48,
+          3.31378414901835,
+          0
+        ],
+        "fov": 56,
+        "aperture": 0.55,
+        "focalDistance": 2.34788079395065,
+        "ease": "out"
+      },
+      {
+        "duration": 1.3,
+        "pos": [
+          49,
+          6.5246983030633245,
+          5.70199621388015
+        ],
+        "target": [
+          48,
+          2.4997597991479243,
+          0
+        ],
+        "fov": 48,
+        "transition": "blend",
+        "aperture": 0.3,
+        "focalDistance": 6.37281929786605,
+        "ease": "inout"
+      },
+      {
+        "duration": 1.2,
+        "pos": [
+          54.356855300154955,
+          3.3997597991479243,
+          0.4507954038649796
+        ],
+        "target": [
+          48,
+          2.4997597991479243,
+          0
+        ],
+        "fov": 46,
+        "transition": "blend",
+        "aperture": 0.25,
+        "focalDistance": 6.37281929786605,
+        "shake": 0.05,
+        "ease": "smooth"
+      },
+      {
+        "duration": 1.2,
+        "pos": [
+          49.524692742216374,
+          3.1497597991479243,
+          -6.187740932285922
+        ],
+        "target": [
+          48,
+          2.4997597991479243,
+          0
+        ],
+        "fov": 46,
+        "transition": "blend",
+        "aperture": 0.25,
+        "focalDistance": 6.37281929786605,
+        "shake": 0.05,
+        "ease": "smooth"
+      },
+      {
+        "duration": 1.2,
+        "pos": [
+          42.16144003823555,
+          2.8997597991479243,
+          -2.554220698400003
+        ],
+        "target": [
+          48,
+          2.4997597991479243,
+          0
+        ],
+        "fov": 46,
+        "transition": "blend",
+        "aperture": 0.25,
+        "focalDistance": 6.37281929786605,
+        "shake": 0.05,
+        "ease": "smooth"
+      },
+      {
+        "duration": 1,
+        "pos": [
+          48.5,
+          3.21378414901835,
+          1.5
+        ],
+        "target": [
+          48,
+          3.37378414901835,
+          0
+        ],
+        "fov": 40,
+        "transition": "cut",
+        "aperture": [
+          0.9,
+          0.45
+        ],
+        "focalDistance": 1.6,
+        "shake": [
+          0.5,
+          0.06
+        ],
+        "ambient": [
+          0.15,
+          1
+        ],
+        "exposure": [
+          1.45,
+          1
+        ],
+        "ease": "out"
+      },
+      {
+        "duration": 2.4,
+        "pos": [
+          49.4,
+          3.699759799147924,
+          10.2207000918167
+        ],
+        "target": [
+          48,
+          2.4997597991479243,
+          0
+        ],
+        "fov": 44,
+        "transition": "blend",
+        "aperture": 0.12,
+        "focalDistance": 10.2207000918167,
+        "ease": "out"
+      },
+      {
+        "duration": 1.2,
+        "pos": [
+          56.864999999999995,
+          5.299759799147925,
+          12.2207000918167
+        ],
+        "target": [
+          55.364999999999995,
+          2.448,
+          0
+        ],
+        "fov": 50,
+        "transition": "blend",
+        "aperture": 0,
+        "focalDistance": 12.8,
+        "shake": [
+          0.14,
+          0.05
+        ],
+        "ease": "whip"
+      },
+      {
+        "duration": 0.9,
+        "pos": [
+          64.33,
+          0.5,
+          3.6
+        ],
+        "target": [
+          62.73,
+          2.448,
+          0
+        ],
+        "fov": 54,
+        "aperture": 0.55,
+        "focalDistance": 4,
+        "ease": "out"
+      },
+      {
+        "duration": 1.2,
+        "pos": [
+          64.6,
+          5.6,
+          4.23
+        ],
+        "target": [
+          64,
+          1.53,
+          0
+        ],
+        "fov": 48,
+        "transition": "blend",
+        "aperture": 0.3,
+        "focalDistance": 4.9559999999999995,
+        "ease": "inout"
+      },
+      {
+        "duration": 1.1,
+        "pos": [
+          63.63,
+          1.1,
+          2.5
+        ],
+        "target": [
+          62.73,
+          1.87,
+          0
+        ],
+        "fov": 46,
+        "transition": "blend",
+        "aperture": 0.25,
+        "focalDistance": 2.7,
+        "shake": 0.05,
+        "ease": "smooth"
+      },
+      {
+        "duration": 1.1,
+        "pos": [
+          64.9,
+          1.1,
+          2.5
+        ],
+        "target": [
+          64,
+          0.7791666666666668,
+          0
+        ],
+        "fov": 46,
+        "transition": "blend",
+        "aperture": 0.25,
+        "focalDistance": 2.7,
+        "shake": 0.05,
+        "ease": "smooth"
+      },
+      {
+        "duration": 1.1,
+        "pos": [
+          66.17,
+          0.8175,
+          2.5
+        ],
+        "target": [
+          65.27,
+          0.5,
+          0
+        ],
+        "fov": 46,
+        "transition": "blend",
+        "aperture": 0.25,
+        "focalDistance": 2.7,
+        "shake": 0.05,
+        "ease": "smooth"
+      },
+      {
+        "duration": 1,
+        "pos": [
+          63.48,
+          0.35,
+          1.35
+        ],
+        "target": [
+          62.73,
+          2.8899999999999997,
+          0
+        ],
+        "fov": 44,
+        "transition": "cut",
+        "aperture": [
+          0.9,
+          0.45
+        ],
+        "focalDistance": 1.8,
+        "shake": [
+          0.5,
+          0.06
+        ],
+        "ambient": [
+          0.15,
+          1
+        ],
+        "exposure": [
+          1.45,
+          1
+        ],
+        "ease": "out"
+      },
+      {
+        "duration": 2.4,
+        "pos": [
+          65.2,
+          2.87,
+          5.971
+        ],
+        "target": [
+          64,
+          1.36,
+          0
+        ],
+        "fov": 44,
+        "transition": "blend",
+        "aperture": 0.12,
+        "focalDistance": 5.971,
+        "ease": "out"
+      },
+      {
+        "duration": 3,
+        "pos": [
+          52,
+          44.5,
+          76
+        ],
+        "target": [
+          32,
+          1.2,
+          0
+        ],
+        "fov": 48,
+        "transition": "blend",
+        "aperture": 0.08,
+        "focalDistance": 84,
+        "ease": "out"
+      }
+    ],
+    "hitstops": [
+      {
+        "at": 5.42,
+        "hold": 0.14
+      },
+      {
+        "at": 17.02,
+        "hold": 0.14
+      },
+      {
+        "at": 27.019999999999996,
+        "hold": 0.14
+      },
+      {
+        "at": 37.519999999999996,
+        "hold": 0.14
+      },
+      {
+        "at": 47.52,
+        "hold": 0.14
+      }
+    ]
+  },
+  "defaults": {
+    "camera": {
+      "yaw": 0,
+      "pitch": -0.1,
+      "distance": 12,
+      "focal": 1.2,
+      "targetX": 0,
+      "targetY": 2,
+      "targetZ": 0
+    },
+    "light": {
+      "azimuth": 0.5,
+      "altitude": 0.7,
+      "distance": 40,
+      "intensity": 1.1
+    }
+  }
+}

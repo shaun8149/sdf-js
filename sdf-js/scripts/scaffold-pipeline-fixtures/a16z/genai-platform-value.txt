@@ -1,0 +1,3 @@
+Who Owns the Generative AI Platform?
+
+Infrastructure vendors capture the majority of generative AI dollars while app companies grow fast but struggle with retention and 50-60% gross margins. Nvidia leads hardware with $3.8 billion in Q3 fiscal 2023 data center GPU revenue. App companies spend 20-40% of revenue on inference; training-focused startups dedicate 80-90% of capital to cloud providers. The Big 3 clouds — AWS, GCP, Azure — spend over $100 billion annually in capex, with challengers like Coreweave and Lambda Labs emerging. No systemic moats exist yet: apps use similar models, models train on comparable datasets, clouds run identical GPUs. Many successful players are expected across all stack levels rather than winner-take-all.

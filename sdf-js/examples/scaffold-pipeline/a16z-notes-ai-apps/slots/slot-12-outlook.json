@@ -1,0 +1,76 @@
+{
+  "slotIdx": 12,
+  "slotName": "outlook",
+  "slotTitle": "Outlook",
+  "slotPurpose": "What to watch next — timeline or conditions",
+  "sourceSlideIdx": 13,
+  "sourceSlideTitle": "Outlook: AI Application Maturity",
+  "sceneData": {
+    "name": "news-briefing/outlook",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Outlook",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "mountain-path",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 480,
+        "args": {
+          "title": "AI Application Maturity",
+          "summit": "Applied AI Ecosystem",
+          "milestones": [
+            {
+              "label": "Experimental to Production",
+              "sublabel": "AI applications maturing"
+            },
+            {
+              "label": "Vertical Solutions Lead",
+              "sublabel": "Specialized outpacing general-purpose"
+            },
+            {
+              "label": "No-Code AI Development",
+              "sublabel": "Non-technical workforce enabled"
+            },
+            {
+              "label": "2026 Inflection Point",
+              "sublabel": "Foundation models → applied AI"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["timeline", "mountain-path", "bullet-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4434,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 332,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0221844,
+    "elapsedSec": 7,
+    "generatedAt": "2026-07-07T04:03:19.492Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

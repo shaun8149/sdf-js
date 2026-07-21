@@ -1,0 +1,141 @@
+{
+  "v": 1,
+  "name": "(lifted) mountain-The Summit",
+  "subjects": [
+    {
+      "id": "mountain",
+      "type": "mountain-3d",
+      "args": {
+        "height": 2.6,
+        "baseRadius": 1.6,
+        "sidePeaks": 2,
+        "pathMarkers": 4
+      },
+      "transform": {
+        "translate": [
+          0,
+          0,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.6,
+        "sat": 0.24,
+        "value": 0.62,
+        "kind": "normal",
+        "roughness": 0.55,
+        "clearcoat": 0.15
+      }
+    }
+  ],
+  "overlay": [
+    {
+      "text": "MOUNTAIN PATH",
+      "anchor": [
+        0,
+        3.9,
+        0
+      ],
+      "role": "title"
+    },
+    {
+      "text": "Summit",
+      "anchor": [
+        3,
+        2.6,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "Ridge",
+      "anchor": [
+        3,
+        1.8800000000000001,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "Ascent",
+      "anchor": [
+        3,
+        1.1600000000000001,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "Base Camp",
+      "anchor": [
+        3,
+        0.43999999999999995,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "The climb from base camp to summit",
+      "anchor": [
+        0,
+        3.35,
+        0
+      ],
+      "role": "body",
+      "align": "center"
+    }
+  ],
+  "cameraSequence": {
+    "loop": false,
+    "shots": [
+      {
+        "duration": 0.01,
+        "pos": [
+          2.2,
+          3.2,
+          12
+        ],
+        "target": [
+          0,
+          1.6,
+          0
+        ],
+        "fov": 55,
+        "aperture": 0,
+        "focalDistance": 11.5,
+        "ease": "smooth"
+      },
+      {
+        "duration": 17,
+        "pos": [
+          0.2,
+          1.9500000000000002,
+          8.6
+        ],
+        "target": [
+          0,
+          1.6,
+          0
+        ],
+        "fov": 46,
+        "transition": "blend",
+        "aperture": 0,
+        "focalDistance": 8.6,
+        "ease": "smooth"
+      }
+    ]
+  },
+  "defaults": {
+    "stage": {
+      "size": [
+        18,
+        9,
+        11
+      ]
+    }
+  }
+}

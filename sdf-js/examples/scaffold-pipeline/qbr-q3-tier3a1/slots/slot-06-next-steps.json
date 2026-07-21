@@ -1,0 +1,78 @@
+{
+  "slotIdx": 6,
+  "slotName": "next-steps",
+  "slotTitle": "Next Steps",
+  "slotPurpose": "Action items + owners + dates",
+  "sourceSlideIdx": 6,
+  "sourceSlideTitle": "Next Steps",
+  "sceneData": {
+    "name": "qbr/next-steps",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Next Steps"
+        }
+      },
+      {
+        "type": "timeline",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 480,
+        "args": {
+          "events": [
+            {
+              "date": "Oct 15",
+              "label": "Perp DEX Matching Engine",
+              "sublabel": "Owner: Eng"
+            },
+            {
+              "date": "Oct 30",
+              "label": "Insurance API Beta",
+              "sublabel": "Owner: Product"
+            },
+            {
+              "date": "Nov 10",
+              "label": "Asia Compliance Docs",
+              "sublabel": "Owner: Legal"
+            },
+            {
+              "date": "Nov 30",
+              "label": "B-Round Pitch Deck v1",
+              "sublabel": "Owner: CEO"
+            }
+          ],
+          "title": "Q4 2026 Milestones"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "qbr",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["bullet-list", "timeline", "gantt"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 2470,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 10358,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 351,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0157824,
+    "elapsedSec": 6.2,
+    "generatedAt": "2026-06-24T04:59:05.478Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

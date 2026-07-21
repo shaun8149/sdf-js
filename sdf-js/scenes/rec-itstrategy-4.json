@@ -1,0 +1,150 @@
+{
+  "v": 1,
+  "name": "(lifted) itstrategy-Maturity",
+  "subjects": [
+    {
+      "id": "pyramid",
+      "type": "pyramid-3d",
+      "args": {
+        "levels": 4,
+        "colors": [
+          {
+            "hue": 0.11,
+            "sat": 0.7,
+            "value": 0.88
+          },
+          {
+            "hue": 0.11,
+            "sat": 0.7266666666666666,
+            "value": 0.78
+          },
+          {
+            "hue": 0.11,
+            "sat": 0.7533333333333333,
+            "value": 0.68
+          },
+          {
+            "hue": 0.11,
+            "sat": 0.7799999999999999,
+            "value": 0.5800000000000001
+          }
+        ]
+      },
+      "transform": {
+        "translate": [
+          0,
+          0.6,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.11,
+        "sat": 0.72,
+        "value": 0.82,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      }
+    }
+  ],
+  "overlay": [
+    {
+      "text": "IT MATURITY",
+      "anchor": [
+        0,
+        3.9,
+        0
+      ],
+      "role": "title"
+    },
+    {
+      "text": "Optimized",
+      "anchor": [
+        3,
+        2.6,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "Managed",
+      "anchor": [
+        3,
+        1.8800000000000001,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "Defined",
+      "anchor": [
+        3,
+        1.1600000000000001,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "Ad-hoc",
+      "anchor": [
+        3,
+        0.43999999999999995,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    }
+  ],
+  "cameraSequence": {
+    "loop": false,
+    "shots": [
+      {
+        "pos": [
+          0.6,
+          0.7000000000000001,
+          9.8
+        ],
+        "target": [
+          0,
+          1.9000000000000001,
+          0
+        ],
+        "fov": 52,
+        "focalDistance": 8.4,
+        "duration": 0.01,
+        "aperture": 0,
+        "ease": "smooth"
+      },
+      {
+        "pos": [
+          0,
+          2.2,
+          8.4
+        ],
+        "target": [
+          0,
+          1.9000000000000001,
+          0
+        ],
+        "fov": 46,
+        "focalDistance": 8.4,
+        "duration": 14,
+        "transition": "blend",
+        "aperture": 0,
+        "ease": "smooth"
+      }
+    ]
+  },
+  "defaults": {
+    "stage": {
+      "size": [
+        18,
+        9,
+        11
+      ]
+    }
+  }
+}

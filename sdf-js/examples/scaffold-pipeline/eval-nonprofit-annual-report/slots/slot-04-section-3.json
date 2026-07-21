@@ -1,0 +1,86 @@
+{
+  "slotIdx": 4,
+  "slotName": "section-3",
+  "slotTitle": "Section 3",
+  "slotPurpose": "Third main content section — any topic",
+  "sourceSlideIdx": 6,
+  "sourceSlideTitle": "2027 Goals",
+  "sceneData": {
+    "name": "generic-deck/section-3",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "2027 Goals",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 480,
+        "args": {
+          "items": [
+            {
+              "icon": "drop",
+              "label": "Construct 110 new wells",
+              "sublabel": "26% increase over 2026"
+            },
+            {
+              "icon": "globe-hemisphere-west",
+              "label": "Expand into Uganda",
+              "sublabel": "5th country pilot program"
+            },
+            {
+              "icon": "solar-panel",
+              "label": "Deploy solar pumps to 50 villages"
+            },
+            {
+              "icon": "graduation-cap",
+              "label": "Train 350 local technicians"
+            },
+            {
+              "icon": "currency-dollar",
+              "label": "Raise $5.5M in funding",
+              "sublabel": "31% increase to support expansion"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "generic-deck",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "bullet-list",
+      "feature-card-grid",
+      "vertical-timeline",
+      "icon-grid"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4009,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 377,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0215844,
+    "elapsedSec": 7.6,
+    "generatedAt": "2026-07-05T05:34:53.467Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

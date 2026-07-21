@@ -176,6 +176,10 @@ export const PRIMITIVE_TYPES = new Set([
   'line-3d',
   // Atlas chart atom (2026-06-18) — pie/donut chart, angular SDF + extrusion.
   'pie-3d',
+  // Analytic pie CHART coin (2026-07-15) — camera-facing disc, angle-coloured
+  // slices done in the analytic renderer (render-proportion emits it). Distinct
+  // from pie-3d (raymarch SDF) and the 'pie' wedge primitive.
+  'pie-chart',
   // Atlas chart atom (2026-06-18) — KPI dashboard card (rounded box + semantic metadata).
   'kpi-card-3d',
   // Atlas icon set (2026-06-18) — 10-icon business pack (dispatched by name).
@@ -212,6 +216,9 @@ export const PRIMITIVE_TYPES = new Set([
   'circle-frame-3d',
   'circle-stack-3d',
   'circle-segmented-3d',
+  'mountain-3d',
+  'icon-grid-3d',
+  'device-mockup-3d',
   'circle-loop-3d',
   // Sprint 4 node-edge charts — sphere/box nodes + capsule edges (+ cone arrows).
   'relationship-graph-3d',
@@ -234,6 +241,7 @@ export const PRIMITIVE_TYPES = new Set([
   'waterfall-3d',
   'scatter-3d',
   'gantt-3d',
+  'gauge-3d', // KPI gauge / speedometer (cockpit dashboards)
   // Sprint 5 Wave C — fishbone / traffic-light / radial-spoke + puzzle-piece.
   'fishbone-3d',
   'traffic-light-3d',
@@ -419,6 +427,10 @@ export const DOMAIN_OPS = new Set([
   // axis; `displace` additively perturbs distance by another SDF. Neither
   // changes the child-count semantics (`elongate` is 1-arg op, `displace` is
   // pairwise like `xor`).
+  // 2026-07-13(Infinigen 研读第二课)`displace` 首次真正实现:source = 宿主,
+  // args = 噪声场描述 {kind:'vfbm'|'ridge', freq, amp, offset}。vfbm =
+  // geo_extension 径向鼓胀的近似;ridge = boulder.py VORONOI DISPLACE 节理的
+  // 零循环平替(27-cell F1 落 D3D 循环展开悬崖)。
   'elongate',
   'displace',
 ]);
@@ -469,9 +481,9 @@ export const MATERIAL_PRESETS = {
   'sky-blue': { hue: 0.58, sat: 0.55, value: 0.85, metal: 0.0, glow: 0.0 },
 
   // Metals — for bells / decorative elements / mechanical
-  gold: { hue: 0.13, sat: 0.85, value: 0.92, metal: 0.95, glow: 0.0 },
-  silver: { hue: 0.0, sat: 0.0, value: 0.82, metal: 0.95, glow: 0.0 },
-  copper: { hue: 0.06, sat: 0.7, value: 0.65, metal: 0.95, glow: 0.0 },
+  gold: { hue: 0.13, sat: 0.85, value: 0.92, metal: 0.95, glow: 0.0, clearcoat: 0.4 },
+  silver: { hue: 0.0, sat: 0.0, value: 0.82, metal: 0.95, glow: 0.0, clearcoat: 0.4 },
+  copper: { hue: 0.06, sat: 0.7, value: 0.65, metal: 0.95, glow: 0.0, clearcoat: 0.4 },
 
   // Emissive — for lighthouse beacon / candle / sun / moon / LED
   'glow-warm': { hue: 0.1, sat: 0.95, value: 1.0, metal: 0.0, glow: 1.8 },
@@ -518,7 +530,7 @@ export function resolveMaterial(input) {
     // as full brightness so existing scenes keep working through schema change.
     // Default kind=0 (standard Lambert); presets that need a special branch
     // (e.g. future 'sea-water' preset) can override.
-    return { value: 1.0, kind: 0, ...preset };
+    return { value: 1.0, kind: 0, roughness: -1, clearcoat: 0, ...preset };
   }
   if (typeof input === 'object') {
     return {
@@ -527,6 +539,15 @@ export function resolveMaterial(input) {
       value: clamp01(input.value ?? 1),
       metal: clamp01(input.metal ?? 0),
       glow: clamp05(input.glow ?? 0),
+      // Explicit microfacet roughness (0 = mirror, 1 = matte). The -1 sentinel
+      // means "not specified" → the renderer derives roughness from metal
+      // (polished-metal default), so every existing scene is unchanged.
+      roughness: input.roughness == null ? -1 : clamp01(input.roughness),
+      // Clearcoat: a thin glossy dielectric coat (lacquer / car-paint / wet gloss).
+      // 0 = none, 1 = full. Adds a tight WHITE specular lobe + a white fresnel edge
+      // sheen ON TOP of the base material (the coat's highlight stays white even on
+      // gold). Default 0 → existing object-materials unchanged.
+      clearcoat: clamp01(input.clearcoat ?? 0),
       // Material kind routes to a specialised shading branch in the renderer.
       //   0 = standard Lambert (default), 1 = sea (fresnel + atmosphere reflection),
       //   reserved: 2 = skin/SSS, 3 = glass, ... (future).
@@ -569,6 +590,23 @@ export const MATERIAL_KIND_INDEX = {
   // treeAmount channel > threshold, drainage darkening along ridgeMap creases.
   // Only valid on terrain-eroded-rune primitive (which uploads the texture).
   'eroded-terrain': 7,
+  // 8 = glass: real single-refraction transparent glass. The view ray refracts
+  // (Snell, ior ~1.45) and a secondary march SEES THROUGH to whatever is behind
+  // (e.g. coloured liquid inside a glass shell, or the distorted background),
+  // blended with a Fresnel-weighted env reflection + a sharp sun glint + a cool
+  // fresnel edge. Designed for thin hollow shells (so the refracted ray travels
+  // air, not solid — sphere-tracing can't march inside solids). A standalone
+  // decorative transparent-glass capability (NOT used by sphere-fill — see kind 9).
+  glass: 8,
+  // 9 = fill-gauge: a SOLID sphere shaded as a "fill level" gauge. The surface is
+  // split at a waterline into a coloured liquid bottom (the material's hue/sat/
+  // value) and a light glass top, with a crisp meniscus band between. The fill
+  // fraction (0..1) rides per-leaf in the PATTERN LUT slot [3] (u_leafPattern.w);
+  // on a sphere the surface normal's y-component IS the local height, so the
+  // split is `n.y < 2*fill-1` — transform-invariant, no center/radius needed.
+  // This is how sphere-fill-3d renders the readable two-tone gauge (the caps/
+  // overlay approach can't, see project_studio_coincident_surface_material_limit).
+  fill: 9,
 };
 
 // =============================================================================
@@ -767,22 +805,154 @@ export function validate(data) {
     data.subjects.forEach((s, i) => collectIds(s, `subjects[${i}]`));
   }
 
+  // Scene-level material registry (Blender-borrow Wave A: datablock reuse).
+  // Entries are validated like inline materials; subjects reference by name.
+  if (data.materials != null) {
+    if (typeof data.materials !== 'object' || Array.isArray(data.materials)) {
+      errors.push('materials: must be an object map { name: material }');
+    } else {
+      for (const [name, m] of Object.entries(data.materials)) {
+        if (m == null || typeof m !== 'object' || Array.isArray(m)) {
+          errors.push(`materials["${name}"]: must be a material object`);
+          continue;
+        }
+        for (const k of ['hue', 'sat', 'value', 'metal', 'glow']) {
+          if (m[k] != null && typeof m[k] !== 'number')
+            errors.push(`materials["${name}"].${k}: must be a number if present`);
+        }
+      }
+    }
+  }
+
+  // Scene-level collections registry (Wave A: slicing semantics as DATA — the
+  // id-prefix regex contracts retire once consumers read this instead).
+  if (data.collections != null) {
+    if (typeof data.collections !== 'object' || Array.isArray(data.collections)) {
+      errors.push('collections: must be an object map { name: meta }');
+    } else {
+      for (const [name, c] of Object.entries(data.collections)) {
+        if (c == null || typeof c !== 'object') {
+          errors.push(`collections["${name}"]: must be an object`);
+          continue;
+        }
+        // 'proxy' = finale-LOD silhouette stand-ins (in no normal window;
+        // finale/overlook swap far-station content for them)
+        if (
+          c.kind != null &&
+          !['station', 'transit-path', 'dressing', 'decor', 'proxy'].includes(c.kind)
+        )
+          errors.push(`collections["${name}"].kind: unknown "${c.kind}"`);
+        if (c.cull != null && !['never', 'nearest'].includes(c.cull))
+          errors.push(`collections["${name}"].cull: must be 'never' or 'nearest'`);
+      }
+    }
+  }
+
   // Subject-level validation
   if (Array.isArray(data.subjects)) {
-    data.subjects.forEach((s, i) => validateSubject(s, `subjects[${i}]`, errors, warnings));
+    const ctx = { materials: data.materials || null, collections: data.collections || null };
+    data.subjects.forEach((s, i) => validateSubject(s, `subjects[${i}]`, errors, warnings, ctx));
   }
 
   return { ok: errors.length === 0, errors, warnings };
+}
+
+/**
+ * resolveMaterialRefs(scene) → scene
+ * Replace subject.material strings that name a scene.materials entry with the
+ * registry object (shallow scene copy; registry wins over MATERIAL_PRESETS).
+ * Runs before compile; scenes without a registry pass through untouched.
+ */
+export function resolveMaterialRefs(scene) {
+  if (!scene || !scene.materials) return scene;
+  const reg = scene.materials;
+  let changed = false;
+  const subjects = (scene.subjects || []).map((s) => {
+    if (s && typeof s.material === 'string' && reg[s.material]) {
+      changed = true;
+      return { ...s, material: { ...reg[s.material] } };
+    }
+    return s;
+  });
+  return changed ? { ...scene, subjects } : scene;
 }
 
 // =============================================================================
 // Subject validation (recursive)
 // =============================================================================
 
-function validateSubject(subj, path, errors, warnings) {
+function validateSubject(subj, path, errors, warnings, ctx = null) {
   if (subj == null || typeof subj !== 'object' || Array.isArray(subj)) {
     errors.push(`${path}: must be an object`);
     return;
+  }
+  // collection tag: with a registry present, a dangling reference is an ERROR
+  // (collections carry slicing/routing semantics — a typo would silently
+  // change what geometry exists in a window)
+  if (subj.collection != null) {
+    if (typeof subj.collection !== 'string') {
+      errors.push(`${path}.collection: must be a string`);
+    } else if (ctx && ctx.collections && !ctx.collections[subj.collection]) {
+      errors.push(`${path}.collection: "${subj.collection}" not in scene.collections`);
+    }
+  }
+
+  // Placement modifiers (Blender-borrow Wave B). Unknown type = ERROR — a
+  // typo'd modifier silently dropping N instances would be a "looks right"
+  // wrong. Validator/expander sync law: expandModifiers consumes exactly this.
+  if (subj.modifiers != null) {
+    if (!Array.isArray(subj.modifiers)) {
+      errors.push(`${path}.modifiers: must be an array`);
+    } else {
+      subj.modifiers.forEach((m, mi) => {
+        const mp = `${path}.modifiers[${mi}]`;
+        if (!m || typeof m !== 'object') {
+          errors.push(`${mp}: must be an object`);
+          return;
+        }
+        if (!['array', 'radial', 'mirror', 'scatter'].includes(m.type)) {
+          errors.push(`${mp}.type: unknown "${m.type}"`);
+          return;
+        }
+        const needCount = (lo) => {
+          if (!Number.isInteger(m.count) || m.count < lo || m.count > 64)
+            errors.push(`${mp}.count: integer ${lo}..64 required`);
+        };
+        if (m.type === 'array') {
+          needCount(2);
+          if (!Array.isArray(m.offset) || m.offset.length !== 3) {
+            errors.push(`${mp}.offset: [x,y,z] required`);
+          } else if (
+            m.offset[1] !== 0 &&
+            Array.isArray(subj.animation) &&
+            subj.animation.some((a) => a && a.channel === 'transform.translate.y')
+          ) {
+            warnings.push(
+              `${mp}: y-offset array + translate.y animation — instances share ONE y motion (v1 limit)`,
+            );
+          }
+        }
+        if (m.type === 'radial') {
+          needCount(2);
+          if (typeof m.radius !== 'number' || m.radius <= 0)
+            errors.push(`${mp}.radius: positive number required`);
+        }
+        if (m.type === 'mirror' && m.axis !== 'x' && m.axis !== 'z')
+          errors.push(`${mp}.axis: 'x' or 'z' required`);
+        if (m.type === 'scatter') {
+          needCount(1);
+          if (m.seed == null) errors.push(`${mp}.seed: required (determinism covenant)`);
+          const r = m.region;
+          const annOk =
+            r && r.kind === 'annulus' && typeof r.rMin === 'number' && typeof r.rMax === 'number';
+          const boxOk = r && r.kind === 'box' && Array.isArray(r.min) && Array.isArray(r.max);
+          if (!annOk && !boxOk)
+            errors.push(
+              `${mp}.region: {kind:'annulus', rMin, rMax} or {kind:'box', min, max} required`,
+            );
+        }
+      });
+    }
   }
 
   if (typeof subj.type !== 'string') {
@@ -824,7 +994,7 @@ function validateSubject(subj, path, errors, warnings) {
       warnings.push(`${path}: BooleanGroup "${subj.type}" with single child will be unwrapped`);
     } else {
       subj.children.forEach((c, i) =>
-        validateSubject(c, `${path}/children[${i}]`, errors, warnings),
+        validateSubject(c, `${path}/children[${i}]`, errors, warnings, ctx),
       );
     }
     // hg_sdf variants need args.r; missing is recoverable (default applied)
@@ -882,7 +1052,7 @@ function validateSubject(subj, path, errors, warnings) {
     if (subj.source == null || typeof subj.source !== 'object') {
       errors.push(`${path}: DomainGroup "${subj.type}" requires a "source" Subject`);
     } else {
-      validateSubject(subj.source, `${path}/source`, errors, warnings);
+      validateSubject(subj.source, `${path}/source`, errors, warnings, ctx);
     }
     validateDomainArgs(subj.type, subj.args, `${path}.args`, errors, warnings);
   }
@@ -895,7 +1065,7 @@ function validateSubject(subj, path, errors, warnings) {
     if (subj.source == null) {
       errors.push(`${path}: "${subj.type}" requires a "source" 2D primitive`);
     } else {
-      validateSubject(subj.source, `${path}/source`, errors, warnings);
+      validateSubject(subj.source, `${path}/source`, errors, warnings, ctx);
     }
   }
 
@@ -935,10 +1105,21 @@ function validateSubject(subj, path, errors, warnings) {
   // preset packs can ship preset names that older builds don't know yet.
   if (subj.material != null) {
     if (typeof subj.material === 'string') {
-      if (!MATERIAL_PRESETS[subj.material]) {
-        warnings.push(
-          `${path}.material: unknown preset "${subj.material}" — will fall back to default palette. Known: ${Object.keys(MATERIAL_PRESETS).join(', ')}`,
-        );
+      const inRegistry = !!(ctx && ctx.materials && ctx.materials[subj.material]);
+      if (!inRegistry && !MATERIAL_PRESETS[subj.material]) {
+        // With a scene registry present, a dangling name is an ERROR — the
+        // material is visual identity, silent palette fallback would produce
+        // a "looks right"-wrong. Without a registry, keep the forward-compat
+        // preset warning behavior.
+        if (ctx && ctx.materials) {
+          errors.push(
+            `${path}.material: "${subj.material}" not in scene.materials and not a preset`,
+          );
+        } else {
+          warnings.push(
+            `${path}.material: unknown preset "${subj.material}" — will fall back to default palette. Known: ${Object.keys(MATERIAL_PRESETS).join(', ')}`,
+          );
+        }
       }
     } else if (typeof subj.material === 'object' && !Array.isArray(subj.material)) {
       const m = subj.material;
@@ -1029,6 +1210,18 @@ function validateDomainArgs(type, args, path, errors, _warnings) {
           `${path}: modPolar args.repetitions must be a number >= 2 (got ${args.repetitions})`,
         );
       }
+    }
+  } else if (type === 'displace') {
+    if (args.kind != null && !['vfbm', 'ridge', 'sinfold'].includes(args.kind)) {
+      errors.push(
+        `${path}: displace args.kind must be 'vfbm' | 'ridge' | 'sinfold' (default 'vfbm')`,
+      );
+    }
+    if (args.freq != null && (typeof args.freq !== 'number' || args.freq <= 0)) {
+      errors.push(`${path}: displace args.freq must be a positive number`);
+    }
+    if (args.amp != null && typeof args.amp !== 'number') {
+      errors.push(`${path}: displace args.amp must be a number`);
     }
   } else if (type === 'mirrorOctant') {
     if (args.plane != null && !['xz', 'xy', 'yz'].includes(args.plane)) {
@@ -1247,8 +1440,17 @@ function validatePostFx(pfx, errors, warnings) {
 // 'cut' is the default transition between shots (hard cut); ease='blend' opts
 // into smoothly interpolating from the prev shot's end state.
 // =============================================================================
-const SHOT_EASES = new Set(['smooth', 'linear']);
+const SHOT_EASES = new Set(['smooth', 'linear', 'in', 'out', 'inout', 'whip']);
 const SHOT_TRANSITIONS = new Set(['cut', 'blend']);
+
+// DoF fields (aperture / focalDistance) accept a number OR a [from, to] pair
+// (the pair ramps within the shot → rack focus).
+function isNumberOrPair(v) {
+  return (
+    typeof v === 'number' ||
+    (Array.isArray(v) && v.length === 2 && typeof v[0] === 'number' && typeof v[1] === 'number')
+  );
+}
 
 function validateCameraSequence(seq, errors, warnings) {
   if (typeof seq !== 'object' || seq == null) {
@@ -1261,6 +1463,36 @@ function validateCameraSequence(seq, errors, warnings) {
   }
   if (seq.loop != null && typeof seq.loop !== 'boolean') {
     errors.push('cameraSequence.loop: must be a boolean if provided');
+  }
+  // flow: steadicam smoothing (W6 total-continuity) — the runtime filters the
+  // evaluated pos/target through a short exponential lag so shot boundaries
+  // are velocity-continuous (no stop-start kinks). Deck playback sets it.
+  if (seq.flow != null && typeof seq.flow !== 'boolean') {
+    errors.push('cameraSequence.flow: must be a boolean if provided');
+  }
+  // Hitstops: fighting-game frame freezes — presentation clock holds at `at`
+  // for `hold` wall-seconds. Must be sorted ascending, non-overlapping.
+  if (seq.hitstops != null) {
+    if (!Array.isArray(seq.hitstops)) {
+      errors.push('cameraSequence.hitstops: must be an array if provided');
+    } else {
+      let prevEnd = -Infinity;
+      seq.hitstops.forEach((h, i) => {
+        if (
+          !h ||
+          typeof h.at !== 'number' ||
+          h.at < 0 ||
+          typeof h.hold !== 'number' ||
+          h.hold <= 0
+        ) {
+          errors.push(`cameraSequence.hitstops[${i}]: requires {at >= 0, hold > 0}`);
+          return;
+        }
+        if (h.at < prevEnd)
+          errors.push(`cameraSequence.hitstops[${i}]: must be sorted and non-overlapping`);
+        prevEnd = h.at + h.hold;
+      });
+    }
   }
   // Sprint 4: subjectMotion = per-subject CarInt physics (cross-phase integral).
   if (seq.subjectMotion != null) {
@@ -1344,11 +1576,11 @@ function validateCameraSequence(seq, errors, warnings) {
     } else if (shot.fov < 5 || shot.fov > 90) {
       warnings.push(`${tag}.fov ${shot.fov} outside typical [5, 90]`);
     }
-    if (shot.aperture != null && typeof shot.aperture !== 'number') {
-      errors.push(`${tag}.aperture: must be a number if provided`);
+    if (shot.aperture != null && !isNumberOrPair(shot.aperture)) {
+      errors.push(`${tag}.aperture: must be a number or [from, to] pair if provided`);
     }
-    if (shot.focalDistance != null && typeof shot.focalDistance !== 'number') {
-      errors.push(`${tag}.focalDistance: must be a number if provided`);
+    if (shot.focalDistance != null && !isNumberOrPair(shot.focalDistance)) {
+      errors.push(`${tag}.focalDistance: must be a number or [from, to] pair if provided`);
     }
     if (shot.ease != null && !SHOT_EASES.has(shot.ease)) {
       errors.push(`${tag}.ease: must be one of ${[...SHOT_EASES].join(' | ')}`);
@@ -1356,10 +1588,23 @@ function validateCameraSequence(seq, errors, warnings) {
     if (shot.transition != null && !SHOT_TRANSITIONS.has(shot.transition)) {
       errors.push(`${tag}.transition: must be one of ${[...SHOT_TRANSITIONS].join(' | ')}`);
     }
-    // Sprint 4: shake can be number (legacy) OR { amount, velocityScale, scaleWith }
+    // ambient: number OR [from, to] intra-shot ramp scaling sky-ambient - the
+    // super's "spotlight crash". 0..2 sensible range.
+    if (shot.ambient != null) {
+      const okNum = (x) => typeof x === 'number' && x >= 0 && x <= 2;
+      const valid =
+        okNum(shot.ambient) ||
+        (Array.isArray(shot.ambient) && shot.ambient.length === 2 && shot.ambient.every(okNum));
+      if (!valid) errors.push(`${tag}.ambient: must be a number 0..2 or [from, to] pair`);
+    }
+    // shake: number (legacy) OR [from, to] intra-shot ramp (impact-then-settle)
+    // OR { amount, velocityScale, scaleWith }
     if (shot.shake != null) {
       if (typeof shot.shake === 'number') {
         if (shot.shake < 0) errors.push(`${tag}.shake: must be a non-negative number`);
+      } else if (Array.isArray(shot.shake)) {
+        if (shot.shake.length !== 2 || shot.shake.some((x) => typeof x !== 'number' || x < 0))
+          errors.push(`${tag}.shake: array form must be [from, to] non-negative numbers`);
       } else if (typeof shot.shake === 'object') {
         if (typeof shot.shake.amount !== 'number' || shot.shake.amount < 0) {
           errors.push(`${tag}.shake.amount: required non-negative number`);

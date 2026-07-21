@@ -1,0 +1,93 @@
+{
+  "slotIdx": 6,
+  "slotName": "theme-2-detail",
+  "slotTitle": "Theme 2 — Detail",
+  "slotPurpose": "Second theme drill-down: sequence, conditions, thresholds",
+  "sourceSlideIdx": 5,
+  "sourceSlideTitle": "Human Augmentation Focus",
+  "sceneData": {
+    "name": "news-briefing/theme-2-detail",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Theme 2 — Detail",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "stat-banner",
+        "x": 40,
+        "y": 180,
+        "w": 1200,
+        "h": 140,
+        "args": {
+          "value": "12",
+          "label": "Vertical Companies",
+          "bg": [38, 70, 130]
+        }
+      },
+      {
+        "type": "icon-row",
+        "x": 40,
+        "y": 360,
+        "w": 1200,
+        "h": 300,
+        "args": {
+          "title": "Human Augmentation Focus",
+          "items": [
+            {
+              "icon": "brain",
+              "label": "Cognitive Enhancement",
+              "color": [38, 70, 130]
+            },
+            {
+              "icon": "eye",
+              "label": "Sensory Augmentation",
+              "color": [110, 95, 75]
+            },
+            {
+              "icon": "lightning",
+              "label": "Performance Boost",
+              "color": [165, 130, 90]
+            },
+            {
+              "icon": "heartbeat",
+              "label": "Health Monitoring",
+              "color": [200, 195, 180]
+            }
+          ],
+          "iconSize": "large",
+          "iconStyle": "circle"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["timeline", "funnel-with-conversion", "bullet-list", "flow-chart"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4907,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 465,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0255984,
+    "elapsedSec": 7.9,
+    "generatedAt": "2026-07-07T06:39:59.255Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

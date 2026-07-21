@@ -23,6 +23,7 @@ import { NOISE_GLSL } from './noise.glsl.js';
 import { VORONOI_GLSL } from './voronoi.glsl.js';
 import { SDF2, SDF3 } from './core.js';
 import { isTimeExpr, mulT } from './time.js';
+import { pruneGLSL } from './glsl-prune.js';
 
 // ---- format helpers --------------------------------------------------------
 
@@ -47,6 +48,12 @@ function emitTimeExpr(e) {
   if (e.form === 'cos')
     return `(${fltLit(e.amp)} * cos(${fltLit(e.freq)} * u_time + ${fltLit(e.phase)}))`;
   if (e.form === 'sum') return `(${e.terms.map(fltOrTime).join(' + ')})`;
+  // GLSL-style builtin call: fn is a GLSL built-in (smoothstep/clamp/step/…), so
+  // emit verbatim; args may be numbers or nested time-exprs. scale defaults to 1.
+  if (e.form === 'call') {
+    const inner = `${e.fn}(${e.args.map(fltOrTime).join(', ')})`;
+    return (e.scale ?? 1) === 1 ? `(${inner})` : `(${fltLit(e.scale)} * ${inner})`;
+  }
   // Sprint 4: uniform reference — emit raw GLSL string (caller must declare
   // the uniform externally). Used for subject motion offsets driven from JS
   // per frame (u_subjectOffset[slot].y for rocket lift-off etc).
@@ -54,9 +61,29 @@ function emitTimeExpr(e) {
   throw new Error(`emitTimeExpr: unknown form '${e.form}'`);
 }
 
-// 统一 dispatch：number → literal；time-expr → GLSL expr
+// ---- data-as-uniforms (zero-recompile) --------------------------------------
+// When active (opts.uniformArgs), every number that would be baked into the
+// GLSL as a literal is instead allocated a slot in a packed `uniform vec4
+// u_sdfArgs[]` array — in strict WALK ORDER with NO value dedup, so the same
+// scene SHAPE always emits byte-identical GLSL regardless of the data. One
+// compiled program (and one Chrome disk-cache entry) serves every data
+// variation; changing the numbers is a gl.uniform4fv, not a shader compile.
+// Values ride out in result.sdfArgs (vec4-padded Float32Array). Time exprs +
+// _compileExtras stay literal (their text is data-independent). CPU-side
+// sdf.f() is untouched (JS closures carry the real values).
+let _uniformSlots = null; // number[] | null — active slot list
+const UNIFORM_ARGS_CAP = 1024; // floats (= 256 vec4); over budget → literal fallback
+
+function fltSlot(n) {
+  if (typeof n !== 'number' || !Number.isFinite(n)) return fltLit(n); // reuse validation/throw
+  const i = _uniformSlots.length;
+  _uniformSlots.push(n);
+  return `u_sdfArgs[${i >> 2}].${'xyzw'[i & 3]}`;
+}
+
+// 统一 dispatch：number → literal (或 uniform slot)；time-expr → GLSL expr
 function fltOrTime(x) {
-  if (typeof x === 'number') return fltLit(x);
+  if (typeof x === 'number') return _uniformSlots ? fltSlot(x) : fltLit(x);
   if (isTimeExpr(x)) return emitTimeExpr(x);
   throw new Error(`flt: expected number or time-expr, got ${typeof x} (${JSON.stringify(x)})`);
 }
@@ -149,10 +176,20 @@ function _hashPoints(points) {
  *     side-effect 模式 emit；scene 函数变成多语句，跟 Autoscope 一样维护
  *     `objectIndex` / `minIndex` globals → BOB GPU 上色用。需要 caller 自己 prelude
  *     IMIN_GLSL 字符串（提供 globals + imin / ismoothUnion）。
+ *   @param {string} [opts.prune] 死代码消除（opt-in）：库里只保留从
+ *     (emitted body + extras + 这段调用方 GLSL) 可达的函数。调用方把自己的
+ *     fragment 模板传进来（e.g. studio 的 buildFragmentShader('')），场景没用到
+ *     的 primitive（terrain/city/bridge…）不再进 driver 编译 —— 冷编译从 30s+
+ *     降到秒级的关键。不传 = 整库照旧（其余 renderer 不受影响）。
  * @returns {{ glsl: string|null, error: string|null }}
  */
 export function compileSDF3ToGLSL(sdf, opts = {}) {
-  const { includeLibrary = true, sceneFnName = 'scene', emitObjectIndex = false } = opts;
+  const {
+    includeLibrary = true,
+    sceneFnName = 'scene',
+    emitObjectIndex = false,
+    prune = null,
+  } = opts;
 
   if (!(sdf instanceof SDF3)) {
     return { glsl: null, error: 'not an SDF3 instance' };
@@ -168,29 +205,65 @@ export function compileSDF3ToGLSL(sdf, opts = {}) {
   try {
     let body,
       leafMaterials = null,
-      leafPatterns = null;
-    if (emitObjectIndex) {
-      const result = compileWithObjectIndex(sdf, sceneFnName);
-      body = result.body;
-      leafMaterials = result.leafMaterials;
-      leafPatterns = result.leafPatterns;
+      leafPatterns = null,
+      sdfArgs = null;
+    const emitBody = () => {
+      if (emitObjectIndex) {
+        const result = compileWithObjectIndex(sdf, sceneFnName);
+        leafMaterials = result.leafMaterials;
+        leafPatterns = result.leafPatterns;
+        return result.body;
+      }
+      return `float ${sceneFnName}(vec3 p) {\n  return ${walk(sdf, 'p')};\n}`;
+    };
+    if (opts.uniformArgs) {
+      _uniformSlots = [];
+      body = emitBody();
+      if (_uniformSlots.length > UNIFORM_ARGS_CAP) {
+        // over the uniform-component budget — fall back to baked literals
+        console.warn(
+          `[sdf3.compile] uniformArgs: ${_uniformSlots.length} slots exceeds cap ${UNIFORM_ARGS_CAP} — falling back to literal emission (scene recompiles on data change)`,
+        );
+        _uniformSlots = null;
+        body = emitBody();
+      } else {
+        const nVec4 = Math.max(1, Math.ceil(_uniformSlots.length / 4));
+        sdfArgs = new Float32Array(nVec4 * 4);
+        sdfArgs.set(_uniformSlots);
+        body = `uniform vec4 u_sdfArgs[${nVec4}];\n${body}`;
+        _uniformSlots = null;
+      }
     } else {
-      const expr = walk(sdf, 'p');
-      body = `float ${sceneFnName}(vec3 p) {\n  return ${expr};\n}`;
+      body = emitBody();
     }
     // Noise + Voronoi libs prepended first — SDF library functions (and
     // future domain-warped primitives) can call into them. Renderer shading
     // code uses them for surface texture (fbm) and patterns (voronoi/brick/hex).
     // SDF2_GLSL provides 2D helpers used by revolve/extrude ops.
     const extrasCode = Array.from(_compileExtras.values()).join('\n\n');
+    let library = includeLibrary
+      ? `${NOISE_GLSL}\n${VORONOI_GLSL}\n${SDF3_GLSL}\n${SDF2_GLSL}`
+      : '';
+    if (includeLibrary && prune != null) {
+      // Dead-code eliminate the library against everything that can call into
+      // it: the emitted scene body, the compile extras, imin helpers, and the
+      // caller's own fragment code (opts.prune).
+      library = pruneGLSL(library, [
+        body,
+        extrasCode,
+        emitObjectIndex ? IMIN_GLSL : '',
+        String(prune),
+      ]);
+    }
     const prelude = includeLibrary
-      ? `${NOISE_GLSL}\n${VORONOI_GLSL}\n${SDF3_GLSL}\n${SDF2_GLSL}\n${emitObjectIndex ? IMIN_GLSL : ''}\n${extrasCode}\n\n`
+      ? `${library}\n${emitObjectIndex ? IMIN_GLSL : ''}\n${extrasCode}\n\n`
       : `${extrasCode}\n\n`;
-    return { glsl: prelude + body, error: null, leafMaterials, leafPatterns };
+    return { glsl: prelude + body, error: null, leafMaterials, leafPatterns, sdfArgs };
   } catch (e) {
-    return { glsl: null, error: e.message, leafMaterials: null, leafPatterns: null };
+    return { glsl: null, error: e.message, leafMaterials: null, leafPatterns: null, sdfArgs: null };
   } finally {
     _compileExtras = null;
+    _uniformSlots = null;
   }
 }
 
@@ -309,6 +382,62 @@ function walk(sdf, p) {
 const half = (x) => mulT(x, 0.5);
 const halfNeg = (x) => mulT(x, -0.5);
 
+// Chart bars UNROLLED to an explicit min() of sdBox calls. The old emit used a
+// `float[32](...)` array constructor — that is GLSL ES 3.00 syntax and fails to
+// compile in the studio's ES 1.00 shader (so bar/column/line never rendered on
+// GPU). The values are known at compile time, so we unroll the real N bars into
+// inline sdBox expressions (no array, no loop) — ES-1.00-safe. Mirrors
+// evalBarsSDF: totalX = N*barW + (N-1)*gap; xStart = -totalX/2 + barW/2;
+// bar i centred at (xStart + i*(barW+gap), h/2, 0), half (barW/2, h/2, barD/2).
+function barBoxesExpr(point, paddedValues, count, barW, barD, gap, maxH) {
+  const N = Math.max(0, Math.min(32, Math.floor(count)));
+  const totalX = N * barW + (N - 1) * gap;
+  const xStart = -totalX / 2 + barW / 2;
+  const parts = [];
+  for (let i = 0; i < N; i++) {
+    const h = paddedValues[i] * maxH;
+    if (h <= 0) continue; // zero/negative bar → no box (matches evalBarsSDF skip)
+    const xc = xStart + i * (barW + gap);
+    parts.push(`sdBox(${point} - ${vec3([xc, h / 2, 0])}, ${vec3([barW / 2, h / 2, barD / 2])})`);
+  }
+  if (!parts.length) return '1e6';
+  return parts.reduce((a, e) => `min(${a}, ${e})`);
+}
+
+// line-3d UNROLLED (ES-1.00-safe, same reason as barBoxesExpr): sphere markers
+// at each point + capsule connectors between consecutive points + optional
+// closing capsule. Mirrors sdLine3d: totalX=(N-1)*pointSpacing; xStart=-totalX/2;
+// point i = (xStart + i*pointSpacing, values[i]*maxH, 0).
+function lineExpr(
+  point,
+  paddedValues,
+  count,
+  pointSpacing,
+  pointRadius,
+  lineThickness,
+  maxH,
+  closedFlag,
+) {
+  const N = Math.max(0, Math.min(32, Math.floor(count)));
+  const xStart = -((N - 1) * pointSpacing) / 2;
+  const pt = (i) => [xStart + i * pointSpacing, paddedValues[i] * maxH, 0];
+  const parts = [];
+  if (pointRadius > 0) {
+    for (let i = 0; i < N; i++)
+      parts.push(`sdSphere(${point} - ${vec3(pt(i))}, ${flt(pointRadius)})`);
+  }
+  if (lineThickness > 0 && N > 1) {
+    for (let i = 0; i < N - 1; i++) {
+      parts.push(`sdCapsule(${point}, ${vec3(pt(i))}, ${vec3(pt(i + 1))}, ${flt(lineThickness)})`);
+    }
+    if (closedFlag > 0.5 && N > 2) {
+      parts.push(`sdCapsule(${point}, ${vec3(pt(N - 1))}, ${vec3(pt(0))}, ${flt(lineThickness)})`);
+    }
+  }
+  if (!parts.length) return '1e6';
+  return parts.reduce((a, e) => `min(${a}, ${e})`);
+}
+
 const PRIMS = {
   sphere: ([radius, center], p) => `sdSphere(${p} - ${vec3(center)}, ${flt(radius)})`,
 
@@ -324,6 +453,11 @@ const PRIMS = {
   },
 
   capsule: ([a, b, r], p) => `sdCapsule(${p}, ${vec3(a)}, ${vec3(b)}, ${flt(r)})`,
+
+  // noise-field 位移场（研读第二课）：不是形状,是喂给 displace 的微扰。
+  // args: [kindFlag(0=vfbm,1=voronoi), freq, amp, offset]
+  'noise-field': ([kind, freq, amp, offset], p) =>
+    `noiseField3(${p} + ${vec3(asArr3(offset ?? 0))}, ${flt(kind)}, ${flt(freq)}, ${flt(amp)})`,
 
   torus: ([majorR, minorR], p) => `sdTorus(${p}, ${vec2([majorR, minorR])})`,
 
@@ -378,29 +512,24 @@ const PRIMS = {
   // bar-3d (Atlas chart atom, 2026-06-18) — see components/charts/data/bar-3d.js
   // Data-driven bar chart, N bars along X (max 32, GLSL float[32] cap).
   // First atom with array-typed input — values padded to 32 with 0s on JS side.
-  'bar-3d': ([paddedValues, count, barW, barD, gap, maxH], p) => {
-    const arrLit = `float[32](${paddedValues.map((v) => flt(v)).join(', ')})`;
-    return `sdBar3d(${p}, ${arrLit}, ${flt(count)}, ${flt(barW)}, ${flt(barD)}, ${flt(gap)}, ${flt(maxH)})`;
-  },
+  // Unrolled (ES-1.00-safe) — see barBoxesExpr above; no float[32] constructor.
+  'bar-3d': ([paddedValues, count, barW, barD, gap, maxH], p) =>
+    barBoxesExpr(p, paddedValues, count, barW, barD, gap, maxH),
 
   // column-3d (Atlas chart atom, 2026-06-18) — see components/charts/data/column-3d.js
-  // Horizontal bar chart. Same args as bar-3d, GLSL emits sdColumn3d (delegates
-  // to sdBar3d with axis swap on input).
-  'column-3d': ([paddedValues, count, barW, barD, gap, maxH], p) => {
-    const arrLit = `float[32](${paddedValues.map((v) => flt(v)).join(', ')})`;
-    return `sdColumn3d(${p}, ${arrLit}, ${flt(count)}, ${flt(barW)}, ${flt(barD)}, ${flt(gap)}, ${flt(maxH)})`;
-  },
+  // Horizontal bars: same unroll in the swapped frame the GLSL helper used —
+  // world (x,y,z) → bar input (-y, x, z).
+  'column-3d': ([paddedValues, count, barW, barD, gap, maxH], p) =>
+    barBoxesExpr(`vec3(-(${p}).y, (${p}).x, (${p}).z)`, paddedValues, count, barW, barD, gap, maxH),
 
   // line-3d (Atlas chart atom, 2026-06-18) — see components/charts/data/line-3d.js
   // Polyline with sphere markers. N points + N-1 capsule connectors + optional
   // closed loop. closedFlag = 0 or 1 (passed as float for ABI uniformity).
+  // Unrolled (ES-1.00-safe) — see lineExpr above; no float[32] constructor.
   'line-3d': (
     [paddedValues, count, pointSpacing, pointRadius, lineThickness, maxH, closedFlag],
     p,
-  ) => {
-    const arrLit = `float[32](${paddedValues.map((v) => flt(v)).join(', ')})`;
-    return `sdLine3d(${p}, ${arrLit}, ${flt(count)}, ${flt(pointSpacing)}, ${flt(pointRadius)}, ${flt(lineThickness)}, ${flt(maxH)}, ${flt(closedFlag)})`;
-  },
+  ) => lineExpr(p, paddedValues, count, pointSpacing, pointRadius, lineThickness, maxH, closedFlag),
 
   // pie-3d (Atlas chart atom, 2026-06-18) — see components/charts/data/pie-3d.js
   // GLSL only uses geometry params (disc/donut SDF). Slice values + startAngle
@@ -782,6 +911,15 @@ const OPS = {
     }
     const count = asArr3(opts.count);
     return walk(children[0], `repL3(${p}, ${vec3(period)}, ${vec3(count)})`);
+  },
+
+  // ---- Axis mirror (|axis| fold) ------------------------------------------
+  // dn.js mirrorAxis 的 GPU 面：scalars[0] = axisIdx (0=x, 1=y, 2=z)。scene 层
+  // 'mirror' 域操作经 compile.js applyMirror 走到这里(Wave C lowering 产物)。
+  mirrorAxis: (sdf, p) => {
+    const axis = sdf.ast.scalars[0] ?? 0;
+    const fn = axis === 1 ? 'mirY3' : axis === 2 ? 'mirZ3' : 'mirX3';
+    return walk(sdf.ast.children[0], `${fn}(${p})`);
   },
 
   // ---- 2D → 3D pseudo-primitive ops --------------------------------------

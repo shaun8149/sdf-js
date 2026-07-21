@@ -1,0 +1,410 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Atlas Author 2D — text → deck (weak-display preview)</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+        background: #0e0f12;
+        font-family: -apple-system, Inter, sans-serif;
+      }
+      #wrap {
+        max-width: 1320px;
+        margin: 0 auto;
+        padding: 24px 20px 140px;
+      }
+      h1 {
+        color: #fff;
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        margin: 0 0 4px;
+      }
+      #sub {
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 12px;
+        margin: 0 0 20px;
+      }
+      #slides {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+        gap: 18px;
+      }
+      .slide-card {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 10px;
+        overflow: hidden;
+      }
+      .slide-card canvas {
+        display: block;
+        width: 100%;
+        height: auto;
+        background: #fff;
+      }
+      .slide-card .cap {
+        padding: 8px 12px;
+        color: rgba(255, 255, 255, 0.65);
+        font-size: 11px;
+        font-weight: 600;
+      }
+      /* author bar — same one-input UX as author.html */
+      #bar {
+        position: fixed;
+        left: 50%;
+        bottom: 22px;
+        transform: translateX(-50%);
+        width: min(820px, calc(100vw - 40px));
+        display: flex;
+        gap: 8px;
+        z-index: 20;
+      }
+      #mode,
+      #scaffold {
+        align-self: center;
+        padding: 8px 6px;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        background: rgba(20, 22, 28, 0.9);
+        color: #fff;
+        font:
+          600 12px -apple-system,
+          Inter,
+          sans-serif;
+        cursor: pointer;
+      }
+      #prompt {
+        flex: 1;
+        resize: none;
+        height: 52px;
+        padding: 14px 16px;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        background: rgba(20, 22, 28, 0.92);
+        color: #fff;
+        font:
+          500 14px -apple-system,
+          Inter,
+          sans-serif;
+        outline: none;
+      }
+      #prompt:focus {
+        border-color: rgba(90, 150, 250, 0.7);
+      }
+      #go {
+        padding: 0 22px;
+        border-radius: 10px;
+        border: 0;
+        background: #2d6fd6;
+        color: #fff;
+        font:
+          700 14px -apple-system,
+          Inter,
+          sans-serif;
+        cursor: pointer;
+      }
+      #go:disabled {
+        opacity: 0.5;
+        cursor: wait;
+      }
+      #exportRow {
+        display: flex;
+        gap: 8px;
+      }
+      #exportRow button {
+        padding: 0 16px;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        background: rgba(255, 255, 255, 0.06);
+        color: #fff;
+        font:
+          600 13px -apple-system,
+          Inter,
+          sans-serif;
+        cursor: pointer;
+      }
+      #exportRow select {
+        border-radius: 9px;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        background: rgba(20, 22, 28, 0.9);
+        color: #fff;
+        font:
+          600 12px -apple-system,
+          Inter,
+          sans-serif;
+        padding: 0 6px;
+        cursor: pointer;
+      }
+      #exportRow select:disabled {
+        opacity: 0.35;
+        cursor: not-allowed;
+      }
+      #exportRow button:disabled {
+        opacity: 0.35;
+        cursor: not-allowed;
+      }
+      #status {
+        position: fixed;
+        left: 50%;
+        bottom: 84px;
+        transform: translateX(-50%);
+        font:
+          500 12px -apple-system,
+          Inter,
+          sans-serif;
+        color: rgba(255, 255, 255, 0.6);
+        z-index: 20;
+        max-width: min(820px, calc(100vw - 40px));
+        text-align: center;
+      }
+      #status.err {
+        color: #ff9a8a;
+      }
+      /* provenance chip — the artwork's identity, click to copy its re-open link */
+      #prov {
+        position: fixed;
+        left: 50%;
+        bottom: 108px;
+        transform: translateX(-50%);
+        z-index: 20;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 999px;
+        padding: 4px 12px;
+        background: rgba(20, 22, 28, 0.9);
+        color: rgba(255, 255, 255, 0.55);
+        font:
+          500 11px ui-monospace,
+          Menlo,
+          monospace;
+        cursor: pointer;
+      }
+      #prov:hover {
+        color: #fff;
+        border-color: rgba(90, 150, 250, 0.7);
+      }
+      .slide-card {
+        position: relative;
+      }
+      .slide-card.locked {
+        outline: 2px solid #e0a33a;
+        outline-offset: -2px;
+      }
+      .slide-card.locked .slide-tools {
+        opacity: 1;
+      }
+      .slide-tools {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        display: flex;
+        gap: 6px;
+        opacity: 0;
+        transition: opacity 0.15s;
+        z-index: 5;
+      }
+      .slide-card:hover .slide-tools {
+        opacity: 1;
+      }
+      .slide-tools button {
+        border: none;
+        border-radius: 7px;
+        padding: 5px 9px;
+        background: rgba(20, 22, 28, 0.85);
+        color: #fff;
+        font-size: 14px;
+        cursor: pointer;
+      }
+      .slide-tools button:disabled {
+        opacity: 0.4;
+        cursor: wait;
+      }
+      .slide-edit-row {
+        display: none;
+        position: absolute;
+        top: 44px;
+        right: 8px;
+        left: 8px;
+        gap: 6px;
+        z-index: 5;
+      }
+      .slide-edit-row.open {
+        display: flex;
+      }
+      .slide-edit-row input {
+        flex: 1;
+        padding: 7px 10px;
+        border-radius: 7px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        background: rgba(20, 22, 28, 0.92);
+        color: #fff;
+        font:
+          500 13px -apple-system,
+          Inter,
+          sans-serif;
+        outline: none;
+      }
+      .slide-edit-row button {
+        border: none;
+        border-radius: 7px;
+        padding: 5px 12px;
+        background: #2f6fd6;
+        color: #fff;
+        font-size: 14px;
+        cursor: pointer;
+      }
+      .slide-busy {
+        display: none;
+        position: absolute;
+        inset: 0;
+        background: rgba(10, 12, 16, 0.55);
+        color: #fff;
+        font:
+          600 14px -apple-system,
+          Inter,
+          sans-serif;
+        align-items: center;
+        justify-content: center;
+        z-index: 4;
+        border-radius: inherit;
+      }
+      .slide-card.busy .slide-busy {
+        display: flex;
+      }
+      /* Sprint 68: failed-slot rescue card */
+      .slide-card.failed {
+        min-height: 160px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        outline: 2px dashed rgba(255, 120, 100, 0.5);
+        outline-offset: -2px;
+      }
+      .slide-card.failed .fail-body {
+        text-align: center;
+        color: #ff9a8a;
+        font-size: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        padding: 0 16px;
+      }
+      .slide-card.failed .fail-body span {
+        color: rgba(255, 255, 255, 0.45);
+        font-size: 11px;
+      }
+      .slide-card.failed .retry {
+        border: none;
+        border-radius: 8px;
+        padding: 8px 14px;
+        background: #2d6fd6;
+        color: #fff;
+        font:
+          600 13px -apple-system,
+          Inter,
+          sans-serif;
+        cursor: pointer;
+      }
+      .slide-card.failed .retry:disabled {
+        opacity: 0.5;
+        cursor: wait;
+      }
+      /* Sprint 67: per-slide quality light (visual audit + number grounding) */
+      .qlight {
+        position: absolute;
+        top: 8px;
+        left: 8px;
+        z-index: 5;
+        border: none;
+        border-radius: 999px;
+        padding: 3px 7px;
+        background: rgba(20, 22, 28, 0.82);
+        font-size: 11px;
+        cursor: pointer;
+      }
+      #keyrow {
+        position: fixed;
+        right: 14px;
+        top: 12px;
+        z-index: 20;
+        display: flex;
+        gap: 6px;
+      }
+      #key {
+        width: 220px;
+        padding: 6px 10px;
+        border-radius: 7px;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        background: rgba(20, 22, 28, 0.9);
+        color: #ccc;
+        font: 400 11px monospace;
+        outline: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="wrap">
+      <h1>Atlas Author · 2D</h1>
+      <p id="sub">
+        Same one-input authoring as the 3D end — this page renders the deck as 2D pseudo-3D atoms
+        for weak-display machines, and exports to PPTX/PDF.
+      </p>
+      <div id="slides"></div>
+    </div>
+    <div id="keyrow">
+      <input id="key" type="password" placeholder="Anthropic API key (BYOK, stays local)" />
+    </div>
+    <button id="prov" hidden title="点击复制这件作品的复现链接 — 持链接永久复现同一修饰"></button>
+    <div id="status">describe what you want to present — Atlas builds the deck</div>
+    <div id="bar">
+      <textarea
+        id="prompt"
+        placeholder="e.g. our Q3: revenue by region (Americas leads at 890), the sales funnel from 1200 leads to 45 closed, and the new org under the CEO"
+      ></textarea>
+      <select
+        id="mode"
+        title="快速 = 1 次 LLM 调用, 3-5 张结构图. 整本 = 新闻/文章 → 整本简报 (~16 次调用, ~$0.5, ~90s)"
+      >
+        <option value="quick">快速 · 3-5 页</option>
+        <option value="full">整本 · 10-20 页</option>
+      </select>
+      <select id="scaffold" hidden title="整本的骨架 — 自动会按文章内容在 21 种骨架里选"></select>
+      <button id="go">Generate</button>
+      <div id="exportRow">
+        <select id="theme" disabled title="换主题 (零成本, 即时重渲染)"></select>
+        <button id="save" disabled title="保存 deck.json — 机器契约文件, 可重新打开/交给 3D 端">
+          💾
+        </button>
+        <button id="open" title="打开 deck.json">📂</button>
+        <input id="openfile" type="file" accept=".json,application/json" hidden />
+        <button id="redress" disabled title="换装 — 重铸修饰纹理 (内容不动, 零成本)">🎨</button>
+        <select
+          id="artmount"
+          hidden
+          title="真迹装裱 — 用原版生成艺术 mint 替换修饰引擎 (封面全幅 + 标题栏胶片条, 非商用)"
+        >
+          <option value="">装裱 · 生成引擎</option>
+        </select>
+        <select id="decorvis" disabled title="修饰纹理显示">
+          <option value="on">修饰 · 开</option>
+          <option value="off">修饰 · 关</option>
+        </select>
+        <button id="export-pptx" disabled>⬇ PPTX</button>
+        <button id="export-pdf" disabled>⬇ PDF</button>
+        <button
+          id="batch-pdf"
+          hidden
+          disabled
+          title="批量出 deck: 从优质装裱池随机选 N 件真迹, 每件出一份完整 PDF (含转场页)"
+        >
+          📦 批量
+        </button>
+      </div>
+    </div>
+    <script type="module" src="./author-2d.js"></script>
+  </body>
+</html>

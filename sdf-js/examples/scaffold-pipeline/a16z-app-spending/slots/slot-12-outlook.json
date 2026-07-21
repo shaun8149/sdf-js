@@ -1,0 +1,76 @@
+{
+  "slotIdx": 12,
+  "slotName": "outlook",
+  "slotTitle": "Outlook",
+  "slotPurpose": "What to watch next — timeline or conditions",
+  "sourceSlideIdx": 9,
+  "sourceSlideTitle": "Individual Product Origins",
+  "sceneData": {
+    "name": "news-briefing/outlook",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Outlook",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "mountain-path",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 480,
+        "args": {
+          "title": "Evolution Path: Individual → Enterprise",
+          "summit": "Multi-Product Platform",
+          "milestones": [
+            {
+              "label": "Individual Product Launch",
+              "sublabel": "11 companies started here"
+            },
+            {
+              "label": "Market Validation",
+              "sublabel": "User base growth"
+            },
+            {
+              "label": "Feature Expansion",
+              "sublabel": "Beyond initial offering"
+            },
+            {
+              "label": "Platform Maturity",
+              "sublabel": "Enterprise positioning achieved"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["timeline", "mountain-path", "bullet-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4896,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 318,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0233604,
+    "elapsedSec": 6.3,
+    "generatedAt": "2026-07-07T06:39:59.256Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

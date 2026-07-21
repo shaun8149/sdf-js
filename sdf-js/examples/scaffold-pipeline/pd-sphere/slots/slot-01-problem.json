@@ -1,0 +1,91 @@
+{
+  "slotIdx": 1,
+  "slotName": "problem",
+  "slotTitle": "Why We Built It",
+  "slotPurpose": "The pain we are addressing",
+  "sourceSlideIdx": 1,
+  "sourceSlideTitle": "3D SPHERES",
+  "sceneData": {
+    "name": "product-launch/problem",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "icon-badge",
+        "x": 120,
+        "y": 80,
+        "w": 120,
+        "h": 120,
+        "args": {
+          "name": "warning-circle",
+          "label": "Pain Points",
+          "color": [255, 120, 40]
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 120,
+        "y": 240,
+        "w": 480,
+        "h": 400,
+        "args": {
+          "items": [
+            {
+              "label": "Complex Fill Level Tracking",
+              "sublabel": "Manual monitoring of capacity across multiple systems leads to inefficiency and errors",
+              "status": "highlight"
+            },
+            {
+              "label": "No Real-Time Visibility",
+              "sublabel": "Teams lack instant insight into current fill states, causing delays in decision-making"
+            },
+            {
+              "label": "Scattered Data Sources",
+              "sublabel": "Information lives in disconnected places, making comprehensive analysis difficult"
+            },
+            {
+              "label": "Threshold Management",
+              "sublabel": "Tracking critical levels (20%, 50%, 80%, 90%) manually is time-consuming and error-prone"
+            }
+          ],
+          "title": "The Challenges Teams Face",
+          "numbered": false,
+          "highlight": 0
+        }
+      },
+      {
+        "type": "icon-badge",
+        "x": 680,
+        "y": 180,
+        "w": 480,
+        "h": 360,
+        "args": {
+          "name": "chart-bar",
+          "label": "3D Spheres solves this by providing instant visual representation of fill levels across all systems",
+          "color": [20, 60, 180]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "product-launch",
+    "theme": "pitch-cobalt-orange",
+    "recommendedAtoms": ["bullet-list", "icon-badge"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 843,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 89490,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 503,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.036920999999999995,
+    "elapsedSec": 8.3,
+    "generatedAt": "2026-06-22T15:35:11.296Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

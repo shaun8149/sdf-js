@@ -1,0 +1,437 @@
+{
+  "format": "atlas-deck",
+  "version": 1,
+  "title": "eval-yosemite-trip-2026",
+  "theme": {
+    "id": "editorial-navy",
+    "label": "Editorial · Navy",
+    "macroCluster": "editorial",
+    "bg": [248, 246, 240],
+    "silhouetteColor": [22, 35, 70],
+    "accent": [38, 70, 130],
+    "colors": [
+      [38, 70, 130],
+      [110, 95, 75],
+      [165, 130, 90],
+      [200, 195, 180]
+    ],
+    "font": {
+      "heading": "Georgia, \"Source Serif Pro\", serif",
+      "body": "Inter, system-ui, sans-serif"
+    },
+    "featured": true
+  },
+  "scaffold": {
+    "id": "generic-deck",
+    "label": "Generic Deck"
+  },
+  "decor": null,
+  "shared": null,
+  "slots": [
+    {
+      "slotIdx": 0,
+      "slotName": "cover",
+      "slotTitle": "Title",
+      "sceneData": {
+        "name": "generic-deck/cover",
+        "layout": "cover",
+        "subjects": [
+          {
+            "type": "image",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 720,
+            "args": {
+              "src": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 360'><defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='%23ffa654'/><stop offset='1' stop-color='%23c44a4a'/></linearGradient></defs><rect width='640' height='360' fill='url(%23g)'/><polygon fill='%23332244' points='0,360 120,180 220,260 340,160 460,250 560,140 640,220 640,360'/><text x='320' y='340' fill='white' font-size='14' text-anchor='middle' opacity='0.6'>Yosemite valley sunrise (embedded photo placeholder)</text></svg>",
+              "fit": "cover"
+            }
+          },
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 520,
+            "w": 1280,
+            "h": 200,
+            "args": {
+              "title": "Yosemite Trip Report",
+              "subtitle": "5-day backcountry + valley itinerary",
+              "author": "Group of 4",
+              "date": "September 2026",
+              "style": "gradient"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 1,
+      "slotName": "opening",
+      "slotTitle": "Opening",
+      "sceneData": {
+        "name": "generic-deck/opening",
+        "layout": "stage",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Opening"
+            }
+          },
+          {
+            "type": "mountain-path",
+            "x": 140,
+            "y": 160,
+            "w": 1000,
+            "h": 500,
+            "args": {
+              "title": "Our Goal",
+              "summit": "45 Miles Complete",
+              "milestones": [
+                {
+                  "label": "High Country",
+                  "sublabel": "3 days granite peaks"
+                },
+                {
+                  "label": "Alpine Lakes",
+                  "sublabel": "Crystal waters"
+                },
+                {
+                  "label": "Big Waterfalls",
+                  "sublabel": "Valley descent"
+                },
+                {
+                  "label": "Valley Floor",
+                  "sublabel": "2 days relaxed pace"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 2,
+      "slotName": "section-1",
+      "slotTitle": "Section 1",
+      "sceneData": {
+        "name": "generic-deck/section-1",
+        "layout": "stage",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "El Capitan",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "image",
+            "x": 40,
+            "y": 150,
+            "w": 580,
+            "h": 520,
+            "args": {
+              "src": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 360'><rect width='640' height='360' fill='%23b8c8d8'/><polygon fill='%23556677' points='80,360 240,40 320,360'/><polygon fill='%23445566' points='240,40 320,360 380,360'/><circle cx='500' cy='80' r='28' fill='%23ffe' opacity='0.7'/><text x='320' y='340' fill='%23223' font-size='14' text-anchor='middle' opacity='0.55'>El Capitan (embedded photo placeholder)</text></svg>",
+              "fit": "cover",
+              "caption": "Yosemite Valley — North Side"
+            }
+          },
+          {
+            "type": "bullet-list",
+            "x": 660,
+            "y": 150,
+            "w": 580,
+            "h": 520,
+            "args": {
+              "title": "Day 2 Highlights",
+              "items": [
+                {
+                  "icon": "mountains",
+                  "label": "Granite monolith view",
+                  "sublabel": "North side of Yosemite Valley"
+                },
+                {
+                  "icon": "person-simple-walk",
+                  "label": "Base trail hike",
+                  "sublabel": "3 miles round trip"
+                },
+                {
+                  "icon": "person-simple-tai-chi",
+                  "label": "Spotted 4 climbers",
+                  "sublabel": "Attempting the Nose route"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 3,
+      "slotName": "section-2",
+      "slotTitle": "Section 2",
+      "sceneData": {
+        "name": "generic-deck/section-2",
+        "layout": "stage",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Tuolumne Meadows",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "bullet-list",
+            "x": 80,
+            "y": 180,
+            "w": 1120,
+            "h": 480,
+            "args": {
+              "items": [
+                {
+                  "icon": "mountains",
+                  "label": "Alpine meadow at 8,600 ft",
+                  "sublabel": "Day 3 basecamp"
+                },
+                {
+                  "icon": "tent",
+                  "label": "Camp by Cathedral Lake"
+                },
+                {
+                  "icon": "moon-stars",
+                  "label": "Milky Way crystal clear",
+                  "sublabel": "Stargazing incredible"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 4,
+      "slotName": "section-3",
+      "slotTitle": "Section 3",
+      "sceneData": {
+        "name": "generic-deck/section-3",
+        "layout": "stage",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Section 3",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "image",
+            "x": 40,
+            "y": 160,
+            "w": 580,
+            "h": 500,
+            "args": {
+              "src": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 360'><defs><linearGradient id='sky' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='%2370a0d0'/><stop offset='1' stop-color='%23ffe0a0'/></linearGradient></defs><rect width='640' height='360' fill='url(%23sky)'/><path fill='%23667780' d='M40,360 Q 140,180 260,260 Q 360,330 460,200 Q 540,140 640,260 L 640,360 Z'/><circle cx='100' cy='80' r='35' fill='%23ffeebb' opacity='0.9'/><text x='320' y='340' fill='%23223' font-size='14' text-anchor='middle' opacity='0.55'>Half Dome summit (embedded photo placeholder)</text></svg>",
+              "fit": "cover",
+              "caption": "Half Dome summit climb",
+              "captionPosition": "bottom"
+            }
+          },
+          {
+            "type": "bullet-list",
+            "x": 660,
+            "y": 160,
+            "w": 580,
+            "h": 500,
+            "args": {
+              "title": "Half Dome Ascent",
+              "items": [
+                {
+                  "icon": "calendar",
+                  "label": "Day 4 summit climb",
+                  "sublabel": "Cables route"
+                },
+                {
+                  "icon": "navigation-arrow",
+                  "label": "16 miles round trip",
+                  "sublabel": "~10 hours total"
+                },
+                {
+                  "icon": "clock",
+                  "label": "Early start 4am",
+                  "sublabel": "Cables busy but manageable"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 5,
+      "slotName": "numbers",
+      "slotTitle": "By the Numbers",
+      "sceneData": {
+        "name": "generic-deck/numbers",
+        "layout": "grid",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "By the Numbers",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "kpi-card",
+            "x": 40,
+            "y": 160,
+            "w": 380,
+            "h": 240,
+            "args": {
+              "value": "47",
+              "label": "Miles Hiked",
+              "icon": "map-trifold",
+              "style": "light"
+            }
+          },
+          {
+            "type": "kpi-card",
+            "x": 450,
+            "y": 160,
+            "w": 380,
+            "h": 240,
+            "args": {
+              "value": "11,200 ft",
+              "label": "Elevation Gain",
+              "icon": "mountains",
+              "style": "light"
+            }
+          },
+          {
+            "type": "kpi-card",
+            "x": 860,
+            "y": 160,
+            "w": 380,
+            "h": 240,
+            "args": {
+              "value": "1,432",
+              "label": "Photos Taken",
+              "icon": "camera",
+              "style": "light"
+            }
+          },
+          {
+            "type": "stat-with-icon",
+            "x": 140,
+            "y": 430,
+            "w": 480,
+            "h": 240,
+            "args": {
+              "value": "Half Dome",
+              "label": "Best Day",
+              "sublabel": "No contest",
+              "icon": "star",
+              "iconColor": "rgb(38, 70, 130)",
+              "trend": "↑",
+              "trendDirection": "up"
+            }
+          },
+          {
+            "type": "callout-banner",
+            "x": 660,
+            "y": 430,
+            "w": 580,
+            "h": 240,
+            "args": {
+              "type_": "warning",
+              "heading": "Worst Moment",
+              "body": "Dropped phone at Glacier Point lookout",
+              "icon": "device-mobile-slash"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 6,
+      "slotName": "closing",
+      "slotTitle": "Closing",
+      "sceneData": {
+        "name": "generic-deck/closing",
+        "layout": "stage",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "What's Next",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "timeline",
+            "x": 80,
+            "y": 180,
+            "w": 1120,
+            "h": 400,
+            "args": {
+              "events": [
+                {
+                  "date": "Jan 2027",
+                  "label": "Permit Window Opens",
+                  "sublabel": "Set calendar reminders"
+                },
+                {
+                  "date": "Spring 2027",
+                  "label": "Return for Waterfall Season",
+                  "sublabel": "Best viewing conditions"
+                }
+              ],
+              "axisLabel": "2027 Timeline"
+            }
+          },
+          {
+            "type": "bullet-list",
+            "x": 80,
+            "y": 600,
+            "w": 1120,
+            "h": 80,
+            "args": {
+              "items": [
+                {
+                  "icon": "camera",
+                  "label": "Bring real camera next time"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

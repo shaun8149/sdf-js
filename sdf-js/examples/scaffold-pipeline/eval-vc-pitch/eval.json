@@ -1,0 +1,82 @@
+{
+  "deckDir": "/Users/hexiaoyang/Documents/sdf-main/sdf-js/examples/scaffold-pipeline/eval-vc-pitch",
+  "deckName": "eval-vc-pitch",
+  "structure": {
+    "slots_total": 10,
+    "slots_baked": 9,
+    "slots_empty": 1,
+    "slots_errored": 0,
+    "fill_rate": 0.9,
+    "pick_method": "llm",
+    "scaffold_id": "pitch-deck-vc",
+    "theme_id": "pitch-cobalt-orange"
+  },
+  "atomQuality": {
+    "atom_instances": 18,
+    "atom_types_distinct": 11,
+    "variety_ratio": 0.6111111111111112,
+    "unknown_atom_count": 0,
+    "unknown_atom_types": [],
+    "arg_violations": 0,
+    "arg_violations_top_offenders": []
+  },
+  "threeDReadiness": {
+    "twin_coverage": 1,
+    "untwinned_types": [],
+    "lift_success": 9,
+    "lift_attempted": 9,
+    "lift_errors": [],
+    "lifted_subject_rate": 1
+  },
+  "visual": {
+    "total": 0,
+    "counts": {},
+    "slots_with_issues": []
+  },
+  "textBudget": {
+    "chars_per_slot": 182.22222222222223,
+    "max_slot_chars": 238
+  },
+  "fidelity": {
+    "numbers_total": 27,
+    "numbers_found": 25,
+    "number_recall": 0.9259259259259259,
+    "missing_numbers": [
+      "$740K",
+      "47"
+    ],
+    "deck_numbers_total": 37,
+    "derived_cited_count": 0,
+    "hallucinated_numbers": [
+      "0.12",
+      "0.74",
+      "224%",
+      "1200000",
+      "0.5"
+    ],
+    "deck_entities_total": 17,
+    "hallucinated_entities": [
+      "Pricing Tiers"
+    ],
+    "entity_precision": 0.9411764705882353,
+    "number_precision": 0.8648648648648649,
+    "entities_total": 5,
+    "entities_found": 4,
+    "entity_recall": 0.8,
+    "missing_entities": [
+      "Google Slides"
+    ]
+  },
+  "score": {
+    "total": 97.5,
+    "breakdown": {
+      "structure": 22.5,
+      "variety": 15,
+      "hallucination": 15,
+      "twin": 20,
+      "lift": 15,
+      "text": 10
+    }
+  },
+  "generatedAt": "2026-07-10T07:29:14.096Z"
+}

@@ -1,0 +1,251 @@
+// sdf-js/src/scene/modifiers.js — Blender-borrow Wave B: PLACEMENT modifiers.
+//
+// `subject.modifiers` is an ordered, non-destructive stack that multiplies a
+// subject's PLACEMENT (translate + yaw), applied at expansion time. This is a
+// deliberate simplification of Blender's modifier stack: Blender's Array/
+// Mirror operate in geometry space; ours operate on where copies STAND. Every
+// repetition in the corpus (breadcrumb runways, guard pairs, rings, scatter
+// fields) is a placement pattern, and placement-space keeps the semantics
+// trivially explainable to the lift LLM ("this subject, standing N times").
+//
+// v1 = EXPANSION ONLY (spec §1.2): compile-time unrolling into N instances —
+// the semantic win (small JSON, no hand-unrolled arrays, no id contracts).
+// The leaf-count perf win is Wave C's domain-rep lowering; scatter is
+// expansion forever (irregular placements can't domain-repeat).
+//
+// Determinism: scatter uses the repo's named-lane PRNG (makeHashRand) keyed
+// by `${seed}:${subject.id}` — same seed, same field, forever (mint-hash
+// covenant). No Math.random anywhere.
+//
+// Limitation (documented, validator-warned): animation exprs produce the FULL
+// y for a channel, so instances of a y-offsetting array share the same y
+// motion — an array with offset[1] ≠ 0 plus a translate.y animation is
+// unsupported in v1.
+import { makeHashRand } from '../present/decor/rand.js';
+
+export const MODIFIER_TYPES = ['array', 'radial', 'mirror', 'scatter'];
+const MAX_COUNT = 64;
+
+// One instance = { t: [dx,dy,dz] ABSOLUTE translate, yaw, yawFlip }.
+const applyOne = {
+  array(instances, m) {
+    const out = [];
+    const [ox, oy, oz] = m.offset;
+    for (const inst of instances)
+      for (let i = 0; i < m.count; i++)
+        out.push({ ...inst, t: [inst.t[0] + ox * i, inst.t[1] + oy * i, inst.t[2] + oz * i] });
+    return out;
+  },
+  radial(instances, m) {
+    const out = [];
+    const [cx, cz] = m.center || [0, 0];
+    const start = m.startAngle || 0;
+    for (const inst of instances)
+      for (let i = 0; i < m.count; i++) {
+        const th = start + (i * 2 * Math.PI) / m.count;
+        out.push({
+          ...inst,
+          t: [cx + Math.sin(th) * m.radius, inst.t[1], cz + Math.cos(th) * m.radius],
+          yaw: m.faceCenter ? inst.yaw + th : inst.yaw,
+        });
+      }
+    return out;
+  },
+  mirror(instances, m) {
+    const out = [];
+    const [ox, oz] = m.origin || [0, 0]; // mirror PLANE position (world x=ox / z=oz)
+    for (const inst of instances) {
+      out.push(inst);
+      // true geometric mirror for yaw-only subjects (the analytic renderer's
+      // rotation constraint anyway): position reflects across the plane,
+      // yaw negates
+      out.push(
+        m.axis === 'x'
+          ? { ...inst, t: [2 * ox - inst.t[0], inst.t[1], inst.t[2]], yaw: -inst.yaw }
+          : { ...inst, t: [inst.t[0], inst.t[1], 2 * oz - inst.t[2]], yaw: -inst.yaw },
+      );
+    }
+    return out;
+  },
+  scatter(instances, m, subjectId) {
+    const R = makeHashRand(`${m.seed}:${subjectId}`);
+    const out = [];
+    for (const inst of instances)
+      for (let i = 0; i < m.count; i++) {
+        let x, z;
+        if (m.region.kind === 'annulus') {
+          const [cx, cz] = m.region.center || [0, 0];
+          const th = R.range(`a${i}`, 0, 2 * Math.PI);
+          const r = R.range(`r${i}`, m.region.rMin, m.region.rMax);
+          x = cx + Math.sin(th) * r;
+          z = cz + Math.cos(th) * r;
+        } else {
+          x = R.range(`x${i}`, m.region.min[0], m.region.max[0]);
+          z = R.range(`z${i}`, m.region.min[1], m.region.max[1]);
+        }
+        out.push({ ...inst, t: [x, inst.t[1], z], yaw: inst.yaw + R.range(`y${i}`, 0, Math.PI) });
+      }
+    return out;
+  },
+};
+
+/**
+ * shiftModifier(m, [dx, dy, dz]) → modifier
+ * Rewrite a modifier's SPATIAL anchors when its subject is transplanted to a
+ * new origin (assembleDeck's job — the same contract as its build-in-expr
+ * rewriting: placement shifts, patterns don't). array offsets are relative
+ * (unchanged); mirror planes, radial centers and scatter regions are
+ * positions and must ride along.
+ */
+export function shiftModifier(m, [dx, , dz]) {
+  if (m.type === 'mirror') {
+    const [ox, oz] = m.origin || [0, 0];
+    return { ...m, origin: [ox + dx, oz + dz] };
+  }
+  if (m.type === 'radial') {
+    const [cx, cz] = m.center || [0, 0];
+    return { ...m, center: [cx + dx, cz + dz] };
+  }
+  if (m.type === 'scatter') {
+    const r = m.region;
+    if (r.kind === 'annulus') {
+      const [cx, cz] = r.center || [0, 0];
+      return { ...m, region: { ...r, center: [cx + dx, cz + dz] } };
+    }
+    return {
+      ...m,
+      region: { ...r, min: [r.min[0] + dx, r.min[1] + dz], max: [r.max[0] + dx, r.max[1] + dz] },
+    };
+  }
+  return m; // array: offset is relative
+}
+
+// ---- Wave C: domain-rep lowering -----------------------------------------------
+// For the stone/rich raymarch tiers, a qualifying modifier lowers to an
+// EXISTING DomainGroup (rep-with-count / mirror) instead of expanding: N
+// instances = ONE leaf in the shader — the super-linear leaf-cost fix.
+// The analytic tier never lowers (rep/mirror are outside its SUPPORTED set
+// and would drop the whole frame to stone); scatter never lowers (irregular
+// placements can't domain-repeat). Lowering is a pure OPTIMIZATION: the
+// semantics are defined by expansion, and the tests pin CPU-SDF distance
+// equality between the two forms.
+function tryLowerSubject(s) {
+  if (!Array.isArray(s.modifiers) || s.modifiers.length !== 1) return null;
+  const m = s.modifiers[0];
+  const base = (s.transform && s.transform.translate) || [0, 0, 0];
+  const rot = (s.transform && s.transform.rotate) || [0, 0, 0];
+  if (rot[0] || rot[2]) return null; // yaw-only frames
+  const inner = { ...s };
+  delete inner.modifiers;
+  delete inner.collection; // routing rides on the wrapper
+  delete inner.material; // per-leaf tagging happens on the wrapper
+  delete inner.animation; // wrapper owns motion (same semantics as expansion)
+  delete inner.pattern;
+
+  if (m.type === 'array') {
+    if (m.count % 2 === 0) return null; // rep tiles are 2c+1 → odd runs only
+    const [ox, oy, oz] = m.offset;
+    if (oy !== 0) return null; // XZ runs only
+    const L = Math.hypot(ox, oz);
+    if (L < 1e-9) return null;
+    const runYaw = Math.atan2(-oz, ox); // local +x → world run direction
+    // EXACTNESS GUARD: domain rep evaluates the nearest tile only. A child
+    // whose yaw differs from the run direction is not reflection-symmetric
+    // about tile boundaries — near-boundary distances overestimate (the
+    // classic no-neighbor-check rep artifact). Aligned children (the runway
+    // case, and any yaw offset that is a multiple of π for 180°-symmetric
+    // prims) are EXACT; everything else falls back to expansion. Never trade
+    // field correctness for a leaf.
+    const rel = ((rot[1] - runYaw) % Math.PI) + (rot[1] - runYaw < 0 ? Math.PI : 0);
+    const aligned = Math.min(rel % Math.PI, Math.PI - (rel % Math.PI)) < 1e-6;
+    if (!aligned) return null;
+    const c = (m.count - 1) / 2;
+    inner.id = `${s.id}-tile`;
+    inner.transform = { translate: [0, 0, 0], rotate: [0, rot[1] - runYaw, 0] };
+    return {
+      id: s.id,
+      type: 'rep',
+      args: { period: [L, 0, 0], count: [c, 0, 0] },
+      source: inner,
+      transform: {
+        translate: [base[0] + ox * c, base[1], base[2] + oz * c],
+        rotate: [0, runYaw, 0],
+      },
+      ...(s.material ? { material: s.material } : {}),
+      ...(s.pattern ? { pattern: s.pattern } : {}),
+      ...(s.collection ? { collection: s.collection } : {}),
+      ...(s.animation ? { animation: s.animation } : {}),
+    };
+  }
+
+  if (m.type === 'mirror') {
+    const [ox, oz] = m.origin || [0, 0];
+    const local = [base[0] - ox, base[1], base[2] - oz];
+    // the child must live strictly in the positive half of the fold — the
+    // abs() fold shows the +axis side on both halves
+    const coord = m.axis === 'x' ? local[0] : local[2];
+    if (coord <= 1e-6) return null;
+    inner.id = `${s.id}-half`;
+    inner.transform = { translate: local, rotate: [0, rot[1], 0] };
+    return {
+      id: s.id,
+      type: 'mirror',
+      args: { axis: m.axis },
+      source: inner,
+      transform: { translate: [ox, 0, oz] },
+      ...(s.material ? { material: s.material } : {}),
+      ...(s.pattern ? { pattern: s.pattern } : {}),
+      ...(s.collection ? { collection: s.collection } : {}),
+      ...(s.animation ? { animation: s.animation } : {}),
+    };
+  }
+
+  return null; // radial (no producer yet) / scatter (never — irregular)
+}
+
+/**
+ * expandModifiers(scene, opts?) → scene
+ * Unroll every modifier stack into plain instances. Instance ids are
+ * `{id}#{i}` (identity only — routing rides the copied collection tag). A
+ * scene without modifiers passes through untouched (referential no-op).
+ * opts.lower — Wave C: qualifying single-modifier stacks lower to
+ * DomainGroups (one shader leaf) instead of expanding. Raymarch tiers only,
+ * never analytic.
+ */
+export function expandModifiers(scene, { lower = false } = {}) {
+  if (!scene || !Array.isArray(scene.subjects)) return scene;
+  if (!scene.subjects.some((s) => s && Array.isArray(s.modifiers) && s.modifiers.length))
+    return scene;
+  const subjects = [];
+  for (const s of scene.subjects) {
+    if (!s || !Array.isArray(s.modifiers) || !s.modifiers.length) {
+      subjects.push(s);
+      continue;
+    }
+    if (lower) {
+      const lowered = tryLowerSubject(s);
+      if (lowered) {
+        subjects.push(lowered);
+        continue;
+      }
+    }
+    const base = (s.transform && s.transform.translate) || [0, 0, 0];
+    const rot = (s.transform && s.transform.rotate) || [0, 0, 0];
+    let instances = [{ t: [...base], yaw: rot[1] }];
+    for (const m of s.modifiers) instances = applyOne[m.type](instances, m, s.id);
+    instances.forEach((inst, i) => {
+      const clone = { ...s, id: `${s.id}#${i}` };
+      delete clone.modifiers;
+      clone.transform = {
+        ...(s.transform || {}),
+        translate: inst.t,
+        // pitch/roll ride through untouched; yaw comes from the instance
+        ...(rot[0] || rot[2] || inst.yaw || (s.transform && s.transform.rotate)
+          ? { rotate: [rot[0], inst.yaw, rot[2]] }
+          : {}),
+      };
+      subjects.push(clone);
+    });
+  }
+  return { ...scene, subjects };
+}

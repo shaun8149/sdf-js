@@ -1,0 +1,381 @@
+// =============================================================================
+// atoms-2d/charts/matrix/matrix-grid.js — 2x2 / NxM matrix grid
+// -----------------------------------------------------------------------------
+// 2D pseudo-3D equivalent of matrix-grid-3d. Generic 2x2 framework
+// (SWOT / Eisenhower / BCG-style 2x2 strategic matrix).
+//
+// Args:
+//   rows / cols    — grid dimensions (default 2x2)
+//   cells          — array of { label, sublabel?, color? } (row-major order)
+//   xAxis          — optional { low, high } axis labels (bottom)
+//   yAxis          — optional { low, high } axis labels (left)
+//   title          — optional title
+//   quadrantAxes   — optional { x: string, y: string } — named axis arrows for
+//                    BCG-style rendering (draws labeled arrows outside the grid)
+//   bubbles        — optional array of { row, col, label?, size? } — filled
+//                    circle overlays positioned at cell (row,col) center.
+//                    size is 0..1 relative to half the cell's smaller dimension
+//                    (default 0.5). Enables BCG product-bubble rendering.
+// =============================================================================
+
+import { rgbCss, rgbaCss } from '../../renderer.js';
+import { resolveIcon } from '../../../../icons/index.js';
+
+export const spec = {
+  type: 'matrix-grid',
+  category: 'charts/matrix',
+  description: '2x2 / NxM strategic matrix grid (SWOT / Eisenhower / BCG).',
+  args: {
+    rows: { type: 'integer 1-4', default: 2 },
+    cols: { type: 'integer 1-4', default: 2 },
+    cells: {
+      type: 'array of { label, sublabel?, color? } in row-major order',
+      required: true,
+      example: [
+        { label: 'Strengths' },
+        { label: 'Weaknesses' },
+        { label: 'Opportunities' },
+        { label: 'Threats' },
+      ],
+    },
+    xAxis: { type: '{ low, high }?', example: { low: 'Low', high: 'High' } },
+    yAxis: { type: '{ low, high }?', example: { low: 'Low', high: 'High' } },
+    title: { type: 'string?', example: 'SWOT Analysis' },
+    quadrantAxes: {
+      type: '{ x: string, y: string }?',
+      example: { x: 'Market Growth', y: 'Market Share' },
+    },
+    bubbles: {
+      type: 'array of { row, col, label?, size? }?',
+      example: [{ row: 0, col: 1, label: 'Stars', size: 0.5 }],
+    },
+  },
+};
+
+const PAD = 20;
+const AXIS_W = 50;
+
+export function drawPseudo3D(ctx, args, opts = {}) {
+  const x = opts.x ?? 0;
+  const y = opts.y ?? 0;
+  const w = opts.w ?? 480;
+  const h = opts.h ?? 480;
+  const palette = opts.palette || {};
+  const fg = palette.silhouetteColor || [30, 27, 30];
+  const colors = palette.colors || [
+    [60, 130, 200],
+    [180, 90, 90],
+    [60, 170, 110],
+    [180, 130, 60],
+  ];
+
+  const rows = clamp(args.rows | 0 || 2, 1, 4);
+  const cols = clamp(args.cols | 0 || 2, 1, 4);
+  const cells = Array.isArray(args.cells) ? args.cells : [];
+  const xAxis = args.xAxis;
+  const yAxis = args.yAxis;
+
+  let plotTop = y + PAD;
+  if (args.title) {
+    ctx.fillStyle = rgbCss(fg);
+    ctx.font = `700 ${Math.round(h * 0.06)}px Inter, system-ui, sans-serif`;
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText(args.title, x + PAD, y + PAD);
+    plotTop = y + h * 0.1;
+  }
+
+  // Reserve gutter space for axis labels. quadrantAxes (BCG-style) needs
+  // its own gutter even when xAxis/yAxis aren't set, otherwise the labels
+  // render off-canvas below/left of the visible area.
+  const hasQuadrantAxes = !!args.quadrantAxes;
+  const yAxisW = yAxis ? AXIS_W : hasQuadrantAxes && args.quadrantAxes.y ? 30 : 0;
+  const xAxisH = xAxis ? 24 : hasQuadrantAxes && args.quadrantAxes.x ? 28 : 0;
+  const gridL = x + PAD + yAxisW;
+  const gridR = x + w - PAD;
+  const gridT = plotTop + PAD;
+  const gridB = y + h - PAD - xAxisH;
+  const cellW = (gridR - gridL) / cols;
+  const cellH = (gridB - gridT) / rows;
+
+  // Cell backgrounds (+ icon) — drawn first, UNDER bubbles. Labels are drawn
+  // in a separate pass below, AFTER bubbles, so bubble overlays never
+  // obscure cell text (see bubbles block for why).
+  const cellRects = [];
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const idx = r * cols + c;
+      const cell = cells[idx] || {};
+      const color = cell.color || colors[idx % colors.length];
+      const cx = gridL + c * cellW;
+      const cy = gridT + r * cellH;
+      const rx = cx + 6;
+      const ry = cy + 6;
+      const rw = cellW - 12;
+      const rh = cellH - 12;
+      cellRects.push({ rx, ry, rw, rh, cell });
+      drawCellBg(ctx, rx, ry, rw, rh, color, fg, cell.icon);
+    }
+  }
+
+  // Axes
+  if (xAxis) {
+    ctx.fillStyle = rgbaCss(fg, 0.7);
+    ctx.font = `600 ${Math.round(h * 0.04)}px Inter, system-ui, sans-serif`;
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText(xAxis.low || '', gridL, gridB + 6);
+    ctx.textAlign = 'right';
+    ctx.fillText(xAxis.high || '', gridR, gridB + 6);
+    // Axis line + arrow
+    ctx.strokeStyle = rgbaCss(fg, 0.4);
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(gridL, gridB);
+    ctx.lineTo(gridR, gridB);
+    ctx.stroke();
+  }
+  if (yAxis) {
+    ctx.fillStyle = rgbaCss(fg, 0.7);
+    ctx.font = `600 ${Math.round(h * 0.04)}px Inter, system-ui, sans-serif`;
+    ctx.save();
+    ctx.translate(x + PAD + 8, gridB);
+    ctx.rotate(-Math.PI / 2);
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText(yAxis.low || '', 0, 0);
+    ctx.textAlign = 'right';
+    ctx.fillText(yAxis.high || '', gridB - gridT, 0);
+    ctx.restore();
+  }
+
+  // ---- quadrantAxes — named arrow labels for BCG-style rendering ----
+  // Draw after cells so arrows appear on top of grid borders
+  if (args.quadrantAxes) {
+    const qa = args.quadrantAxes;
+    const arrowSize = 6;
+    const labelFontSize = Math.round(h * 0.042);
+    ctx.save();
+    ctx.strokeStyle = rgbaCss(fg, 0.65);
+    ctx.fillStyle = rgbaCss(fg, 0.65);
+    ctx.lineWidth = 1.5;
+    ctx.font = `600 ${labelFontSize}px Inter, system-ui, sans-serif`;
+
+    // X-axis arrow: below grid, left→right
+    if (qa.x) {
+      const ay = gridB + 14;
+      ctx.beginPath();
+      ctx.moveTo(gridL, ay);
+      ctx.lineTo(gridR, ay);
+      ctx.stroke();
+      // Arrow head right
+      ctx.beginPath();
+      ctx.moveTo(gridR, ay);
+      ctx.lineTo(gridR - arrowSize, ay - arrowSize / 2);
+      ctx.lineTo(gridR - arrowSize, ay + arrowSize / 2);
+      ctx.closePath();
+      ctx.fill();
+      // Label centered below arrow
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      ctx.fillText(String(qa.x), gridL + (gridR - gridL) / 2, ay + 4);
+    }
+
+    // Y-axis arrow: left of grid, bottom→top (rotated)
+    if (qa.y) {
+      const ax = gridL - 14;
+      ctx.save();
+      ctx.translate(ax, gridT + (gridB - gridT) / 2);
+      ctx.rotate(-Math.PI / 2);
+      // Arrow (pointing up = left after rotation)
+      ctx.beginPath();
+      ctx.moveTo(-(gridB - gridT) / 2, 0);
+      ctx.lineTo((gridB - gridT) / 2, 0);
+      ctx.stroke();
+      // Arrow head (pointing "up" = positive y direction)
+      ctx.beginPath();
+      ctx.moveTo((gridB - gridT) / 2, 0);
+      ctx.lineTo((gridB - gridT) / 2 - arrowSize, -arrowSize / 2);
+      ctx.lineTo((gridB - gridT) / 2 - arrowSize, arrowSize / 2);
+      ctx.closePath();
+      ctx.fill();
+      // Label
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'bottom';
+      ctx.fillText(String(qa.y), 0, -4);
+      ctx.restore();
+    }
+    ctx.restore();
+  }
+
+  // ---- bubbles — filled circle overlays per cell (BCG product units) ----
+  if (Array.isArray(args.bubbles) && args.bubbles.length > 0) {
+    const bubbleColors = palette.colors || colors;
+    const bubbleExternalLabels = [];
+    for (let bi = 0; bi < args.bubbles.length; bi++) {
+      const b = args.bubbles[bi];
+      const bRow = clamp(Number(b.row) || 0, 0, rows - 1);
+      const bCol = clamp(Number(b.col) || 0, 0, cols - 1);
+      const sizeFrac = clamp(b.size != null ? Number(b.size) : 0.5, 0.05, 1);
+
+      // Cell center
+      const cellCx = gridL + bCol * cellW + cellW / 2;
+      const cellCy = gridT + bRow * cellH + cellH / 2;
+      const bubbleR = (Math.min(cellW, cellH) / 2) * sizeFrac * 0.7;
+
+      const bubbleColor = bubbleColors[(bRow * cols + bCol) % bubbleColors.length];
+
+      // Translucent fill (alpha <= 0.35) + solid stroke, so the cell label
+      // drawn on top afterward stays legible even where a bubble overlaps
+      // it — previously an opaque-ish gradient bubble (alpha 0.88-0.92)
+      // rendered AFTER (on top of) the label, obscuring it entirely.
+      ctx.save();
+      ctx.shadowColor = rgbaCss([0, 0, 0], 0.18);
+      ctx.shadowBlur = 6;
+      ctx.shadowOffsetY = 2;
+      ctx.fillStyle = rgbaCss(bubbleColor, 0.32);
+      ctx.beginPath();
+      ctx.arc(cellCx, cellCy, bubbleR, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+
+      ctx.save();
+      ctx.strokeStyle = rgbaCss(bubbleColor, 0.95);
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(cellCx, cellCy, bubbleR, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+
+      // Bubble's own label renders OUTSIDE the bubble (offset right and
+      // slightly down), in small dark text — queued and drawn in its own
+      // pass after cell labels so it never gets buried under a neighboring
+      // bubble either. The extra downward nudge keeps it off the cell
+      // label's horizontal centerline (bubbles default to the cell center,
+      // same row as the cell's own label baseline).
+      if (b.label) {
+        bubbleExternalLabels.push({
+          x: cellCx + bubbleR + 6,
+          y: cellCy + bubbleR * 0.6,
+          text: String(b.label),
+        });
+      }
+    }
+
+    // Cell labels/sublabels ON TOP of the (now-translucent) bubbles.
+    for (const { rx, ry, rw, rh, cell } of cellRects) {
+      drawCellLabel(ctx, rx, ry, rw, rh, cell.label, cell.sublabel);
+    }
+
+    // Bubble external labels, drawn last so they sit above everything.
+    for (const bl of bubbleExternalLabels) {
+      ctx.save();
+      ctx.fillStyle = rgbaCss(fg, 0.85);
+      ctx.font = `600 11px Inter, system-ui, sans-serif`;
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(bl.text, bl.x, bl.y);
+      ctx.restore();
+    }
+  } else {
+    // No bubbles — draw cell labels directly (no need to defer).
+    for (const { rx, ry, rw, rh, cell } of cellRects) {
+      drawCellLabel(ctx, rx, ry, rw, rh, cell.label, cell.sublabel);
+    }
+  }
+}
+
+function drawCellBg(ctx, x, y, w, h, color, fg, iconName) {
+  // Drop shadow — 10px blur, alpha 0.08, embedded feel
+  ctx.save();
+  ctx.shadowColor = rgbaCss([0, 0, 0], 0.08);
+  ctx.shadowBlur = 10;
+  ctx.shadowOffsetY = 3;
+  // Gradient fill: subtle 8% lighten from top-left to bottom-right
+  const grad = ctx.createLinearGradient(x, y, x + w, y + h);
+  grad.addColorStop(0, rgbCss(lighten(color, 0.08)));
+  grad.addColorStop(1, rgbCss(color));
+  ctx.fillStyle = grad;
+  roundRect(ctx, x, y, w, h, 8);
+  ctx.fill();
+  ctx.restore();
+
+  // Hairline border: palette.fg alpha 0.15, 1.5px
+  const borderFg = fg || [30, 27, 30];
+  ctx.save();
+  ctx.strokeStyle = rgbaCss(borderFg, 0.15);
+  ctx.lineWidth = 1.5;
+  roundRect(ctx, x, y, w, h, 8);
+  ctx.stroke();
+  ctx.restore();
+
+  // Top iso accent
+  ctx.fillStyle = rgbaCss(lighten(color, 0.4), 0.4);
+  roundRect(ctx, x, y, w, 3, 8);
+  ctx.fill();
+
+  // Sprint 18: small icon in top-left corner of cell
+  if (iconName) {
+    const resolved = resolveIcon(iconName);
+    const viewBox = resolved.source === 'brand' ? 24 : 256;
+    const iconSize = Math.min(h * 0.28, w * 0.28, 26);
+    ctx.save();
+    try {
+      ctx.translate(x + 7, y + 8);
+      ctx.scale(iconSize / viewBox, iconSize / viewBox);
+      ctx.fillStyle = 'rgba(255,255,255,0.88)';
+      if (resolved.path) ctx.fill(resolved.path);
+    } catch (_) {
+      /* Path2D unavailable (Node) */
+    }
+    ctx.restore();
+  }
+}
+
+// Label + sublabel, drawn in a separate pass from the cell background so
+// callers can interleave bubble overlays UNDER the text (see drawPseudo3D).
+function drawCellLabel(ctx, x, y, w, h, label, sublabel) {
+  // Label — Inter 700 with generous inner breathing room
+  if (label) {
+    ctx.fillStyle = 'rgba(255,255,255,0.97)';
+    ctx.font = `700 ${Math.min(20, h * 0.18)}px Inter, system-ui, sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = sublabel ? 'bottom' : 'middle';
+    ctx.fillText(label, x + w / 2, sublabel ? y + h / 2 - 4 : y + h / 2);
+  }
+  // Sublabel — Inter 500, smaller, with line spacing
+  if (sublabel) {
+    ctx.fillStyle = 'rgba(255,255,255,0.78)';
+    ctx.font = `500 ${Math.min(13, h * 0.1)}px Inter, system-ui, sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText(sublabel, x + w / 2, y + h / 2 + 8);
+  }
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  const rr = Math.min(r, w / 2, h / 2);
+  ctx.beginPath();
+  ctx.moveTo(x + rr, y);
+  ctx.lineTo(x + w - rr, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + rr);
+  ctx.lineTo(x + w, y + h - rr);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - rr, y + h);
+  ctx.lineTo(x + rr, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - rr);
+  ctx.lineTo(x, y + rr);
+  ctx.quadraticCurveTo(x, y, x + rr, y);
+  ctx.closePath();
+}
+
+function clamp(v, lo, hi) {
+  return Math.max(lo, Math.min(hi, v));
+}
+
+function lighten(rgb, amt) {
+  return [
+    Math.min(255, rgb[0] + (255 - rgb[0]) * amt),
+    Math.min(255, rgb[1] + (255 - rgb[1]) * amt),
+    Math.min(255, rgb[2] + (255 - rgb[2]) * amt),
+  ];
+}

@@ -1,0 +1,91 @@
+{
+  "slotIdx": 6,
+  "slotName": "business-model",
+  "slotTitle": "Business Model",
+  "slotPurpose": "How we make money — unit economics",
+  "sourceSlideIdx": 6,
+  "sourceSlideTitle": "Business Model",
+  "sceneData": {
+    "name": "pitch-deck-vc/business-model",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "break-even",
+        "x": 80,
+        "y": 140,
+        "w": 560,
+        "h": 480,
+        "args": {
+          "fixedCost": 180000,
+          "variableCostPerUnit": 8,
+          "pricePerUnit": 30,
+          "maxUnits": 12000,
+          "title": "Unit Economics",
+          "currency": "USD",
+          "color": [255, 120, 40]
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 700,
+        "y": 140,
+        "w": 500,
+        "h": 140,
+        "args": {
+          "value": "$3M",
+          "label": "Break-Even ARR",
+          "sublabel": "Projected Q3 2027",
+          "icon": "chart-bar",
+          "color": [255, 120, 40]
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 700,
+        "y": 320,
+        "w": 500,
+        "h": 300,
+        "args": {
+          "items": [
+            {
+              "label": "Pro: $30/user/month",
+              "sublabel": "Knowledge workers",
+              "status": "highlight"
+            },
+            {
+              "label": "Team: $200/seat/month",
+              "sublabel": "Design teams (10+ seats)"
+            },
+            {
+              "label": "Studio: $50K/year",
+              "sublabel": "Agencies + enterprise (custom themes)"
+            }
+          ],
+          "title": "Pricing Tiers"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "pitch-deck-vc",
+    "theme": "pitch-cobalt-orange",
+    "recommendedAtoms": ["break-even", "waterfall", "kpi-card", "pie"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 647,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 89490,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 485,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.036063,
+    "elapsedSec": 8.2,
+    "generatedAt": "2026-06-22T15:02:28.963Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

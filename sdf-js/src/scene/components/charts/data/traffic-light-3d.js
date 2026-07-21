@@ -8,6 +8,14 @@
 
 import { box, sphere } from '../../../../sdf/d3.js';
 import { union } from '../../../../sdf/dn.js';
+import { resolveMaterial } from '../../../spec.js';
+
+// default RAG palette (top→bottom): red, amber, green — what a traffic light *is*.
+const RAG = [
+  { hue: 0.0, sat: 0.82, value: 0.62 },
+  { hue: 0.11, sat: 0.9, value: 0.85 },
+  { hue: 0.34, sat: 0.72, value: 0.58 },
+];
 
 /**
  * @param {object} opts
@@ -24,15 +32,21 @@ export function trafficLight3dSDF({
   spacing = 0.55,
   housingPad = 0.12,
   depth = 0.3,
+  colors = null,
 } = {}) {
   const N = Math.max(1, Math.floor(lights));
   const totalH = (N - 1) * spacing;
   const housingH = totalH + 2 * lightRadius + 2 * housingPad;
   const housingW = 2 * lightRadius + 2 * housingPad;
   const parts = [box([housingW, housingH, depth])];
+  // colour each light: caller's colors[] if given, else the canonical RAG palette
+  const pal = Array.isArray(colors) && colors.length ? colors : RAG;
   for (let i = 0; i < N; i++) {
     const y = totalH / 2 - i * spacing;
-    parts.push(sphere(lightRadius).translate([0, y, depth / 2]));
+    const lit = sphere(lightRadius).translate([0, y, depth / 2]);
+    const m = resolveMaterial(pal[i % pal.length]);
+    if (m) lit._subjectMaterial = m;
+    parts.push(lit);
   }
   return union(...parts);
 }

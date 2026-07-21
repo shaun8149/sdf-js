@@ -1,0 +1,160 @@
+{
+  "v": 1,
+  "name": "(lifted) bizplan-Strategy Pyramid",
+  "subjects": [
+    {
+      "id": "pyramid",
+      "type": "pyramid-3d",
+      "args": {
+        "levels": 4,
+        "colors": [
+          {
+            "hue": 0.11,
+            "sat": 0.7,
+            "value": 0.88
+          },
+          {
+            "hue": 0.11,
+            "sat": 0.7266666666666666,
+            "value": 0.78
+          },
+          {
+            "hue": 0.11,
+            "sat": 0.7533333333333333,
+            "value": 0.68
+          },
+          {
+            "hue": 0.11,
+            "sat": 0.7799999999999999,
+            "value": 0.5800000000000001
+          }
+        ]
+      },
+      "transform": {
+        "translate": [
+          0,
+          0.6,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.11,
+        "sat": 0.72,
+        "value": 0.82,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      }
+    }
+  ],
+  "overlay": [
+    {
+      "text": "BUSINESS PLAN",
+      "anchor": [
+        0,
+        3.9,
+        0
+      ],
+      "role": "title"
+    },
+    {
+      "text": "Vision",
+      "anchor": [
+        3,
+        2.6,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "Strategy",
+      "anchor": [
+        3,
+        1.8800000000000001,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "Tactics",
+      "anchor": [
+        3,
+        1.1600000000000001,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "Operations",
+      "anchor": [
+        3,
+        0.43999999999999995,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "The roadmap from vision to value",
+      "anchor": [
+        0,
+        3.35,
+        0
+      ],
+      "role": "body",
+      "align": "center"
+    }
+  ],
+  "cameraSequence": {
+    "loop": false,
+    "shots": [
+      {
+        "duration": 0.01,
+        "pos": [
+          2.2,
+          3.2,
+          12
+        ],
+        "target": [
+          0,
+          1.6,
+          0
+        ],
+        "fov": 55,
+        "aperture": 0,
+        "focalDistance": 11.5,
+        "ease": "smooth"
+      },
+      {
+        "duration": 17,
+        "pos": [
+          0.2,
+          1.9500000000000002,
+          8.6
+        ],
+        "target": [
+          0,
+          1.6,
+          0
+        ],
+        "fov": 46,
+        "transition": "blend",
+        "aperture": 0,
+        "focalDistance": 8.6,
+        "ease": "smooth"
+      }
+    ]
+  },
+  "defaults": {
+    "stage": {
+      "size": [
+        18,
+        9,
+        11
+      ]
+    }
+  }
+}

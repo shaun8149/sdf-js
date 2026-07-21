@@ -1,0 +1,102 @@
+{
+  "slotIdx": 3,
+  "slotName": "solution",
+  "slotTitle": "Our Solution",
+  "slotPurpose": "Product overview + value prop",
+  "sourceSlideIdx": 3,
+  "sourceSlideTitle": "Our Solution",
+  "sceneData": {
+    "name": "pitch-deck-vc/solution",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "flow-chart",
+        "x": 80,
+        "y": 120,
+        "w": 1120,
+        "h": 520,
+        "args": {
+          "steps": [
+            "LLM writes structured intent",
+            "Atlas runtime renders illustration",
+            "4 renderer variants (silhouette/3D/lines/crayon)",
+            "Editable: tweak intent → regenerate visual"
+          ],
+          "orientation": "horizontal",
+          "title": "Our Solution",
+          "highlight": 0
+        }
+      },
+      {
+        "type": "icon-badge",
+        "x": 140,
+        "y": 200,
+        "w": 80,
+        "h": 80,
+        "args": {
+          "name": "file",
+          "label": "Intent",
+          "color": [255, 120, 40]
+        }
+      },
+      {
+        "type": "icon-badge",
+        "x": 420,
+        "y": 200,
+        "w": 80,
+        "h": 80,
+        "args": {
+          "name": "cpu",
+          "label": "Runtime",
+          "color": [20, 60, 180]
+        }
+      },
+      {
+        "type": "icon-badge",
+        "x": 700,
+        "y": 200,
+        "w": 80,
+        "h": 80,
+        "args": {
+          "name": "graphics-card",
+          "label": "Renderers",
+          "color": [255, 120, 40]
+        }
+      },
+      {
+        "type": "icon-badge",
+        "x": 980,
+        "y": 200,
+        "w": 80,
+        "h": 80,
+        "args": {
+          "name": "refresh",
+          "label": "Editable",
+          "color": [20, 60, 180]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "pitch-deck-vc",
+    "theme": "pitch-cobalt-orange",
+    "recommendedAtoms": ["bullet-list", "flow-chart", "icon-badge"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 623,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 89490,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 541,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.036831,
+    "elapsedSec": 6.9,
+    "generatedAt": "2026-06-22T15:02:01.935Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

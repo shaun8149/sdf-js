@@ -1,0 +1,49 @@
+{
+  "slotIdx": 0,
+  "slotName": "cover",
+  "slotTitle": "Headline",
+  "slotPurpose": "Article headline + source and date context",
+  "sourceSlideIdx": 0,
+  "sourceSlideTitle": "全球经济2026年中展望",
+  "sceneData": {
+    "name": "news-briefing/cover",
+    "layout": "cover",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 720,
+        "args": {
+          "title": "全球经济2026年中展望",
+          "subtitle": "摘录自国际机构与财经媒体报道",
+          "date": "2026-2027年全球经济前景分析",
+          "style": "gradient"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["cover"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4393,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 166,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0195714,
+    "elapsedSec": 4.4,
+    "generatedAt": "2026-07-06T16:16:53.957Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "id": "deck-rec-cyber",
+  "name": "Cybersecurity",
+  "segments": [
+    {
+      "file": "rec-cyber-1.json",
+      "title": "Threat Landscape",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-cyber-2.json",
+      "title": "Defense in Depth",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-cyber-3.json",
+      "title": "Threat Funnel",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-cyber-4.json",
+      "title": "Maturity",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-cyber-5.json",
+      "title": "Incident Response",
+      "kind": "slide",
+      "durationSec": 7
+    }
+  ]
+}

@@ -1,0 +1,111 @@
+{
+  "slotIdx": 1,
+  "slotName": "agenda",
+  "slotTitle": "Overview",
+  "slotPurpose": "One line per major theme of the briefing",
+  "sourceSlideIdx": 1,
+  "sourceSlideTitle": "Agenda: Our Mission and Stakes",
+  "sceneData": {
+    "name": "news-briefing/agenda",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Overview",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "agenda-list",
+        "x": 40,
+        "y": 160,
+        "w": 580,
+        "h": 520,
+        "args": {
+          "items": [
+            {
+              "label": "Record-breaking fundraise across six strategies"
+            },
+            {
+              "label": "America's technological leadership imperative"
+            },
+            {
+              "label": "Competition with China and U.S. dominance"
+            },
+            {
+              "label": "Human flourishing through technological advancement"
+            }
+          ],
+          "numbered": true
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 660,
+        "y": 160,
+        "w": 280,
+        "h": 240,
+        "args": {
+          "value": "$6.75B",
+          "label": "Growth Fund",
+          "sublabel": "Largest single fund",
+          "icon": "rocket-launch",
+          "style": "dark"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 960,
+        "y": 160,
+        "w": 280,
+        "h": 240,
+        "args": {
+          "value": "$3B",
+          "label": "Additional Strategies",
+          "sublabel": "Diversified emerging tech",
+          "icon": "chart-scatter",
+          "style": "dark"
+        }
+      },
+      {
+        "type": "stat-banner",
+        "x": 660,
+        "y": 420,
+        "w": 580,
+        "h": 100,
+        "args": {
+          "value": "$9.75B",
+          "label": "Total Capital Raised",
+          "bg": [38, 70, 130]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["agenda-list", "number-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5070,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 576,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.027752399999999997,
+    "elapsedSec": 9.4,
+    "generatedAt": "2026-07-07T06:41:46.573Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

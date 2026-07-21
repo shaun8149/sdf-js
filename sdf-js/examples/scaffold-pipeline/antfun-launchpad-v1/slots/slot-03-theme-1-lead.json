@@ -1,0 +1,122 @@
+{
+ "slotIdx": 3,
+ "slotName": "theme-1-lead",
+ "slotTitle": "Theme 1 — Lead",
+ "sourceSlideIdx": 3,
+ "sceneData": {
+  "name": "news-briefing/theme-1-lead",
+  "layout": "grid",
+  "subjects": [
+   {
+    "type": "cover",
+    "x": 0,
+    "y": 0,
+    "w": 1280,
+    "h": 120,
+    "args": {
+     "title": "计价资产模式验证与选择",
+     "style": "section"
+    }
+   },
+   {
+    "type": "comparison-table",
+    "x": 40,
+    "y": 160,
+    "w": 580,
+    "h": 520,
+    "args": {
+     "title": "平台对比",
+     "columns": [
+      {
+       "label": "Virtuals Protocol",
+       "highlight": true
+      },
+      {
+       "label": "LetsBonk"
+      },
+      {
+       "label": "ANTFUN"
+      }
+     ],
+     "features": [
+      {
+       "label": "计价资产",
+       "values": [
+        "$VIRTUAL",
+        "SOL",
+        "ANT"
+       ]
+      },
+      {
+       "label": "价值捕获",
+       "values": [
+        "最强",
+        "较弱回购BONK",
+        "ANT计价"
+       ]
+      },
+      {
+       "label": "用户体验",
+       "values": [
+        "-",
+        "-",
+        "自动路由无感知"
+       ]
+      },
+      {
+       "label": "买压机制",
+       "values": [
+        "✓",
+        "✗",
+        "原子兑换产生买压"
+       ]
+      }
+     ]
+    }
+   },
+   {
+    "type": "feature-card-grid",
+    "x": 660,
+    "y": 160,
+    "w": 580,
+    "h": 520,
+    "args": {
+     "title": "技术实现",
+     "features": [
+      {
+       "icon": "currency-btc",
+       "title": "BSC侧",
+       "body": "自研bonding curve合约 + 自建V3 fork外盘，三方分润逻辑原生写入合约，协议抽成为零"
+      },
+      {
+       "icon": "chart-line",
+       "title": "Solana侧",
+       "body": "Meteora官方Dynamic Bonding Curve(内盘)与DAMM v2(外盘)"
+      },
+      {
+       "icon": "shield-check",
+       "title": "Meteora优势",
+       "body": "审计充分(含Code4rena公开竞赛审计)、迁移Keeper由Meteora运行、曲线与费用高度可配置"
+      },
+      {
+       "icon": "percent",
+       "title": "费用结构",
+       "body": "内盘交易费固定20%归Meteora协议(可经referral回收4个点至净16%)"
+      }
+     ],
+     "cols": 2,
+     "bg": "cards"
+    }
+   }
+  ]
+ },
+ "meta": {
+  "bakedBy": "validate-auto-scaffold",
+  "model": "live"
+ },
+ "sectionAccent": [
+  96,
+  132,
+  92
+ ]
+}

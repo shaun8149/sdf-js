@@ -1,0 +1,67 @@
+{
+  "id": "shape-arrows-cycle",
+  "title": "Arrows · Cycle (4 stage)",
+  "prompt": "arrows: Arrows · Cycle (4 stage)",
+  "code2d": "// vision-authored showcase — PresentationLoad shape category \"arrows\".",
+  "sceneData": {
+    "v": 1,
+    "name": "Arrows · Cycle (4 stage)",
+    "source": {
+      "format": "vision-authored",
+      "prompt": "arrows shape showcase"
+    },
+    "subjects": [
+      {
+        "id": "s0",
+        "type": "circle-loop-3d",
+        "args": {
+          "segments": 4,
+          "radius": 0.95,
+          "tube": 0.09,
+          "headLength": 0.4,
+          "headRadius": 0.2
+        },
+        "transform": {
+          "translate": [0, 1, 0],
+          "rotate": [1.5707963267948966, 0, 0]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.72,
+          "metal": 0.3,
+          "glow": 0
+        }
+      }
+    ],
+    "defaults": {
+      "camera": {
+        "yaw": 0.5,
+        "pitch": 0.3,
+        "distance": 10,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 1,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": 0.6,
+        "altitude": 0.55,
+        "distance": 25,
+        "intensity": 1.2
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.4
+      },
+      "studioBg": "dark"
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-06-21",
+    "model": "vision-authored",
+    "pattern": "arrows",
+    "costUSD": 0
+  }
+}

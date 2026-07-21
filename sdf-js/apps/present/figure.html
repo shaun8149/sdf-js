@@ -1,0 +1,239 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Atlas Figure</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        background: #0e0f12;
+        overflow: hidden;
+      }
+      #wrap {
+        position: fixed;
+        inset: 0;
+      }
+      #c {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+      .lbl {
+        position: fixed;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+        font:
+          600 13px -apple-system,
+          Inter,
+          sans-serif;
+        color: #fff;
+        padding: 4px 10px;
+        border-radius: 5px;
+        background: rgba(30, 32, 40, 0.82);
+        opacity: 0;
+        transition: opacity 0.5s;
+        white-space: nowrap;
+      }
+      .lbl.value {
+        background: rgba(40, 116, 196, 0.92);
+        font-weight: 700;
+      }
+      /* Stage layer — screen-space narrative typography. The 3D world tells
+         the story; sentences live on THIS canvas: a huge composed title and a
+         bullet column, never projected onto geometry. */
+      .stage-title {
+        position: fixed;
+        top: 5vh;
+        left: 6.5vw;
+        transform: translateY(-14px);
+        text-align: left;
+        font:
+          900 clamp(44px, 7.2vh, 96px) / 1.12 -apple-system,
+          Inter,
+          sans-serif;
+        letter-spacing: 0.04em;
+        color: #fff;
+        text-shadow:
+          0 1px 3px rgba(0, 0, 0, 0.9),
+          0 6px 30px rgba(0, 0, 0, 0.65);
+        opacity: 0;
+        transition:
+          opacity 0.5s,
+          transform 0.5s;
+        pointer-events: none;
+        /* Long wild-corpus titles (English paper headings) overflowed the
+           right edge under nowrap — wrap up to two lines inside the frame. */
+        white-space: normal;
+        overflow-wrap: break-word;
+        max-width: 87vw;
+        z-index: 30;
+      }
+      .stage-title.long {
+        /* very long titles drop a size tier so two lines still fit the band */
+        font-size: clamp(32px, 5vh, 64px);
+      }
+      .stage-title.on {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .stage-bullet {
+        position: fixed;
+        left: 6.5vw;
+        font:
+          700 clamp(20px, 3.5vh, 42px) / 1.3 -apple-system,
+          Inter,
+          sans-serif;
+        color: rgba(255, 255, 255, 0.96);
+        text-shadow:
+          0 1px 3px rgba(0, 0, 0, 0.85),
+          0 3px 18px rgba(0, 0, 0, 0.6);
+        opacity: 0;
+        transform: translateX(-18px);
+        transition:
+          opacity 0.45s,
+          transform 0.45s;
+        pointer-events: none;
+        max-width: 36vw;
+        z-index: 30;
+      }
+      .stage-bullet.on {
+        opacity: 0.52;
+        transform: translateX(0);
+      }
+      /* the beat the camera is visiting reads at full strength */
+      .stage-bullet.on.cur {
+        opacity: 1;
+      }
+      /* RIGHT narration column (overlay `side:'right'`). A comparison page must
+         put its two sides' text in TWO PLACES — stacking both in the single
+         left column destroys the contrast the page exists to make (user-locked
+         2026-07-15: 文本一定要区分，不要只放在左边). */
+      .stage-bullet.side-right {
+        left: auto;
+        right: 6.5vw;
+        text-align: right;
+        transform: translateX(14px);
+      }
+      .stage-bullet.side-right.on {
+        transform: translateX(0);
+      }
+      /* Insight panel — the derived takeaway (R1: the chart finishes the
+         derivation for the reader). Bottom-right, opposite the title/bullet
+         column; big claim + small cited derivation line. */
+      .stage-insight {
+        position: fixed;
+        right: 6vw;
+        bottom: 13vh;
+        text-align: right;
+        font:
+          900 clamp(30px, 5vh, 60px) / 1.15 -apple-system,
+          Inter,
+          sans-serif;
+        color: #fff;
+        text-shadow:
+          0 1px 3px rgba(0, 0, 0, 0.9),
+          0 6px 30px rgba(0, 0, 0, 0.65);
+        border-right: 4px solid rgba(255, 255, 255, 0.55);
+        padding-right: 18px;
+        opacity: 0;
+        transform: translateY(10px);
+        transition:
+          opacity 0.5s,
+          transform 0.5s;
+        pointer-events: none;
+        max-width: 44vw;
+        z-index: 30;
+      }
+      .stage-insight.on {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .stage-insight .sub {
+        margin-top: 8px;
+        font:
+          600 clamp(13px, 1.8vh, 17px) / 1.4 -apple-system,
+          Inter,
+          sans-serif;
+        color: rgba(255, 255, 255, 0.72);
+        letter-spacing: 0.02em;
+      }
+      /* §9.6:真迹装裱溯源角标 — 常驻左下,极小极静(license 随行是纪律) */
+      .stage-attribution {
+        position: fixed;
+        left: 1.4vw;
+        bottom: 1.6vh;
+        font:
+          600 clamp(10px, 1.3vh, 13px) / 1.3 -apple-system,
+          Inter,
+          sans-serif;
+        color: rgba(255, 255, 255, 0.42);
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
+        letter-spacing: 0.03em;
+        pointer-events: none;
+        z-index: 30;
+      }
+      /* chapter / finale cards: centered in the mid-frame void */
+      .stage-insight.center {
+        right: auto;
+        left: 50%;
+        bottom: 32vh;
+        text-align: center;
+        border-right: none;
+        border-bottom: 4px solid rgba(255, 255, 255, 0.55);
+        padding-right: 0;
+        padding-bottom: 14px;
+        transform: translate(-50%, 10px);
+      }
+      .stage-insight.center.on {
+        transform: translate(-50%, 0);
+      }
+      /* Boot loader — visible until the first frame is drawn. Pure CSS-transform
+         animation so it keeps moving even if the main thread hiccups. */
+      #loading {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 14px;
+        background: #0e0f12;
+        transition: opacity 0.4s;
+        z-index: 10;
+      }
+      #loading.done {
+        opacity: 0;
+        pointer-events: none;
+      }
+      #loading .ring {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        border: 3px solid rgba(255, 255, 255, 0.14);
+        border-top-color: rgba(255, 255, 255, 0.85);
+        animation: spin 0.9s linear infinite;
+      }
+      #loading .msg {
+        font:
+          500 12px -apple-system,
+          Inter,
+          sans-serif;
+        color: rgba(255, 255, 255, 0.55);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="wrap"><canvas id="c"></canvas></div>
+    <div id="loading"><div class="ring"></div><div class="msg">compiling scene</div></div>
+    <script type="module" src="./figure.js"></script>
+  </body>
+</html>

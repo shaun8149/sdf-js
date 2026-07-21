@@ -1,0 +1,87 @@
+{
+  "slotIdx": 5,
+  "slotName": "traction",
+  "slotTitle": "Traction",
+  "slotPurpose": "Revenue / users / growth charts",
+  "sourceSlideIdx": 5,
+  "sourceSlideTitle": "Traction",
+  "sceneData": {
+    "name": "pitch-deck-vc/traction",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "line",
+        "x": 80,
+        "y": 120,
+        "w": 1120,
+        "h": 420,
+        "args": {
+          "values": [0, 120, 740, 2400],
+          "labels": ["Q1 2026", "Q2 2026", "Q3 2026", "Q4 2026 (forecast)"],
+          "format": "currency",
+          "title": "ARR Growth Trajectory",
+          "showPoints": true,
+          "annotations": [
+            {
+              "index": 1,
+              "text": "10 design teams"
+            },
+            {
+              "index": 2,
+              "text": "47 teams + 3 agencies"
+            }
+          ]
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 120,
+        "y": 560,
+        "w": 480,
+        "h": 120,
+        "args": {
+          "value": "$2.4M",
+          "label": "Q4 2026 ARR Forecast",
+          "icon": "chart-bar",
+          "trend": "up"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 680,
+        "y": 560,
+        "w": 480,
+        "h": 120,
+        "args": {
+          "value": "110%",
+          "label": "Net Retention",
+          "sublabel": "Q4 2026",
+          "icon": "users",
+          "trend": "up"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "pitch-deck-vc",
+    "theme": "pitch-cobalt-orange",
+    "recommendedAtoms": ["line", "bar", "kpi-card", "dashboard-multi-kpi-composite"],
+    "forbiddenAtoms": ["mindmap", "venn"],
+    "tokenUsage": {
+      "input_tokens": 689,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 89490,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 456,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.035754,
+    "elapsedSec": 13.4,
+    "generatedAt": "2026-06-22T15:02:20.798Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

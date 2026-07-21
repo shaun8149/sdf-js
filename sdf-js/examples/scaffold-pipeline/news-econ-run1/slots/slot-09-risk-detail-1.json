@@ -1,0 +1,105 @@
+{
+  "slotIdx": 9,
+  "slotName": "risk-detail-1",
+  "slotTitle": "Top Risk — Detail",
+  "slotPurpose": "The single highest-probability / highest-impact item, expanded",
+  "sourceSlideIdx": 10,
+  "sourceSlideTitle": "中东冲突能源冲击（高概率-深度影响）",
+  "sceneData": {
+    "name": "news-briefing/risk-detail-1",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 100,
+        "args": {
+          "title": "中东冲突能源冲击",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "callout-banner",
+        "x": 80,
+        "y": 140,
+        "w": 1120,
+        "h": 140,
+        "args": {
+          "type_": "warning",
+          "heading": "高概率 · 深度影响",
+          "body": "霍尔木兹海峡航运中断和部分能源基础设施关闭，导致能源价格激增",
+          "icon": "warning-diamond"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 80,
+        "y": 320,
+        "w": 340,
+        "h": 320,
+        "args": {
+          "value": "通胀重新抬头",
+          "label": "能源价格大幅上涨",
+          "sublabel": "货币政策收紧预期",
+          "icon": "chart-line-up",
+          "trend": "up",
+          "trendValue": "高风险",
+          "style": "dark"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 470,
+        "y": 320,
+        "w": 340,
+        "h": 320,
+        "args": {
+          "value": "全球供应",
+          "label": "能源大宗商品",
+          "sublabel": "供应链受扰",
+          "icon": "globe-hemisphere-west",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 860,
+        "y": 320,
+        "w": 340,
+        "h": 320,
+        "args": {
+          "value": "深度冲击",
+          "label": "霍尔木兹海峡",
+          "sublabel": "航运中断风险",
+          "icon": "anchor",
+          "trend": "up",
+          "style": "accent-border"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["callout-banner", "stat-with-icon", "bullet-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4522,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 654,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.027278399999999998,
+    "elapsedSec": 11.9,
+    "generatedAt": "2026-07-06T16:50:27.557Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

@@ -1,0 +1,107 @@
+{
+  "slotIdx": 8,
+  "slotName": "team",
+  "slotTitle": "Team",
+  "slotPurpose": "Founders + key hires with credentials",
+  "sourceSlideIdx": 7,
+  "sourceSlideTitle": "The Team",
+  "sceneData": {
+    "name": "pitch-deck-vc/team",
+    "layout": "hierarchy",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Team"
+        }
+      },
+      {
+        "type": "circle-image-hub-spoke",
+        "x": 60,
+        "y": 160,
+        "w": 680,
+        "h": 500,
+        "args": {
+          "center": {
+            "icon": "users-three",
+            "label": "Leadership"
+          },
+          "spokes": [
+            {
+              "icon": "user-circle",
+              "label": "Sarah Chen",
+              "sublabel": "CEO · ex-Figma"
+            },
+            {
+              "icon": "user-circle",
+              "label": "Alex Wu",
+              "sublabel": "CTO · ex-Anthropic"
+            },
+            {
+              "icon": "user-circle",
+              "label": "Diana Liu",
+              "sublabel": "Design · ex-Apple"
+            }
+          ]
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 780,
+        "y": 240,
+        "w": 440,
+        "h": 160,
+        "args": {
+          "value": "20",
+          "label": "Engineers",
+          "icon": "code",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 780,
+        "y": 440,
+        "w": 440,
+        "h": 160,
+        "args": {
+          "value": "5",
+          "label": "Designers",
+          "icon": "palette",
+          "style": "light"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "pitch-deck-vc",
+    "theme": "pitch-cobalt-orange",
+    "recommendedAtoms": [
+      "circle-image-hub-spoke",
+      "isotype-stat-comparison",
+      "icon-row",
+      "bullet-list"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 2459,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 5921,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 505,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0167283,
+    "elapsedSec": 6.5,
+    "generatedAt": "2026-06-24T04:47:56.691Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

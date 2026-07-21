@@ -1,0 +1,116 @@
+{
+  "slotIdx": 9,
+  "slotName": "ask",
+  "slotTitle": "The Ask",
+  "slotPurpose": "Funding amount + use of funds + milestones",
+  "sourceSlideIdx": 8,
+  "sourceSlideTitle": "The Ask",
+  "sceneData": {
+    "name": "pitch-deck-vc/ask",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "The Ask",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 40,
+        "y": 160,
+        "w": 1200,
+        "h": 140,
+        "args": {
+          "value": "$15M",
+          "label": "Series A Raise",
+          "sublabel": "18-month runway to $10M ARR",
+          "icon": "rocket-launch",
+          "style": "dark"
+        }
+      },
+      {
+        "type": "pie",
+        "x": 40,
+        "y": 340,
+        "w": 580,
+        "h": 340,
+        "args": {
+          "title": "Use of Funds",
+          "values": [
+            60,
+            25,
+            15
+          ],
+          "labels": [
+            "Engineering · 60%",
+            "Sales + Community · 25%",
+            "Reserve · 15%"
+          ],
+          "format": "percent",
+          "donutRatio": 0.5,
+          "centerLabel": "$15M"
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 660,
+        "y": 340,
+        "w": 580,
+        "h": 340,
+        "args": {
+          "title": "Milestones",
+          "items": [
+            {
+              "icon": "cube",
+              "label": "Scale 2D+3D atom library to 200",
+              "status": "todo"
+            },
+            {
+              "icon": "handshake",
+              "label": "Launch agency partner program",
+              "status": "todo"
+            },
+            {
+              "icon": "chart-line-up",
+              "label": "Reach $10M ARR milestone",
+              "status": "highlight"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "pitch-deck-vc",
+    "theme": "pitch-cobalt-orange",
+    "recommendedAtoms": [
+      "kpi-card",
+      "pie",
+      "progression",
+      "timeline"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5165,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 574,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0280074,
+    "elapsedSec": 9.7,
+    "generatedAt": "2026-07-10T07:21:59.804Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

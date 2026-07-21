@@ -1,0 +1,67 @@
+{
+  "deckName": "sprint20-b2-atomdemo",
+  "scaffold": {
+    "id": "demo",
+    "label": "Atom Demo",
+    "description": "Direct render of 4 Sprint 20 Batch 2 atoms",
+    "pickScore": 0,
+    "pickSignals": ["manual demo"],
+    "fallback": false,
+    "pickerMethod": "manual"
+  },
+  "theme": {
+    "id": "financial-navy-cerulean",
+    "label": "Financial Navy Cerulean",
+    "macroCluster": "financial",
+    "bg": [240, 244, 252],
+    "accent": [30, 80, 180],
+    "colors": [
+      [30, 80, 180],
+      [60, 140, 220],
+      [20, 160, 130],
+      [200, 100, 40],
+      [160, 60, 160]
+    ],
+    "silhouetteColor": [20, 28, 50]
+  },
+  "meta": { "model": "manual-demo", "timestamp": "2026-06-25" },
+  "totals": { "slotsBaked": 4, "slotsEmpty": 0, "totalCostUSD": 0 },
+  "slots": [
+    {
+      "slotIdx": 0,
+      "slotName": "roadmap",
+      "slotTitle": "vertical-timeline",
+      "slotPurpose": "vertical date/event stacked timeline demo",
+      "sourceSlideIdx": 0,
+      "subjectTypes": ["vertical-timeline"],
+      "liftFile": "slots/slot-00-vtimeline.json"
+    },
+    {
+      "slotIdx": 1,
+      "slotName": "allocation",
+      "slotTitle": "segmented-bar",
+      "slotPurpose": "single horizontal bar split into segments demo",
+      "sourceSlideIdx": 1,
+      "subjectTypes": ["segmented-bar"],
+      "liftFile": "slots/slot-01-segbar.json"
+    },
+    {
+      "slotIdx": 2,
+      "slotName": "banner",
+      "slotTitle": "pull-quote-banner",
+      "slotPurpose": "full-bleed accent bg hero quote banner demo",
+      "sourceSlideIdx": 2,
+      "subjectTypes": ["pull-quote-banner"],
+      "liftFile": "slots/slot-02-banner.json"
+    },
+    {
+      "slotIdx": 3,
+      "slotName": "cycle",
+      "slotTitle": "circle-process-cycle",
+      "slotPurpose": "PDCA-style circular process demo",
+      "sourceSlideIdx": 3,
+      "subjectTypes": ["circle-process-cycle"],
+      "liftFile": "slots/slot-03-cycle.json"
+    }
+  ]
+}

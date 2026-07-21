@@ -1,0 +1,196 @@
+{
+  "deckName": "eval-swot-portfolio-2026",
+  "sourceFile": "sdf-js/scripts/scaffold-pipeline-fixtures/swot-portfolio-2026.json",
+  "scaffold": {
+    "id": "investor-update",
+    "label": "Investor Update",
+    "description": "LP/seed-investor periodic update — quarterly cadence, metrics, wins, challenges",
+    "pickScore": 9,
+    "pickSignals": [
+      "Content explicitly targets Investment Committee (an investor audience) with quarterly portfolio review cadence",
+      "Structure maps cleanly to investor-update slots: overview metrics (AUM, ARR, holdings), wins (pivots, Series B prep), challenges (bottlenecks, weaknesses), next-quarter priorities (Q4 2026 priorities list)",
+      "Deck covers portfolio-level metrics, SWOT analysis, strategic priorities, and forward-looking asks — all hallmarks of LP/board-facing investor updates rather than internal strategic planning"
+    ],
+    "fallback": false,
+    "pickerMethod": "llm"
+  },
+  "theme": {
+    "id": "financial-navy-cerulean",
+    "label": "Financial Navy",
+    "macroCluster": "pitch",
+    "bg": [
+      26,
+      40,
+      66
+    ],
+    "accent": [
+      58,
+      138,
+      200
+    ],
+    "colors": [
+      [
+        58,
+        138,
+        200
+      ],
+      [
+        26,
+        40,
+        66
+      ],
+      [
+        100,
+        150,
+        200
+      ],
+      [
+        180,
+        210,
+        235
+      ],
+      [
+        240,
+        248,
+        255
+      ]
+    ],
+    "font": {
+      "heading": "\"Inter Display\", Inter, system-ui, sans-serif",
+      "body": "Inter, system-ui, sans-serif"
+    }
+  },
+  "slots": [
+    {
+      "slotIdx": 0,
+      "slotName": "cover",
+      "slotTitle": "Title",
+      "slotPurpose": "Company name + update period + author",
+      "sourceSlideIdx": 0,
+      "sourceSlideTitle": "Q3 2026 Portfolio Strategic Review",
+      "mappingScore": 10,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-00-cover.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover"
+      ]
+    },
+    {
+      "slotIdx": 1,
+      "slotName": "tldr",
+      "slotTitle": "TL;DR",
+      "slotPurpose": "Headline summary — 3 key points this quarter",
+      "sourceSlideIdx": 1,
+      "sourceSlideTitle": "Portfolio Overview",
+      "mappingScore": 8,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-01-tldr.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "kpi-card",
+        "kpi-card",
+        "kpi-card",
+        "quote-pull"
+      ]
+    },
+    {
+      "slotIdx": 2,
+      "slotName": "metrics",
+      "slotTitle": "Key Metrics",
+      "slotPurpose": "Current quarter KPIs — revenue, users, growth rates",
+      "sourceSlideIdx": 1,
+      "sourceSlideTitle": "Portfolio Overview",
+      "mappingScore": 7,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-02-metrics.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "dashboard-multi-kpi-composite",
+        "value-chain-diagram",
+        "change-curve-chart"
+      ]
+    },
+    {
+      "slotIdx": 3,
+      "slotName": "wins",
+      "slotTitle": "Wins",
+      "slotPurpose": "Top accomplishments this quarter",
+      "sourceSlideIdx": 3,
+      "sourceSlideTitle": "Portfolio SWOT Analysis",
+      "mappingScore": 6,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-03-wins.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "icon-grid",
+        "icon-grid"
+      ]
+    },
+    {
+      "slotIdx": 5,
+      "slotName": "next-quarter",
+      "slotTitle": "Next Quarter",
+      "slotPurpose": "Plan and priorities for the coming quarter",
+      "sourceSlideIdx": 6,
+      "sourceSlideTitle": "Q4 2026 Portfolio Priorities",
+      "mappingScore": 10,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-05-next-quarter.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "kanban-board"
+      ]
+    }
+  ],
+  "droppedSlots": [
+    {
+      "slotIdx": 4,
+      "slotName": "challenges",
+      "slotTitle": "Challenges",
+      "reason": "no-source-content"
+    },
+    {
+      "slotIdx": 6,
+      "slotName": "ask",
+      "slotTitle": "Ask",
+      "reason": "no-source-content"
+    },
+    {
+      "slotIdx": 7,
+      "slotName": "cap-table-burn",
+      "slotTitle": "Financials",
+      "reason": "no-source-content"
+    }
+  ],
+  "totals": {
+    "slotsBaked": 5,
+    "slotsEmpty": 3,
+    "slotsErrored": 0,
+    "totalCostUSD": 0.136566
+  },
+  "meta": {
+    "generatedAt": "2026-07-10T07:21:19.050Z",
+    "model": "claude-sonnet-4-5-20250929",
+    "pipelineVersion": "sprint-16-v1"
+  }
+}

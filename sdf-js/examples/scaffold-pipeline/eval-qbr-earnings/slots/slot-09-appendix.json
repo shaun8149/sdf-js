@@ -1,0 +1,98 @@
+{
+  "slotIdx": 9,
+  "slotName": "appendix",
+  "slotTitle": "Appendix",
+  "slotPurpose": "Supporting tables and methodology notes",
+  "sourceSlideIdx": 1,
+  "sourceSlideTitle": "Presentation Overview",
+  "sceneData": {
+    "name": "financial-summary/appendix",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Appendix",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 40,
+        "y": 160,
+        "w": 560,
+        "h": 520,
+        "args": {
+          "title": "Presentation Scope",
+          "items": [
+            {
+              "icon": "chart-line-up",
+              "label": "Q3 FY2026 performance highlights"
+            },
+            {
+              "icon": "currency-dollar",
+              "label": "Revenue growth across subscription services"
+            },
+            {
+              "icon": "chart-bar",
+              "label": "ARR metrics and trajectory"
+            }
+          ]
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 680,
+        "y": 160,
+        "w": 560,
+        "h": 520,
+        "args": {
+          "title": "Coverage Areas",
+          "items": [
+            {
+              "icon": "gauge",
+              "label": "GAAP and non-GAAP profitability"
+            },
+            {
+              "icon": "wallet",
+              "label": "Liquidity position and share repurchase"
+            },
+            {
+              "icon": "compass",
+              "label": "Q4 FY2026 guidance and outlook"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "financial-summary",
+    "theme": "financial-navy-cerulean",
+    "recommendedAtoms": [
+      "bullet-list",
+      "kpi-card"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5170,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 453,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0262074,
+    "elapsedSec": 7.7,
+    "generatedAt": "2026-07-10T07:28:22.397Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

@@ -1,70 +1,56 @@
 // =============================================================================
-// sphere-fill-3d.js — "fill level" spheres (Atlas Shape atom, Sprint 2).
+// sphere-fill-3d.js — "fill level" gauge spheres (Atlas Shape atom, Sprint 2).
 // -----------------------------------------------------------------------------
-// A row of glass spheres, each holding a liquid fill cap whose height encodes a
-// 0..1 fraction. Covers PresentationLoad "3D Spheres Fill Levels" (deck P0 use
-// case). Pure geometry — readable without per-part color:
-//   - container: 3 great-circle wireframe rings (tori) → recognizable "globe"
-//   - liquid:    cutSphere cap, filled from the bottom up to the waterline
+// A row of SOLID spheres, each read as a fill gauge: a coloured liquid bottom
+// below a waterline + a light glass top above it, with a crisp meniscus between.
+// Faithful 3D twin of PresentationLoad "3D Spheres Fill Levels" (stun-demo
+// fixture D0961).
 //
-// Reuses shipped primitives (all GLSL-emit registered 2026-06-19):
-//   - sphere/cut-sphere (d3.js, sdf3.compile.js:313/566)
-//   - torus             (d3.js:73,  sdf3.compile.js:328)
-//   - union             (dn.js:37,  sdf3.compile.js:224)
+// The two-tone split happens IN THE SHADER (studio material kind 'fill', =9), not
+// in geometry. Why: the earlier two-cap geometry can't be materialed as a gauge —
+// the liquid/glass caps share the same outer sphere surface, so the raymarch can't
+// disambiguate the material at a shared hit (see
+// project_studio_coincident_surface_material_limit). And real glass refraction
+// (kind 'glass', =8) smears the waterline. So each sphere is ONE solid leaf, and
+// the 'fill' shader splits it by height: on a sphere the surface normal's
+// y-component IS the local height, so the waterline is simply `n.y < 2*fill-1` —
+// transform-invariant, no center/radius needed.
 //
-// Spec: docs/superpowers/specs/2026-06-20-sphere-atoms-design.md
+// Per-sphere fill fraction rides in the PATTERN LUT slot [3] (u_leafPattern.w),
+// attached here per leaf. The LIQUID COLOUR comes from the subject's material
+// (hue/sat/value); set the subject `material.kind = "fill"` to get the gauge look
+// (without it the spheres render as plain solid spheres — a safe fallback).
+//
+// Per-sphere colour: pass `colors[]` (parallel to levels[]) to give each sphere
+// its own liquid hue — each entry mirrors `material` (preset name or {hue,sat,
+// value}) and is attached as a per-leaf material with kind forced to 'fill', so
+// flattenUnion's child-overrides-parent rule lets one subject carry N colours.
 // =============================================================================
 
-import { sphere, cutSphere, torus } from '../../../sdf/d3.js';
+import { sphere } from '../../../sdf/d3.js';
 import { union } from '../../../sdf/dn.js';
+import { resolveMaterial, MATERIAL_KIND_INDEX } from '../../spec.js';
 
 const clamp01 = (x) => (x < 0 ? 0 : x > 1 ? 1 : x);
+const FILL_KIND = MATERIAL_KIND_INDEX.fill;
 
 /**
- * Build a wireframe "globe cage": 3 orthogonal great-circle rings.
- * @param {number} r          ring radius (= sphere radius)
- * @param {number} thickness  tube radius
- * @returns {SDF3}
- */
-function cageRings(r, thickness) {
-  const equator = torus(r, thickness); // ring in XZ plane (axis Y)
-  const meridianA = torus(r, thickness).rotate(Math.PI / 2, [1, 0, 0]); // XY plane
-  const meridianB = torus(r, thickness).rotate(Math.PI / 2, [0, 0, 1]); // YZ plane
-  return union(equator, meridianA, meridianB);
-}
-
-/**
- * Liquid fill cap for one sphere. Fills from the bottom (−Y) up to a waterline
- * set by the fill fraction. Returns null for an empty (fraction ≤ 0) sphere.
- *
- * cutSphere(r, h) keeps the y ≥ h portion; we mirror it (rotate π about X) so
- * the kept cap is the y ≤ waterline bottom portion.
- *
- * @param {number} r  liquid radius (slightly inset inside the cage)
- * @param {number} f  fill fraction (0..1)
- * @returns {SDF3|null}
- */
-function liquidCap(r, f) {
-  const frac = clamp01(f);
-  if (frac <= 0) return null;
-  // A full tank is a plain sphere. cutSphere(r, ±r) is degenerate (w → 0), so
-  // route the brim-full case to the exact primitive instead of the cut cap.
-  if (frac >= 1) return sphere(r);
-  const waterline = r * (2 * frac - 1); // open interval (−r, +r)
-  return cutSphere(r, -waterline).rotate(Math.PI, [1, 0, 0]);
-}
-
-/**
- * sphere-fill-3d SDF.
+ * sphere-fill-3d SDF — a row of solid gauge spheres.
  *
  * @param {object} opts
  * @param {number[]} [opts.levels=[0.25,0.5,0.75,1.0]]  per-sphere fill fraction 0..1
  * @param {number|null} [opts.count=null]  number of spheres (defaults to levels.length)
  * @param {number} [opts.radius=0.6]       sphere radius
  * @param {number} [opts.spacing=0.3]      gap between spheres
- * @param {boolean} [opts.cage=true]       draw the wireframe container cage
- * @param {number} [opts.cageThickness=0.025]  cage ring tube radius
- * @param {number} [opts.fillScale=0.92]   liquid radius as a fraction of sphere radius
+ * @param {Array<string|object>|null} [opts.colors=null]  optional per-sphere
+ *        liquid colour, parallel to levels[]. Each entry mirrors `material`
+ *        (preset name or {hue,sat,value} object); kind is forced to 'fill' so
+ *        the gauge shading is kept and only the liquid hue varies. Spheres past
+ *        colors.length fall back to the subject's material (uniform colour).
+ * @param {number[]|null} [opts.radii=null]  optional per-sphere radius, parallel
+ *        to levels[]. Spheres past radii.length use the uniform `radius`. The row
+ *        is laid out so neighbouring surfaces stay `spacing` apart and stays
+ *        centred on the origin (uniform radii reproduce the old even row exactly).
  * @returns {SDF3|null}
  */
 export function sphereFill3dSDF({
@@ -72,30 +58,48 @@ export function sphereFill3dSDF({
   count = null,
   radius = 0.6,
   spacing = 0.3,
-  cage = true,
-  cageThickness = 0.025,
-  fillScale = 0.92,
+  colors = null,
+  radii = null,
 } = {}) {
   const N = count != null ? Math.floor(count) : levels.length;
   if (N <= 0) return null;
 
-  const stride = 2 * radius + spacing;
-  const offset = ((N - 1) / 2) * stride;
-  const fillR = radius * fillScale;
+  const radiusFor = (i) => (radii && radii[i] != null ? radii[i] : radius);
+
+  // Lay out centres left→right so neighbouring SURFACES stay `spacing` apart
+  // (step = prevRadius + spacing + thisRadius), then shift the whole row so it
+  // is centred on x=0. With uniform radii this collapses to the old even grid
+  // (step = 2*radius + spacing, offset = ((N-1)/2)*step).
+  const xs = [];
+  let cx = 0;
+  for (let i = 0; i < N; i++) {
+    if (i > 0) cx += radiusFor(i - 1) + spacing + radiusFor(i);
+    xs.push(cx);
+  }
+  const mid = (xs[0] + xs[N - 1]) / 2;
 
   const parts = [];
   for (let i = 0; i < N; i++) {
-    const f = levels[i] != null ? levels[i] : (levels[levels.length - 1] ?? 0.5);
-    const cx = i * stride - offset;
-
-    const sphereParts = [];
-    if (cage) sphereParts.push(cageRings(radius, cageThickness));
-    const liquid = liquidCap(fillR, f);
-    if (liquid) sphereParts.push(liquid);
-
-    if (sphereParts.length === 0) continue; // empty + no cage → nothing
-    const group = sphereParts.length === 1 ? sphereParts[0] : union(...sphereParts);
-    parts.push(group.translate([cx, 0, 0]));
+    const f = clamp01(levels[i] != null ? levels[i] : (levels[levels.length - 1] ?? 0.5));
+    const s = sphere(radiusFor(i)).translate([xs[i] - mid, 0, 0]);
+    // Per-sphere fill rides in the pattern LUT slot [3]. The 'fill' material kind
+    // (set on the subject) reads u_leafPattern.w as the waterline height.
+    s._subjectPattern = { code: 0, scale: 0, strength: 0, fill: f };
+    // Optional per-sphere liquid colour → per-leaf material (child overrides the
+    // subject's material in flattenUnion). Force kind:'fill' so each sphere keeps
+    // the gauge waterline look and only the hue changes; default a soft gauge
+    // roughness when the colour entry doesn't specify one.
+    if (colors && colors[i] != null) {
+      const m = resolveMaterial(colors[i]);
+      if (m) {
+        s._subjectMaterial = {
+          ...m,
+          kind: FILL_KIND,
+          roughness: m.roughness < 0 ? 0.3 : m.roughness,
+        };
+      }
+    }
+    parts.push(s);
   }
 
   if (parts.length === 0) return null;
@@ -116,20 +120,50 @@ export const sphereFill3dSpec = {
     count: { type: 'number', default: null, doc: 'Number of spheres (defaults to levels.length)' },
     radius: { type: 'number', default: 0.6, doc: 'Sphere radius' },
     spacing: { type: 'number', default: 0.3, doc: 'Gap between spheres' },
-    cage: { type: 'boolean', default: true, doc: 'Draw the wireframe container cage' },
-    cageThickness: { type: 'number', default: 0.025, doc: 'Cage ring tube radius' },
-    fillScale: { type: 'number', default: 0.92, doc: 'Liquid radius as fraction of sphere radius' },
+    colors: {
+      type: 'array',
+      default: null,
+      doc: 'Optional per-sphere liquid colour, parallel to levels[]. Each entry mirrors material (preset name or {hue,sat,value}); kind is forced to "fill". Spheres past colors.length use the subject material.',
+    },
+    radii: {
+      type: 'array',
+      default: null,
+      doc: 'Optional per-sphere radius, parallel to levels[]. Spheres past radii.length use the uniform radius. The row stays centred and neighbouring surfaces stay `spacing` apart.',
+    },
   },
   examples: [
     { name: 'Quartile progress', args: { levels: [0.25, 0.5, 0.75, 1.0] } },
     { name: 'Capacity gauges', args: { levels: [0.9, 0.6, 0.3], radius: 0.7 } },
-    { name: 'Single tank', args: { levels: [0.65], cage: true } },
+    {
+      name: 'Multi-colour fill levels',
+      args: {
+        levels: [0.8, 0.4, 0.2],
+        colors: [
+          { hue: 0.58, sat: 0.82, value: 0.66 },
+          'fruit-red',
+          { hue: 0.3, sat: 0.72, value: 0.6 },
+        ],
+      },
+    },
+    {
+      name: 'Cover (per-sphere colour + size)',
+      args: {
+        levels: [0.8, 0.4, 0.2],
+        radii: [1.0, 0.72, 0.55],
+        colors: [
+          { hue: 0.58, sat: 0.82, value: 0.66 },
+          { hue: 0.99, sat: 0.85, value: 0.5 },
+          { hue: 0.3, sat: 0.72, value: 0.6 },
+        ],
+      },
+    },
   ],
-  description: 'Row of glass spheres with liquid fill levels (0..1) for capacity / progress',
+  description:
+    'Row of fill-level gauge spheres (liquid bottom + glass top split at a waterline). Set the subject material.kind to "fill" with a liquid hue/sat/value for the gauge look. Pass colors[] (parallel to levels[]) for per-sphere liquid colour, and radii[] for per-sphere size.',
   source: {
     author: 'Atlas',
     builtAt: '2026-06-20',
-    builder: 'Sprint 2 sphere atom #1 — taxonomy shapes/',
+    builder: 'Sprint 2 sphere atom #1 — taxonomy shapes/ (shader waterline gauge 2026-06-23)',
     license: 'PolyForm Noncommercial 1.0.0',
   },
 };

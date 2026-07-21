@@ -1,0 +1,150 @@
+{
+ "slotIdx": 2,
+ "slotName": "highlights-kpi",
+ "slotTitle": "Financial Highlights",
+ "sourceSlideIdx": 4,
+ "sceneData": {
+  "name": "financial-summary/highlights-kpi",
+  "layout": "grid",
+  "subjects": [
+   {
+    "type": "cover",
+    "x": 0,
+    "y": 0,
+    "w": 1280,
+    "h": 120,
+    "args": {
+     "title": "Financial Highlights",
+     "style": "gradient"
+    }
+   },
+   {
+    "type": "kpi-card",
+    "x": 40,
+    "y": 160,
+    "w": 280,
+    "h": 240,
+    "args": {
+     "value": "$372.5M",
+     "label": "Total Revenue",
+     "sublabel": "Q3 Performance",
+     "trend": "up",
+     "trendValue": "+27% YoY",
+     "icon": "chart-line-up",
+     "style": "light"
+    }
+   },
+   {
+    "type": "kpi-card",
+    "x": 336,
+    "y": 160,
+    "w": 280,
+    "h": 240,
+    "args": {
+     "value": "$56.0M",
+     "label": "License Revenue",
+     "trend": "down",
+     "trendValue": "-2% YoY",
+     "icon": "certificate",
+     "style": "light"
+    }
+   },
+   {
+    "type": "kpi-card",
+    "x": 632,
+    "y": 160,
+    "w": 280,
+    "h": 240,
+    "args": {
+     "value": "$71.8M",
+     "label": "Services Revenue",
+     "trend": "up",
+     "trendValue": "+32% YoY",
+     "icon": "wrench",
+     "style": "light"
+    }
+   },
+   {
+    "type": "kpi-card",
+    "x": 928,
+    "y": 160,
+    "w": 280,
+    "h": 240,
+    "args": {
+     "value": "19%",
+     "label": "ARR Growth",
+     "sublabel": "Q3 Period",
+     "trend": "up",
+     "icon": "chart-bar",
+     "style": "light"
+    }
+   },
+   {
+    "type": "stat-banner",
+    "x": 40,
+    "y": 420,
+    "w": 1168,
+    "h": 100,
+    "args": {
+     "value": "$396M - $406M",
+     "label": "Q4 FY2026 Total Revenue Guidance",
+     "bg": [
+      58,
+      138,
+      200
+     ]
+    }
+   },
+   {
+    "type": "kpi-card",
+    "x": 40,
+    "y": 540,
+    "w": 376,
+    "h": 140,
+    "args": {
+     "value": "$1,229M - $1,237M",
+     "label": "Ending ARR Guidance",
+     "icon": "target",
+     "style": "accent-border"
+    }
+   },
+   {
+    "type": "kpi-card",
+    "x": 432,
+    "y": 540,
+    "w": 376,
+    "h": 140,
+    "args": {
+     "value": "$259M - $265M",
+     "label": "Subscription & Support Guidance",
+     "icon": "users",
+     "style": "accent-border"
+    }
+   },
+   {
+    "type": "bullet-list",
+    "x": 824,
+    "y": 540,
+    "w": 384,
+    "h": 140,
+    "args": {
+     "items": [
+      {
+       "icon": "arrow-fat-up",
+       "label": "Raised outlook: revenue, operating income, cash",
+       "status": "highlight"
+      },
+      {
+       "icon": "rocket",
+       "label": "Pipeline visibility driving confidence"
+      }
+     ]
+    }
+   }
+  ]
+ },
+ "meta": {
+  "bakedBy": "validate-auto-scaffold",
+  "model": "live"
+ }
+}

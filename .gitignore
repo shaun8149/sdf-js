@@ -12,9 +12,19 @@ node_modules/
 # 产物
 *.stl
 .gstack/
+.playwright-mcp/
 
 # Test fixtures: real-world PDFs/PPTXs may be copyrighted templates — kept
 # local only. Pre-parsed baked JSON (e.g. pdf-mapping-data.json) ships in the
 # repo so the browser demo runs without the original file.
 sdf-js/fixtures/*.pdf
 sdf-js/fixtures/*.pptx
+screens/
+key.txt
+sdf-js/fixtures/pages/
+sdf-js/scenes/ir/*.slides-cache.json
+sdf-js/fixtures/wild/
+# concierge decks: strangers' files never enter the public repo
+sdf-js/scenes/ir/concierge-*
+sdf-js/scenes/assets/concierge-*
+sdf-js/fixtures/pages/concierge-*

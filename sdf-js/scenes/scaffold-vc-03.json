@@ -1,0 +1,229 @@
+{
+  "v": 1,
+  "name": "(scaffold) pitch-deck-vc/solution",
+  "subjects": [
+    {
+      "id": "flow-chart-0",
+      "type": "flow-chart-3d",
+      "args": {
+        "steps": 4
+      },
+      "transform": {
+        "translate": [
+          0,
+          2.35,
+          0
+        ],
+        "scale": 1.6956521739130437
+      },
+      "material": {
+        "hue": 0.06201550387596899,
+        "sat": 0.72,
+        "value": 0.72,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      }
+    },
+    {
+      "id": "icon-badge-1",
+      "type": "icon-grid-3d",
+      "args": {
+        "rows": 1,
+        "cols": 1,
+        "tileSize": 1
+      },
+      "transform": {
+        "translate": [
+          3.7375000000000003,
+          3.4000000000000004,
+          0
+        ],
+        "scale": 0.55
+      },
+      "material": {
+        "hue": 0.625,
+        "sat": 0.72,
+        "value": 0.7058823529411765,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      }
+    },
+    {
+      "id": "icon-badge-2",
+      "type": "icon-grid-3d",
+      "args": {
+        "rows": 1,
+        "cols": 1,
+        "tileSize": 1
+      },
+      "transform": {
+        "translate": [
+          1.4625000000000001,
+          3.4000000000000004,
+          0
+        ],
+        "scale": 0.55
+      },
+      "material": {
+        "hue": 0.638888888888889,
+        "sat": 0.5,
+        "value": 0.5,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      }
+    },
+    {
+      "id": "icon-badge-3",
+      "type": "icon-grid-3d",
+      "args": {
+        "rows": 1,
+        "cols": 1,
+        "tileSize": 1
+      },
+      "transform": {
+        "translate": [
+          -0.8125,
+          3.4000000000000004,
+          0
+        ],
+        "scale": 0.55
+      },
+      "material": {
+        "hue": 0.06201550387596899,
+        "sat": 0.72,
+        "value": 0.72,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      }
+    },
+    {
+      "id": "icon-badge-4",
+      "type": "icon-grid-3d",
+      "args": {
+        "rows": 1,
+        "cols": 1,
+        "tileSize": 1
+      },
+      "transform": {
+        "translate": [
+          -3.0875,
+          3.4000000000000004,
+          0
+        ],
+        "scale": 0.55
+      },
+      "material": {
+        "hue": 0.625,
+        "sat": 0.72,
+        "value": 0.7058823529411765,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      }
+    }
+  ],
+  "overlay": [
+    {
+      "text": "LLM writes structured intent",
+      "anchor": [
+        2.1365217391304347,
+        4.0456521739130435,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "Atlas runtime renders illustration",
+      "anchor": [
+        2.1365217391304347,
+        2.8247826086956525,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "4 renderer variants (silhouette/3D/lines/crayon)",
+      "anchor": [
+        2.1365217391304347,
+        1.603913043478261,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "Editable: tweak intent → regenerate visual",
+      "anchor": [
+        2.1365217391304347,
+        0.38304347826086915,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "OUR SOLUTION",
+      "anchor": [
+        0,
+        4.9,
+        0
+      ],
+      "role": "title"
+    }
+  ],
+  "cameraSequence": {
+    "loop": false,
+    "shots": [
+      {
+        "duration": 0.01,
+        "pos": [
+          1.4,
+          3.5,
+          14
+        ],
+        "target": [
+          0,
+          2.5,
+          0
+        ],
+        "fov": 48,
+        "aperture": 0,
+        "focalDistance": 12.5,
+        "ease": "smooth"
+      },
+      {
+        "duration": 14,
+        "pos": [
+          0,
+          2.85,
+          11.8
+        ],
+        "target": [
+          0,
+          2.5,
+          0
+        ],
+        "fov": 46,
+        "transition": "blend",
+        "aperture": 0,
+        "focalDistance": 11.8,
+        "ease": "smooth"
+      }
+    ]
+  },
+  "defaults": {
+    "stage": {
+      "size": [
+        24,
+        12,
+        13
+      ]
+    }
+  }
+}

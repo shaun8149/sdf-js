@@ -1,0 +1,66 @@
+{
+  "id": "chart-pie",
+  "title": "Pie / Donut Chart",
+  "prompt": "data: Pie / Donut Chart",
+  "code2d": "// vision-authored chart-product cover (PresentationLoad Charts & Diagrams).",
+  "sceneData": {
+    "v": 1,
+    "name": "Pie / Donut Chart",
+    "source": {
+      "format": "vision-authored",
+      "prompt": "data chart product"
+    },
+    "subjects": [
+      {
+        "id": "s0",
+        "type": "pie-3d",
+        "args": {
+          "values": [0.32, 0.24, 0.2, 0.14, 0.1],
+          "outerRadius": 1.1,
+          "innerRadius": 0.4,
+          "thickness": 0.4
+        },
+        "transform": {
+          "translate": [0, 0.8, 0],
+          "rotate": [1.5707963267948966, 0, 0]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.75,
+          "metal": 0.3,
+          "glow": 0
+        }
+      }
+    ],
+    "defaults": {
+      "camera": {
+        "yaw": 0.5,
+        "pitch": 0.3,
+        "distance": 10,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 0.8,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": 0.6,
+        "altitude": 0.55,
+        "distance": 25,
+        "intensity": 1.2
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.4
+      },
+      "studioBg": "dark"
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-06-21",
+    "model": "vision-authored",
+    "pattern": "data",
+    "costUSD": 0
+  }
+}

@@ -1,0 +1,70 @@
+{
+ "slotIdx": 13,
+ "slotName": "mechanism",
+ "slotTitle": "How It Works",
+ "sourceSlideIdx": 19,
+ "sceneData": {
+  "name": "news-briefing/mechanism",
+  "layout": "hierarchy",
+  "subjects": [
+   {
+    "type": "cover",
+    "x": 0,
+    "y": 0,
+    "w": 1280,
+    "h": 120,
+    "args": {
+     "title": "一笔交易的 ANT 之旅",
+     "style": "gradient",
+     "subtitle": "完整经济闭环"
+    }
+   },
+   {
+    "type": "circle-process-cycle",
+    "x": 40,
+    "y": 160,
+    "w": 1200,
+    "h": 520,
+    "args": {
+     "title": "一笔交易的 ANT 之旅(完整循环)",
+     "steps": [
+      {
+       "label": "① 用户下单",
+       "sublabel": "USDT/SOL 买入 ANT — 成交量即路由买压"
+      },
+      {
+       "label": "② 交易成交",
+       "sublabel": "ANT 计价,1.85% 费用全额 ANT 沉淀"
+      },
+      {
+       "label": "③ 费用分享",
+       "sublabel": "团队长、激励池、空投池、平台各得其份"
+      },
+      {
+       "label": "④ 回购销毁",
+       "sublabel": "≥50% 回购销毁 + 毕业锁定外盘"
+      },
+      {
+       "label": "⑤ 空投质押",
+       "sublabel": "存活代币发给质押者,享费用折扣"
+      },
+      {
+       "label": "⑥ 循环增强",
+       "sublabel": "每转一圈需求、锁定与销毁同时增加"
+      }
+     ],
+     "centerLabel": "ANT 经济闭环"
+    }
+   }
+  ]
+ },
+ "meta": {
+  "bakedBy": "validate-auto-scaffold",
+  "model": "live"
+ },
+ "sectionAccent": [
+  196,
+  148,
+  62
+ ]
+}

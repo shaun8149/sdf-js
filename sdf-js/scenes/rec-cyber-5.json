@@ -1,0 +1,128 @@
+{
+  "v": 1,
+  "name": "(lifted) cyber-Incident Response",
+  "subjects": [
+    {
+      "id": "progression",
+      "type": "progression-3d",
+      "args": {
+        "steps": 4
+      },
+      "transform": {
+        "translate": [
+          -1,
+          0.6,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.4,
+        "sat": 0.55,
+        "value": 0.64,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      }
+    }
+  ],
+  "overlay": [
+    {
+      "text": "INCIDENT RESPONSE",
+      "anchor": [
+        0,
+        3.9,
+        0
+      ],
+      "role": "title"
+    },
+    {
+      "text": "Identify",
+      "anchor": [
+        3,
+        2.6,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "Contain",
+      "anchor": [
+        3,
+        1.8800000000000001,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "Eradicate",
+      "anchor": [
+        3,
+        1.1600000000000001,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "Recover",
+      "anchor": [
+        3,
+        0.43999999999999995,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    }
+  ],
+  "cameraSequence": {
+    "loop": false,
+    "shots": [
+      {
+        "pos": [
+          -4.2,
+          2.1500000000000004,
+          7.9799999999999995
+        ],
+        "target": [
+          0,
+          1.6,
+          0
+        ],
+        "fov": 50,
+        "focalDistance": 8.4,
+        "duration": 0.01,
+        "aperture": 0,
+        "ease": "smooth"
+      },
+      {
+        "pos": [
+          1.512,
+          1.8,
+          7.392
+        ],
+        "target": [
+          0,
+          1.6,
+          0
+        ],
+        "fov": 47,
+        "focalDistance": 8.4,
+        "duration": 14,
+        "transition": "blend",
+        "aperture": 0,
+        "ease": "smooth"
+      }
+    ]
+  },
+  "defaults": {
+    "stage": {
+      "size": [
+        18,
+        9,
+        11
+      ]
+    }
+  }
+}

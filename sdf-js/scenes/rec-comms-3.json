@@ -1,0 +1,89 @@
+{
+  "v": 1,
+  "name": "(lifted) comms-Stakeholders",
+  "subjects": [
+    {
+      "id": "matrix-grid",
+      "type": "matrix-grid-3d",
+      "args": {
+        "rows": 2,
+        "cols": 2
+      },
+      "transform": {
+        "translate": [
+          0,
+          1.8,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.6,
+        "sat": 0.55,
+        "value": 0.64,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      }
+    }
+  ],
+  "overlay": [
+    {
+      "text": "POWER / INTEREST",
+      "anchor": [
+        0,
+        3.9,
+        0
+      ],
+      "role": "title"
+    }
+  ],
+  "cameraSequence": {
+    "loop": false,
+    "shots": [
+      {
+        "duration": 0.01,
+        "pos": [
+          1,
+          2.1,
+          9.799999999999999
+        ],
+        "target": [
+          0,
+          1.6,
+          0
+        ],
+        "fov": 50,
+        "aperture": 0,
+        "focalDistance": 8.2,
+        "ease": "smooth"
+      },
+      {
+        "duration": 13,
+        "pos": [
+          0,
+          1.8,
+          8.2
+        ],
+        "target": [
+          0,
+          1.6,
+          0
+        ],
+        "fov": 46,
+        "transition": "blend",
+        "aperture": 0,
+        "focalDistance": 8.2,
+        "ease": "smooth"
+      }
+    ]
+  },
+  "defaults": {
+    "stage": {
+      "size": [
+        18,
+        9,
+        11
+      ]
+    }
+  }
+}

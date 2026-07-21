@@ -1,0 +1,36 @@
+{
+  "id": "deck-rec-okr",
+  "name": "Objectives & Key Results",
+  "segments": [
+    {
+      "file": "rec-okr-1.json",
+      "title": "OKR Overview",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-okr-2.json",
+      "title": "Key Results",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-okr-3.json",
+      "title": "Alignment",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-okr-4.json",
+      "title": "Cadence",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-okr-5.json",
+      "title": "Maturity",
+      "kind": "slide",
+      "durationSec": 7
+    }
+  ]
+}

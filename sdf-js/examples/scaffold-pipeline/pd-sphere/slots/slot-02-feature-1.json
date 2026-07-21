@@ -1,0 +1,79 @@
+{
+  "slotIdx": 2,
+  "slotName": "feature-1",
+  "slotTitle": "Feature Highlight",
+  "slotPurpose": "Lead feature with detail",
+  "sourceSlideIdx": 3,
+  "sourceSlideTitle": "3D SPHERES",
+  "sceneData": {
+    "name": "product-launch/feature-1",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "device-mockup-frame",
+        "x": 80,
+        "y": 120,
+        "w": 480,
+        "h": 520,
+        "args": {
+          "device": "phone",
+          "title": "3D SPHERES",
+          "content": "FILL LEVELS",
+          "color": [255, 120, 40]
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 620,
+        "y": 120,
+        "w": 580,
+        "h": 520,
+        "args": {
+          "title": "Feature Highlight",
+          "items": [
+            {
+              "label": "FILL LEVELS",
+              "sublabel": "Enter your subheadline here",
+              "status": "highlight"
+            },
+            {
+              "label": "THIS IS A PLACEHOLDER TEXT.",
+              "sublabel": "This text can be replaced with your own text. The text demonstrates how your own text will look when you replace the placeholder with your own text."
+            },
+            {
+              "label": "THIS IS A PLACEHOLDER TEXT.",
+              "sublabel": "This text can be replaced with your own text. The text demonstrates how your own text will look when you replace the placeholder with your own text."
+            },
+            {
+              "label": "50%",
+              "sublabel": "Completion rate",
+              "status": "done"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "product-launch",
+    "theme": "pitch-cobalt-orange",
+    "recommendedAtoms": ["device-mockup-frame", "bullet-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 736,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 89490,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 407,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.03516,
+    "elapsedSec": 5.5,
+    "generatedAt": "2026-06-22T15:35:16.772Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

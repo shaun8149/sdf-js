@@ -1,0 +1,298 @@
+{
+  "name": "bp2015",
+  "source": {
+    "pdf": "sdf-js/fixtures/Bytedance_BP_2015.pdf"
+  },
+  "note": "Ground truth = the hand-built grade-A deck (three adversarial supervisor rounds) + rendered-page adjudications from 2026-07-18/19. Page keys are 0-based indices.",
+  "pages": {
+    "2": {
+      "label": "p3 需求排序 grouped",
+      "checks": [
+        {
+          "type": "structure",
+          "anyOf": ["magnitude"]
+        },
+        {
+          "type": "values",
+          "equals": [71, 77.2, 17.4, 23.2, 9.2, 48.3, 78.4, 77.5, 73.6, 67.5, 61, 57.6]
+        }
+      ]
+    },
+    "3": {
+      "label": "p4 过去/现在矩阵(时代绑定;曾 temp0 稳定反转,verifyMatrixBindings 修复)",
+      "checks": [
+        {
+          "type": "structure",
+          "anyOf": ["matrix"]
+        },
+        {
+          "type": "cellRow",
+          "node": "编辑挑选",
+          "row": "过去"
+        },
+        {
+          "type": "cellRow",
+          "node": "个性化",
+          "row": "现在"
+        },
+        {
+          "type": "cellRow",
+          "node": "PC",
+          "row": "过去"
+        },
+        {
+          "type": "cellRow",
+          "node": "移动终端",
+          "row": "现在"
+        }
+      ]
+    },
+    "4": {
+      "label": "p5 使用习惯 VS 表",
+      "checks": [
+        {
+          "type": "structure",
+          "anyOf": ["matrix"]
+        },
+        {
+          "type": "containsText",
+          "all": ["高频", "被动响应"]
+        }
+      ]
+    },
+    "6": {
+      "label": "p7 三概念球",
+      "checks": [
+        {
+          "type": "structure",
+          "anyOf": ["hold"]
+        },
+        {
+          "type": "form",
+          "anyOf": ["circles"]
+        }
+      ]
+    },
+    "8": {
+      "label": "p9 里程碑 roadmap(配对;尾部 2014.12/2015.3 ↔ 2.4亿/国外同行 两框连线真歧义 — 监督者与手工双裁互斥,不入金页,由 pairingUncertain 旗承担)",
+      "checks": [
+        {
+          "type": "structure",
+          "anyOf": ["roadmap"]
+        },
+        {
+          "type": "milestone",
+          "date": "2012.3",
+          "label": "成立"
+        },
+        {
+          "type": "milestone",
+          "date": "2012.8",
+          "label": "上线"
+        },
+        {
+          "type": "milestone",
+          "date": "2012.10",
+          "label": "1000"
+        },
+        {
+          "type": "milestone",
+          "date": "2013.5",
+          "label": "B"
+        },
+        {
+          "type": "milestone",
+          "date": "2013.7",
+          "label": "5000"
+        },
+        {
+          "type": "milestone",
+          "date": "2014.6",
+          "label": "C"
+        },
+        {
+          "type": "milestoneNot",
+          "date": "2014.6",
+          "label": "国外同行"
+        },
+        {
+          "type": "milestoneNot",
+          "date": "2014.6",
+          "label": "5000"
+        }
+      ]
+    },
+    "15": {
+      "label": "p16 用户增长(数据在几何)",
+      "chartGeometry": true,
+      "checks": [
+        {
+          "type": "curve",
+          "anyOf": [
+            {
+              "start": 680,
+              "end": 3380,
+              "direction": "up"
+            },
+            {
+              "start": 8450000,
+              "end": 33800000,
+              "direction": "up"
+            },
+            {
+              "start": 62500000,
+              "end": 245000000,
+              "direction": "up"
+            }
+          ],
+          "tol": 0.35,
+          "minPoints": 4
+        },
+        {
+          "type": "forbidden",
+          "values": [62500000, 125000000, 187500000, 250000000]
+        }
+      ]
+    },
+    "16": {
+      "label": "p17 粘性(数据在几何)",
+      "chartGeometry": true,
+      "checks": [
+        {
+          "type": "curve",
+          "anyOf": [
+            {
+              "start": 26,
+              "end": 39,
+              "direction": "up"
+            },
+            {
+              "start": 7.8,
+              "end": 15,
+              "direction": "up"
+            }
+          ],
+          "tol": 0.35,
+          "minPoints": 4
+        },
+        {
+          "type": "forbidden",
+          "values": [4, 7, 10, 13, 16]
+        },
+        {
+          "type": "trend",
+          "direction": "up"
+        }
+      ]
+    },
+    "17": {
+      "label": "p18 四图对手页(数据在几何)",
+      "chartGeometry": true,
+      "checks": [
+        {
+          "type": "curve",
+          "anyOf": [
+            {
+              "start": 38,
+              "end": 19,
+              "direction": "down"
+            },
+            {
+              "start": 700,
+              "end": 38,
+              "direction": "down"
+            }
+          ],
+          "tol": 0.4,
+          "minPoints": 4
+        },
+        {
+          "type": "forbidden",
+          "values": [9.5, 28.5, 4.5, 13.5, 225000, 675000]
+        }
+      ]
+    },
+    "19": {
+      "label": "p20 内容来源饼 73/27",
+      "checks": [
+        {
+          "type": "structure",
+          "anyOf": ["proportion"]
+        },
+        {
+          "type": "values",
+          "equals": [73, 27]
+        }
+      ]
+    },
+    "20": {
+      "label": "p21 头条号榜单(数据在几何)",
+      "chartGeometry": true,
+      "checks": [
+        {
+          "type": "curve",
+          "anyOf": [
+            {
+              "start": 7.8,
+              "end": 2.8,
+              "direction": "down"
+            },
+            {
+              "start": 780000000,
+              "end": 280000000,
+              "direction": "down"
+            },
+            {
+              "start": 6900000,
+              "end": 150000,
+              "direction": "down"
+            }
+          ],
+          "tol": 0.45,
+          "minPoints": 6
+        },
+        {
+          "type": "forbidden",
+          "values": [1750000, 3500000, 5250000, 7000000]
+        },
+        {
+          "type": "forbidden",
+          "values": [225000000, 450000000, 675000000, 900000000]
+        }
+      ]
+    },
+    "24": {
+      "label": "p25 收入预期表(逐位)",
+      "checks": [
+        {
+          "type": "structure",
+          "anyOf": ["magnitude"]
+        },
+        {
+          "type": "valuesContain",
+          "values": [0.08, 2.4, 15, 36, 80, 150]
+        }
+      ]
+    },
+    "26": {
+      "label": "p27 市场规模+份额",
+      "checks": [
+        {
+          "type": "valuesAnyOf",
+          "sets": [
+            [75.7, 155.2, 273.1, 486.7, 845, 1276.9],
+            [150, 300, 450, 600]
+          ]
+        }
+      ]
+    },
+    "29": {
+      "label": "p30 融资/联系页(隐私)",
+      "checks": [
+        {
+          "type": "noContact"
+        }
+      ]
+    }
+  }
+}

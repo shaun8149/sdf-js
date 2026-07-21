@@ -16,11 +16,16 @@
 // =============================================================================
 
 import * as deckModel from './deck-model.js';
-import { compileScene, createRendererForId } from '../compositor-api.js';
+import { compileScene, createRendererForId, PRESENT_EFFECTS } from '../compositor-api.js';
 import { BRANDING_PALETTES, getPalette } from './branding-palettes.js';
 import { mountP5Renderer } from './p5-renderer.js';
+import { renderSceneDataToCanvas } from './atoms-2d/renderer.js';
+import { isAtom2DType } from './atoms-2d/registry.js';
 
-const RENDERERS = ['silhouette', 'lines', 'crayon', 'topo'];
+// Effect cycle order — the single source of truth lives in renderer-registry
+// (re-exported via compositor-api). createRendererForId now maps all four to a
+// CPU 2D renderer, so cycling no longer throws on lines/crayon/topo.
+const RENDERERS = PRESENT_EFFECTS;
 
 /**
  * Mount a visual panel for one visual into the wrapper element.
@@ -40,6 +45,15 @@ export function mountVisualPanel(wrapper, deck, visualId) {
 
   function isP5SketchVariant(variant) {
     return variant?.sceneData?.subjects?.[0]?.type === 'p5-sketch';
+  }
+
+  function isAtom2DVariant(variant) {
+    // True when ALL subjects in the scene are 2D atoms (registered in atoms-2d).
+    // Renders via main-page Canvas2D path (atoms-2d/renderer), bypassing the
+    // SDF compile + silhouette pipeline.
+    const subs = variant?.sceneData?.subjects;
+    if (!Array.isArray(subs) || subs.length === 0) return false;
+    return subs.every((s) => s && isAtom2DType(s.type));
   }
 
   function render() {
@@ -80,6 +94,8 @@ export function mountVisualPanel(wrapper, deck, visualId) {
     if (isP5SketchVariant(sel)) {
       return `<div class="p5-mount" style="width: 600px; height: 360px;" data-visual-id="${visual.id}"></div>`;
     }
+    // Sprint 14a: atom-2d variants render via main-page Canvas2D (same canvas
+    // element as traditional, but renderActiveVariantCanvas dispatches differently)
     // Traditional sceneData renders via canvas
     return `<canvas class="visual-canvas" width="600" height="360" data-visual-id="${visual.id}"></canvas>`;
   }
@@ -231,6 +247,15 @@ export function mountVisualPanel(wrapper, deck, visualId) {
         const palette = getPalette(visual.activeBranding);
         p5Handle = mountP5Renderer(p5Mount, sel.sceneData, palette);
       }
+    } else if (isAtom2DVariant(sel)) {
+      // Sprint 14a: atom-2d variants → main-page Canvas2D via atoms-2d/renderer
+      if (p5Handle) {
+        p5Handle.destroy();
+        p5Handle = null;
+      }
+      const canvas = wrapper.querySelector('.visual-canvas');
+      if (!canvas) return;
+      renderAtom2DToCanvas(canvas, sel.sceneData, visual.activeBranding);
     } else {
       // Traditional sceneData → render via active CPU effect
       if (p5Handle) {
@@ -262,6 +287,9 @@ export function mountVisualPanel(wrapper, deck, visualId) {
             ctx.textBaseline = 'middle';
             ctx.fillText('P5 sketch', thumb.width / 2, thumb.height / 2 - 6);
             ctx.fillText(`(${v.archetype || 'fallback'})`, thumb.width / 2, thumb.height / 2 + 8);
+          } else if (isAtom2DVariant(v)) {
+            // Sprint 14a: atom-2d thumb via atoms-2d/renderer
+            renderAtom2DToCanvas(thumb, v.sceneData, visual.activeBranding);
           } else {
             renderVariantToCanvas(thumb, v.sceneData, visual.activeEffect, visual.activeBranding);
           }
@@ -277,6 +305,26 @@ export function mountVisualPanel(wrapper, deck, visualId) {
           ctx.fillText(v?.status || '·', thumb.width / 2, thumb.height / 2);
         }
       });
+    }
+  }
+
+  function renderAtom2DToCanvas(canvas, sceneData, brandingId) {
+    try {
+      const palette = getPalette(brandingId);
+      // Inject full palette so atoms can read .colors[i] for multi-color rendering
+      const injectedPalette = {
+        bg: palette.bg,
+        silhouetteColor: palette.silhouetteColor,
+        colors: palette.colors || null,
+        stroke: palette.stroke || palette.silhouetteColor,
+      };
+      // Fire-and-forget; renderSceneDataToCanvas is async (dynamic-import atoms)
+      // but UI doesn't need to await — canvas updates as soon as render completes.
+      renderSceneDataToCanvas(canvas, sceneData, { palette: injectedPalette }).catch((e) => {
+        console.error('[visual-panel] atom-2d render error:', e);
+      });
+    } catch (e) {
+      console.error('[visual-panel] atom-2d render error:', e);
     }
   }
 

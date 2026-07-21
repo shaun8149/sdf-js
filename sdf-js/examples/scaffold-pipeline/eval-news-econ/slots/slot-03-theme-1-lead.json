@@ -1,0 +1,89 @@
+{
+  "slotIdx": 3,
+  "slotName": "theme-1-lead",
+  "slotTitle": "Theme 1 — Lead",
+  "slotPurpose": "First major theme: the core facts and figures",
+  "sourceSlideIdx": 3,
+  "sourceSlideTitle": "OECD中期增长预测",
+  "sceneData": {
+    "name": "news-briefing/theme-1-lead",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "OECD中期增长预测",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "stat-banner",
+        "x": 40,
+        "y": 200,
+        "w": 1200,
+        "h": 140,
+        "args": {
+          "value": "2.9%",
+          "label": "全球GDP增速预测",
+          "bg": [
+            38,
+            70,
+            130
+          ]
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 240,
+        "y": 380,
+        "w": 800,
+        "h": 280,
+        "args": {
+          "items": [
+            {
+              "icon": "chart-line",
+              "label": "经合组织中期报告预测",
+              "sublabel": "全球GDP增速大致稳定"
+            },
+            {
+              "icon": "scales",
+              "label": "较IMF更为保守",
+              "sublabel": "谨慎评估中期增长动能"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "bar",
+      "column",
+      "stat-banner",
+      "kpi-card"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5173,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 388,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.025241399999999997,
+    "elapsedSec": 8.8,
+    "generatedAt": "2026-07-10T07:26:22.514Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

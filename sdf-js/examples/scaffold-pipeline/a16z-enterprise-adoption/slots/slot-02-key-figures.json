@@ -1,0 +1,68 @@
+{
+  "slotIdx": 2,
+  "slotName": "key-figures",
+  "slotTitle": "Key Figures",
+  "slotPurpose": "The headline numbers at a glance",
+  "sourceSlideIdx": 2,
+  "sourceSlideTitle": "Fortune 500 AI Adoption Rate",
+  "sceneData": {
+    "name": "news-briefing/key-figures",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Key Figures"
+        }
+      },
+      {
+        "type": "stat-grid-large",
+        "x": 40,
+        "y": 180,
+        "w": 1200,
+        "h": 480,
+        "args": {
+          "stats": [
+            {
+              "value": "29%",
+              "label": "Fortune 500 Adoption",
+              "trend": "Active Deployments",
+              "trendDirection": "up"
+            },
+            {
+              "value": "145",
+              "label": "Live Customers",
+              "trend": "Largest U.S. Companies"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["stat-grid-large", "kpi-card", "dashboard-multi-kpi-composite"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4438,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 265,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0211914,
+    "elapsedSec": 5.4,
+    "generatedAt": "2026-07-07T03:50:51.485Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "slotIdx": 11,
+  "slotName": "quote",
+  "slotTitle": "Key Quote",
+  "slotPurpose": "A load-bearing quote or judgment from the article",
+  "sourceSlideIdx": 8,
+  "sourceSlideTitle": "微型电动车成为市场爆款",
+  "sceneData": {
+    "name": "news-briefing/quote",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 100,
+        "args": {
+          "title": "Key Quote",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "pull-quote-banner",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 440,
+        "args": {
+          "quote": "五菱宏光MINI等微型电动车单一车型贡献超过15%",
+          "author": "市场数据",
+          "bg": "accent"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "quote-pull",
+      "pull-quote-banner"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5155,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 225,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0227424,
+    "elapsedSec": 5.3,
+    "generatedAt": "2026-07-10T07:27:23.286Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

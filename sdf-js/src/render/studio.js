@@ -15,20 +15,79 @@ import { compileSDF3ToGLSL, canCompileSDF3 } from '../sdf/sdf3.compile.js';
 // W12 pattern-AA: band-limited filtering library (checkersFiltered, filterWidth).
 import { FILTER_GLSL } from '../sdf/filter.js';
 import { attachFlyControls } from '../input/fly-controls.js';
+import { compileAnalyticFrag } from './analytic.js';
 import { createPostFxPipeline, resolvePostFxParams, DEFAULT_POSTFX } from './postfx.js';
 import {
   evaluateCameraSequence,
   sequenceStateToCamState,
   totalDuration as seqTotalDuration,
+  warpTime,
+  unwarpTime,
 } from '../scene/camera-sequence.js';
 
-const VS_SRC = `attribute vec2 a_pos;
+// GLSL ES 3.00 (studio is WebGL2-only). Shaders without #version are parsed as
+// ES 1.00 with its Appendix A restrictions; ES3 lifts them and unlocks
+// studio-side language features. The #define shim below lets the shared GLSL
+// library (also compiled under ES 1.00 by the WebGL1 renderers) stay
+// version-agnostic: texture2D was removed in ES3, aliased back to texture().
+const VS_SRC = `#version 300 es
+in vec2 a_pos;
 void main() { gl_Position = vec4(a_pos, 0.0, 1.0); }`;
 
-function buildFragmentShader(sceneGlsl) {
-  return `#ifdef GL_ES
+// ---- Material-branch feature gating -----------------------------------------
+// The fragment template carries a shading branch per material kind (sea /
+// mountain / building / …, ~35KB total plus the library functions only they
+// call). A funnel deck uses none of them — yet ANGLE still translated every
+// line on every page load (the ~13s floor left after data-as-uniforms). The
+// branches are wrapped in feature marker comments (#feature name … #endfeature,
+// each prefixed with //), shaped as a dangling `if (cond) { … } else` so ANY subset strips to valid
+// GLSL (the standard branch is the final bare block). applyFeatureGates keeps
+// only the branches whose material kinds the scene actually contains; the DCE
+// prune (glsl-prune.js) then drops their library dependencies too. Feature set
+// is as stable as the scene shape, so the zero-recompile invariant (#208) holds.
+const KIND_FEATURE = {
+  1: 'sea',
+  2: 'mountain',
+  3: 'emissive',
+  4: 'translucent',
+  5: 'snowy',
+  6: 'building',
+  7: 'eroded',
+  8: 'glass',
+  9: 'fill',
+};
+
+export function applyFeatureGates(glsl, features) {
+  return glsl.replace(
+    /^[ \t]*\/\/#feature (\w+)\r?\n([\s\S]*?)^[ \t]*\/\/#endfeature[ \t]*\r?\n/gm,
+    (_m, name, body) => (features == null || features.has(name) ? body : ''),
+  );
+}
+
+function featuresFromLeafMaterials(leafMaterials) {
+  const features = new Set();
+  for (const m of leafMaterials || []) {
+    const f = KIND_FEATURE[m?.kind];
+    if (f) features.add(f);
+  }
+  return features;
+}
+
+function buildFragmentShader(sceneGlsl, features) {
+  return applyFeatureGates(
+    `#version 300 es
 precision highp float;
-#endif
+#define texture2D texture
+out vec4 fragColor;
+
+// Loop-unroll guard (studio-only, legal under ES3). NEVER set — GL defaults it
+// to 0.0, so "N + int(u_loopGuard)" == N at runtime. Its only job is to make
+// the hot loops' trip counts OPAQUE to the D3D shader compiler: fxc fully
+// unrolls constant-bound loops, and the main raymarch (MAX_STEPS iterations,
+// each inlining the ENTIRE scene SDF) unrolled is a combinatorial explosion —
+// measured ~10s of first-draw pipeline compile for a plain funnel scene. An
+// unprovable bound forces a real loop; compile collapses, runtime unchanged.
+uniform float u_loopGuard;
 
 ${FILTER_GLSL}
 
@@ -41,10 +100,26 @@ uniform vec3  u_camRight;
 uniform vec3  u_camUp;
 uniform float u_focal;
 uniform vec3  u_lightPos;
+// Stage area lights — extra point lights (e.g. emissive ceiling panels) that add
+// soft-shadowed diffuse + a glint to the STANDARD material, on top of the sun
+// (u_lightPos). numExtraLights=0 → every existing scene is byte-identical.
+#define MAX_EXTRA_LIGHTS 4
+uniform int   u_numExtraLights;
+uniform vec3  u_extraLightPos[MAX_EXTRA_LIGHTS];
+uniform vec3  u_extraLightColor[MAX_EXTRA_LIGHTS];   // rgb * intensity (premultiplied)
+uniform float u_extraLightRadius[MAX_EXTRA_LIGHTS];  // penumbra softness, world units
+uniform vec3  u_extraLightDir[MAX_EXTRA_LIGHTS];     // spotlight aim; zero vec = omni point
+uniform float u_ambientScale;  // 1 = normal; ~0.18 for theatrical dark interior
+// SDF glow (idiom L08 "light = distance falloff"): accumulated along the march —
+// nearly free in a raymarcher since dm.x is in hand every step. 0 = off (default;
+// existing scenes byte-identical). Stage preset sets a small amount (~0.35).
+uniform float u_glowAmt;
+uniform float u_glowK;
 uniform float u_shadowsOn;
 uniform float u_groundOn;
 uniform float u_checkerOn;
 uniform float u_reflectOn;     // 0/1 toggle for ground reflection
+uniform float u_studioBg;      // 0=light test stage, 1=dark dramatic showcase (per-scene)
 // Sprint 8: blueprint shot mode. When set to 1, the entire scene is rendered
 // as a technical schematic — silhouette edges + light fill on a dark graph-
 // paper background. Set per-frame from cameraSequence shot.renderer field.
@@ -98,7 +173,11 @@ uniform vec4  u_volumeSizeDensity[MAX_VOLUMES];
 uniform vec4  u_volumeColor[MAX_VOLUMES];
 uniform int   u_volumeCount;
 
-#define MAX_STEPS    200
+// 144 (was 200): steps 150+ only ever fire on GRAZING rays — silhouette
+// pixels whose step collapsed against a surface they'll never hit. Cutting
+// the tail costs a whisper of silhouette AA and buys back whole frames on
+// sparse scenes (constellations) where every ray grazes several spheres.
+#define MAX_STEPS    144
 #define MAX_DIST     200.0  // matches BOB GPU; was 40, too small for fleet/scatter scenes
 #define EPS          0.0008
 #define GROUND_Y     -1.0
@@ -130,7 +209,7 @@ float softShadow(vec3 ro, vec3 rd, float mint, float maxt, float k) {
   float res = 1.0;
   float t = mint;
   float ph = 1e10;
-  for (int i = 0; i < 32; i++) {
+  for (int i = 0; i < 32 + int(u_loopGuard); i++) {
     if (t >= maxt) break;
     float h = mapWithGround(ro + rd * t).x;
     if (h < 0.00012) return 0.0;
@@ -147,13 +226,33 @@ float softShadow(vec3 ro, vec3 rd, float mint, float maxt, float k) {
 float calcAO(vec3 p, vec3 n) {
   float occ = 0.0;
   float sca = 1.0;
-  for (int i = 0; i < 5; i++) {
+  for (int i = 0; i < 5 + int(u_loopGuard); i++) {
     float h = 0.012 + 0.14 * float(i) / 4.0;
     float d = mapWithGround(p + h * n).x;
     occ += (h - d) * sca;
     sca *= 0.92;
   }
   return clamp(1.0 - 2.6 * occ, 0.0, 1.0);
+}
+
+// GGX / Cook-Torrance specular for the standard material — replaces the old
+// Phong pow() lobe. Energy-conserving microfacet highlight whose shape tracks
+// roughness (metals → low rough → tight bright glint that reads as metal; matte
+// → broad soft sheen). Single sun light, so we fold the NdotL cosine in here and
+// return a ready-to-add term. Schlick-GGX (Smith) geometry, Trowbridge-Reitz D.
+float ggxSpecular(vec3 n, vec3 v, vec3 l, float rough) {
+  vec3 h = normalize(v + l);
+  float a = max(rough * rough, 0.002);
+  float a2 = a * a;
+  float NdotH = max(dot(n, h), 0.0);
+  float NdotL = max(dot(n, l), 0.0);
+  float NdotV = max(dot(n, v), 0.0);
+  float d = NdotH * NdotH * (a2 - 1.0) + 1.0;
+  float D = a2 / (3.14159265 * d * d + 1e-6);
+  float k = a * 0.5;
+  float gv = NdotV / (NdotV * (1.0 - k) + k);
+  float gl = NdotL / (NdotL * (1.0 - k) + k);
+  return (D * gv * gl) / (4.0 * NdotV * NdotL + 1e-3) * NdotL;
 }
 
 // nimitz-inspired atmospheric sky. Reacts to sun height: cool/blue at midday,
@@ -271,14 +370,12 @@ void fetchLeafData(float idx, out vec4 mat, out vec4 tone, out vec4 pat) {
   tone = vec4(1.0,  0.0, 0.0, 0.0);   // default: full brightness
   pat  = vec4(0.0);                    // default: no pattern
   if (target < 0 || target >= MAX_MATERIAL) return;
-  for (int j = 0; j < MAX_MATERIAL; j++) {
-    if (j == target) {
-      mat  = u_leafMaterial[j];
-      tone = u_leafTone[j];
-      pat  = u_leafPattern[j];
-      return;
-    }
-  }
+  // ES 3.00: dynamic uniform indexing is legal — direct fetch. (The ES 1.00
+  // version walked a 256-iteration compare loop, which fxc fully unrolled at
+  // every call site.)
+  mat  = u_leafMaterial[target];
+  tone = u_leafTone[target];
+  pat  = u_leafPattern[target];
 }
 
 // Apply a Shane-style cellular pattern to base albedo. Pattern is a
@@ -350,7 +447,7 @@ vec3 applyPattern(vec3 base, vec3 worldP, vec3 normal, vec4 pat, float fw) {
 // Returns vec3(t, matId, hitIdx); matId=0 means miss.
 vec3 raymarchShort(vec3 ro, vec3 rd, float maxDist) {
   float t = 0.04;  // small bias to avoid self-intersection at ground
-  for (int i = 0; i < 32; i++) {
+  for (int i = 0; i < 32 + int(u_loopGuard); i++) {
     vec3 p = ro + rd * t;
     vec2 dm = mapWithGround(p);
     if (dm.x < EPS * (1.0 + 0.4 * t)) {
@@ -616,7 +713,7 @@ vec4 applyVolumes(vec3 ro, vec3 rd, float tMax, vec3 sunDir) {
   vec3 acc = vec3(0.0);
   float transmit = 1.0;
   float t = dt * (0.5 + jitter * 0.5);
-  for (int i = 0; i < VOL_STEPS; i++) {
+  for (int i = 0; i < VOL_STEPS + int(u_loopGuard); i++) {
     if (t > tMax || transmit < 0.02) break;
     vec3 p = ro + rd * t;
     // Sprint 5: split emissive (flame, god-rays) vs absorptive (smoke, fog).
@@ -695,9 +792,14 @@ void main() {
   float matId = 0.0;
   float hitIdx = 0.0;  // captured at hit; downstream sceneSDF calls clobber minIndex
   bool hit = false;
-  for (int i = 0; i < MAX_STEPS; i++) {
+  float glowAcc = 0.0;  // SDF glow: near-miss accumulation (u_glowAmt gates it)
+  // + int(u_loopGuard) == +0: unroll defeat — see the u_loopGuard declaration.
+  for (int i = 0; i < MAX_STEPS + int(u_loopGuard); i++) {
     vec3 p = ro + rd * t;
     vec2 dm = mapWithGround(p);
+    // glow = inverse-square of the miss distance (IQ-style), so rays that graze
+    // the structure pick up a halo. Uniform branch — free when glow is off.
+    if (u_glowAmt > 0.0) glowAcc += 1.0 / (1.0 + u_glowK * dm.x * dm.x);
     if (dm.x < EPS * (1.0 + 0.4 * t)) {
       hit = true; matId = dm.y;
       hitIdx = minIndex;  // capture immediately — normal/shadow/AO calls below will overwrite
@@ -721,10 +823,14 @@ void main() {
 
   vec3 col;
   if (!hit) {
-    // Studio: cool-grey background, slightly darkened + a faint top-down
-    // gradient so the dark checker floor reads as brighter-lit-floor against it
-    // and the image keeps contrast instead of washing out toward the horizon.
-    col = mix(vec3(0.66, 0.69, 0.74), vec3(0.50, 0.54, 0.62), clamp(rd.y, 0.0, 1.0));
+    // Studio background. Light = neutral cool-grey test stage. Dark = dramatic
+    // cyclorama (deep slate, darker toward the top) so glossy showcase subjects
+    // pop against it like the source PresentationLoad decks.
+    if (u_studioBg > 0.5) {
+      col = mix(vec3(0.085, 0.10, 0.13), vec3(0.014, 0.018, 0.028), clamp(rd.y, 0.0, 1.0));
+    } else {
+      col = mix(vec3(0.66, 0.69, 0.74), vec3(0.50, 0.54, 0.62), clamp(rd.y, 0.0, 1.0));
+    }
   } else {
     // ---- Shading ----
     vec3 p = ro + rd * t;
@@ -741,10 +847,13 @@ void main() {
     float bnc  = clamp(0.5 - 0.5 * n.y, 0.0, 1.0);                 // bounce light from ground
 
     float shadowK = 1.0;
+    //#feature rich
     if (u_shadowsOn > 0.5) {
       float lightDist = length(u_lightPos - p);
-      shadowK = softShadow(p + n * 0.002, toLight, 0.02, lightDist, 12.0);
+      shadowK = softShadow(p + n * 0.002, toLight, 0.02, lightDist, 8.0); // softer penumbra
     }
+    //#endfeature
+
 
     // Base albedo + material params:
     //   - object hits (matId=2): material LUT keyed by hit leaf index. If the
@@ -761,12 +870,20 @@ void main() {
     bool isSnowy = false;       // material.kind == 'snowy'       (tone.y ~ 5)
     bool isBuilding = false;    // material.kind == 'building'    (tone.y ~ 6)
     bool isEroded = false;      // material.kind == 'eroded-terrain' (tone.y ~ 7)
+    bool isGlass = false;       // material.kind == 'glass'           (tone.y ~ 8)
+    bool isFill = false;        // material.kind == 'fill'            (tone.y ~ 9)
     vec4 leafMat, leafTone, leafPat;
     if (matId > 1.5) {
       fetchLeafData(hitIdx, leafMat, leafTone, leafPat);
       // Route by material kind. tone.y carries an integer-encoded kind.
-      // Check higher kinds first (7 > 6 > 5 > 4 > 3 > 2 > 1 > 0).
-      if (leafTone.y > 6.5) {
+      // Check higher kinds first (9 > 8 > 7 > ... > 1 > 0).
+      if (leafTone.y > 8.5) {
+        isFill = true;
+        base = hsv2rgb(vec3(leafMat.x, leafMat.y, leafTone.x)); // liquid colour
+      } else if (leafTone.y > 7.5) {
+        isGlass = true;
+        base = hsv2rgb(vec3(leafMat.x, leafMat.y, leafTone.x));
+      } else if (leafTone.y > 6.5) {
         isEroded = true;
         base = hsv2rgb(vec3(leafMat.x, leafMat.y, leafTone.x));
       } else if (leafTone.y > 5.5) {
@@ -812,6 +929,9 @@ void main() {
       float fpw = filterWidth(t, u_resolution.y, rd.y, 1.5);
       float c = checkersFiltered(p.xz, vec2(fpw));
       base = mix(vec3(0.26, 0.26, 0.28), vec3(0.16, 0.16, 0.18), c);
+      // Dramatic showcase: near-black floor with a barely-there checker — reads
+      // as a dark reflective studio surface (reflection + cast shadow preserved).
+      if (u_studioBg > 0.5) base = mix(vec3(0.05, 0.055, 0.072), vec3(0.028, 0.03, 0.045), c);
     } else {
       base = vec3(0.78, 0.78, 0.80);
     }
@@ -822,13 +942,17 @@ void main() {
     // Pattern uses surface normal for orientation-aware 2D projection (so
     // brick courses are horizontal regardless of which way the wall faces).
     // leafPat was already fetched above in the combined fetchLeafData call.
+    //#feature rich
     if (matId > 1.5 && !isSea && !isMountain && leafPat.x > 0.5) {
       // W12 pattern-AA: footprint at the hit (distance + grazing via dot(n,rd))
       // → ray-differential anti-aliasing inside applyPattern.
       float patFW = filterWidth(t, u_resolution.y, dot(n, rd), 1.5);
       base = applyPattern(base, p, n, leafPat, patFW);
     }
+    //#endfeature
 
+
+    //#feature sea
     if (isSea) {
       // ---- Sea-shading branch (afl_ext-inspired, MIT) -----------------------
       // Replaces the entire Lambert path for sea-surface hits. Reads the same
@@ -882,7 +1006,10 @@ void main() {
       // top-down water visibly blue while preserving grazing-angle reflectivity.
       vec3 waterAlbedo = vec3(0.04, 0.15, 0.22);   // dark teal lake / coastal water
       col = mix(waterAlbedo, reflection, seaFres) * 1.6 + scattering;
-    } else if (isEmissive) {
+    } else
+    //#endfeature
+    //#feature emissive
+    if (isEmissive) {
       // Emissive: bypass lighting equation. Color = base * (1 + 4*glow). Used
       // by meteor-streak (warm-white tail, glow ~ 2.0 default). ACES later
       // rolls off the high values for cinematic punch.
@@ -890,7 +1017,10 @@ void main() {
       // Atmospheric perspective still applies — distant meteors fade into sky
       float emFog = atmosphereDensity(p, t);
       col = mix(col, vec3(0.85, 0.87, 0.90), emFog * 0.4);
-    } else if (isTranslucent) {
+    } else
+    //#endfeature
+    //#feature translucent
+    if (isTranslucent) {
       // Translucent: standard Lambert + Henyey-Greenstein backlight. When sun
       // is behind the surface, rd aligns with sunDir → HG phase peaks → leaf
       // glows red-warm. Recipe from soft-servo/jake 'Tree in the wind' (no
@@ -912,7 +1042,83 @@ void main() {
                + backlight;
       float tFog = atmosphereDensity(p, t);
       col = mix(lit, vec3(0.85, 0.87, 0.90), tFog);
-    } else if (isSnowy) {
+    } else
+    //#endfeature
+    //#feature glass
+    if (isGlass) {
+      // ---- Glass material kind (real single-refraction) --------------------
+      // The view ray refracts into the (thin, hollow) shell; a secondary march
+      // SEES THROUGH to whatever is inside/behind (coloured liquid, or the
+      // distorted background). That transmission is blended with a Fresnel env
+      // reflection (strong at grazing edges) + a sharp sun glint + a cool
+      // fresnel rim. ior 1.45. base = glass tint (white = clear glass).
+      float ndv = max(dot(n, -rd), 0.0);
+      float fres = 0.04 + 0.96 * pow(1.0 - ndv, 5.0);
+      // Fresnel env reflection (edges)
+      vec3 Rfl = reflect(rd, n);
+      vec3 rsR = raymarchShort(p + n * 0.02, Rfl, 16.0);
+      vec3 reflCol = (rsR.y > 0.5)
+        ? shadeReflection(p + Rfl * rsR.x, Rfl, rsR.y, rsR.z, sunDir)
+        : sky(Rfl, sunDir);
+      // Refraction — bend the view ray by Snell's law (ior ~1.45) and march the
+      // interior so we SEE THROUGH the glass. Start a touch past the thin shell
+      // wall so the secondary march travels interior air (sphere-trace can't
+      // march solids → glass shapes must be thin hollow shells). NOTE: this is a
+      // DECORATIVE transparent-glass capability — do NOT use it for fill gauges
+      // (sphere-fill), where refraction magnifies/fills the level and destroys
+      // the readable waterline; use a waterline material split there instead.
+      vec3 Rr = refract(rd, n, 1.0 / 1.45);
+      vec3 refrCol;
+      vec3 rs = raymarchShort(p + Rr * 0.07 - n * 0.015, Rr, 12.0);
+      if (rs.y > 0.5) {
+        refrCol = shadeReflection(p + Rr * rs.x, Rr, rs.y, rs.z, sunDir);
+      } else {
+        refrCol = sky(Rr, sunDir);
+      }
+      refrCol *= mix(vec3(1.0), base, 0.5); // tint by glass colour (white = clear)
+      vec3 gcol = mix(refrCol, reflCol, fres);
+      vec3 Hg = normalize(toLight + (-rd));
+      gcol += vec3(1.0) * pow(max(dot(n, Hg), 0.0), 140.0) * shadowK * 1.2; // sharp glint
+      gcol += vec3(0.75, 0.85, 1.0) * pow(1.0 - ndv, 3.0) * 0.35;           // cool fresnel edge
+      col = gcol;
+    } else
+    //#endfeature
+    //#feature fill
+    if (isFill) {
+      // ---- Fill-gauge material kind (waterline two-tone) -------------------
+      // A SOLID sphere read as a "fill level": coloured liquid below a waterline,
+      // light glass above, crisp meniscus between. On a sphere the surface normal
+      // y-component IS the local height fraction, so the split is transform-free
+      // and needs no center/radius — just the per-leaf fill fraction (pat.w).
+      // Stylized on purpose: real glass refraction smears the level (see kind 8),
+      // so we keep the waterline crisp and the data readable.
+      float fillFrac = clamp(leafPat.w, 0.0, 1.0);
+      float waterline = 2.0 * fillFrac - 1.0;                  // n.y at the surface
+      float below = 1.0 - smoothstep(waterline - 0.012, waterline + 0.012, n.y);
+      vec3 liquidCol = base;                                   // material hue/sat/value
+      vec3 glassCol = mix(vec3(0.93, 0.95, 0.99), base, 0.10); // light, faint liquid tint
+      vec3 albedo = mix(glassCol, liquidCol, below);
+      // FLAT-ish data-viz lighting: a strong ambient floor so the liquid colour
+      // reads even on the down-facing (sun-shadowed) bottom of the sphere — a
+      // gauge must stay legible, not go realistically dark — plus a soft key for
+      // form and a faint sky tint.
+      vec3 sunColF = vec3(1.20, 0.94, 0.72);
+      float diffF = max(dot(n, toLight), 0.0);
+      vec3 litF = albedo * (0.62 + 0.55 * diffF * shadowK) * sunColF * 0.92
+                + albedo * sky(n, sunDir) * skyL * ao * 0.12;
+      // Glossy clearcoat sheen → glass look: tight white glint + cool fresnel rim.
+      float ndvF = max(dot(n, -rd), 0.0);
+      vec3 HgF = normalize(toLight + (-rd));
+      litF += vec3(1.0) * pow(max(dot(n, HgF), 0.0), 90.0) * shadowK * 0.6;
+      litF += vec3(0.85, 0.90, 1.0) * pow(1.0 - ndvF, 4.0) * 0.18;
+      // Crisp meniscus band where liquid meets glass.
+      float band = 1.0 - smoothstep(0.0, 0.045, abs(n.y - waterline));
+      litF += vec3(0.92, 0.96, 1.0) * band * 0.22;
+      col = litF;
+    } else
+    //#endfeature
+    //#feature snowy
+    if (isSnowy) {
       // ---- Snowy material kind (IQ Snow Bridge recipe-only port) -----------
       // Standard Lambert with the underlying base color, then blend snow on top
       // of upward-facing patches with noise coverage + cosine micro-normal
@@ -954,7 +1160,10 @@ void main() {
 
       float snFog = atmosphereDensity(p, t);
       col = mix(lin, vec3(0.85, 0.87, 0.90), snFog * 0.7);
-    } else if (isMountain) {
+    } else
+    //#endfeature
+    //#feature mountain
+    if (isMountain) {
       // ---- Mountain-shading branch (Sprint A2: 4-layer altitude/normal blend) ----
       // Kolaczynski-style terrainColor: rock base → ground (low) → grass (mid +
       // gentle slopes) → snow (high + gentle slopes). Each layer modulated by
@@ -1164,7 +1373,10 @@ void main() {
       vec3 fogExt = exp2(-mountDist * 0.0012 * vec3(1.0, 1.5, 4.0));
       vec3 fogColor = vec3(0.85, 0.87, 0.90);
       col = col * fogExt + (1.0 - fogExt) * fogColor;
-    } else if (isEroded) {
+    } else
+    //#endfeature
+    //#feature eroded
+    if (isEroded) {
       // ---- Eroded-terrain material kind (Rune Skovbo Johansen recipe) -------
       // Multi-layer shading over the CPU-baked heightmap. Channels:
       //   .x = height [0,1]   .y = ridgeMap [0,1]   .z = treeAmount [0,1]
@@ -1249,7 +1461,10 @@ void main() {
       float eDist = length(p - ro);
       vec3 fogExt = exp2(-eDist * 0.020 * vec3(1.0, 1.2, 2.0));
       col = lin * fogExt + (1.0 - fogExt) * vec3(0.85, 0.87, 0.90);
-    } else if (isBuilding) {
+    } else
+    //#endfeature
+    //#feature building
+    if (isBuilding) {
       // ---- Building material kind (Otavio Good Skyline CC0 recipe) ----------
       // Sub-dispatch: street (y<0.05), car (0.05<y<0.13 in road region), or wall.
       // Procedural window grid: horizontal floor bands (Y) × vertical column
@@ -1369,7 +1584,10 @@ void main() {
       float bDist = length(p - ro);
       vec3 fogExt = exp2(-bDist * 0.012 * vec3(1.0, 1.3, 2.5));
       col = lin * fogExt + (1.0 - fogExt) * vec3(0.85, 0.87, 0.90);
-    } else {
+    } else
+    //#endfeature
+    {
+      //#feature rich
       // Procedural surface texture (Hoskins fbm). Gated by "plasticness":
       // metals + emissives keep smooth uniform surfaces; matte diffuse gets
       // ±10% albedo variance to break up plastic-looking uniformity. The
@@ -1386,8 +1604,11 @@ void main() {
       // sky() in the surface-normal direction (procedural IBL irradiance) —
       // upward-facing surfaces get zenith blue, lateral get horizon tint, and
       // at golden hour all ambient warms naturally. Replaces fixed constant.
-      vec3 sunCol    = vec3(1.05, 0.96, 0.84);
-      vec3 skyCol    = sky(n, sunDir) * 0.55;
+      // Cinematic warm/cool split: an amber KEY against a cool-blue FILL (replaces
+      // the near-neutral pair) — the classic film-lighting contrast that reads as
+      // "lit" rather than "evenly bright".
+      vec3 sunCol    = vec3(1.20, 0.94, 0.72);                                     // warm key
+      vec3 skyCol    = mix(sky(n, sunDir) * 0.55, vec3(0.32, 0.45, 0.82), 0.6);    // cool fill
       vec3 bounceCol = vec3(0.55, 0.48, 0.40);
       vec3 rimCol    = sky(normalize(n + vec3(0.0, 0.4, 0.0)), sunDir) * 0.7;
 
@@ -1402,27 +1623,129 @@ void main() {
       // Key/fill ratio raised for "pop": stronger sun key, lower flat sky fill,
       // trimmed rim. Ambient terms stay multiplied by AO so crevices/contacts
       // darken (grounds the subject — the main thing flat studio lighting lacked).
-      lin += base * sunCol    * diff * shadowK * 1.55 * diffK;
-      lin += base * skyCol    * skyL * ao      * 0.38 * diffK;
-      lin += base * bounceCol * bnc  * ao      * 0.16 * diffK;
-      lin += specTint * sunCol * spec * shadowK * specBoost;
-      lin += rimCol * rim * ao                 * 0.14;
+      lin += base * sunCol    * diff * shadowK * 1.95 * diffK;
+      // Sky ambient + ground bounce scale by u_ambientScale. A theatrical stage
+      // (interiorDark) drops it near 0 so dark walls stay dark and the spotlight
+      // cones + volumetric beams read; the spots + sun still pick out the hero.
+      // Default 1.0 = unchanged for every other scene.
+      lin += base * skyCol    * skyL * ao      * 0.24 * diffK * u_ambientScale;
+      lin += base * bounceCol * bnc  * ao      * 0.16 * diffK * u_ambientScale;
+      // GGX microfacet specular (replaces the old Phong pow lobe). Roughness
+      // tracks metalK: metals get a tight bright glint that reads as polished
+      // metal, matte surfaces a broad soft sheen. specBoost keeps the prior
+      // metal/dielectric energy balance.
+      // Roughness is now a real PBR axis: explicit material.roughness (packed in
+      // leafTone.z, 0=mirror .. 1=matte) if the scene provides it, else derived
+      // from metal (the polished-metal default → every old scene unchanged).
+      float rough = (leafTone.z >= 0.0)
+        ? clamp(leafTone.z, 0.06, 0.95)
+        : clamp(mix(0.52, 0.20, metalK), 0.06, 0.95);
+      float ggx = ggxSpecular(n, V, toLight, rough);
+      lin += specTint * sunCol * ggx * shadowK * specBoost;
+      // Dramatic showcase (u_studioBg): a tight hot specular + a stronger cool
+      // fresnel rim so glossy subjects glow at their edges against the dark bg.
+      lin += specTint * sunCol * pow(max(dot(n, H), 0.0), 96.0) * shadowK * u_studioBg * 1.1;
+      lin += rimCol * rim * ao * (0.14 + u_studioBg * 0.5);
+      // Cool KICKER (rim/back light): a cool edge light from roughly opposite the
+      // key (raised, behind the subject) that catches the silhouette and lifts the
+      // subject off a dark background. Concentrated on back-facing grazing edges
+      // (dot(n,kick) × fresnel). Unshadowed — it's an edge accent, not a key.
+      vec3 kickDir = normalize(vec3(-sunDir.x, max(sunDir.y, 0.25) + 0.25, -sunDir.z));
+      float kick = pow(max(dot(n, kickDir), 0.0), 2.0) * pow(1.0 - max(dot(n, V), 0.0), 1.5);
+      lin += vec3(0.42, 0.60, 1.0) * kick * (0.55 + u_studioBg * 0.85);
 
-      // Sprint 6: procedural-IBL env reflection. For metallic objects, sample
-      // sky() in the reflection direction as the environment map. Free (no
-      // cubemap), updates automatically with sun. Sky already handles sun
-      // disk + halo so chrome / gold pick up the bright sun reflection.
-      // Dielectrics also get a weak env reflection (Schlick F0=0.04) — gives
-      // glass / polished stone / wet leaves a subtle sheen that fixed constants
-      // never had. Skipped on ground (handled by raymarchShort reflection below).
+      // Stage area lights. Each extra light (emissive panel) adds soft-shadowed
+      // diffuse fill + a GGX glint, so objects in a room are lit BY the room, not
+      // only the sun. Soft-shadow sharpness eases with the light's radius (bigger
+      // panel → softer penumbra). Inverse-square-ish falloff. Loop bound is the
+      // const MAX (ES 1.00); u_numExtraLights breaks early — 0 → no-op.
+      for (int li = 0; li < MAX_EXTRA_LIGHTS; li++) {
+        if (li >= u_numExtraLights) break;
+        vec3 toL = u_extraLightPos[li] - p;
+        float ldist = length(toL);
+        toL /= max(ldist, 1e-4);
+        float ndl = max(dot(n, toL), 0.0);
+        if (ndl <= 0.0) continue;
+        float atten = 1.0 / (1.0 + 0.035 * ldist * ldist);
+        // Spotlight cone: if the light carries an aim direction, fall off outside
+        // a cone so it pools light on the subject and leaves the walls dark (a
+        // theatrical stage spot). Zero dir = omni point light (no cone). -toL is
+        // the light's outgoing direction toward this surface point.
+        vec3 sdir = u_extraLightDir[li];
+        if (dot(sdir, sdir) > 0.25) {
+          float ca = dot(-toL, normalize(sdir));
+          atten *= smoothstep(0.32, 0.72, ca); // ~71° outer, ~44° inner half-angle
+        }
+        if (atten <= 0.001) continue;
+        float sh = 1.0;
+        if (u_shadowsOn > 0.5) {
+          float ksh = mix(18.0, 5.0, clamp(u_extraLightRadius[li] / 2.5, 0.0, 1.0));
+          sh = softShadow(p + n * 0.002, toL, 0.02, ldist, ksh);
+        }
+        vec3 lc = u_extraLightColor[li];
+        lin += base * lc * ndl * atten * sh * diffK;
+        float ggxL = ggxSpecular(n, V, toL, rough);
+        lin += specTint * lc * ggxL * atten * sh * specBoost * 0.6;
+      }
+
+      // Env reflection. Schlick-Fresnel weighted: metals are near-mirror,
+      // dielectrics get a subtle grazing sheen. The environment is found by a
+      // SECONDARY raymarch along the reflection ray (reflection-retrace) so a
+      // metal inside a room reflects the actual walls / emissive panels — not a
+      // flat sky sample (which read as "cheap chrome in a void"). When the
+      // reflection ray escapes the geometry (open / outdoor scenes, upward rays)
+      // we fall back to sky(). Reuses the same raymarchShort + shadeReflection
+      // the ground wet-floor reflection uses. (Idiom: reflect → re-trace → shade
+      // → blend, from the IQ-lineage fractal-museum mirror floor.)
       if (matId > 1.5) {
         vec3 R = reflect(rd, n);
-        vec3 envRefl = sky(R, sunDir);
         float F0 = mix(0.04, 1.0, metalK);
         float fres = F0 + (1.0 - F0) * pow(1.0 - max(dot(n, V), 0.0), 5.0);
-        vec3 envTint = mix(envRefl, envRefl * base, metalK * 0.7);
-        // Stronger for metals (chrome is mostly mirror), subtle for dielectrics.
-        lin = mix(lin, envTint, fres * (0.35 + 0.45 * metalK));
+        // Roughness drives reflection STRENGTH: a polished surface shows a strong
+        // crisp env reflection; a rough one mostly falls back to its diffuse + GGX
+        // shading (reflection weight tapers off). This is the correct direction
+        // and cheaper than a multi-tap cone-trace blur.
+        float reflW = fres * (0.35 + 0.55 * metalK) * (1.0 - 0.7 * rough);
+        // Skip the secondary march when the reflection would barely show
+        // (matte / near-normal incidence) — keeps cost on the pixels that read.
+        // 0.06: matte-material GRAZING pixels (every sphere/pipe silhouette)
+        // used to squeak past 0.02 and burn a 32-step retrace for a reflection
+        // dimmed to invisibility by the roughness taper. Polished/metal
+        // surfaces (reflW ≥ 0.2) are untouched.
+        if (reflW > 0.06) {
+          vec3 envRefl;
+          // maxDist 8 (was 14): reflections read from NEARBY geometry; the
+          // tail of the retrace only ever marched empty air on sparse scenes.
+          vec3 rs = raymarchShort(p + n * 0.02, R, 8.0);
+          if (rs.y > 0.5) {
+            envRefl = shadeReflection(p + R * rs.x, R, rs.y, rs.z, sunDir);
+          } else {
+            envRefl = sky(R, sunDir);
+          }
+          vec3 envTint = mix(envRefl, envRefl * base, metalK * 0.7);
+          // Studio softbox streaks: broad bright bands in the upper reflection
+          // hemisphere — the sweeping highlights that make product-shot metal read
+          // as premium. Added to the reflected env so metals pop even in a plain or
+          // dark room (where the reflected geometry is empty). Tinted toward the
+          // metal's own colour (gold reflects gold). Roughness softens them.
+          float sb = smoothstep(0.17, 0.0, abs(R.y - 0.52)) * 1.10
+                   + smoothstep(0.11, 0.0, abs(R.y - 0.16)) * 0.55;
+          sb *= (1.0 - 0.6 * rough);
+          envTint += vec3(sb) * (0.35 + 0.65 * metalK) * mix(vec3(1.0), base, 0.55);
+          lin = mix(lin, envTint, reflW);
+        }
+
+        // Clearcoat: a thin glossy dielectric coat (lacquer / car-paint / wet
+        // gloss) ON TOP of the base. A second, tighter, WHITE specular lobe +
+        // a white fresnel EDGE sheen — independent of base colour (even gold's
+        // coat highlight is white). leafTone.w = strength. The fresnel edge is
+        // the bright "wet rim" (the 菲涅尔边缘).
+        float cc = leafTone.w;
+        if (cc > 0.001) {
+          float ccF = 0.04 + 0.96 * pow(1.0 - max(dot(n, V), 0.0), 5.0);
+          lin += sunCol * ggxSpecular(n, V, toLight, 0.06) * shadowK * ccF * cc * 2.2;
+          lin += vec3(1.0) * pow(1.0 - max(dot(n, V), 0.0), 3.5) * cc * 0.28;
+        }
       }
 
       // Sprint 6: emissive-volume point lights. Flame + god-ray volumes light
@@ -1437,7 +1760,7 @@ void main() {
       // (12 units, 32 steps) — visual sweetener, not main signal.
       if (u_reflectOn > 0.5 && matId < 1.5) {
         vec3 rrd = reflect(rd, n);
-        vec3 hit2 = raymarchShort(p + n * 0.01, rrd, 12.0);
+        vec3 hit2 = raymarchShort(p + n * 0.01, rrd, 7.0); // wet floor: near geometry only
         vec3 refl;
         if (hit2.y > 0.5) {
           vec3 p2 = p + n * 0.01 + rrd * hit2.x;
@@ -1457,6 +1780,23 @@ void main() {
       // in atom showcases.)
       col = lin;
       col += base * glowK * 1.4;
+      //#endfeature
+      //#feature stone
+      // STONE mode — the IQ white-marble minimal shader (user-locked: solve
+      // performance first, beauty later; the 3D world's job is spatial
+      // visualization of intent, not material fidelity). One warm key,
+      // hemispheric sky fill, AO for grounding, exponential distance fade.
+      // No shadow march, no reflection retrace, no GGX/rim/kicker, no extra
+      // lights, no fbm, no patterns — the entire rich block above compiles
+      // OUT, so the win is both per-pixel ALU and register pressure.
+      // Albedo is kept (black-rock motif / gold emphasis still read) — the
+      // cost lives in the lighting path, not the palette.
+      vec3 lin = base * (0.38 + 0.72 * diff) * vec3(1.06, 1.01, 0.94);
+      lin += base * (0.6 + 0.4 * n.y) * ao * 0.55;
+      lin *= mix(1.0, ao, 0.55);
+      col = lin * exp(-0.03 * t);
+      col += base * glowK * 1.4;
+      //#endfeature
     }
   }
 
@@ -1506,10 +1846,18 @@ void main() {
   // postfx, so FLY 3D's cinematic look is unaffected). pow(>1) is monotonic and
   // HDR-safe (no smoothstep blow-up on speculars > 1.0).
   if (u_blueprintMode < 0.5) {
-    col = pow(max(col, vec3(0.0)), vec3(1.07));
+    col = pow(max(col, vec3(0.0)), vec3(1.07 + u_studioBg * 0.06));
     vec2 vigUV = gl_FragCoord.xy / max(u_resolution, vec2(1.0));
     vec2 vd = vigUV - 0.5;
-    col *= 1.0 - 0.24 * dot(vd, vd);
+    col *= 1.0 - (0.24 + u_studioBg * 0.30) * dot(vd, vd);
+  }
+
+  // SDF glow composite: cool-white halo where rays grazed the structure. glowAcc
+  // is O(steps) so normalize by MAX_STEPS; tanh-style soft cap keeps it HDR-safe.
+  if (u_glowAmt > 0.0) {
+    float g = glowAcc / float(MAX_STEPS);
+    g = g / (1.0 + g);  // soft cap
+    col += vec3(0.62, 0.74, 1.0) * g * u_glowAmt * 3.0;
   }
 
   // Sprint 2 (2026-05-24): HDR-output sanitation. rgba16f preserves NaN/Inf
@@ -1527,8 +1875,56 @@ void main() {
   // HDR + linear depth. ATLAS_MAX_DIST in postfx.js must match MAX_DIST here.
   // Sky pixels get alpha=1.0 (max depth) so DoF doesn't blur sky against itself.
   float depthNorm = hit ? clamp(t / MAX_DIST, 0.0, 1.0) : 1.0;
-  gl_FragColor = vec4(col, depthNorm);
-}`;
+  fragColor = vec4(col, depthNorm);
+}`,
+    features,
+  );
+}
+
+// Shared studio compile: pass A (no library) gets the authoritative per-leaf
+// materials → feature set; pass B emits the real shader with the library
+// DCE-pruned against the GATED template. Both passes walk the same tree, so
+// the u_sdfArgs slot order is identical (deterministic).
+function compileStudioFrag(sdf, renderMode = 'rich') {
+  // 'analytic': ray/primitive closed-form intersection, zero marching — the
+  // presentation product's perf mode. Falls back to the stone raymarcher when
+  // the scene uses primitives without closed-form hits (funnel-3d etc.).
+  if (renderMode === 'analytic') {
+    const a =
+      sdf && sdf._subjects
+        ? compileAnalyticFrag(sdf._subjects)
+        : { ok: false, reason: 'no subjects sidecar' };
+    if (a.ok) {
+      return {
+        fragSource: a.fragSource,
+        result: { glsl: a.fragSource, leafMaterials: [], leafPatterns: [], sdfArgs: null },
+      };
+    }
+    console.warn('[studio] analytic renderer fallback → stone raymarch:', a.reason);
+    renderMode = 'stone';
+  }
+  const probe = compileSDF3ToGLSL(sdf, {
+    sceneFnName: 'sceneSDF',
+    includeLibrary: false,
+    emitObjectIndex: true,
+    uniformArgs: true,
+  });
+  if (probe.error) throw new Error(`compileSDF3ToGLSL: ${probe.error}`);
+  const features = featuresFromLeafMaterials(probe.leafMaterials);
+  // 'rich' or 'stone': mutually exclusive compile-time shading paths. Stone
+  // (the presentation product default) compiles the whole PBR block out —
+  // less ALU per pixel AND less register pressure (the M3 giant-shader
+  // lesson: uniform branches don't give registers back).
+  features.add(renderMode === 'stone' ? 'stone' : 'rich');
+  const result = compileSDF3ToGLSL(sdf, {
+    sceneFnName: 'sceneSDF',
+    includeLibrary: true,
+    emitObjectIndex: true,
+    uniformArgs: true,
+    prune: buildFragmentShader('', features),
+  });
+  if (result.error) throw new Error(`compileSDF3ToGLSL: ${result.error}`);
+  return { fragSource: buildFragmentShader(result.glsl, features), result };
 }
 
 // =============================================================================
@@ -1579,10 +1975,20 @@ export function createStudioRenderer({
 
   canvas.addEventListener('webglcontextlost', (e) => {
     console.error('[studio] WebGL context lost', e);
-    e.preventDefault();
+    e.preventDefault(); // allow the browser to restore later
+    // Park the loop — don't keep firing rAF against a dead context (which would
+    // spin uselessly, or worse re-submit work that re-trips the GPU watchdog).
+    contextLost = true;
+    if (rafId != null) {
+      cancelAnimationFrame(rafId);
+      rafId = null;
+    }
   });
   canvas.addEventListener('webglcontextrestored', () => {
-    console.warn('[studio] WebGL context restored — re-upload required');
+    console.warn('[studio] WebGL context restored — reviving loop');
+    contextLost = false;
+    program = null; // force a fresh GLSL program upload on the next render
+    wake();
   });
 
   // Studio default camera: eye 1.5 above ground, 2.5 units back, slight
@@ -1593,9 +1999,21 @@ export function createStudioRenderer({
   const defaultCam = { position: [...camState.position], yaw: 0, pitch: -0.25 };
 
   let program = null;
+  let renderMode = 'rich'; // setRenderMode('stone') — presentation product default
   let uniformsCache = {};
   let rafId = null;
+  let contextLost = false; // set by webglcontextlost handler — pauses the loop
   let flyHandle = null;
+  // Render-on-demand (idle-stop): the rAF loop stops itself when nothing is
+  // animating so a STATIC scene costs ~0 GPU after it settles (vs burning a full
+  // 200-step raymarch + post-fx every frame forever). Anything that changes the
+  // image — input, camera/scene/postFx change, an active cameraSequence, or a
+  // time-varying scene — calls wake()/keeps it driving. SETTLE_MAX extra frames
+  // render after the last change so temporal effects (motion-blur reprojection)
+  // resolve before the loop parks.
+  let settleFrames = 0;
+  let sceneAnimated = false; // set by setAnimated(): scene has u_time content (sea / city)
+  const SETTLE_MAX = 3;
   // Sprint 2 (2026-05-24): pending deferred render — see render() comments.
   // Heavy GPU compile is rAF-deferred so the cleared canvas paints first.
   let pendingRender = null;
@@ -1608,7 +2026,20 @@ export function createStudioRenderer({
   // we've already compiled hits cache instead of recompiling (which can take
   // 200-500ms on complex scenes — the BIG source of perceived page lag).
   const programCache = new Map();
-  const PROGRAM_CACHE_MAX = 6;
+  // Deck window switching keeps 2N-1 programs alive for an N-station deck
+  // (N station windows + N-1 transit pairs + the finale full-world program).
+  // 24 covers a 12-station deck; each cached FS is ~1MB of driver bytecode,
+  // well worth not recompiling a 200-500ms shader mid-presentation.
+  const PROGRAM_CACHE_MAX = 48; // 2N windows for a deck: 13 stations = 26 programs — leave headroom
+  // KHR_parallel_shader_compile: lets the driver compile+link on background
+  // threads. We link WITHOUT querying LINK_STATUS (that query forces a
+  // synchronous compile of the whole ~150KB+ shader — the multi-second
+  // main-thread block behind every cold-load black screen) and instead poll
+  // COMPLETION_STATUS_KHR on rAF, swapping the program in when it's ready.
+  const parallelExt = gl.getExtension('KHR_parallel_shader_compile');
+  // The one in-flight async compile. A newer upload abandons the older pending
+  // program (deleted, never swapped in).
+  let pendingProgram = null;
   // Per-leaf material + pattern LUTs — built at uploadSDF time from
   // compileSDF3ToGLSL() output. Float32Arrays of MAX_MATERIAL * 4. Sentinels:
   //   materialLUT[i*4+1] = -1   → no material, shader uses hash palette
@@ -1626,6 +2057,17 @@ export function createStudioRenderer({
   const volumeKindCenterLUT = new Float32Array(MAX_VOLUMES * 4);
   const volumeSizeDensityLUT = new Float32Array(MAX_VOLUMES * 4);
   const volumeColorLUT = new Float32Array(MAX_VOLUMES * 4);
+  // Stage area lights (mirrors MAX_EXTRA_LIGHTS=4 in the shader). Packed by
+  // setPostFx() from scene.defaults.lights; uploaded each frame in render().
+  const MAX_EXTRA_LIGHTS = 4;
+  const extraLightPosLUT = new Float32Array(MAX_EXTRA_LIGHTS * 3);
+  const extraLightColorLUT = new Float32Array(MAX_EXTRA_LIGHTS * 3);
+  const extraLightRadiusLUT = new Float32Array(MAX_EXTRA_LIGHTS);
+  const extraLightDirLUT = new Float32Array(MAX_EXTRA_LIGHTS * 3);
+  let numExtraLights = 0;
+  let ambientScale = 1.0; // theatrical interiorDark drops sky-ambient near 0
+  let glowAmt = 0.0; // SDF glow (idiom L08) — set by setPostFx from scene.defaults.glow
+  let glowK = 6.0;
   // Sprint 6: heat-haze flame positions (xyz, radius) for postfx composite.
   // Mirrors MAX_HEAT_HAZE = 8 in postfx.js. Packed each frame from the active
   // flame subset of the volume LUTs.
@@ -1644,6 +2086,7 @@ export function createStudioRenderer({
   let activeMotionSlots = {}; // { subjectId: slot } — set by setMotionSlots()
   let subjectBaseTargets = {}; // { subjectId: [x, y, z] } — set by setSubjectBaseTargets()
   let activeCityMode = false; // set by setCityMode() when scene has procedural-city
+  let studioBgDark = false; // set by setPostFx() from scene.defaults.studioBg === 'dark'
   // Sprint 12 Rune erosion: CPU-baked heightmap uploaded as WebGL2 RGBA32F.
   // setRuneHeightmap({data, width, height}) creates/updates this; pass null to clear.
   let runeHeightmapTex = null;
@@ -1672,10 +2115,25 @@ export function createStudioRenderer({
   let sceneFboW = 0,
     sceneFboH = 0;
 
+  // Mutable internal-resolution scale (SSAA factor). setRenderScale() lowers it
+  // for heavy scenes (volumes / fleets) so the expensive fragment shader doesn't
+  // blow the GPU's ~2s watchdog (TDR) and hang the whole browser.
+  let curRenderScale = renderScale;
+
   // (Re)allocate the offscreen FBO when canvas size or renderScale changes.
+  // Hard-cap the internal long side: a hi-DPI / fullscreen canvas × SSAA can
+  // otherwise reach 3000²+ px of raymarch per frame → guaranteed TDR. Capping
+  // bounds the worst-case frame cost regardless of canvas size or DPI.
+  const MAX_INTERNAL_LONG = 1440;
   function ensureSceneFbo() {
-    const targetW = Math.max(1, Math.floor(canvas.width * renderScale));
-    const targetH = Math.max(1, Math.floor(canvas.height * renderScale));
+    let targetW = Math.max(1, Math.floor(canvas.width * curRenderScale));
+    let targetH = Math.max(1, Math.floor(canvas.height * curRenderScale));
+    const longSide = Math.max(targetW, targetH);
+    if (longSide > MAX_INTERNAL_LONG) {
+      const k = MAX_INTERNAL_LONG / longSide;
+      targetW = Math.max(1, Math.floor(targetW * k));
+      targetH = Math.max(1, Math.floor(targetH * k));
+    }
     if (sceneFbo && targetW === sceneFboW && targetH === sceneFboH) return;
     if (sceneFbo) gl.deleteFramebuffer(sceneFbo);
     if (sceneTex) gl.deleteTexture(sceneTex);
@@ -1710,10 +2168,47 @@ export function createStudioRenderer({
   // When non-null, drives camState per frame from a timeline (overrides WASD
   // fly camera until user explicitly takes back via fly keys / mouse).
   let activeSequence = null;
+  let activeHitstops = null; // [{at, hold}] — fighting-game frame freezes (see camera-sequence.js)
+  // Both clocks (sequence camera + u_time world) run through the same warp, so
+  // a hitstop freezes EVERYTHING for its hold, then the world resumes as one.
+  const warpSec = (raw) => warpTime(raw, activeHitstops);
+  // Snapshot of the camera basis the LAST frame rendered with — used by
+  // project() so Layer-2 overlay labels land exactly where the 3D point is
+  // drawn (no camera-convention duplication outside the renderer).
+  let lastCam = null;
   let sequenceStartTime = 0; // performance.now() origin for sequence playback
+  // Flow camera (W6 total-continuity, cameraSequence.flow): a steadicam
+  // operator between the evaluator and the lens. Shot-boundary velocity kinks
+  // (ease curves land at zero then the next shot launches) read as "一段一段"
+  // instead of one breathing take; a short exponential lag on pos/target
+  // erases the kinks without touching shot semantics, timings or hitstops.
+  // State resets on setSequence and on any non-monotonic/large time step
+  // (seeks, pins, loops) so scrubbing stays exact.
+  const FLOW_TAU = 0.12; // seconds to ~63% catch-up — light hand, no drift feel
+  let flowPos = null;
+  let flowTarget = null;
+  let flowLens = null; // [fov, aperture, focalDistance] — the OPTICS kink too
+  let flowLastT = -1;
+  const flowReset = () => {
+    flowPos = null;
+    flowTarget = null;
+    flowLens = null;
+    flowLastT = -1;
+  };
   let sequencePaused = false;
   let sequencePausedAt = 0;
   let userTookCam = false; // any WASD/mouse input flips this; resume needs explicit setSequence(scene)
+  // ONE presentation clock: when a sequence is active, subject animations (u_time)
+  // follow the SEQUENCE time — pausing freezes build-ins, seeking scrubs them
+  // (presenter mode's beat-hold depends on this). No sequence → wall-clock, exactly
+  // as before, so non-sequenced scenes (gallery, compositor) are untouched.
+  function presentationNowSec() {
+    if (activeSequence) {
+      const now = sequencePaused ? sequencePausedAt : performance.now();
+      return warpSec((now - sequenceStartTime) / 1000);
+    }
+    return warpSec((performance.now() - timeStart) / 1000);
+  }
   // Previous-frame camera state — fed to postfx motion blur reproject. Stored
   // in WORLD-SPACE basis (pos + fwd + right + up + fov) so the shader can
   // compute "where would this pixel have been on screen one frame ago?".
@@ -1768,17 +2263,7 @@ export function createStudioRenderer({
   // comments as the conceptual upload step. The function body is kept for
   // future use (re-upload on SDF tree change) but is not currently called.
   function _uploadSDF(sdf) {
-    // emitObjectIndex: true → scene() updates `minIndex` global with the closest
-    // leaf's index. Fragment shader uses minIndex to pick per-subject color via
-    // an IQ cosine palette — fixes the "everything is grey" look.
-    const result = compileSDF3ToGLSL(sdf, {
-      sceneFnName: 'sceneSDF',
-      includeLibrary: true,
-      emitObjectIndex: true,
-    });
-    if (result.error) throw new Error(`compileSDF3ToGLSL: ${result.error}`);
-
-    const fragSource = buildFragmentShader(result.glsl);
+    const { fragSource, result } = compileStudioFrag(sdf);
     return uploadCompiledFrag(fragSource, result);
   }
 
@@ -1786,49 +2271,133 @@ export function createStudioRenderer({
   // count) but defer GPU shader upload to next rAF (so cleared canvas paints
   // before the 200-500ms compile blocks the main thread).
   // `result` carries leafMaterials + leafPatterns + glsl for LUT upload.
-  function uploadCompiledFrag(fragSource, result) {
-    // Program cache: hit avoids the 200-500ms GLSL compile+link that
-    // dominates "switch from BOB GPU to FLY 3D" perceived latency.
+  function uploadCompiledFrag(fragSource, result, { resetClocks = true } = {}) {
+    // Program cache: hit avoids the GLSL compile+link that dominates scene-swap
+    // perceived latency.
     // 2026-05-24: cache entry now carries the FS too. WebGL deleteProgram does
     // NOT release attached shaders — without explicit detach + deleteShader on
     // eviction, every FS leaks (~1MB of GLSL bytecode each). Over many scene
     // swaps that's real GPU memory pressure.
-    let entry = programCache.get(fragSource);
-    let cacheHit = false;
-    if (entry) {
-      cacheHit = true;
-    } else {
-      let fs;
-      try {
-        fs = compileShader(fragSource, gl.FRAGMENT_SHADER);
-      } catch (e) {
-        console.error('Fragment shader source was:\n', fragSource);
-        throw new Error(`GLSL shader compile failed: ${e.message}`);
-      }
-      const prog = gl.createProgram();
-      gl.attachShader(prog, vs);
-      gl.attachShader(prog, fs);
-      gl.linkProgram(prog);
-      if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
-        throw new Error(`Program link failed: ${gl.getProgramInfoLog(prog)}`);
-      }
-      // LRU eviction — drop oldest cached program if at capacity. Crucial:
-      // detach + delete the FS attached to the old program; otherwise the FS
-      // outlives the program and leaks. The VS is shared across all programs
-      // so we do NOT delete it.
-      if (programCache.size >= PROGRAM_CACHE_MAX) {
-        const firstKey = programCache.keys().next().value;
-        const old = programCache.get(firstKey);
-        gl.detachShader(old.prog, vs);
-        gl.detachShader(old.prog, old.fs);
-        gl.deleteShader(old.fs);
-        gl.deleteProgram(old.prog);
-        programCache.delete(firstKey);
-      }
-      entry = { prog, fs };
-      programCache.set(fragSource, entry);
+    const cached = programCache.get(fragSource);
+    if (cached) {
+      pendingProgram = null; // a cache hit supersedes any in-flight compile
+      finishProgramSetup(cached, result);
+      console.log('[studio] program cache hit — skipped GLSL compile');
+      return result.glsl.length;
     }
 
+    // Compile + link WITHOUT querying status — status queries force the driver
+    // to finish compiling synchronously (the cold-load black-screen block).
+    const fs = gl.createShader(gl.FRAGMENT_SHADER);
+    gl.shaderSource(fs, fragSource);
+    gl.compileShader(fs);
+    const prog = gl.createProgram();
+    gl.attachShader(prog, vs);
+    gl.attachShader(prog, fs);
+    gl.linkProgram(prog);
+    const entry = { prog, fs };
+
+    if (parallelExt) {
+      // Async path: poll completion on rAF; swap the program in when ready.
+      // Until then the previous program (or nothing, on first load) keeps
+      // rendering and the main thread stays free (loading UIs can animate).
+      const mine = { entry, fragSource, result, resetClocks };
+      pendingProgram = mine;
+      const poll = () => {
+        if (pendingProgram !== mine) {
+          // superseded by a newer upload — abandon this program entirely
+          gl.detachShader(prog, vs);
+          gl.detachShader(prog, fs);
+          gl.deleteShader(fs);
+          gl.deleteProgram(prog);
+          return;
+        }
+        if (!gl.getProgramParameter(prog, parallelExt.COMPLETION_STATUS_KHR)) {
+          requestAnimationFrame(poll);
+          return;
+        }
+        pendingProgram = null;
+        try {
+          validateAndCache(entry, fragSource); // throws on real compile errors
+        } catch (e) {
+          console.error('[studio] async program compile failed:', e);
+          return;
+        }
+        finishProgramSetup(entry, result);
+        // Clock reset is a SCENE-LOAD semantic. A mid-play window swap that
+        // missed the cache must NOT restart the presentation (it used to
+        // zero the sequence mid-station whenever the LRU thrashed).
+        if (mine.resetClocks) _debugFirstDraw = true;
+        wake();
+      };
+      requestAnimationFrame(poll);
+      return result.glsl.length;
+    }
+
+    // Sync fallback (extension unavailable): old behavior, blocks on link check.
+    validateAndCache(entry, fragSource);
+    finishProgramSetup(entry, result);
+    return result.glsl.length;
+  }
+
+  // Metal (via ANGLE) defers pipeline-state creation to a program's FIRST
+  // draw — for a big raymarcher that's a 1-2s main-thread stall, which would
+  // land exactly at a deck window boundary mid-presentation. Force it now
+  // with a 1-pixel scissored draw into the offscreen FBO (junk uniforms are
+  // fine — the pixel is overwritten by the next real frame) and gl.finish()
+  // so the driver actually builds the pipeline before we return.
+  function warmProgram(prog) {
+    gl.useProgram(prog);
+    const a = gl.getAttribLocation(prog, 'a_pos');
+    if (a >= 0) {
+      gl.bindBuffer(gl.ARRAY_BUFFER, vbuf);
+      gl.enableVertexAttribArray(a);
+      gl.vertexAttribPointer(a, 2, gl.FLOAT, false, 0, 0);
+    }
+    ensureSceneFbo();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, sceneFbo);
+    gl.enable(gl.SCISSOR_TEST);
+    gl.scissor(0, 0, 1, 1);
+    gl.viewport(0, 0, 1, 1);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    gl.disable(gl.SCISSOR_TEST);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    gl.finish();
+    if (program) gl.useProgram(program);
+  }
+
+  // Check compile/link results (forces compile completion — cheap once
+  // COMPLETION_STATUS_KHR reported done, blocking on the sync path) and insert
+  // into the LRU cache.
+  function validateAndCache(entry, fragSource) {
+    const { prog, fs } = entry;
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
+      const fsLog = gl.getShaderInfoLog(fs);
+      console.error('Fragment shader source was:\n', fragSource);
+      gl.detachShader(prog, vs);
+      gl.detachShader(prog, fs);
+      gl.deleteShader(fs);
+      gl.deleteProgram(prog);
+      throw new Error(`GLSL compile/link failed: ${fsLog || gl.getProgramInfoLog(prog)}`);
+    }
+    // LRU eviction — drop oldest cached program if at capacity. Crucial:
+    // detach + delete the FS attached to the old program; otherwise the FS
+    // outlives the program and leaks. The VS is shared across all programs
+    // so we do NOT delete it.
+    if (programCache.size >= PROGRAM_CACHE_MAX) {
+      const firstKey = programCache.keys().next().value;
+      const old = programCache.get(firstKey);
+      gl.detachShader(old.prog, vs);
+      gl.detachShader(old.prog, old.fs);
+      gl.deleteShader(old.fs);
+      gl.deleteProgram(old.prog);
+      programCache.delete(firstKey);
+    }
+    programCache.set(fragSource, entry);
+  }
+
+  // Activate a ready program: attribs, uniform locations, per-leaf LUT upload.
+  function finishProgramSetup(entry, result) {
     program = entry.prog;
 
     gl.useProgram(program);
@@ -1850,6 +2419,7 @@ export function createStudioRenderer({
       'u_groundOn',
       'u_checkerOn',
       'u_reflectOn',
+      'u_studioBg',
       'u_time',
       'u_leafMaterial[0]',
       'u_leafTone[0]',
@@ -1859,6 +2429,15 @@ export function createStudioRenderer({
       'u_volumeSizeDensity[0]',
       'u_volumeColor[0]',
       'u_volumeCount',
+      // Stage area lights
+      'u_numExtraLights',
+      'u_extraLightPos[0]',
+      'u_extraLightColor[0]',
+      'u_extraLightRadius[0]',
+      'u_extraLightDir[0]',
+      'u_ambientScale',
+      'u_glowAmt',
+      'u_glowK',
       // Sprint 4 subject motion offset uniform array
       'u_subjectOffset[0]',
       // Sprint 8 Blueprint-as-shot toggle
@@ -1900,6 +2479,10 @@ export function createStudioRenderer({
       // The renderer's sea-shading branch reads this to decide whether to
       // route a hit through Lambert or through the fresnel+atmosphere path.
       toneLUT[i * 4 + 1] = m.kind ?? 0;
+      // tone[2] = explicit microfacet roughness (0..1); -1 = derive from metal.
+      toneLUT[i * 4 + 2] = m.roughness ?? -1;
+      // tone[3] = clearcoat strength (0..1); a glossy dielectric coat on top.
+      toneLUT[i * 4 + 3] = m.clearcoat ?? 0;
     }
 
     // Build per-leaf pattern LUT. Default zeros = code=0 = no pattern.
@@ -1911,7 +2494,8 @@ export function createStudioRenderer({
       patternLUT[i * 4 + 0] = p.code;
       patternLUT[i * 4 + 1] = p.scale;
       patternLUT[i * 4 + 2] = p.strength;
-      // [3] reserved for future use (e.g. rotation, sub-variant)
+      // [3] = fill fraction (0..1) for material kind 9 (fill-gauge); 0 otherwise.
+      patternLUT[i * 4 + 3] = p.fill ?? 0;
     }
 
     // Upload LUTs ONCE per program load. Uniforms persist on the program
@@ -1927,8 +2511,13 @@ export function createStudioRenderer({
       gl.uniform4fv(uniformsCache['u_leafPattern[0]'], patternLUT);
     }
 
-    if (cacheHit) console.log('[studio] program cache hit — skipped GLSL compile');
-    return result.glsl.length;
+    // Data-as-uniforms: the scene's numeric args (positions, radii, dims…)
+    // live in u_sdfArgs, not in the GLSL — a program-cache hit + this upload
+    // IS the whole "scene change" for same-shaped scenes. Zero recompile.
+    if (result.sdfArgs && result.sdfArgs.length) {
+      const loc = gl.getUniformLocation(program, 'u_sdfArgs[0]');
+      if (loc != null) gl.uniform4fv(loc, result.sdfArgs);
+    }
   }
 
   let _debugFirstDraw = true;
@@ -1945,6 +2534,7 @@ export function createStudioRenderer({
     let sequenceFocalDist = null;
     // Sprint 8: per-shot exposure override + renderer override (Blueprint-as-shot).
     let sequenceExposure = null;
+    let sequenceAmbient = null; // shot-level sky-ambient override (the spotlight crash)
     let sequenceShotRenderer = null;
     // Sprint 4: per-frame subject motion offsets + scene-state. Both are
     // produced by the sequence evaluator and feed: (a) subject SDF translate
@@ -1953,9 +2543,41 @@ export function createStudioRenderer({
     let frameSubjectOffsets = {};
     let frameSceneState = {};
     if (activeSequence && !sequencePaused && !userTookCam) {
-      const tSec = (performance.now() - sequenceStartTime) / 1000;
+      const tSec = warpSec((performance.now() - sequenceStartTime) / 1000);
       const state = evaluateCameraSequence(activeSequence, tSec, { subjectBaseTargets });
       if (state) {
+        // Flow smoothing BEFORE the pos/target → yaw/pitch conversion (angles
+        // wrap; positions don't). Snap on seeks/backward steps to keep pins
+        // and scrubbing exact.
+        if (activeSequence.flow && Array.isArray(state.pos) && Array.isArray(state.target)) {
+          const dt = tSec - flowLastT;
+          const lensRaw = [
+            typeof state.fov === 'number' ? state.fov : 45,
+            typeof state.aperture === 'number' ? state.aperture : 0,
+            typeof state.focalDistance === 'number' ? state.focalDistance : 8,
+          ];
+          if (flowPos == null || dt <= 0 || dt > 0.5) {
+            flowPos = [...state.pos];
+            flowTarget = [...state.target];
+            flowLens = lensRaw;
+          } else {
+            const k = 1 - Math.exp(-dt / FLOW_TAU);
+            for (let i = 0; i < 3; i++) {
+              flowPos[i] += (state.pos[i] - flowPos[i]) * k;
+              flowTarget[i] += (state.target[i] - flowTarget[i]) * k;
+              // the lens breathes with the same hand: fov zooms and focus
+              // pulls are velocity-continuous too, or the "one take" breaks
+              // optically at every boundary even when the path is smooth
+              flowLens[i] += (lensRaw[i] - flowLens[i]) * k;
+            }
+          }
+          flowLastT = tSec;
+          state.pos = [...flowPos];
+          state.target = [...flowTarget];
+          if (typeof state.fov === 'number') state.fov = flowLens[0];
+          if (typeof state.aperture === 'number') state.aperture = flowLens[1];
+          if (typeof state.focalDistance === 'number') state.focalDistance = flowLens[2];
+        }
         const cs = sequenceStateToCamState(state);
         camState.position[0] = cs.position[0];
         camState.position[1] = cs.position[1];
@@ -1966,6 +2588,7 @@ export function createStudioRenderer({
         sequenceAperture = cs.aperture;
         sequenceFocalDist = cs.focalDistance;
         if (typeof state.exposure === 'number') sequenceExposure = state.exposure;
+        if (typeof state.ambient === 'number') sequenceAmbient = state.ambient;
         if (state.shotRenderer) sequenceShotRenderer = state.shotRenderer;
         frameSubjectOffsets = state.subjectOffsets || {};
         frameSceneState = state.sceneState || {};
@@ -2050,6 +2673,15 @@ export function createStudioRenderer({
     // FOV: sequence override > getControls() fallback
     const activeFov = sequenceFov ?? c.fov;
     gl.uniform1f(uniformsCache.u_focal, activeFov);
+    // record this frame's camera for project() (aspect = display canvas)
+    lastCam = {
+      pos: [camState.position[0], camState.position[1], camState.position[2]],
+      right,
+      up,
+      fwd,
+      focal: activeFov,
+      aspect: canvas.width / canvas.height,
+    };
     gl.uniform3f(uniformsCache.u_lightPos, lpos[0], lpos[1], lpos[2]);
     gl.uniform1f(uniformsCache.u_shadowsOn, c.shadowsOn ? 1.0 : 0.0);
     gl.uniform1f(uniformsCache.u_groundOn, c.groundOn ? 1.0 : 0.0);
@@ -2057,6 +2689,7 @@ export function createStudioRenderer({
     // Reflection defaults ON if caller doesn't supply a flag — wet-floor look
     // is a major visual upgrade. Caller can disable via `controls.reflectOn = false`.
     gl.uniform1f(uniformsCache.u_reflectOn, c.reflectOn === false ? 0.0 : 1.0);
+    gl.uniform1f(uniformsCache.u_studioBg, studioBgDark ? 1.0 : 0.0);
     // Sprint 8: Blueprint-as-shot mode toggle (1 when current cameraSequence shot
     // has renderer='blueprint'). Replaces full HDR shading with silhouette-on-
     // graph-paper schematic look. Volumes are skipped in this mode.
@@ -2110,10 +2743,11 @@ export function createStudioRenderer({
         runeWaterTint[2],
       );
     }
-    // u_time drives time-aware primitives (sdWaves animation). Without
-    // this set, waves were static — sea looked frozen.
+    // u_time drives time-aware primitives (sdWaves animation) AND subject
+    // build-in animations. Fed from the ONE presentation clock — sequence time
+    // when a sequence is active (pause/seek freeze/scrub), wall-clock otherwise.
     if (uniformsCache.u_time != null) {
-      gl.uniform1f(uniformsCache.u_time, (performance.now() - timeStart) / 1000);
+      gl.uniform1f(uniformsCache.u_time, presentationNowSec());
     }
     // Sprint 3: volume LUTs. Uploaded per draw because the count + params may
     // change when setVolumes() is called between scene loads. Volume effects
@@ -2138,6 +2772,30 @@ export function createStudioRenderer({
     if (uniformsCache['u_subjectOffset[0]'] != null) {
       gl.uniform3fv(uniformsCache['u_subjectOffset[0]'], subjectOffsetLUT);
     }
+    // Stage area lights (always upload — numExtraLights=0 makes the shader loop
+    // a no-op, so non-stage scenes are unaffected).
+    if (uniformsCache['u_numExtraLights'] != null) {
+      gl.uniform1i(uniformsCache['u_numExtraLights'], numExtraLights);
+    }
+    if (uniformsCache['u_ambientScale'] != null) {
+      // Shot-level ambient (spotlight crash) scales the scene's baseline.
+      gl.uniform1f(
+        uniformsCache['u_ambientScale'],
+        sequenceAmbient != null ? ambientScale * sequenceAmbient : ambientScale,
+      );
+    }
+    if (uniformsCache['u_glowAmt'] != null) gl.uniform1f(uniformsCache['u_glowAmt'], glowAmt);
+    if (uniformsCache['u_glowK'] != null) gl.uniform1f(uniformsCache['u_glowK'], glowK);
+    if (numExtraLights > 0) {
+      if (uniformsCache['u_extraLightPos[0]'] != null)
+        gl.uniform3fv(uniformsCache['u_extraLightPos[0]'], extraLightPosLUT);
+      if (uniformsCache['u_extraLightColor[0]'] != null)
+        gl.uniform3fv(uniformsCache['u_extraLightColor[0]'], extraLightColorLUT);
+      if (uniformsCache['u_extraLightRadius[0]'] != null)
+        gl.uniform1fv(uniformsCache['u_extraLightRadius[0]'], extraLightRadiusLUT);
+      if (uniformsCache['u_extraLightDir[0]'] != null)
+        gl.uniform3fv(uniformsCache['u_extraLightDir[0]'], extraLightDirLUT);
+    }
     // LUTs are uploaded once per program load in uploadSDF — uniforms persist
     // on the program object, so re-uploading per frame would be pure waste.
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
@@ -2146,7 +2804,7 @@ export function createStudioRenderer({
     // Per-frame postfx params start from activePostFx (scene defaults) and
     // get patched with sequence camera overrides (aperture / focalDistance)
     // when a cameraSequence is driving the camera.
-    const tSec = (performance.now() - timeStart) / 1000;
+    const tSec = presentationNowSec(); // one clock — postfx time-jitter freezes on pause too
     const framePostFx = { ...activePostFx };
     if (sequenceAperture != null) framePostFx.aperture = sequenceAperture;
     if (sequenceFocalDist != null) framePostFx.focalDistance = sequenceFocalDist;
@@ -2213,6 +2871,26 @@ export function createStudioRenderer({
 
     if (_debugFirstDraw) {
       _debugFirstDraw = false;
+      // Clocks start at the first VISIBLE frame. The first draw of a new program
+      // blocks on the (multi-second) shader compile; u_time and the sequence clock
+      // run on wall time, so without this reset a 6s cameraSequence + its build-in
+      // animations can be over before the audience sees frame one.
+      timeStart = performance.now();
+      // Sequence clock starts at the first visible frame — but if a presenter
+      // already HELD the clock (pause before this frame ever drew), re-anchor
+      // the frozen interval instead of stamping start=now: otherwise the held
+      // time becomes pausedAt−now ≈ −(compile seconds) and every subsequent
+      // playTo() first crawls through negative time (the "space bar plays
+      // from nowhere" bug on big decks whose first frame lands late).
+      if (activeSequence) {
+        if (sequencePaused) {
+          const heldRaw = (sequencePausedAt - sequenceStartTime) / 1000;
+          sequenceStartTime = performance.now() - heldRaw * 1000;
+          sequencePausedAt = performance.now();
+        } else {
+          sequenceStartTime = performance.now();
+        }
+      }
       const err = gl.getError();
       const errName =
         err === gl.NO_ERROR
@@ -2246,7 +2924,36 @@ export function createStudioRenderer({
   let frameCount = 0;
   let fpsLast = performance.now();
 
+  // Is the image still changing on its own (without new input)? Drives the
+  // idle-stop: a playing cameraSequence moves the camera; a time-varying scene
+  // (sea waves / city traffic) changes pixels via u_time. A FINISHED non-loop
+  // sequence with a static camera is NOT driving → the loop can park.
+  function isDriving() {
+    if (sceneAnimated) return true;
+    if (activeSequence && !sequencePaused && !userTookCam) {
+      if (activeSequence.loop) return true;
+      const tSec = warpSec((performance.now() - sequenceStartTime) / 1000);
+      if (tSec < seqTotalDuration(activeSequence)) return true;
+    }
+    return false;
+  }
+
+  // Restart the loop after an idle-stop (or just reset the settle countdown if
+  // it's already running). Called by every state change that alters the image.
+  function wake() {
+    settleFrames = 0;
+    if (!rafId && !contextLost) {
+      fpsLast = performance.now();
+      frameCount = 0;
+      rafId = requestAnimationFrame(loop);
+    }
+  }
+
   function loop() {
+    if (contextLost) {
+      rafId = null;
+      return;
+    }
     draw();
     frameCount++;
     const now = performance.now();
@@ -2257,7 +2964,17 @@ export function createStudioRenderer({
       fpsLast = now;
     }
     if (onCamUpdate) onCamUpdate(camState);
-    rafId = requestAnimationFrame(loop);
+    // Render-on-demand: keep going while something animates; otherwise render a
+    // few settle frames then park (rafId = null). wake() revives it on change.
+    if (isDriving()) {
+      settleFrames = 0;
+      rafId = requestAnimationFrame(loop);
+    } else if (settleFrames < SETTLE_MAX) {
+      settleFrames++;
+      rafId = requestAnimationFrame(loop);
+    } else {
+      rafId = null;
+    }
   }
 
   // ---- public API ----
@@ -2268,14 +2985,11 @@ export function createStudioRenderer({
      */
     render(sdf) {
       // ---- Step 1: Generate GLSL (CPU only, fast ~5ms) ----
-      // Done sync so we can return bytes for the lift-info display.
-      const result = compileSDF3ToGLSL(sdf, {
-        sceneFnName: 'sceneSDF',
-        includeLibrary: true,
-        emitObjectIndex: true,
-      });
-      if (result.error) throw new Error(`compileSDF3ToGLSL: ${result.error}`);
-      const fragSource = buildFragmentShader(result.glsl);
+      // Done sync so we can return bytes for the lift-info display. Feature
+      // gating + data-as-uniforms + library DCE all happen inside
+      // compileStudioFrag — the emitted source depends on the scene SHAPE and
+      // feature set only, never on the data.
+      const { fragSource, result } = compileStudioFrag(sdf, renderMode);
       const bytes = fragSource.length;
 
       // ---- Step 2: Clear canvas to BLACK IMMEDIATELY ----
@@ -2313,7 +3027,10 @@ export function createStudioRenderer({
           flyHandle = attachFlyControls(
             canvas,
             () => camState,
-            (patch) => Object.assign(camState, patch),
+            (patch) => {
+              Object.assign(camState, patch);
+              wake(); // user fly input → revive the loop / reset settle
+            },
             {
               speed: 1.5,
               speedBoost: 4.0,
@@ -2327,6 +3044,7 @@ export function createStudioRenderer({
         }
         _debugFirstDraw = true;
         timeStart = performance.now();
+        settleFrames = 0; // new SDF → render fresh settle frames (revive if parked)
         if (!rafId) {
           fpsLast = performance.now();
           frameCount = 0;
@@ -2334,6 +3052,82 @@ export function createStudioRenderer({
         }
       });
       return { bytes };
+    },
+
+    /**
+     * 'stone' | 'rich' shading for every SUBSEQUENT compile (program cache
+     * keys on the generated source, so both modes can coexist in cache).
+     * Call before render()/precompile(); does not retroactively swap.
+     */
+    setRenderMode(mode) {
+      renderMode = mode === 'stone' || mode === 'analytic' ? mode : 'rich';
+    },
+
+    /**
+     * Seamless SDF swap for deck window switching. Unlike render(): no canvas
+     * clear (the old program keeps drawing until the new one is ready), no
+     * presentation-clock reset (the camera sequence keeps playing through the
+     * swap), no deferred-rAF dance. A programCache hit switches on the next
+     * frame; a miss compiles async via KHR_parallel and swaps in when linked.
+     */
+    swapSDF(sdf) {
+      const { fragSource, result } = compileStudioFrag(sdf, renderMode);
+      uploadCompiledFrag(fragSource, result, { resetClocks: false });
+      wake();
+      return { bytes: fragSource.length };
+    },
+
+    /**
+     * Compile + link a program into the cache WITHOUT activating it. Deck
+     * playback warms every upcoming window's shader while station 0 plays so
+     * later swapSDF() calls are cache hits. Resolves true once cached, false
+     * on compile failure. Never touches the active program or the
+     * pendingProgram slot (an in-flight render() swap is unaffected).
+     */
+    precompile(sdf) {
+      let fragSource;
+      try {
+        ({ fragSource } = compileStudioFrag(sdf, renderMode));
+      } catch (e) {
+        console.error('[studio] precompile: GLSL generation failed:', e);
+        return Promise.resolve(false);
+      }
+      if (programCache.has(fragSource)) return Promise.resolve(true);
+      const fs = gl.createShader(gl.FRAGMENT_SHADER);
+      gl.shaderSource(fs, fragSource);
+      gl.compileShader(fs);
+      const prog = gl.createProgram();
+      gl.attachShader(prog, vs);
+      gl.attachShader(prog, fs);
+      gl.linkProgram(prog);
+      const entry = { prog, fs };
+      if (!parallelExt) {
+        try {
+          validateAndCache(entry, fragSource);
+          warmProgram(prog);
+          return Promise.resolve(true);
+        } catch (e) {
+          console.error('[studio] precompile failed:', e);
+          return Promise.resolve(false);
+        }
+      }
+      return new Promise((res) => {
+        const poll = () => {
+          if (!gl.getProgramParameter(prog, parallelExt.COMPLETION_STATUS_KHR)) {
+            requestAnimationFrame(poll);
+            return;
+          }
+          try {
+            validateAndCache(entry, fragSource);
+            warmProgram(prog);
+            res(true);
+          } catch (e) {
+            console.error('[studio] precompile failed:', e);
+            res(false);
+          }
+        };
+        requestAnimationFrame(poll);
+      });
     },
 
     /**
@@ -2384,6 +3178,7 @@ export function createStudioRenderer({
       camState.position = [...defaultCam.position];
       camState.yaw = defaultCam.yaw;
       camState.pitch = defaultCam.pitch;
+      wake();
     },
 
     setCamState(patch) {
@@ -2396,6 +3191,34 @@ export function createStudioRenderer({
       if (patch.position) defaultCam.position = [...patch.position];
       if (patch.yaw != null) defaultCam.yaw = patch.yaw;
       if (patch.pitch != null) defaultCam.pitch = patch.pitch;
+      wake(); // camera moved → re-render
+    },
+
+    // Compositor sets this per scene: true when the scene changes pixels via
+    // u_time on its own (sea waves / city traffic), so the idle-stop keeps it
+    // rendering. Default false → static scenes park after settling.
+    setAnimated(v) {
+      sceneAnimated = !!v;
+      if (sceneAnimated) wake();
+    },
+
+    // Per-scene SSAA factor. The compositor lowers this for heavy scenes
+    // (volumes / fleets / theatrical stage) so the expensive fragment shader
+    // stays under the GPU watchdog (TDR) — a too-heavy frame hangs the whole
+    // browser, not just the tab. Reallocates the scene FBO on change.
+    setRenderScale(s) {
+      const v = Math.max(0.5, Math.min(2.0, Number(s) || 1.0));
+      if (v === curRenderScale) return;
+      curRenderScale = v;
+      ensureSceneFbo();
+      wake();
+    },
+
+    // Public nudge: re-render now / revive the parked loop. For any external
+    // control that changes what getControls() returns (light, fov, …) without
+    // going through render(). Safe to over-call (just resets the settle count).
+    requestRender() {
+      wake();
     },
 
     /**
@@ -2417,6 +3240,49 @@ export function createStudioRenderer({
      */
     setPostFx(scene, camera) {
       activePostFx = resolvePostFxParams(scene, camera);
+      // Per-scene dramatic background opt-in: scene.defaults.studioBg === 'dark'
+      // → dark cyclorama + punchier spec/rim/vignette (showcase decks). Default
+      // (absent) keeps the neutral light test stage used by the atom gallery.
+      studioBgDark = !!(scene && scene.defaults && scene.defaults.studioBg === 'dark');
+      // Theatrical dark interior: suppress sky ambient so the spotlight cones +
+      // beams pop against dark walls. defaults.interiorDark = true (→ 0.18) or a
+      // 0-1 number; absent → 1.0 (unchanged).
+      const idark = scene && scene.defaults ? scene.defaults.interiorDark : null;
+      ambientScale =
+        idark == null || idark === false ? 1.0 : typeof idark === 'number' ? idark : 0.18;
+      // SDF glow: scene.defaults.glow = { amount, k } (absent → off, byte-identical)
+      const glowDef = scene && scene.defaults ? scene.defaults.glow : null;
+      glowAmt = glowDef && typeof glowDef.amount === 'number' ? glowDef.amount : 0.0;
+      glowK = glowDef && typeof glowDef.k === 'number' ? glowDef.k : 6.0;
+      // Stage area lights: pack scene.defaults.lights → LUTs (color premultiplied
+      // by intensity; 0-255 auto-normalized like volumes). A light with `dir`
+      // becomes a spotlight cone. Absent/empty → 0 lights = no-op.
+      numExtraLights = 0;
+      const lights = scene && scene.defaults && scene.defaults.lights;
+      if (Array.isArray(lights)) {
+        const n = Math.min(lights.length, MAX_EXTRA_LIGHTS);
+        for (let i = 0; i < n; i++) {
+          const L = lights[i] || {};
+          const pos = L.pos || L.position || [0, 5, 0];
+          const col = L.color || [1, 1, 1];
+          const inten = L.intensity == null ? 1 : L.intensity;
+          const cmax = Math.max(col[0], col[1], col[2]);
+          const cs = cmax > 1.5 ? 1 / 255 : 1; // auto-detect 0-255 vs 0-1
+          extraLightPosLUT[i * 3] = pos[0];
+          extraLightPosLUT[i * 3 + 1] = pos[1];
+          extraLightPosLUT[i * 3 + 2] = pos[2];
+          extraLightColorLUT[i * 3] = col[0] * cs * inten;
+          extraLightColorLUT[i * 3 + 1] = col[1] * cs * inten;
+          extraLightColorLUT[i * 3 + 2] = col[2] * cs * inten;
+          extraLightRadiusLUT[i] = L.radius == null ? 1.0 : L.radius;
+          const dir = L.dir || L.direction || [0, 0, 0]; // zero = omni point
+          extraLightDirLUT[i * 3] = dir[0];
+          extraLightDirLUT[i * 3 + 1] = dir[1];
+          extraLightDirLUT[i * 3 + 2] = dir[2];
+        }
+        numExtraLights = n;
+      }
+      wake(); // post-fx params changed → re-render
     },
 
     /**
@@ -2482,6 +3348,7 @@ export function createStudioRenderer({
       }
       // Clear unused slots' metadata
       for (let i = activeVolumeCount; i < MAX_VOLUMES; i++) volumeMeta[i] = null;
+      wake(); // volumes changed → re-render
     },
 
     /**
@@ -2584,16 +3451,49 @@ export function createStudioRenderer({
      */
     setSequence(seq) {
       activeSequence = seq || null;
+      activeHitstops =
+        (seq && Array.isArray(seq.hitstops) && seq.hitstops.length && seq.hitstops) || null;
       sequenceStartTime = performance.now();
       sequencePaused = false;
       userTookCam = false;
+      flowReset(); // steadicam state must not bleed across sequences
       prevCamValid = false; // motion blur skip on cut-over frame
+      wake(); // a sequence drives the camera → revive the loop
+    },
+    /**
+     * Project a world point to normalized screen coords (top-left origin, [0,1])
+     * using the LAST rendered frame's camera. Returns { x, y, visible }. visible
+     * is false when the point is behind the camera. Inverts the shader's ray
+     * setup (rd = uv.x*right + uv.y*up + focal*fwd; uv = (frag*2-res)/res.y), so
+     * overlay labels track the 3D point exactly even as the sequence camera moves.
+     */
+    project(world) {
+      if (!lastCam) return { x: 0, y: 0, visible: false };
+      const { pos, right, up, fwd, focal, aspect } = lastCam;
+      const vx = world[0] - pos[0],
+        vy = world[1] - pos[1],
+        vz = world[2] - pos[2];
+      const a = vx * right[0] + vy * right[1] + vz * right[2];
+      const b = vx * up[0] + vy * up[1] + vz * up[2];
+      const c = vx * fwd[0] + vy * fwd[1] + vz * fwd[2];
+      if (c <= 1e-4) return { x: 0, y: 0, visible: false }; // behind camera
+      const uvx = (focal * a) / c;
+      const uvy = (focal * b) / c;
+      const x = (uvx / aspect + 1) / 2; // uv.x ∈ [-aspect,aspect] → [0,1]
+      const y = 1 - (uvy + 1) / 2; // uv.y ∈ [-1,1] (bottom-up) → top-left [0,1]
+      // depth = forward distance (world units) — overlay layers use it to fade
+      // far labels so wide/deck shots don't pile every station's text on screen.
+      return { x, y, depth: c, visible: x >= -0.15 && x <= 1.15 && y >= -0.15 && y <= 1.15 };
     },
     setSequenceTime(tSec) {
       if (!activeSequence) return;
-      sequenceStartTime = performance.now() - tSec * 1000;
+      // tSec is PRESENTATION time — unwarp it so seeks land where the caller
+      // expects even across hitstop holds.
+      sequenceStartTime = performance.now() - unwarpTime(tSec, activeHitstops) * 1000;
+      flowReset(); // seeks/pins must land exactly — no lag from the old spot
       sequencePaused = false;
       userTookCam = false;
+      wake();
     },
     setSequencePaused(paused) {
       if (paused && !sequencePaused) {
@@ -2604,15 +3504,27 @@ export function createStudioRenderer({
         sequenceStartTime += performance.now() - sequencePausedAt;
         sequencePaused = false;
         userTookCam = false;
+        wake(); // resumed → drive again
       }
     },
     getSequenceTime() {
       if (!activeSequence) return 0;
       const now = sequencePaused ? sequencePausedAt : performance.now();
-      return (now - sequenceStartTime) / 1000;
+      return warpSec((now - sequenceStartTime) / 1000);
+    },
+    // The value fed to u_time this frame (sequence time when a sequence drives,
+    // wall-clock otherwise). Presenter mode reads this to sync the teleprompter.
+    getPresentationTime() {
+      return presentationNowSec();
     },
     getSequenceDuration() {
       return activeSequence ? seqTotalDuration(activeSequence) : 0;
+    },
+    // Has at least one frame of the current scene actually been drawn? False
+    // while the (async) shader compile is still pending — loading UIs poll this
+    // to know when to dismiss.
+    hasDrawn() {
+      return !!lastCam;
     },
     isSequenceActive() {
       return !!activeSequence && !userTookCam;

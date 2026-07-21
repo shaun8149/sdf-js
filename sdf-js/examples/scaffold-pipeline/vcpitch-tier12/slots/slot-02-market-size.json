@@ -1,0 +1,87 @@
+{
+  "slotIdx": 2,
+  "slotName": "market-size",
+  "slotTitle": "Market Size",
+  "slotPurpose": "TAM/SAM/SOM with numbers",
+  "sourceSlideIdx": 2,
+  "sourceSlideTitle": "Total Addressable Market",
+  "sceneData": {
+    "name": "pitch-deck-vc/market-size",
+    "layout": "hierarchy",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Market Size"
+        }
+      },
+      {
+        "type": "pyramid",
+        "x": 80,
+        "y": 180,
+        "w": 520,
+        "h": 460,
+        "args": {
+          "levels": [
+            {
+              "label": "AI Productivity",
+              "value": "$48B",
+              "sublabel": "by 2028"
+            },
+            {
+              "label": "Presentation Software",
+              "value": "$4.8B",
+              "sublabel": "annually"
+            },
+            {
+              "label": "Editorial + Infographic",
+              "value": "$2.1B",
+              "sublabel": "annually"
+            }
+          ],
+          "title": "Total Addressable Market"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 680,
+        "y": 240,
+        "w": 520,
+        "h": 320,
+        "args": {
+          "label": "Initial Wedge",
+          "value": "18M",
+          "sublabel": "Knowledge workers making decks weekly",
+          "icon": "users-three",
+          "style": "light"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "pitch-deck-vc",
+    "theme": "pitch-cobalt-orange",
+    "recommendedAtoms": ["pyramid", "kpi-card", "sphere-fill", "bar"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 2459,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 5921,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 407,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.015258299999999999,
+    "elapsedSec": 6,
+    "generatedAt": "2026-06-24T04:47:20.670Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

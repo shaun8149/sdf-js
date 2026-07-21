@@ -1,0 +1,143 @@
+{
+  "v": 1,
+  "name": "(lifted) marketing-Marketing Mix",
+  "subjects": [
+    {
+      "id": "radial-spoke",
+      "type": "radial-spoke-3d",
+      "args": {
+        "spokes": 4,
+        "hubRadius": 0.34,
+        "spokeThickness": 0.09,
+        "nodeRadius": 0.17,
+        "maxLen": 1.35,
+        "minLen": 0.7
+      },
+      "transform": {
+        "translate": [
+          0,
+          1.7,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.74,
+        "sat": 0.55,
+        "value": 0.64,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      }
+    }
+  ],
+  "overlay": [
+    {
+      "text": "MARKETING TOOLBOX",
+      "anchor": [
+        0,
+        3.9,
+        0
+      ],
+      "role": "title"
+    },
+    {
+      "text": "Product 1",
+      "anchor": [
+        3,
+        2.6,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "Price 1",
+      "anchor": [
+        3,
+        1.8800000000000001,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "Place 1",
+      "anchor": [
+        3,
+        1.1600000000000001,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "Promotion 1",
+      "anchor": [
+        3,
+        0.43999999999999995,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "Reaching the right audience, the right way",
+      "anchor": [
+        0,
+        3.35,
+        0
+      ],
+      "role": "body",
+      "align": "center"
+    }
+  ],
+  "cameraSequence": {
+    "loop": false,
+    "shots": [
+      {
+        "duration": 0.01,
+        "pos": [
+          2.2,
+          3.2,
+          12
+        ],
+        "target": [
+          0,
+          1.6,
+          0
+        ],
+        "fov": 55,
+        "aperture": 0,
+        "focalDistance": 11.5,
+        "ease": "smooth"
+      },
+      {
+        "duration": 17,
+        "pos": [
+          0.2,
+          1.9500000000000002,
+          8.6
+        ],
+        "target": [
+          0,
+          1.6,
+          0
+        ],
+        "fov": 46,
+        "transition": "blend",
+        "aperture": 0,
+        "focalDistance": 8.6,
+        "ease": "smooth"
+      }
+    ]
+  },
+  "defaults": {
+    "stage": {
+      "size": [
+        18,
+        9,
+        11
+      ]
+    }
+  }
+}

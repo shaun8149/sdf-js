@@ -1,0 +1,52 @@
+{
+  "slotIdx": 0,
+  "slotName": "cover",
+  "slotTitle": "Title",
+  "slotPurpose": "Q-name + reviewer + period",
+  "sourceSlideIdx": 0,
+  "sourceSlideTitle": "Q3 2026 Quarterly Business Review",
+  "sceneData": {
+    "name": "qbr/cover",
+    "layout": "cover",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 720,
+        "args": {
+          "title": "Q3 2026 Quarterly Business Review",
+          "subtitle": "Operations + Product + GTM",
+          "author": "ANTFUN team review",
+          "date": "2026-09-30",
+          "style": "gradient"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "qbr",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "cover"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5097,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 160,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0215934,
+    "elapsedSec": 4.5,
+    "generatedAt": "2026-07-10T07:19:33.833Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

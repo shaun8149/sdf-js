@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="zh">
+  <head>
+    <meta charset="utf-8" />
+    <title>Original Mints — 链上原版真迹画廊</title>
+    <style>
+      :root {
+        color-scheme: dark;
+      }
+      body {
+        margin: 0;
+        background: #101116;
+        color: #e8e6e0;
+        font:
+          14px/1.5 Inter,
+          system-ui,
+          sans-serif;
+      }
+      header {
+        padding: 22px 28px 8px;
+      }
+      h1 {
+        margin: 0 0 4px;
+        font-size: 20px;
+      }
+      .sub {
+        color: #9a97a0;
+        font-size: 12.5px;
+        max-width: 72em;
+      }
+      #grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 14px;
+        padding: 20px 28px 48px;
+      }
+      .card {
+        background: #191a21;
+        border-radius: 10px;
+        overflow: hidden;
+        cursor: pointer;
+        transition: transform 0.12s;
+        border: 1px solid #24252d;
+      }
+      .card:hover {
+        transform: translateY(-2px);
+        border-color: #3a3b45;
+      }
+      .thumb {
+        width: 100%;
+        aspect-ratio: 1;
+        object-fit: contain;
+        background: #0c0d11;
+        display: block;
+      }
+      .meta {
+        padding: 9px 11px 11px;
+      }
+      .name {
+        font-weight: 600;
+        font-size: 13px;
+      }
+      .artist {
+        color: #9a97a0;
+        font-size: 12px;
+      }
+      .badges {
+        margin-top: 6px;
+        display: flex;
+        gap: 5px;
+        flex-wrap: wrap;
+      }
+      .badge {
+        font-size: 10px;
+        padding: 1.5px 7px;
+        border-radius: 99px;
+        background: #24252d;
+        color: #b9b6c0;
+      }
+      .badge.nc {
+        background: #1d2b22;
+        color: #8fd0a5;
+      }
+      .badge.nd {
+        background: #2e2419;
+        color: #e0b070;
+      }
+      .badge.other {
+        background: #2c1d24;
+        color: #d792ab;
+      }
+      .card.blocked {
+        opacity: 0.35;
+        cursor: default;
+      }
+      .card.blocked:hover {
+        transform: none;
+      }
+      #viewer {
+        position: fixed;
+        inset: 0;
+        background: rgba(8, 8, 12, 0.92);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 14px;
+        z-index: 9;
+      }
+      #viewer.open {
+        display: flex;
+      }
+      #viewer img {
+        max-width: 88vw;
+        max-height: 78vh;
+        box-shadow: 0 18px 70px rgba(0, 0, 0, 0.6);
+      }
+      #viewer .vmeta {
+        color: #cfccd6;
+        font-size: 13px;
+        text-align: center;
+      }
+      #viewer a {
+        color: #8fb8e8;
+      }
+      .strip-row {
+        display: flex;
+        gap: 8px;
+      }
+      .swatches {
+        display: flex;
+        height: 10px;
+        border-radius: 5px;
+        overflow: hidden;
+        margin-top: 7px;
+      }
+      .swatches span {
+        flex: 1;
+      }
+      .strip-row img {
+        height: 74px;
+        max-width: none;
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5);
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Original Mints — 链上原版真迹画廊</h1>
+      <div class="sub">
+        ArtBlocks 链上原始脚本逐字运行的产物 (固定 hash, 永久复现)。仅限非商用演示 — license
+        逐项目标注, 使用前核对。点击卡片看大图与胶片条; 「装裱」跳转 author-2d 直接给 deck
+        穿上这件真迹。
+      </div>
+    </header>
+    <div id="grid"></div>
+    <div id="viewer">
+      <img id="vimg" alt="" />
+      <div class="strip-row" id="vstrip"></div>
+      <div class="vmeta" id="vmeta"></div>
+    </div>
+    <script type="module">
+      const BASE = './cache/';
+      const grid = document.getElementById('grid');
+      const viewer = document.getElementById('viewer');
+      const vimg = document.getElementById('vimg');
+      const vstrip = document.getElementById('vstrip');
+      const vmeta = document.getElementById('vmeta');
+      viewer.addEventListener('click', () => viewer.classList.remove('open'));
+
+      function badgeClass(license) {
+        const l = String(license || '');
+        if (l.includes('ND')) return 'nd';
+        if (l.includes('NC')) return 'nc';
+        if (l.includes('CC')) return 'nc';
+        return 'other';
+      }
+
+      const manifest = await fetch(BASE + 'manifest.json')
+        .then((r) => (r.ok ? r.json() : null))
+        .catch(() => null);
+      if (!manifest) {
+        grid.innerHTML =
+          '<div style="grid-column:1/-1;color:#9a97a0">本地 mint 缓存不存在 — 先跑铸造 sweep (见 README)。</div>';
+      } else {
+        for (const m of manifest) {
+          const ok = m.status === 'ok';
+          const card = document.createElement('div');
+          card.className = 'card' + (ok ? '' : ' blocked');
+          const thumbFile = ok ? `${m.id}-small-0.png` : null;
+          card.innerHTML = `
+            ${ok ? `<img class="thumb" loading="lazy" src="${BASE}${thumbFile}" onerror="this.src='${BASE}${m.files?.small || m.files?.large || ''}'">` : `<div class="thumb" style="display:grid;place-items:center;color:#5a5b66">${String(m.status).startsWith('culled') ? '已裁汰 (封面级)' : 'WebGL 待补'}</div>`}
+            <div class="meta">
+              <div class="name">${m.id} · ${m.name}</div>
+              <div class="artist">${m.artist || ''}</div>
+              ${
+                m.palette
+                  ? `<div class="swatches">${m.palette.colors
+                      .slice(0, 6)
+                      .map((c) => `<span style="background:rgb(${c.join(',')})"></span>`)
+                      .join('')}</div>`
+                  : ''
+              }
+              <div class="badges">
+                <span class="badge ${badgeClass(m.license)}">${m.license || '?'}</span>
+                <span class="badge">${m.type || ''}</span>
+              </div>
+            </div>`;
+          if (ok) {
+            card.addEventListener('click', () => {
+              vimg.src = BASE + (m.files?.large || thumbFile);
+              vstrip.innerHTML = '';
+              for (let k = 0; k < 3; k++) {
+                const im = new Image();
+                im.src = `${BASE}${m.id}-small-${k}.png`;
+                im.onerror = () => im.remove();
+                vstrip.appendChild(im);
+              }
+              vmeta.innerHTML = `<b>${m.name}</b> · ${m.artist || ''} · ${m.license || ''} · hash ${String(m.hash).slice(0, 12)}…<br>
+                <a href="../../apps/present/author-2d.html?art=${m.id}" onclick="event.stopPropagation()">→ 在 author-2d 里装裱这件真迹</a>`;
+              viewer.classList.add('open');
+            });
+          }
+          grid.appendChild(card);
+        }
+      }
+    </script>
+  </body>
+</html>

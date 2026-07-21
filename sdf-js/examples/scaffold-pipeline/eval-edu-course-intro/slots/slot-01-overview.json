@@ -1,0 +1,79 @@
+{
+  "slotIdx": 1,
+  "slotName": "overview",
+  "slotTitle": "Course Overview",
+  "slotPurpose": "What the course is about — topics, scope, prerequisites",
+  "sourceSlideIdx": 1,
+  "sourceSlideTitle": "Course Overview",
+  "sceneData": {
+    "name": "course-syllabus/overview",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Course Overview",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 40,
+        "y": 160,
+        "w": 1200,
+        "h": 520,
+        "args": {
+          "title": "Distributed Systems",
+          "items": [
+            {
+              "icon": "network",
+              "label": "Theory and practice across many machines"
+            },
+            {
+              "icon": "cube",
+              "label": "Consensus, replication, partitioning, consistency, fault tolerance"
+            },
+            {
+              "icon": "calendar",
+              "label": "2 lectures/week + weekly lab + group project"
+            },
+            {
+              "icon": "graduation-cap",
+              "label": "Prerequisites: CS 240 (Operating Systems), Go or Rust"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "course-syllabus",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "bullet-list",
+      "icon-grid",
+      "pillar-3up"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5171,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 323,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0242604,
+    "elapsedSec": 7.9,
+    "generatedAt": "2026-07-10T07:23:14.564Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

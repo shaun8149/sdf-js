@@ -1,0 +1,108 @@
+{
+  "slotIdx": 1,
+  "slotName": "scope",
+  "slotTitle": "Scope & Methodology",
+  "slotPurpose": "What was analyzed and how data was collected",
+  "sourceSlideIdx": 0,
+  "sourceSlideTitle": "全球经济2026年中展望",
+  "sceneData": {
+    "name": "analysis-report/scope",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "范围与方法论"
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 80,
+        "y": 180,
+        "w": 520,
+        "h": 460,
+        "args": {
+          "title": "分析范围",
+          "items": [
+            {
+              "icon": "globe-hemisphere-west",
+              "label": "全球经济2026年中展望"
+            },
+            {
+              "icon": "chart-line",
+              "label": "宏观经济趋势与预测"
+            },
+            {
+              "icon": "currency-dollar",
+              "label": "各主要经济体表现"
+            }
+          ]
+        }
+      },
+      {
+        "type": "icon-grid",
+        "x": 680,
+        "y": 180,
+        "w": 520,
+        "h": 460,
+        "args": {
+          "title": "数据来源",
+          "items": [
+            {
+              "icon": "bank",
+              "label": "国际货币基金组织",
+              "sublabel": "IMF"
+            },
+            {
+              "icon": "buildings",
+              "label": "经合组织",
+              "sublabel": "OECD"
+            },
+            {
+              "icon": "globe",
+              "label": "世界银行",
+              "sublabel": "World Bank"
+            },
+            {
+              "icon": "newspaper",
+              "label": "财经媒体报道"
+            }
+          ],
+          "cols": 2,
+          "iconStyle": "card",
+          "iconSize": "medium",
+          "colorMode": "auto"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "analysis-report",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "bullet-list",
+      "icon-row"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4417,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 537,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0252084,
+    "elapsedSec": 8,
+    "generatedAt": "2026-07-06T15:45:00.709Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

@@ -1,0 +1,98 @@
+{
+  "slotIdx": 6,
+  "slotName": "theme-2-detail",
+  "slotTitle": "Theme 2 — Detail",
+  "slotPurpose": "Second theme drill-down: sequence, conditions, thresholds",
+  "sourceSlideIdx": 11,
+  "sourceSlideTitle": "The Eight Critical Sectors",
+  "sceneData": {
+    "name": "news-briefing/theme-2-detail",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Theme 2 — Detail",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "icon-grid",
+        "x": 40,
+        "y": 160,
+        "w": 1200,
+        "h": 520,
+        "args": {
+          "title": "The Eight Critical Sectors",
+          "items": [
+            {
+              "icon": "cpu",
+              "label": "Semiconductors"
+            },
+            {
+              "icon": "lightning",
+              "label": "Energy"
+            },
+            {
+              "icon": "brain",
+              "label": "AI"
+            },
+            {
+              "icon": "dna",
+              "label": "Biotech"
+            },
+            {
+              "icon": "rocket",
+              "label": "Space"
+            },
+            {
+              "icon": "plus-circle",
+              "label": "Strategic Sector",
+              "sublabel": "Additional investment area"
+            },
+            {
+              "icon": "plus-circle",
+              "label": "Strategic Sector",
+              "sublabel": "Additional investment area"
+            },
+            {
+              "icon": "plus-circle",
+              "label": "Strategic Sector",
+              "sublabel": "Additional investment area"
+            }
+          ],
+          "cols": 4,
+          "iconStyle": "circle",
+          "iconSize": "medium",
+          "colorMode": "brand"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["timeline", "funnel-with-conversion", "bullet-list", "flow-chart"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4924,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 462,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0256044,
+    "elapsedSec": 8.7,
+    "generatedAt": "2026-07-07T06:40:56.429Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

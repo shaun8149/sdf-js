@@ -1,0 +1,92 @@
+{
+  "slotIdx": 1,
+  "slotName": "executive-summary",
+  "slotTitle": "Executive Summary",
+  "slotPurpose": "3-5 highlights at-a-glance",
+  "sourceSlideIdx": 1,
+  "sourceSlideTitle": "Executive Summary",
+  "sceneData": {
+    "name": "qbr/executive-summary",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Executive Summary"
+        }
+      },
+      {
+        "type": "dashboard-multi-kpi-composite",
+        "x": 40,
+        "y": 160,
+        "w": 1200,
+        "h": 540,
+        "args": {
+          "cards": [
+            {
+              "value": "$740K",
+              "label": "Q3 ARR",
+              "sublabel": "+117% QoQ",
+              "icon": "chart-line-up",
+              "style": "light"
+            },
+            {
+              "value": "12.5K",
+              "label": "Daily Wallets",
+              "sublabel": "Active users",
+              "icon": "wallet",
+              "style": "light"
+            },
+            {
+              "value": "Week 8",
+              "label": "Insurance Launch",
+              "sublabel": "Policy live",
+              "icon": "shield-check",
+              "style": "light"
+            },
+            {
+              "value": "Shipped",
+              "label": "Perp DEX",
+              "sublabel": "End of Q3",
+              "icon": "rocket-launch",
+              "style": "light"
+            },
+            {
+              "value": "3",
+              "label": "Strategic Risks",
+              "sublabel": "Identified",
+              "icon": "warning-diamond",
+              "style": "accent-border"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "qbr",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["dashboard-multi-kpi-composite", "bullet-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 2447,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 5921,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 457,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.015972300000000002,
+    "elapsedSec": 6.3,
+    "generatedAt": "2026-06-24T04:50:19.349Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

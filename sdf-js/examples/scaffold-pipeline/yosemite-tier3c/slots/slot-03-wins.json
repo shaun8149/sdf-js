@@ -1,0 +1,65 @@
+{
+  "slotIdx": 3,
+  "slotName": "wins",
+  "slotTitle": "Wins",
+  "slotPurpose": "What went well this quarter",
+  "sourceSlideIdx": 4,
+  "sourceSlideTitle": "Half Dome Ascent",
+  "sceneData": {
+    "name": "qbr/wins",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Wins",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "image-split",
+        "x": 40,
+        "y": 160,
+        "w": 1200,
+        "h": 520,
+        "args": {
+          "src": "https://picsum.photos/seed/halfdome/1280/720",
+          "title": "Half Dome Ascent",
+          "bullets": [
+            "Summit via cables route",
+            "16 miles round trip, ~10 hours",
+            "Early 4am start beat crowds"
+          ],
+          "imageSide": "right",
+          "imageWidthPct": 0.55
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "qbr",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["bullet-list", "kpi-card", "icon-badge"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 2963,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 10508,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 273,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0161364,
+    "elapsedSec": 6.2,
+    "generatedAt": "2026-06-24T05:36:48.818Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

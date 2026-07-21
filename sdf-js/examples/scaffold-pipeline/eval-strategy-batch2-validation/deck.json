@@ -1,0 +1,236 @@
+{
+  "deckName": "eval-strategy-batch2-validation",
+  "sourceFile": "sdf-js/scripts/scaffold-pipeline-fixtures/strategy-batch2-validation.json",
+  "scaffold": {
+    "id": "change-roadmap",
+    "label": "Change & Transformation Roadmap",
+    "description": "Change management deck — case for change, current→target state, journey, enablers",
+    "pickScore": 9,
+    "pickSignals": [
+      "Deck explicitly follows change management structure: case for change (why now), current state assessment (SWOT), target state (5 pillars + comparison table), journey phases (Q1 2026 kickoff, timeline), and risk mitigation",
+      "Core vocabulary matches change-roadmap perfectly: 'transformation', 'change journey', 'current vs target vs future state', 'programme timeline', 'organization-wide', 'enablers' (5 pillars as enablers)",
+      "8-slot change-roadmap scaffold aligns well with the 40-paragraph source content — sufficient depth for each phase without leaving slots empty"
+    ],
+    "fallback": false,
+    "pickerMethod": "llm"
+  },
+  "theme": {
+    "id": "consulting-charcoal",
+    "label": "Consulting Charcoal",
+    "macroCluster": "pitch",
+    "bg": [
+      26,
+      26,
+      34
+    ],
+    "accent": [
+      156,
+      142,
+      110
+    ],
+    "colors": [
+      [
+        156,
+        142,
+        110
+      ],
+      [
+        100,
+        95,
+        82
+      ],
+      [
+        200,
+        193,
+        174
+      ],
+      [
+        60,
+        60,
+        72
+      ],
+      [
+        220,
+        215,
+        200
+      ]
+    ],
+    "font": {
+      "heading": "\"Inter Display\", Inter, system-ui, sans-serif",
+      "body": "Inter, system-ui, sans-serif"
+    }
+  },
+  "slots": [
+    {
+      "slotIdx": 0,
+      "slotName": "cover",
+      "slotTitle": "Title",
+      "slotPurpose": "Change program name + sponsor + date",
+      "sourceSlideIdx": 0,
+      "sourceSlideTitle": "Digital Transformation Roadmap 2026",
+      "mappingScore": 10,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-00-cover.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover"
+      ]
+    },
+    {
+      "slotIdx": 1,
+      "slotName": "case-for-change",
+      "slotTitle": "Case for Change",
+      "slotPurpose": "Why change is necessary — data, context, burning platform",
+      "sourceSlideIdx": 1,
+      "sourceSlideTitle": "Why Change Now: The Case for Transformation",
+      "mappingScore": 10,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-01-case-for-change.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "stat-banner",
+        "dashboard-multi-kpi-composite",
+        "fishbone"
+      ]
+    },
+    {
+      "slotIdx": 2,
+      "slotName": "current-state",
+      "slotTitle": "Current State",
+      "slotPurpose": "As-is situation — strengths, weaknesses, root causes",
+      "sourceSlideIdx": 2,
+      "sourceSlideTitle": "Current State Assessment",
+      "mappingScore": 10,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-02-current-state.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "swot"
+      ]
+    },
+    {
+      "slotIdx": 3,
+      "slotName": "target-state",
+      "slotTitle": "Target State",
+      "slotPurpose": "To-be vision — what success looks like",
+      "sourceSlideIdx": 6,
+      "sourceSlideTitle": "Tier Comparison: Current vs Target vs Future State",
+      "mappingScore": 9,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-03-target-state.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "kpi-card",
+        "icon-grid",
+        "stat-banner",
+        "bullet-list"
+      ]
+    },
+    {
+      "slotIdx": 4,
+      "slotName": "journey-phases",
+      "slotTitle": "Change Journey",
+      "slotPurpose": "Phase-by-phase transition path with milestones",
+      "sourceSlideIdx": 7,
+      "sourceSlideTitle": "Change Journey & Risk Mitigation",
+      "mappingScore": 8,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-04-journey-phases.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "change-curve-chart",
+        "traffic-light",
+        "progression"
+      ]
+    },
+    {
+      "slotIdx": 5,
+      "slotName": "enablers",
+      "slotTitle": "Enablers",
+      "slotPurpose": "People, process, and technology levers that enable change",
+      "sourceSlideIdx": 3,
+      "sourceSlideTitle": "Five Core Strategic Pillars",
+      "mappingScore": 8,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-05-enablers.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "radial-wheel-segmented"
+      ]
+    },
+    {
+      "slotIdx": 6,
+      "slotName": "risks",
+      "slotTitle": "Risks & Mitigations",
+      "slotPurpose": "Top risks and mitigation strategies",
+      "sourceSlideIdx": 7,
+      "sourceSlideTitle": "Change Journey & Risk Mitigation",
+      "mappingScore": 7,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-06-risks.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "risk-heatmap",
+        "timeline"
+      ]
+    },
+    {
+      "slotIdx": 7,
+      "slotName": "timeline",
+      "slotTitle": "Delivery Timeline",
+      "slotPurpose": "Programme timeline with key deliverables and gates",
+      "sourceSlideIdx": 8,
+      "sourceSlideTitle": "Programme Timeline 2026",
+      "mappingScore": 10,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-07-timeline.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "timeline"
+      ]
+    }
+  ],
+  "droppedSlots": [],
+  "totals": {
+    "slotsBaked": 8,
+    "slotsEmpty": 0,
+    "slotsErrored": 0,
+    "totalCostUSD": 0.2171862
+  },
+  "meta": {
+    "generatedAt": "2026-07-10T07:20:11.438Z",
+    "model": "claude-sonnet-4-5-20250929",
+    "pipelineVersion": "sprint-16-v1"
+  }
+}

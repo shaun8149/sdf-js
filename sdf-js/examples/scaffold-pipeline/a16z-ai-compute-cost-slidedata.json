@@ -1,0 +1,101 @@
+[
+  {
+    "title": "Navigating the High Cost of AI Compute",
+    "body": [
+      "Source: Industry Analysis on AI Infrastructure Economics",
+      "Focus: Compute costs and infrastructure decisions for AI companies"
+    ]
+  },
+  {
+    "title": "Agenda",
+    "body": [
+      "Compute supply-demand imbalance in generative AI",
+      "Capital allocation patterns in AI startups",
+      "GPT-3 training costs and infrastructure requirements",
+      "GPU instance pricing variations across vendors",
+      "Cloud versus data center infrastructure decisions",
+      "Training dataset scale and web data consumption"
+    ]
+  },
+  {
+    "title": "Severe Compute Supply Shortage",
+    "body": [
+      "Generative AI faces compute demand exceeding supply by approximately 10 times.",
+      "This supply constraint has made compute access a critical competitive factor.",
+      "The imbalance affects both training and inference operations across the industry."
+    ]
+  },
+  {
+    "title": "Compute Dominates Startup Spending",
+    "body": [
+      "Many AI startups spending over 80% of capital on compute.",
+      "Access to compute at the lowest total cost has become a determining factor for AI companies.",
+      "Infrastructure costs represent the primary operational expense for generative AI firms."
+    ]
+  },
+  {
+    "title": "GPT-3 Model Scale",
+    "body": [
+      "GPT-3 has 175 billion parameters.",
+      "Training requires over one terabyte of memory.",
+      "This scale represents the benchmark for large language model infrastructure requirements."
+    ]
+  },
+  {
+    "title": "GPT-3 Training Cost Range",
+    "body": [
+      "GPT-3 costs between $500,000 and $4.6 million per training run on NVIDIA A100 GPUs.",
+      "The wide cost range reflects differences in vendor pricing and infrastructure efficiency.",
+      "These figures apply specifically to training runs using A100 GPU infrastructure."
+    ]
+  },
+  {
+    "title": "A100 GPU Instance Pricing Baseline",
+    "body": [
+      "A100 instance pricing ranges from roughly $0.25 to $1 per hour.",
+      "Nearly 4x differences exist among vendors for equivalent compute resources.",
+      "Pricing variations significantly impact total training and inference costs."
+    ]
+  },
+  {
+    "title": "Premium Cloud Provider Pricing",
+    "body": [
+      "AWS, Azure, and Google Cloud charge premium rates for GPU instances.",
+      "These major hyperscalers position at the higher end of the pricing spectrum.",
+      "Premium pricing reflects broader service ecosystems and global infrastructure availability."
+    ]
+  },
+  {
+    "title": "Lower-Cost GPU Vendors",
+    "body": [
+      "Coreweave and Lambda Labs offer lower costs compared to major cloud providers.",
+      "These specialized vendors focus on GPU compute for AI workloads.",
+      "Cost advantages can reach nearly 4x versus premium providers for A100 instances."
+    ]
+  },
+  {
+    "title": "Cloud versus Data Center Decision Threshold",
+    "body": [
+      "Startups should use cloud rather than build data centers unless infrastructure spending exceeds $50 million annually.",
+      "Below this threshold, cloud economics remain favorable despite premium pricing.",
+      "Capital efficiency and operational flexibility favor cloud for most AI startups."
+    ]
+  },
+  {
+    "title": "Training Data Scale",
+    "body": [
+      "Training datasets already use approximately 10% of all web pages via Common Crawl.",
+      "This represents the current scope of web data being leveraged for model training.",
+      "Common Crawl serves as the primary source for large-scale web-based training datasets."
+    ]
+  },
+  {
+    "title": "Strategic Implications",
+    "body": [
+      "Compute access and cost optimization have become determining competitive factors.",
+      "Infrastructure decisions between cloud and owned data centers require $50 million annual spend threshold analysis.",
+      "Vendor selection can yield 4x cost differences on identical GPU infrastructure.",
+      "Data availability approaching limits with 10% of web pages already in training datasets."
+    ]
+  }
+]

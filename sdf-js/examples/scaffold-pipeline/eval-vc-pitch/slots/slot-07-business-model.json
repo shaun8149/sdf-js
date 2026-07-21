@@ -1,0 +1,134 @@
+{
+  "slotIdx": 7,
+  "slotName": "business-model",
+  "slotTitle": "Business Model",
+  "slotPurpose": "How we make money — unit economics",
+  "sourceSlideIdx": 6,
+  "sourceSlideTitle": "Business Model",
+  "sceneData": {
+    "name": "pitch-deck-vc/business-model",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Business Model",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "comparison-table",
+        "x": 40,
+        "y": 160,
+        "w": 760,
+        "h": 500,
+        "args": {
+          "title": "Pricing Tiers",
+          "columns": [
+            {
+              "name": "Pro",
+              "highlight": false
+            },
+            {
+              "name": "Team",
+              "highlight": true
+            },
+            {
+              "name": "Studio",
+              "highlight": false
+            }
+          ],
+          "features": [
+            {
+              "name": "Target",
+              "Pro": "Knowledge workers",
+              "Team": "Design teams",
+              "Studio": "Agencies + Enterprise"
+            },
+            {
+              "name": "Price",
+              "Pro": "$30/user/month",
+              "Team": "$200/seat/month",
+              "Studio": "$50K/year"
+            },
+            {
+              "name": "Min Seats",
+              "Pro": "1",
+              "Team": "10+",
+              "Studio": "Custom"
+            },
+            {
+              "name": "Custom Themes",
+              "Pro": false,
+              "Team": false,
+              "Studio": true
+            }
+          ]
+        }
+      },
+      {
+        "type": "break-even",
+        "x": 840,
+        "y": 160,
+        "w": 400,
+        "h": 340,
+        "args": {
+          "fixedCost": 1200000,
+          "variableCostPerUnit": 5,
+          "pricePerUnit": 30,
+          "maxUnits": 120000,
+          "title": "Break-Even Analysis",
+          "currency": "$"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 840,
+        "y": 520,
+        "w": 400,
+        "h": 140,
+        "args": {
+          "value": "~$3M ARR",
+          "label": "Break-Even Point",
+          "sublabel": "Projected Q3 2027",
+          "icon": "target",
+          "style": "light",
+          "trend": "Q3 2027",
+          "trendValue": "Q3 2027"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "pitch-deck-vc",
+    "theme": "pitch-cobalt-orange",
+    "recommendedAtoms": [
+      "comparison-table",
+      "break-even",
+      "waterfall",
+      "kpi-card",
+      "pie"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5180,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 675,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0295674,
+    "elapsedSec": 10.5,
+    "generatedAt": "2026-07-10T07:21:59.803Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

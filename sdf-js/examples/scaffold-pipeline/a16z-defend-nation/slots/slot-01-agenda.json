@@ -1,0 +1,121 @@
+{
+  "slotIdx": 1,
+  "slotName": "agenda",
+  "slotTitle": "Overview",
+  "slotPurpose": "One line per major theme of the briefing",
+  "sourceSlideIdx": 1,
+  "sourceSlideTitle": "Agenda",
+  "sceneData": {
+    "name": "news-briefing/agenda",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Overview",
+          "style": "section"
+        }
+      },
+      {
+        "type": "agenda-list",
+        "x": 40,
+        "y": 160,
+        "w": 560,
+        "h": 520,
+        "args": {
+          "title": "Strategic Framework",
+          "items": [
+            {
+              "label": "U.S. technological leadership decline",
+              "sublabel": "Competitive landscape shift"
+            },
+            {
+              "label": "ESG to Global Competition framework",
+              "sublabel": "New investment paradigm"
+            },
+            {
+              "label": "Eight critical investment sectors",
+              "sublabel": "Energy, AI, Space & others"
+            },
+            {
+              "label": "Institutional investors in national security",
+              "sublabel": "Pension, sovereign, insurance, endowment"
+            }
+          ],
+          "numbered": true
+        }
+      },
+      {
+        "type": "icon-grid",
+        "x": 640,
+        "y": 160,
+        "w": 600,
+        "h": 520,
+        "args": {
+          "title": "Critical Sectors & Capital",
+          "items": [
+            {
+              "icon": "lightning",
+              "label": "Energy",
+              "sublabel": "Manufacturing & AI infrastructure"
+            },
+            {
+              "icon": "brain",
+              "label": "AI",
+              "sublabel": "Deployment at scale"
+            },
+            {
+              "icon": "rocket",
+              "label": "Space",
+              "sublabel": "Communications & defense"
+            },
+            {
+              "icon": "briefcase",
+              "label": "Pension Funds",
+              "sublabel": "Long-term capacity building"
+            },
+            {
+              "icon": "shield",
+              "label": "Sovereign Wealth",
+              "sublabel": "National infrastructure"
+            },
+            {
+              "icon": "building",
+              "label": "Insurance & Endowment",
+              "sublabel": "Long-duration projects"
+            }
+          ],
+          "cols": 2,
+          "iconStyle": "circle",
+          "iconSize": "medium"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["agenda-list", "number-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5354,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 644,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.029624400000000002,
+    "elapsedSec": 10.5,
+    "generatedAt": "2026-07-07T06:40:56.427Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

@@ -1,0 +1,175 @@
+{
+  "v": 1,
+  "name": "(lifted) journey-Satisfaction",
+  "subjects": [
+    {
+      "id": "bar",
+      "type": "bar-3d",
+      "args": {
+        "values": [
+          0.8,
+          0.75,
+          0.95,
+          0.8999999999999999,
+          1
+        ],
+        "barWidth": 0.55,
+        "barDepth": 0.55,
+        "gap": 0.25,
+        "maxHeight": 2.2,
+        "colors": [
+          {
+            "hue": 0.58,
+            "sat": 0.58,
+            "value": 0.76
+          },
+          {
+            "hue": 0.58,
+            "sat": 0.6,
+            "value": 0.685
+          },
+          {
+            "hue": 0.58,
+            "sat": 0.62,
+            "value": 0.61
+          },
+          {
+            "hue": 0.58,
+            "sat": 0.6399999999999999,
+            "value": 0.535
+          },
+          {
+            "hue": 0.58,
+            "sat": 0.6599999999999999,
+            "value": 0.46
+          }
+        ]
+      },
+      "transform": {
+        "translate": [
+          0,
+          0.15,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.58,
+        "sat": 0.55,
+        "value": 0.64,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      }
+    }
+  ],
+  "overlay": [
+    {
+      "text": "SATISFACTION BY STAGE",
+      "anchor": [
+        0,
+        3.9,
+        0
+      ],
+      "role": "title"
+    },
+    {
+      "text": "70%",
+      "anchor": [
+        -1.6,
+        2.16,
+        0.3
+      ],
+      "role": "value",
+      "radius": 0.32
+    },
+    {
+      "text": "65%",
+      "anchor": [
+        -0.8,
+        2.05,
+        0.3
+      ],
+      "role": "value",
+      "radius": 0.32
+    },
+    {
+      "text": "85%",
+      "anchor": [
+        0,
+        2.4899999999999998,
+        0.3
+      ],
+      "role": "value",
+      "radius": 0.32
+    },
+    {
+      "text": "80%",
+      "anchor": [
+        0.8000000000000003,
+        2.38,
+        0.3
+      ],
+      "role": "value",
+      "radius": 0.32
+    },
+    {
+      "text": "90%",
+      "anchor": [
+        1.6,
+        2.6,
+        0.3
+      ],
+      "role": "value",
+      "radius": 0.32
+    }
+  ],
+  "cameraSequence": {
+    "loop": false,
+    "shots": [
+      {
+        "pos": [
+          -4.2,
+          2.1500000000000004,
+          7.9799999999999995
+        ],
+        "target": [
+          0,
+          1.6,
+          0
+        ],
+        "fov": 50,
+        "focalDistance": 8.4,
+        "duration": 0.01,
+        "aperture": 0,
+        "ease": "smooth"
+      },
+      {
+        "pos": [
+          1.512,
+          1.8,
+          7.392
+        ],
+        "target": [
+          0,
+          1.6,
+          0
+        ],
+        "fov": 47,
+        "focalDistance": 8.4,
+        "duration": 14,
+        "transition": "blend",
+        "aperture": 0,
+        "ease": "smooth"
+      }
+    ]
+  },
+  "defaults": {
+    "stage": {
+      "size": [
+        18,
+        9,
+        11
+      ]
+    }
+  }
+}

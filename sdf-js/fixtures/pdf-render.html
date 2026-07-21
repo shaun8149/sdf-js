@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf8" />
+    <style>
+      html,
+      body {
+        margin: 0;
+        background: #fff;
+      }
+      canvas {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <script type="module">
+      const params = new URLSearchParams(location.search);
+      const file = params.get('file') || 'D0961_3D-Spheres-Fill-Levels_16x9.pdf';
+      try {
+        const pdfjs = await import('https://unpkg.com/pdfjs-dist@4.0.379/legacy/build/pdf.mjs');
+        pdfjs.GlobalWorkerOptions.workerSrc =
+          'https://unpkg.com/pdfjs-dist@4.0.379/legacy/build/pdf.worker.mjs';
+        const pdf = await pdfjs.getDocument('/fixtures/' + file).promise;
+
+        async function renderPage(n, cellW) {
+          const page = await pdf.getPage(n);
+          const base = page.getViewport({ scale: 1 });
+          const vp = page.getViewport({ scale: cellW / base.width });
+          const c = document.createElement('canvas');
+          c.width = Math.ceil(vp.width);
+          c.height = Math.ceil(vp.height);
+          const cx = c.getContext('2d');
+          cx.fillStyle = '#fff';
+          cx.fillRect(0, 0, c.width, c.height);
+          await page.render({ canvasContext: cx, viewport: vp }).promise;
+          // page-number badge (?badge=0 for clean asset export)
+          if (params.get('badge') !== '0') {
+            cx.fillStyle = '#e11';
+            cx.fillRect(0, 0, 64, 30);
+            cx.fillStyle = '#fff';
+            cx.font = 'bold 20px sans-serif';
+            cx.fillText('p' + n, 8, 22);
+          }
+          return c;
+        }
+
+        const from = params.get('from');
+        if (from) {
+          // GRID mode: render pages from..to in `cols` columns
+          const to = parseInt(params.get('to') || from, 10);
+          const cols = parseInt(params.get('cols') || '2', 10);
+          const cellW = parseInt(params.get('cell') || '700', 10);
+          const wrap = document.createElement('div');
+          wrap.style.display = 'grid';
+          wrap.style.gridTemplateColumns = `repeat(${cols}, ${cellW}px)`;
+          wrap.style.gap = '4px';
+          wrap.style.background = '#888';
+          document.body.appendChild(wrap);
+          for (let n = parseInt(from, 10); n <= to; n++) {
+            const c = await renderPage(n, cellW);
+            wrap.appendChild(c);
+          }
+          document.title = `DONE grid ${from}-${to} pages=${pdf.numPages}`;
+        } else {
+          const pageNum = parseInt(params.get('page') || '1', 10);
+          const targetW = parseInt(params.get('w') || '1400', 10);
+          const canvas = await renderPage(pageNum, targetW);
+          document.body.appendChild(canvas);
+          document.title = `DONE pages=${pdf.numPages} page=${pageNum} ${canvas.width}x${canvas.height}`;
+        }
+      } catch (e) {
+        document.title = 'ERROR ' + e.message;
+        document.body.textContent = 'ERROR ' + e.message;
+      }
+    </script>
+  </body>
+</html>

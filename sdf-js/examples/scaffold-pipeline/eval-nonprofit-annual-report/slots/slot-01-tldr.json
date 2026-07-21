@@ -1,0 +1,111 @@
+{
+  "slotIdx": 1,
+  "slotName": "tldr",
+  "slotTitle": "TL;DR",
+  "slotPurpose": "Headline summary — 3 key points this quarter",
+  "sourceSlideIdx": 1,
+  "sourceSlideTitle": "Our Mission",
+  "sceneData": {
+    "name": "investor-update/tldr",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "TL;DR",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "stat-banner",
+        "x": 40,
+        "y": 160,
+        "w": 1200,
+        "h": 140,
+        "args": {
+          "value": "15 Years",
+          "label": "Continuous Field Operations",
+          "bg": [
+            58,
+            138,
+            200
+          ]
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 40,
+        "y": 316,
+        "w": 580,
+        "h": 180,
+        "args": {
+          "value": "4",
+          "label": "Countries",
+          "sublabel": "Kenya · Tanzania · Malawi · Mozambique",
+          "icon": "globe-hemisphere-west",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 660,
+        "y": 316,
+        "w": 580,
+        "h": 180,
+        "args": {
+          "value": "Clean Water",
+          "label": "Human Right",
+          "sublabel": "Not a privilege — our founding belief",
+          "icon": "drop",
+          "style": "light"
+        }
+      },
+      {
+        "type": "stat-banner",
+        "x": 40,
+        "y": 520,
+        "w": 1200,
+        "h": 140,
+        "args": {
+          "value": "Clearwater Trust",
+          "label": "Building clean water infrastructure in underserved rural regions",
+          "bg": [
+            26,
+            40,
+            66
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "investor-update",
+    "theme": "financial-navy-cerulean",
+    "recommendedAtoms": [
+      "stat-banner",
+      "kpi-card",
+      "quote-pull"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5178,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 529,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.027371399999999997,
+    "elapsedSec": 9.9,
+    "generatedAt": "2026-07-10T07:23:50.664Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

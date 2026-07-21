@@ -1,0 +1,114 @@
+{
+  "slotIdx": 5,
+  "slotName": "next-quarter",
+  "slotTitle": "Next Quarter",
+  "slotPurpose": "Plan and priorities for the coming quarter",
+  "sourceSlideIdx": 6,
+  "sourceSlideTitle": "2027 Goals",
+  "sceneData": {
+    "name": "investor-update/next-quarter",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Next Quarter",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 40,
+        "y": 160,
+        "w": 580,
+        "h": 520,
+        "args": {
+          "title": "2027 Goals",
+          "items": [
+            {
+              "icon": "drop",
+              "label": "Construct 110 new wells",
+              "sublabel": "26% increase over 2026"
+            },
+            {
+              "icon": "globe-hemisphere-west",
+              "label": "Expand into Uganda",
+              "sublabel": "5th country pilot program"
+            },
+            {
+              "icon": "sun",
+              "label": "Solar pumps to 50 villages"
+            },
+            {
+              "icon": "graduation-cap",
+              "label": "Train 350 local technicians"
+            },
+            {
+              "icon": "currency-dollar",
+              "label": "Raise $5.5M",
+              "sublabel": "31% funding increase"
+            }
+          ]
+        }
+      },
+      {
+        "type": "testimonial-wall",
+        "x": 660,
+        "y": 160,
+        "w": 580,
+        "h": 520,
+        "args": {
+          "title": "Voices",
+          "testimonials": [
+            {
+              "quote": "Seeing the well go live in Kilifi was the proudest moment of my giving career — clean water changed that village overnight.",
+              "name": "Margaret Ho",
+              "role": "Monthly donor since 2019"
+            },
+            {
+              "quote": "Clearwater didn't just build a well, they trained our own people to keep it running for the next 50 years.",
+              "name": "Chief Amara Kessy",
+              "role": "Village Chief, Tanzania"
+            },
+            {
+              "quote": "Their financial transparency is why our foundation renewed for a third consecutive year.",
+              "name": "Daniel Reyes",
+              "role": "Foundation Program Officer"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "investor-update",
+    "theme": "financial-navy-cerulean",
+    "recommendedAtoms": [
+      "kanban-board",
+      "bullet-list",
+      "timeline",
+      "progression"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5355,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 627,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0293724,
+    "elapsedSec": 14.7,
+    "generatedAt": "2026-07-10T07:23:50.666Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

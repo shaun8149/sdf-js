@@ -1,0 +1,204 @@
+{
+  "deckName": "eval-product-eng-retro",
+  "sourceFile": "sdf-js/scripts/scaffold-pipeline-fixtures/product-eng-retro.json",
+  "scaffold": {
+    "id": "qbr",
+    "label": "Quarterly Business Review",
+    "description": "Internal Q review — KPIs, wins, challenges, outlook",
+    "pickScore": 9,
+    "pickSignals": [
+      "This is a quarterly engineering retrospective with clear QBR structure: metrics dashboard (velocity, deploy frequency, MTTR), wins (shipped features, coverage improvements), challenges (incidents, tech debt), and forward-looking outlook (Q4 OKRs)",
+      "The content maps perfectly to the 7-slot QBR scaffold: cover → executive-summary (quarterly eng retro intro) → kpis (velocity metrics, DORA metrics) → wins (shipped features, infrastructure improvements) → challenges (incidents, tech debt status) → outlook (team growth, eng NPS) → next-steps (Q4 OKRs)",
+      "The audience is explicit ('Eng org + leadership') and the quarterly cadence + KPI-heavy structure are textbook QBR patterns. This is an internal review deck, not a pitch or sales document"
+    ],
+    "fallback": false,
+    "pickerMethod": "llm"
+  },
+  "theme": {
+    "id": "editorial-navy",
+    "label": "Editorial · Navy",
+    "macroCluster": "editorial",
+    "bg": [
+      248,
+      246,
+      240
+    ],
+    "accent": [
+      38,
+      70,
+      130
+    ],
+    "colors": [
+      [
+        38,
+        70,
+        130
+      ],
+      [
+        110,
+        95,
+        75
+      ],
+      [
+        165,
+        130,
+        90
+      ],
+      [
+        200,
+        195,
+        180
+      ]
+    ],
+    "font": {
+      "heading": "Georgia, \"Source Serif Pro\", serif",
+      "body": "Inter, system-ui, sans-serif"
+    }
+  },
+  "slots": [
+    {
+      "slotIdx": 0,
+      "slotName": "cover",
+      "slotTitle": "Title",
+      "slotPurpose": "Q-name + reviewer + period",
+      "sourceSlideIdx": 0,
+      "sourceSlideTitle": "Platform Engineering — Q3 2026 Retro",
+      "mappingScore": 10,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-00-cover.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover"
+      ]
+    },
+    {
+      "slotIdx": 1,
+      "slotName": "executive-summary",
+      "slotTitle": "Executive Summary",
+      "slotPurpose": "3-5 highlights at-a-glance",
+      "sourceSlideIdx": 1,
+      "sourceSlideTitle": "Velocity Metrics",
+      "mappingScore": 8,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-01-executive-summary.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "kpi-card",
+        "kpi-card",
+        "kpi-card",
+        "kpi-card",
+        "kpi-card"
+      ]
+    },
+    {
+      "slotIdx": 2,
+      "slotName": "kpis",
+      "slotTitle": "KPI Dashboard",
+      "slotPurpose": "Critical metrics quarter-over-quarter",
+      "sourceSlideIdx": 1,
+      "sourceSlideTitle": "Velocity Metrics",
+      "mappingScore": 9,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-02-kpis.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "dashboard-multi-kpi-composite",
+        "bar",
+        "kpi-card",
+        "kpi-card",
+        "kpi-card",
+        "kpi-card",
+        "kpi-card"
+      ]
+    },
+    {
+      "slotIdx": 3,
+      "slotName": "wins",
+      "slotTitle": "Wins",
+      "slotPurpose": "What went well this quarter",
+      "sourceSlideIdx": 3,
+      "sourceSlideTitle": "Shipped Features",
+      "mappingScore": 10,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-03-wins.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "bullet-list"
+      ]
+    },
+    {
+      "slotIdx": 4,
+      "slotName": "challenges",
+      "slotTitle": "Challenges",
+      "slotPurpose": "What did not go to plan",
+      "sourceSlideIdx": 2,
+      "sourceSlideTitle": "Incidents & Postmortems",
+      "mappingScore": 9,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-04-challenges.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "risk-heatmap",
+        "fishbone",
+        "bullet-list"
+      ]
+    },
+    {
+      "slotIdx": 5,
+      "slotName": "outlook",
+      "slotTitle": "Outlook",
+      "slotPurpose": "Forecast + next-Q targets",
+      "sourceSlideIdx": 6,
+      "sourceSlideTitle": "Q4 OKRs",
+      "mappingScore": 10,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-05-outlook.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "okr-tree"
+      ]
+    }
+  ],
+  "droppedSlots": [
+    {
+      "slotIdx": 6,
+      "slotName": "next-steps",
+      "slotTitle": "Next Steps",
+      "reason": "no-source-content"
+    }
+  ],
+  "totals": {
+    "slotsBaked": 6,
+    "slotsEmpty": 1,
+    "slotsErrored": 0,
+    "totalCostUSD": 0.1743324
+  },
+  "meta": {
+    "generatedAt": "2026-07-10T07:24:27.467Z",
+    "model": "claude-sonnet-4-5-20250929",
+    "pipelineVersion": "sprint-16-v1"
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "slotIdx": 12,
+  "slotName": "outlook",
+  "slotTitle": "Outlook",
+  "slotPurpose": "What to watch next — timeline or conditions",
+  "sourceSlideIdx": 11,
+  "sourceSlideTitle": "Industry Implications and Outlook",
+  "sceneData": {
+    "name": "news-briefing/outlook",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Outlook",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "mountain-path",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 480,
+        "args": {
+          "title": "AI Infrastructure Evolution Path",
+          "summit": "Mature Competitive Landscape",
+          "milestones": [
+            {
+              "label": "100T Token Milestone",
+              "sublabel": "Multi-model platform viability proven"
+            },
+            {
+              "label": "Developer Demand Surge",
+              "sublabel": "Model diversity and choice adoption"
+            },
+            {
+              "label": "Infrastructure Intermediation",
+              "sublabel": "Continued expansion trajectory"
+            },
+            {
+              "label": "AI Access Layer Maturity",
+              "sublabel": "Competitive positioning vs OpenAI established"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["timeline", "mountain-path", "bullet-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4447,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 335,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0222684,
+    "elapsedSec": 7.1,
+    "generatedAt": "2026-07-07T04:12:21.462Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

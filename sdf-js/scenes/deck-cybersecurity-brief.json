@@ -1,0 +1,36 @@
+{
+  "id": "deck-cybersecurity-brief",
+  "name": "Cybersecurity Brief 2027",
+  "segments": [
+    {
+      "file": "hero-cyber-0.json",
+      "title": "Risks",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "hero-cyber-1.json",
+      "title": "Landscape",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "hero-cyber-2.json",
+      "title": "Response",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "hero-cyber-3.json",
+      "title": "Workflow",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "hero-cyber-4.json",
+      "title": "Pillars",
+      "kind": "slide",
+      "durationSec": 7
+    }
+  ]
+}

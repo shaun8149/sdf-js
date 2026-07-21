@@ -1,0 +1,3 @@
+The Commercial-First Future of Robotics & Autonomy in Defense
+
+America's defense sector should adopt a commercial-first approach to procurement for robotics and autonomy. The autonomy stack is often composed of tools and technologies primarily developed for commercial use cases, adapted for defense. This strategy enables faster iteration, lower costs, and better capabilities. Ukraine's wartime shift toward commercial solutions and the DARPA Grand Challenge, which advanced autonomous vehicle research, are cited as evidence. As warfare becomes more autonomous, leveraging commercial technology companies ensures the American warfighter is equipped with the best technologies while strengthening the defense industrial base.

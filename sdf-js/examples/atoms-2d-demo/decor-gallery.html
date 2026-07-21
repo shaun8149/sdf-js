@@ -1,0 +1,77 @@
+<!doctype html>
+<!-- decor-gallery.html — Sprint 48: the variation instrument.
+     Lesson learned from Neural Sediments' embedded massExport loop: mature
+     generative work is built by LOOKING AT A THOUSAND VARIANTS. This page
+     renders every decor family × N minted hashes × all intensities so the
+     study loop has a 全家福 to judge against.
+     Usage: /examples/atoms-2d-demo/decor-gallery.html?n=6&theme=editorial-navy -->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Atlas Decor Gallery</title>
+    <style>
+      body { background: #101216; color: #dde; font: 13px -apple-system, Inter, sans-serif; margin: 20px; }
+      h1 { font-size: 17px; } h2 { font-size: 14px; margin: 22px 0 8px; color: #9ab; }
+      .row { display: flex; gap: 10px; flex-wrap: wrap; }
+      figure { margin: 0; }
+      canvas { background: #f8f6f0; border-radius: 6px; display: block; width: 320px; height: 180px; }
+      figcaption { font-size: 10px; color: #789; margin-top: 3px; font-family: monospace; }
+    </style>
+  </head>
+  <body>
+    <h1>Decor Gallery — 全家族 × 铸造 hash 变体</h1>
+    <div id="root"></div>
+    <script type="module">
+      import { DECOR_FAMILIES, drawDecor, mintDecorHash, seedFromHash, decorFromHash } from '/src/present/decor/registry.js';
+      import { getTheme } from '/src/present/themes.js';
+
+      const params = new URLSearchParams(location.search);
+      const N = parseInt(params.get('n') || '6', 10);
+      // ?at=2027-01-01 previews calendar-event flourishes (v2 view layer)
+      const at = params.get('at') || undefined;
+      const theme = getTheme(params.get('theme') || 'editorial-navy');
+      const intensity = params.get('intensity') || 'medium';
+      const W = 640;
+      const H = 360;
+
+      const root = document.getElementById('root');
+      for (const family of Object.keys(DECOR_FAMILIES)) {
+        const h2 = document.createElement('h2');
+        h2.textContent = family;
+        root.appendChild(h2);
+        const row = document.createElement('div');
+        row.className = 'row';
+        for (let i = 0; i < N; i++) {
+          const hash = mintDecorHash();
+          const minted = decorFromHash(theme, hash);
+          const fig = document.createElement('figure');
+          const c = document.createElement('canvas');
+          c.width = W;
+          c.height = H;
+          const ctx = c.getContext('2d');
+          ctx.fillStyle = `rgb(${theme.bg.join(',')})`;
+          ctx.fillRect(0, 0, W, H);
+          drawDecor(
+            ctx,
+            {
+              family,
+              seed: minted.seed,
+              personality: minted.personality,
+              hash,
+              v: minted.v,
+              rare: minted.rare && minted.family === family,
+              at,
+            },
+            { palette: theme, x: 0, y: 0, w: W, h: H, intensity },
+          );
+          const cap = document.createElement('figcaption');
+          cap.textContent = `#${hash.slice(0, 8)} · ${minted.personality} · v${minted.v}${minted.rare && minted.family === family ? ' · ✨' : ''}`;
+          fig.appendChild(c);
+          fig.appendChild(cap);
+          row.appendChild(fig);
+        }
+        root.appendChild(row);
+      }
+    </script>
+  </body>
+</html>

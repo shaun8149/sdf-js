@@ -1,0 +1,236 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Scaffold Deck Viewer — assembled deck preview</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=IBM+Plex+Mono:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body { margin: 0; padding: 24px; font-family: 'Inter', system-ui; background: #f8f7f4; color: #1e1b1e; }
+      h1 { font-size: 24px; margin: 0 0 4px; }
+      h1 + p { margin: 0 0 24px; color: #666; font-size: 13px; }
+      .deck-meta { background: white; border: 1px solid #d0cec3; border-radius: 6px; padding: 14px; margin-bottom: 24px; font-size: 13px; }
+      .deck-meta strong { font-family: 'IBM Plex Mono', monospace; font-size: 11px; padding: 2px 8px; background: #1e1b1e; color: white; border-radius: 3px; margin-right: 8px; }
+      .slot-card { background: white; border: 1px solid #d0cec3; border-radius: 6px; margin-bottom: 24px; overflow: hidden; }
+      .slot-head { padding: 12px 18px; display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid #e8e5dc; }
+      .slot-head .left { display: flex; gap: 14px; align-items: baseline; }
+      .slot-num { font-family: 'IBM Plex Mono', monospace; font-size: 11px; background: #1e1b1e; color: white; padding: 3px 8px; border-radius: 3px; }
+      .slot-title { font-size: 17px; font-weight: 700; }
+      .slot-purpose { font-size: 12px; color: #666; }
+      .slot-meta { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #888; }
+      .slot-canvas-wrap { padding: 16px; background: #f4f1e9; display: flex; justify-content: center; }
+      canvas { box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-radius: 4px; }
+      .controls { margin-bottom: 18px; }
+      .controls select { padding: 8px 12px; font-family: 'Inter'; font-size: 14px; border: 1px solid #ccc; border-radius: 4px; background: white; }
+      .controls button { padding: 8px 14px; margin-left: 8px; font-family: 'Inter'; font-size: 13px; font-weight: 600; background: #1e1b1e; color: white; border: none; border-radius: 4px; cursor: pointer; }
+      .empty-banner { padding: 40px; text-align: center; color: #888; font-style: italic; }
+    </style>
+  </head>
+  <body>
+    <h1>Scaffold Deck Viewer</h1>
+    <p>End-to-end PDF → scaffolded deck. Loads <code>deck.json</code> + per-slot lift JSONs → renders each slot to canvas. Sprint 16 v1.</p>
+
+    <div class="controls">
+      <label>Deck:</label>
+      <select id="deck-picker">
+        <option value="examples/scaffold-pipeline/antfun-stress-test/deck.json">⚡ ANTFUN stress test (Sprint 17 atom fixes)</option>
+        <option value="examples/scaffold-pipeline/vc-pitch/deck.json">VC Pitch (v1 picker · pitch-deck-vc)</option>
+        <option value="examples/scaffold-pipeline/pd-sphere/deck.json">PD sphere-fill (v2 picker · product-launch)</option>
+        <option value="examples/scaffold-pipeline/slidedata/deck.json">PD sphere-fill v1 (legacy · company-overview fallback)</option>
+      </select>
+      <button id="reload-btn">Reload</button>
+      <button id="export-pptx-btn" style="background:#1e1b1e;color:white;">⬇ PPTX</button>
+      <button id="export-pdf-btn" style="background:white;color:#1e1b1e;border:1px solid #1e1b1e;">⬇ PDF</button>
+      <span id="export-status" style="font-size:11px;color:#666;margin-left:8px;"></span>
+    </div>
+
+    <div id="root"></div>
+
+    <script type="module">
+      import { renderAtom } from '/src/present/atoms-2d/registry.js';
+      import { exportDeckToPPTX } from '/src/present/exporters/pptx.js';
+      import { exportDeckToPDF } from '/src/present/exporters/pdf.js';
+
+      let currentManifest = null;
+      let currentSlotLifts = new Map(); // slotIdx → lift JSON
+
+      async function handleExport(format) {
+        if (!currentManifest) return;
+        const status = document.getElementById('export-status');
+        status.textContent = `Loading slot lifts...`;
+        const slots = [];
+        for (const slotRef of currentManifest.slots) {
+          if (!slotRef.liftFile) continue;
+          let lift = currentSlotLifts.get(slotRef.slotIdx);
+          if (!lift) {
+            const r = await fetch(`/examples/scaffold-pipeline/${currentManifest.deckName}/${slotRef.liftFile}`);
+            lift = await r.json();
+            currentSlotLifts.set(slotRef.slotIdx, lift);
+          }
+          slots.push({
+            slotIdx: slotRef.slotIdx,
+            slotName: slotRef.slotName,
+            slotTitle: slotRef.slotTitle,
+            slotPurpose: slotRef.slotPurpose,
+            sceneData: lift.sceneData,
+          });
+        }
+        const deck = {
+          title: currentManifest.deckName,
+          theme: currentManifest.theme,
+          scaffold: currentManifest.scaffold,
+          slots,
+        };
+        const fn = format === 'pptx' ? exportDeckToPPTX : exportDeckToPDF;
+        try {
+          const result = await fn(deck, {
+            onProgress: (msg, pct) => { status.textContent = `${msg} (${Math.round(pct)}%)`; },
+          });
+          status.textContent = `✓ Downloaded ${result.filename}`;
+        } catch (e) {
+          status.textContent = `✗ Export failed: ${e.message}`;
+          console.error(e);
+        }
+      }
+
+      document.getElementById('export-pptx-btn').addEventListener('click', () => handleExport('pptx'));
+      document.getElementById('export-pdf-btn').addEventListener('click', () => handleExport('pdf'));
+
+      async function loadDeck() {
+        const url = document.getElementById('deck-picker').value;
+        const root = document.getElementById('root');
+        root.innerHTML = '<div style="padding:40px;text-align:center;color:#888;">Loading...</div>';
+
+        let manifest;
+        try {
+          const res = await fetch(`/${url}?_=${Date.now()}`);
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          manifest = await res.json();
+        } catch (e) {
+          root.innerHTML = `<div class="empty-banner">Failed to load /${url}: ${e.message}<br><br>Bake first via <code>node sdf-js/scripts/bake-scaffold-pipeline.mjs</code></div>`;
+          return;
+        }
+
+        root.innerHTML = '';
+        currentManifest = manifest;
+        currentSlotLifts = new Map();
+
+        // Deck-level meta
+        const meta = document.createElement('div');
+        meta.className = 'deck-meta';
+        meta.innerHTML = `
+          <div><strong>SCAFFOLD</strong> ${manifest.scaffold.label} (${manifest.scaffold.id}) · pick score ${manifest.scaffold.pickScore}${manifest.scaffold.fallback ? ' [FALLBACK]' : ''}</div>
+          <div style="margin-top:6px;"><strong>THEME</strong> ${manifest.theme.label} · ${manifest.theme.macroCluster}</div>
+          <div style="margin-top:6px;"><strong>STATS</strong> ${manifest.totals.slotsBaked}/${manifest.slots.length} slots baked · cost $${manifest.totals.totalCostUSD.toFixed(4)} · ${manifest.meta.model}</div>
+          ${manifest.scaffold.pickSignals && manifest.scaffold.pickSignals.length > 0 ? `<div style="margin-top:6px;font-size:11px;color:#666;font-family:'IBM Plex Mono',monospace;">signals: ${manifest.scaffold.pickSignals.join(', ')}</div>` : ''}
+        `;
+        root.appendChild(meta);
+
+        // Render each slot
+        for (const slotRef of manifest.slots) {
+          const card = document.createElement('div');
+          card.className = 'slot-card';
+
+          const head = document.createElement('div');
+          head.className = 'slot-head';
+          head.innerHTML = `
+            <div class="left">
+              <span class="slot-num">${slotRef.slotIdx}</span>
+              <div>
+                <div class="slot-title">${slotRef.slotTitle}</div>
+                <div class="slot-purpose">${slotRef.slotPurpose}</div>
+              </div>
+            </div>
+            <div class="slot-meta">
+              ${slotRef.slotName} · src slide ${slotRef.sourceSlideIdx} · atoms: ${slotRef.subjectTypes.join(', ') || '—'}
+            </div>
+          `;
+          card.appendChild(head);
+
+          const canvWrap = document.createElement('div');
+          canvWrap.className = 'slot-canvas-wrap';
+
+          if (slotRef.error) {
+            canvWrap.innerHTML = `<div style="color:#a00;padding:40px;">ERROR: ${slotRef.error}</div>`;
+            card.appendChild(canvWrap);
+            root.appendChild(card);
+            continue;
+          }
+
+          if (!slotRef.liftFile) {
+            canvWrap.innerHTML = `<div class="empty-banner">No lift file (dry-run or skipped)</div>`;
+            card.appendChild(canvWrap);
+            root.appendChild(card);
+            continue;
+          }
+
+          // Fetch slot lift
+          const slotLiftUrl = `/examples/scaffold-pipeline/${manifest.deckName}/${slotRef.liftFile}`;
+          let slotLift;
+          try {
+            const r = await fetch(slotLiftUrl + `?_=${Date.now()}`);
+            slotLift = await r.json();
+          } catch (e) {
+            canvWrap.innerHTML = `<div style="color:#a00;padding:40px;">Failed to fetch ${slotLiftUrl}: ${e.message}</div>`;
+            card.appendChild(canvWrap);
+            root.appendChild(card);
+            continue;
+          }
+
+          const canvas = document.createElement('canvas');
+          canvas.width = 1280;
+          canvas.height = 720;
+          canvas.style.background = `rgb(${manifest.theme.bg.join(',')})`;
+          canvas.style.width = '960px';
+          canvas.style.height = '540px';
+          canvWrap.appendChild(canvas);
+          card.appendChild(canvWrap);
+          root.appendChild(card);
+
+          const ctx = canvas.getContext('2d');
+          ctx.fillStyle = `rgb(${manifest.theme.bg.join(',')})`;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          // Render each subject
+          for (const subject of (slotLift.sceneData.subjects || [])) {
+            try {
+              await renderAtom(ctx, subject.type, subject.args, 'pseudo3d', {
+                x: subject.x ?? 0,
+                y: subject.y ?? 0,
+                w: subject.w ?? 320,
+                h: subject.h ?? 240,
+                palette: manifest.theme,
+              });
+            } catch (e) {
+              console.error(`Failed to render ${subject.type}:`, e);
+              ctx.fillStyle = 'rgba(200,0,0,0.3)';
+              ctx.fillRect(subject.x ?? 0, subject.y ?? 0, subject.w ?? 100, subject.h ?? 100);
+            }
+          }
+        }
+      }
+
+      document.getElementById('reload-btn').addEventListener('click', loadDeck);
+      document.getElementById('deck-picker').addEventListener('change', loadDeck);
+      // ?deck=<name> deep-link (e.g. ?deck=vc-pitch) + ?embed=1 to hide the app chrome —
+      // so the viewer can be iframed straight to a specific deck (before/after page).
+      const _q = new URLSearchParams(location.search);
+      const deckParam = _q.get('deck');
+      if (deckParam) {
+        const picker = document.getElementById('deck-picker');
+        const opt = [...picker.options].find((o) => o.value.includes(`/${deckParam}/`));
+        if (opt) picker.value = opt.value;
+      }
+      if (_q.get('embed')) {
+        const s = document.createElement('style');
+        s.textContent =
+          'h1,p,.controls,.deck-meta{display:none!important} body{padding:12px!important;background:#fff}';
+        document.head.appendChild(s);
+      }
+      loadDeck();
+    </script>
+  </body>
+</html>

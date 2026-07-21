@@ -1,0 +1,239 @@
+{
+  "id": "deck-auth-solo-fill-slide-01",
+  "title": "kpi-hero: Fill Levels · Cover (20/40/80)",
+  "prompt": "kpi-hero: Fill Levels · Cover (20/40/80)",
+  "code2d": "// auto-authored deck segment.",
+  "sceneData": {
+    "v": 1,
+    "name": "kpi-hero: Fill Levels · Cover (20/40/80)",
+    "source": {
+      "format": "vision-authored",
+      "prompt": "Cover — three overlapping glass fill spheres 20% green / 40% red / 80% blue, increasing in size, dark glassy domes."
+    },
+    "subjects": [
+      {
+        "id": "liq0",
+        "type": "sphere-fill-3d",
+        "args": {
+          "levels": [0.2],
+          "radius": 0.5,
+          "cage": false,
+          "fillScale": 1
+        },
+        "transform": {
+          "translate": [-2.05, 1, -0.6]
+        },
+        "material": {
+          "hue": 0.28,
+          "sat": 0.78,
+          "value": 0.62,
+          "metal": 0.2,
+          "glow": 0
+        }
+      },
+      {
+        "id": "emp0",
+        "type": "cut-sphere",
+        "args": {
+          "radius": 0.5,
+          "h": -0.3
+        },
+        "transform": {
+          "translate": [-2.05, 1, -0.6]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.28,
+          "value": 0.07,
+          "metal": 0.55,
+          "glow": 0
+        }
+      },
+      {
+        "id": "lab0",
+        "type": "text-3d-pipe",
+        "args": {
+          "text": "20%",
+          "height": 0.275,
+          "pipeRadius": 0.05,
+          "align": "center"
+        },
+        "transform": {
+          "translate": [-2.05, 0.8025, -1.2000000000000002]
+        },
+        "material": {
+          "hue": 0,
+          "sat": 0,
+          "value": 1,
+          "metal": 0,
+          "glow": 0.25
+        }
+      },
+      {
+        "id": "liq1",
+        "type": "sphere-fill-3d",
+        "args": {
+          "levels": [0.4],
+          "radius": 0.7,
+          "cage": false,
+          "fillScale": 1
+        },
+        "transform": {
+          "translate": [-0.95, 0.95, -0.2]
+        },
+        "material": {
+          "hue": 0,
+          "sat": 0.82,
+          "value": 0.62,
+          "metal": 0.2,
+          "glow": 0
+        }
+      },
+      {
+        "id": "emp1",
+        "type": "cut-sphere",
+        "args": {
+          "radius": 0.7,
+          "h": -0.13999999999999996
+        },
+        "transform": {
+          "translate": [-0.95, 0.95, -0.2]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.28,
+          "value": 0.07,
+          "metal": 0.55,
+          "glow": 0
+        }
+      },
+      {
+        "id": "lab1",
+        "type": "text-3d-pipe",
+        "args": {
+          "text": "40%",
+          "height": 0.385,
+          "pipeRadius": 0.05,
+          "align": "center"
+        },
+        "transform": {
+          "translate": [-0.95, 0.6735, -0.9999999999999999]
+        },
+        "material": {
+          "hue": 0,
+          "sat": 0,
+          "value": 1,
+          "metal": 0,
+          "glow": 0.25
+        }
+      },
+      {
+        "id": "liq2",
+        "type": "sphere-fill-3d",
+        "args": {
+          "levels": [0.8],
+          "radius": 1,
+          "cage": false,
+          "fillScale": 1
+        },
+        "transform": {
+          "translate": [0.75, 0.9, 0.35]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.72,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "emp2",
+        "type": "cut-sphere",
+        "args": {
+          "radius": 1,
+          "h": 0.6000000000000001
+        },
+        "transform": {
+          "translate": [0.75, 0.9, 0.35]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.28,
+          "value": 0.07,
+          "metal": 0.55,
+          "glow": 0
+        }
+      },
+      {
+        "id": "lab2",
+        "type": "text-3d-pipe",
+        "args": {
+          "text": "80%",
+          "height": 0.5,
+          "pipeRadius": 0.05,
+          "align": "center"
+        },
+        "transform": {
+          "translate": [0.75, 0.53, -0.75]
+        },
+        "material": {
+          "hue": 0,
+          "sat": 0,
+          "value": 1,
+          "metal": 0,
+          "glow": 0.25
+        }
+      }
+    ],
+    "defaults": {
+      "camera": {
+        "yaw": 0.5,
+        "pitch": 0.28,
+        "distance": 10,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 0.9500000000000001,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": 0.6,
+        "altitude": 0.55,
+        "distance": 25,
+        "intensity": 1.2
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.4
+      },
+      "studioBg": "dark"
+    },
+    "cameraSequence": {
+      "loop": false,
+      "shots": [
+        {
+          "duration": 0.01,
+          "pos": [-2.25, 2.0562222222222224, -6.24],
+          "target": [-0.7499999999999998, 0.8562222222222223, -0.4277777777777778],
+          "fov": 34,
+          "transition": "cut"
+        },
+        {
+          "duration": 6,
+          "pos": [0.7500000000000002, 2.0562222222222224, -6.24],
+          "target": [-0.7499999999999998, 0.8562222222222223, -0.4277777777777778],
+          "fov": 34,
+          "ease": "smooth",
+          "transition": "blend"
+        }
+      ]
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-06-21",
+    "model": "authored",
+    "pattern": "deck-segment",
+    "costUSD": 0
+  }
+}

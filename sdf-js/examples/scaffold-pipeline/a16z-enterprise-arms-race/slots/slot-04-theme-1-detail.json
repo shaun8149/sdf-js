@@ -1,0 +1,100 @@
+{
+  "slotIdx": 4,
+  "slotName": "theme-1-detail",
+  "slotTitle": "Theme 1 — Detail",
+  "slotPurpose": "First theme drill-down: regional / per-entity breakdown",
+  "sourceSlideIdx": 7,
+  "sourceSlideTitle": "Multi-Model Strategy Becomes Standard",
+  "sceneData": {
+    "name": "news-briefing/theme-1-detail",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Multi-Model Strategy"
+        }
+      },
+      {
+        "type": "donut-with-center",
+        "x": 80,
+        "y": 180,
+        "w": 480,
+        "h": 480,
+        "args": {
+          "centerValue": "81%",
+          "centerLabel": "Use 3+ Models",
+          "segments": [
+            {
+              "label": "Three or more families",
+              "value": 81,
+              "color": [38, 70, 130]
+            },
+            {
+              "label": "Fewer than three",
+              "value": 19,
+              "color": [200, 195, 180]
+            }
+          ],
+          "showPct": true
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 640,
+        "y": 180,
+        "w": 560,
+        "h": 200,
+        "args": {
+          "value": "68%",
+          "label": "Previous Year",
+          "sublabel": "Less than a year ago",
+          "icon": "clock-counter-clockwise",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 640,
+        "y": 420,
+        "w": 560,
+        "h": 200,
+        "args": {
+          "value": "+13",
+          "label": "Percentage Point Increase",
+          "sublabel": "Demonstrates rapid adoption",
+          "trend": "up",
+          "trendValue": "Portfolio approach",
+          "icon": "arrow-fat-up",
+          "style": "accent-border"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["bar", "pie", "segmented-bar", "isotype-stat-comparison"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4436,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 531,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0251754,
+    "elapsedSec": 9.1,
+    "generatedAt": "2026-07-07T03:52:59.964Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

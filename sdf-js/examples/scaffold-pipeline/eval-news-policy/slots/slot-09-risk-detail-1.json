@@ -1,0 +1,94 @@
+{
+  "slotIdx": 9,
+  "slotName": "risk-detail-1",
+  "slotTitle": "Top Risk — Detail",
+  "slotPurpose": "The single highest-probability / highest-impact item, expanded",
+  "sourceSlideIdx": 12,
+  "sourceSlideTitle": "挑战三：补贴退坡风险",
+  "sceneData": {
+    "name": "news-briefing/risk-detail-1",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Top Risk — Detail",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "callout-banner",
+        "x": 80,
+        "y": 200,
+        "w": 1120,
+        "h": 180,
+        "args": {
+          "type_": "warning",
+          "heading": "挑战三：补贴退坡风险",
+          "body": "若购置补贴按期退坡，明年销量增速可能回落至30%以下。政策依赖度较高存在隐忧。",
+          "icon": "warning"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 80,
+        "y": 420,
+        "w": 520,
+        "h": 220,
+        "args": {
+          "value": "<30%",
+          "label": "明年销量增速预测",
+          "sublabel": "补贴退坡情境",
+          "trend": "down",
+          "icon": "chart-line-down",
+          "style": "light"
+        }
+      },
+      {
+        "type": "gauge",
+        "x": 680,
+        "y": 420,
+        "w": 520,
+        "h": 220,
+        "args": {
+          "value": 0.75,
+          "label": "政策依赖度",
+          "format": "percent",
+          "title": "风险指标",
+          "min": "低",
+          "max": "高"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "callout-banner",
+      "stat-with-icon",
+      "bullet-list"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5162,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 505,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0269634,
+    "elapsedSec": 9.4,
+    "generatedAt": "2026-07-10T07:27:23.286Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

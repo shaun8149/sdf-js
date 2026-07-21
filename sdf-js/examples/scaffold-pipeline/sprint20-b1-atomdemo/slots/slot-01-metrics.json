@@ -1,0 +1,35 @@
+{
+  "slotIdx": 1,
+  "slotName": "metrics",
+  "slotTitle": "stat-grid-large",
+  "sceneData": {
+    "subjects": [
+      {
+        "type": "stat-grid-large",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 480,
+        "args": {
+          "title": "Q3 2026 — Investor Update",
+          "stats": [
+            { "value": "$24M", "label": "ARR", "trend": "↑117% YoY", "trendDirection": "up" },
+            {
+              "value": "12.5K",
+              "label": "Daily Active Users",
+              "trend": "+38%",
+              "trendDirection": "up"
+            },
+            {
+              "value": "92%",
+              "label": "Retention D30",
+              "trend": "-2pts",
+              "trendDirection": "down"
+            },
+            { "value": "18 mo", "label": "Runway", "trend": "stable", "trendDirection": "flat" }
+          ]
+        }
+      }
+    ]
+  }
+}

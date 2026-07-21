@@ -26,10 +26,18 @@
 import { compile } from './scene/compile.js';
 import { expandVariants } from './scene/generator-s.js';
 import { union as sdfUnion } from './sdf/dn.js';
-import { createStudioRenderer } from './render/studio.js';
-import { createFly3DRenderer } from './render/flyLambert.js';
-import { silhouette } from './render/silhouette.js';
 import { Random } from './util/random.js';
+// Renderer id/alias/factory mapping lives in one place now (renderer-registry).
+// Re-exported below so existing `import { createRendererForId } from
+// '../compositor-api.js'` call sites keep working.
+import {
+  createRendererForId,
+  normalizeRendererId,
+  isGpuRenderer,
+  PRESENT_EFFECTS,
+  GPU_RENDERER_IDS,
+  RENDERER_ALIASES,
+} from './render/renderer-registry.js';
 
 // Constants
 export const DEFAULT_LIFT_MODEL = 'claude-sonnet-4-6';
@@ -55,7 +63,182 @@ text via Canvas2D outside the SDF tree in 2D mode. SDF glyphs in
 2D mode look bad (silhouette/lines/crayon/topo cannot render text
 typography cleanly).
 
-## Step 4: 2D-mode 3-priority routing (Sprint 3) — SDF FIRST, P5 fallback
+## Step 4: 2D-mode routing (Sprint 14a) — atoms-2d > SDF > P5 fallback
+
+When opts.mode === '2d', try priorities IN ORDER:
+
+Priority 0 — atoms-2d (Atlas-authored Canvas2D atoms, pseudo-3D PowerPoint feel):
+  If content fits a known data viz pattern, emit \`{type: '<atom-2d-type>', args: {...}}\`.
+  Atoms render via main-page Canvas2D with gradient + shadow + iso edge (textbook
+  pseudo-3D look like PresentationLoad templates). This is the highest-quality
+  output for business viz patterns. ALWAYS try this first when applicable.
+
+  Available atoms-2d types (use these literal type strings):
+
+  CHARTS / DATA:
+    - kpi-card        args: { value, label, sublabel?, trend?, trendValue?, icon? }
+    - bar             args: { values:number[], labels:string[], format?:'currency'|'percent'|'number', max?, title?,
+                              targetLine?:{value,label?} }
+                      (v3.33: targetLine adds vertical reference line at target x-position)
+    - column          args: { values, labels, format?, max?, title?, showValues? }
+    - line            args: { values, labels, format?, title?, annotations?, showPoints?, showValues? }
+    - pie             args: { values, labels, format?, title?, donutRatio?, centerLabel? }
+    - funnel          args: { stages:[{label,value?}], format?, title? }
+    - waterfall       args: { bars:[{label,value,kind?:'start'|'positive'|'negative'|'end'}], format?, title? }
+    - gantt           args: { tasks:[{label,start,end,color?,complete?}], periods?, title? }
+    - sphere-fill     args: { value:0-100, label?, color?:[r,g,b], background?:'dark'|'light' }
+    - gauge           args: { value:0-1, label?, format?:'percent'|'number', title?, min?, max? }
+    - radial-spoke    args: { values:number[] (0-1), labels?, title?, colors? }
+    - scatter         args: { points:[{x:0-1, y:0-1, label?, group?, color?}], xAxis?, yAxis?, title?,
+                              regressionLine?:boolean }
+                      (v3.33: regressionLine adds OLS least-squares fit dashed line)
+    - traffic-light   args: { lights:[{color:'red'|'amber'|'green'|'blue'|[r,g,b], active?, label?}], title? }
+    - venn            args: { sets:[{label,color?,sublabel?}] (2-5), overlap?:0-1, title? }
+
+  CHARTS / DIAGRAMS:
+    - flow-chart      args: { steps:string[], sublabels?, highlight?, title?, orientation? }
+    - tree-diagram    args: { root:{label,children?:[...]}, title? }
+    - org-chart       args: { root:{name,title?,children?:[...]}, title? }
+    - mindmap         args: { root:{label,children?:[...]}, title? }
+    - relationship-graph args: { nodes:[{id,label,group?,size?,x?,y?}], edges:[{from,to,label?,weight?}], title? }
+    - timeline        args: { events:[{date,label,sublabel?}], title?, axisLabel? }
+    - fishbone        args: { effect:string, branches:[{label,causes?:string[]}] (2-8), title? }
+
+  CHARTS / HIERARCHY:
+    - pyramid         args: { layers:[{label,sublabel?,value?}], title?, inverted? }
+
+  CHARTS / PROGRESSION:
+    - progression     args: { steps:[{label,status?:'done'|'current'|'todo'}], title? }
+
+  CHARTS / MATRIX:
+    - matrix-grid     args: { rows?, cols?, cells:[{label,sublabel?,color?}], xAxis?, yAxis?, title?,
+                              quadrantAxes?:{x,y}, bubbles?:[{row,col,label?,size?}] }
+                      (v3.33: quadrantAxes + bubbles enable BCG-style 2×2 with axis labels + product bubbles per quadrant)
+
+  CHARTS / AGENDA:
+    - agenda-list     args: { items:[{label,sublabel?}] (1-12), title?, numbered?, highlight? }
+
+  CHARTS / LAYERS:
+    - layer-stack     args: { layers:[{label,sublabel?,color?}] (1-10), title?, direction?:'top-down'|'bottom-up', taper? }
+
+  CHARTS / LISTS:
+    - bullet-list     args: { items:[{label,sublabel?,status?:'done'|'todo'|'highlight'}] (1-12), title? }
+
+  CHARTS / STATISTICAL (v3.33 new):
+    - bubble          args: { points:[{x,y,size,label?,color?}], xAxis?, yAxis?, title?, sizeScale? }
+                      (xy scatter with bubble-size as 3rd dimension — product portfolio / risk maps)
+    - histogram       args: { bins:[{range:[lo,hi],count}], title?, bellCurve?, milestones?:[{value,label}] }
+                      (frequency distribution + optional gaussian overlay — survey response / score dist)
+    - break-even      args: { fixedCost, variableCostPerUnit, pricePerUnit, maxUnits?, title?, currency? }
+                      (3-line cost+revenue crossover chart — SaaS pricing / manufacturing unit economics)
+    - stacked-area    args: { series:[{name,values:[]}], xLabels:[], title?, format?:'number'|'currency'|'percent' }
+                      (N series accumulated over X axis — revenue by product over time)
+
+  CHARTS / FRAMEWORKS (v3.33 new):
+    - seven-s-model   args: { center?, satellites:[6×{label,description?}], title? }
+                      (McKinsey 7S hexagonal framework — org diagnostic / alignment audit)
+    - multiple-arrows args: { mode:'converge'|'diverge'|'parallel', arrows:[{label?,color?}], centerLabel?, title? }
+                      (multi-input/output flow patterns — converge: many→1, diverge: 1→many, parallel: N→N)
+    - nine-field-matrix args: { cells:[9×{label,sublabel?}], xAxis?, yAxis?, title?,
+                                bubbles?:[{row,col,label,size}] }
+                      (GE/McKinsey 3×3 with red/yellow/green priority bands — strategy portfolio)
+
+  SHAPES (decorative iconic — single primitives, 1:1 with 3D shapes/*-3d):
+    - arrow           args: { label?, color?, direction?:'right'|'up'|'left'|'down' }
+    - cube            args: { label?, color? }
+    - diamond         args: { label?, color? }
+    - gear            args: { label?, color? }
+
+  SHAPES (composites — multi-piece, no direct 3D twin; LLM may decompose on lift):
+    - cube-grid       args: { size?, colors?, colorPattern?, spacing?, highlight?, title? }
+    - gear-cluster    args: { gears?, thickness?, title? }
+    - puzzle-pieces   args: { rows?, cols?, colors?, highlight?, title? }
+
+  SHAPES (circle family — 2D twins of 3D shapes/circle-*-3d):
+    - circle-frame      args: { label?, color?, back?, title? }
+    - circle-loop       args: { segments?:2-8, labels?, title?, color? }
+    - circle-segmented  args: { segments?:2-12, labels?, colors?, title?, innerRatio?, gap? }
+    - circle-stack      args: { layers:[{label?,sublabel?,color?}] (1-8), title?, taper? }
+
+  SHAPES (sphere family + cube-segmented — 2D twins of 3D shapes/sphere-*-3d + cube-segmented-3d):
+    - sphere-network    args: { hub?:{label?,color?}, satellites:[{label?,color?}] (2-12), title? }
+    - sphere-segmented  args: { segments?:2-12, labels?, colors?, explode?:0-0.25, title? }
+    - sphere-tree       args: { root:{label?,color?,children?:[...]}, title? }
+    - cube-segmented    args: { segments?:2-8, axis?:'vertical'|'horizontal', gap?:0-0.3, color?, labels?, title? }
+
+  ICONS:
+    - icon-badge      args: { name:'users'|'cloud'|'chart-bar'|'lightning'|...(24 names), label?, color? }
+
+  PRESENTATION:
+    - cover           args: { title (required), subtitle?, author?, date?, version? }
+
+  Worked example — emit single atom:
+    {
+      "v": 1,
+      "name": "kpi-hero: Q3 Revenue",
+      "subjects": [{
+        "type": "kpi-card",
+        "args": { "value": "$3.4M", "label": "Q3 Revenue", "sublabel": "vs Q2 2024",
+                  "trend": "up", "trendValue": "+127%", "icon": "chart-bar" }
+      }]
+    }
+
+  CONSTRAINT: if ANY subject is an atoms-2d type, ALL subjects in the array must be
+  atoms-2d (no mixing with p5-sketch or SDF subjects). Same single-subject convention
+  as p5-sketch for now.
+
+## Step 4.5: Finance preset library (Sprint 14b — composition templates)
+
+When content matches a finance / business-deck pattern, prefer these composition
+templates over hand-rolling. Each preset maps trigger phrases → atom-2d type +
+arg-shape recipe.
+
+### F1 — KPI hero (single primary metric)
+  Triggers: revenue / ARR / MAU / retention / churn / NPS + a single dominant
+    number (e.g. "Q3 hit $3.4M ARR")
+  Emit: kpi-card { value, label, sublabel?, trend?, trendValue?, icon? }
+  Hero pick: largest dollar amount OR first-mentioned metric. Put secondary
+    metric in sublabel. Icon: 'chart-bar' for revenue / 'users' for growth /
+    'arrow-down' for churn drop / 'clock' for time-based.
+
+### F2 — Quarterly trajectory (period-based time series)
+  Triggers: Q1/Q2/Q3/Q4 with values / Jan→Dec / weekly progression
+  Emit: column { values:number[], labels:string[], format, title? }
+    format='currency' for $/€/¥, 'percent' for %, 'number' otherwise
+
+### F3 — Waterfall (financial bridge / additive-subtractive decomposition)
+  Triggers: "X → Y via +A, -B, +C" / "starting X plus/minus components ending Y"
+    / revenue bridge / variance decomp
+  Emit: waterfall { bars:[{label,value,kind}], format, title? }
+    bars[0].kind='start', bars[last].kind='end',
+    middle bars kind='positive' (v>0) or 'negative' (v<0)
+    Built-in color: green/red/grey — don't override
+
+### F4 — Market share (proportional breakdown)
+  Triggers: percentage breakdowns / "X% of Y" / vendor share / segment split
+  Emit: pie { values, labels, format:'percent', donutRatio?, centerLabel?, title? }
+    donutRatio=0.55 + centerLabel when total/sum is meaningful, else 0
+
+### F5 — Revenue trend (line with optional inflection annotations)
+  Triggers: growth trajectory / MAU over months / retention curve / acceleration
+    after a launch
+  Emit: line { values, labels, format, annotations?:[{index,text}], title? }
+    annotations: text-described inflection points only (don't invent)
+    showValues=true ONLY if user wants every point labeled
+
+### Multi-preset paragraphs
+  When a paragraph mentions multiple distinct finance metrics, emit ONE preset
+  per visual (atom-2d is single-subject all-or-none). LLM picks the PRIMARY
+  preset for this visual; user re-runs ⚡ on related text to get other presets.
+
+### Decision cheatsheet
+  ONE big number + ONE label              → F1 kpi-card
+  N period-labeled values (Q/month/week)  → F2 column
+  Start → +/- decomposition → End         → F3 waterfall
+  Proportions summing to ~100%            → F4 pie
+  Sequential trajectory + inflection      → F5 line
+
+## Step 4 legacy: 3-priority routing (Sprint 3) — SDF / P5 fallback (LOWER PRIORITY than atoms-2d above)
 
 When opts.mode === '2d', try these priorities IN ORDER. SDF priorities are
 Atlas's wedge that vector cannot replicate. P5 is graceful-degradation fallback.
@@ -527,6 +710,416 @@ is the message.
 - ✅ Multiple colors visible (≥3 distinct fills from palette)
 - ❌ NOT: random scattered shapes (state machine should produce connected rooms)
 - ❌ NOT: monochrome (color_mode 'group' should produce clustered colors)
+
+============================================================================
+Step 5 — Icon library v3.32 (NEW Sprint 15c)
+============================================================================
+
+The icon-badge atom now accepts ~770 icon names from a curated 8-category
+Phosphor library (in addition to the 24 hand-coded names listed in Step 4
+Iconography section). Pick a domain-appropriate name from the categories below.
+
+ICON CATEGORIES:
+
+- **business** (~158 icons): briefcase, briefcase-metal, office-chair, projector-screen, projector-screen-chart, presentation, presentation-chart, handshake, address-book, address-book-tabs
+- **finance** (~104 icons): currency-dollar, currency-dollar-simple, currency-eur, currency-gbp, currency-jpy, currency-cny, currency-krw, currency-kzt, currency-ngn, currency-rub
+- **tech** (~158 icons): cpu, desktop, desktop-tower, laptop, monitor, monitor-play, keyboard, mouse, mouse-simple, graphics-card
+- **medical** (~95 icons): stethoscope, pill, syringe, first-aid, first-aid-kit, thermometer, thermometer-cold, thermometer-hot, thermometer-simple, bandaids
+- **hrm** (~158 icons): user, user-circle, user-circle-check, user-circle-dashed, user-circle-gear, user-circle-minus, user-circle-plus, user-focus, user-gear, user-list
+- **social** (~174 icons): chat, chat-centered, chat-centered-dots, chat-centered-text, chat-centered-slash, chat-circle, chat-circle-dots, chat-circle-text, chat-circle-slash, chat-dots
+- **signs** (~144 icons): warning, warning-circle, warning-diamond, warning-octagon, prohibit, prohibit-inset, info, question, exclamation-mark, asterisk
+- **calendar** (~100 icons): calendar, calendar-blank, calendar-check, calendar-dot, calendar-dots, calendar-heart, calendar-minus, calendar-plus, calendar-slash, calendar-star
+
+RULES:
+1. Reference icons by kebab-case Phosphor name in \`icon-badge.args.name\`.
+2. Pick names from the appropriate domain category (don't put \`currency-dollar\`
+   on a medical slide).
+3. The 24 hand-coded names from v3.31 finance presets still work AND are
+   PREFERRED for finance/business presets (kpi-hero with \`users\`, \`chart-bar\`,
+   etc.) — they render faster and are guaranteed pixel-stable.
+4. If unsure whether a specific name exists, prefer common short names from
+   the lists above (those are all guaranteed bakeable). Misspellings render
+   as empty badges (no crash) but produce ugly output — be precise.
+
+v3.32 (Sprint 15c — Phosphor icon library) — Step 5 adds 8-category icon
+menu with ~770 unique names. icon-badge atom now resolves names from hand-coded
+fast-path (24) OR Phosphor baked library (~770 unique), so any name listed in
+the Step 5 categories is valid for \`icon-badge.args.name\`. Phosphor SVGs use
+a 256×256 viewBox + filled glyphs; hardcoded paths use 24×24 + monoline stroke;
+the renderer auto-picks the correct scale + paint mode per source.
+
+v3.33 (Sprint 15a — chart atom catalog expansion) — adds 7 new chart atoms
+covering PresentationLoad chart category gap: bubble / histogram / break-even
+/ stacked-area / seven-s-model / multiple-arrows / nine-field-matrix. Plus 3
+extensions to existing atoms (all backward-compat optional args):
+  - matrix-grid: + quadrantAxes:{x,y} + bubbles:[{row,col,label?,size?}] — BCG-style 2×2
+  - scatter: + regressionLine:bool — OLS dashed fit line
+  - bar: + targetLine:{value,label?} — vertical reference line
+atoms-2d registry now 51 entries (44 pre-15a + 7 new).
+
+  CHARTS / INFOGRAPHIC IDIOMS (v3.34 new):
+
+  COMPOSITE:
+    - circle-image-hub-spoke   args: { center:{label,color?}, satellites:[{label,color?}] (3-8) }
+                               (hub + N satellites with connector lines — central concept / ecosystem map)
+    - magazine-column-grid     args: { categories:[{name,items:[{label,value?}]}] (2-5) }
+                               (N-col mosaic grouped by category — product comparison / feature matrix)
+    - dashboard-multi-kpi-composite args: { kpis:[{value,label,sublabel?,trend?,trendValue?}] }
+                               (auto-layout 2/3/4/6-KPI dashboard — executive summary / metrics overview)
+
+  DEVICE:
+    - device-mockup-frame      args: { device:'phone'|'tablet'|'laptop'|'watch', title?, content?, color? }
+                               (single device frame — app screenshot / product UI demo)
+    - device-mockup-row        args: { devices:[{kind,label?,content?}] (2-5) }
+                               (N devices side-by-side — multi-platform / responsive showcase)
+
+  ISOTYPE:
+    - isotype-people-grid      args: { total, highlighted, personIcon?:'simple'|'business'|'casual', label? }
+                               (N×M people silhouettes with highlighted subset — survey stat / % of population)
+    - isotype-prop-row         args: { count, fillRatios:[], propShape?:'bottle'|'bulb'|'drop'|'circle', labels?:[] }
+                               (N props with variable fill levels — capacity / satisfaction / progress per item)
+    - isotype-stat-comparison  args: { stats:[{iconName?,count,label,caption?}] (2-5) }
+                               (N rows of role/count/icon — workforce breakdown / category headcount)
+
+  SPECIAL:
+    - infinity-loop-flow       args: { steps:[{label,description?}] (4-8) }
+                               (figure-8 process loop — continuous cycle / feedback loop / lifecycle)
+    - kpi-water-drop           args: { value:0..1, label, sublabel?, format?:'percent'|'number'|'currency' }
+                               (teardrop fill-level KPI — single impactful metric / completion rate)
+
+v3.34 (Sprint 15b — infographic idiom atoms) — adds 10 new infographic idiom
+atoms covering hub-spoke / grid mosaic / multi-KPI dashboard / device mockups
+/ isotype pictographs / figure-8 loop / water-drop KPI.
+atoms-2d registry now 61 entries — 51 pre-15b + 10 new infographic idiom atoms.
+`;
+
+/**
+ * Appended to system prompt when callLiftLLM is invoked with opts.mode === '3d'.
+ *
+ * Phase C (2026-06-22) clean catalog of 41 user-facing 3D presentation atoms,
+ * organized parallel to MODE_2D_ADDENDUM, with the text-rendering layer split
+ * locked: ambient titles/subtitles → DOM overlay; object-attached labels → SDF.
+ *
+ * Scope: presentation atoms only (NOT scene composites in /atoms/). Typography
+ * atoms (text-3d-extruded, text-3d-pipe) are intentionally EXCLUDED — they are
+ * implementation details of other atoms; LLM does not emit them directly.
+ */
+export const MODE_3D_ADDENDUM = `
+
+## 3D atom catalog (Phase C — clean addendum, 2026-06-22)
+
+This catalog supersedes scattered atom mentions in the legacy prompt above.
+When emitting \`subjects[].type\`, use the literal kebab-case type strings
+listed here.
+
+## ⚡ Text rendering layer split (CRITICAL — 2026-06-22 LOCK)
+
+Atlas 3D output has TWO independent text layers:
+
+**Layer 1 — SDF text (text-3d / glyphs / glyphs-pipe)**
+Only for **short data labels attached to a 3D object**. Examples:
+  - "$3.4M" centered on a kpi-card-3d
+  - "Q1 / Q2 / Q3" labels on individual bars in bar-3d
+  - "80%" overlaid on a sphere in sphere-fill-3d
+  - "Marketing / Product / Pricing" branch labels on fishbone-3d ribs
+These render IN the 3D world. Camera transforms apply. Cost is per-character
+SDF primitives — keep label strings short (≤ ~20 chars).
+
+**Layer 2 — DOM overlay layer**
+All ambient narrative text. Examples:
+  - Slide title "3D SPHERES - FILL LEVELS"
+  - Subtitle / template name "POWERPOINT TEMPLATE"
+  - Author / date / version metadata
+  - Body paragraphs / section dividers
+Renders as CSS Inter font ABOVE the canvas. NOT subject to 3D camera transforms.
+
+### Lift output schema (Phase C v2 — extends prior SceneData v1)
+
+\`\`\`
+{
+  "v": 1,
+  "name": "...",
+  "subjects": [ ... ],      // 3D geometry + object-attached SDF text-3d-pipe labels
+  "annotations": [           // OPTIONAL — DOM-overlay labels projected onto 3D
+                             // points each frame (camera-tracked, zero shader cost)
+    { "pos": [x, y, z], "text": "$1.2M" },
+    ...
+  ],
+  "overlay": {               // OPTIONAL — ambient narrative text (titles, framing)
+                             // Fixed CSS positioning above canvas. No 3D transform.
+    "title": "...",
+    "subtitle": "...",
+    "author": "...",
+    "date": "...",
+    "version": "..."
+  }
+}
+\`\`\`
+
+Three independent text channels. \`subjects\` carries SDF text (in-world, camera
+transforms). \`annotations\` carries DOM labels that TRACK 3D points via
+per-frame projection (cheaper than SDF, useful for many labels). \`overlay\`
+carries fixed-position DOM narrative copy (titles, subtitles, author / date).
+
+**Rule of thumb**: does the text move with the camera (stick to a 3D object)?
+  - YES → object-attached → SDF or annotation overlay (see "Data label patterns" below)
+  - NO  → ambient → \`overlay\` field
+
+\`text-3d-pipe\` IS a valid subject type for object-attached labels — but the
+DEFAULT path for the connector-backed chart atoms (bar-3d / line-3d /
+column-3d / pie-3d) is \`args.labels\` on the chart atom itself. The runtime
+expands it; no manual text-3d-pipe subjects needed. Reach for direct
+\`text-3d-pipe\` only for atoms without connector support (sphere-fill,
+matrix-grid, trees) or custom placement. See "Data label patterns" below.
+
+\`text-3d-extruded\` is rarely useful directly (the pipe variant looks better for
+labels). Prefer \`text-3d-pipe\`.
+
+## Atom catalog by category
+
+### CHARTS / AGENDA
+  - agenda-list-3d    args: { items?:number, rowHeight?, chipSize?, lineW?, lineH?, depth? }
+                      → numbered chip rows + content bars (meeting agenda)
+
+### CHARTS / DATA
+
+The four atoms below (bar / line / column / pie) support \`args.labels: string[]\`
+parallel to \`args.values\` — compositor's \`expandChartLabels()\` automatically
+positions one text-3d-pipe SDF label per data element. Just include \`labels\` in
+the atom's args; nothing more to emit. (#89 connector.)
+
+  - bar-3d            args: { values?:number[], labels?:string[], count?, barWidth?, barDepth?, gap?, maxHeight? }
+                      → vertical bars driven by values[]. labels[i] auto-rendered above bar i.
+  - column-3d         args: { values?:number[], labels?:string[], count?, barWidth?, barDepth?, gap?, maxHeight? }
+                      → horizontal bars. labels[i] auto-rendered beyond row i's end.
+  - line-3d           args: { values?:number[], labels?:string[], count?, pointSpacing?, pointRadius?, lineThickness?, maxHeight?, closed? }
+                      → polyline + point markers. labels[i] auto-rendered above point i marker.
+  - pie-3d            args: { values?:number[], labels?:string[], count?, outerRadius?, innerRadius?, thickness?, startAngle?, clockwise? }
+                      → pie / donut (innerRadius>0). labels[i] auto-rendered at slice i's mid-angle on the rim.
+
+Other CHARTS / DATA atoms do NOT have connector auto-expand yet — labels need
+manual text-3d-pipe subjects (Fallback A in "Data label patterns" below).
+sphere-fill-3d + matrix-grid-3d are scheduled to join the connector soon.
+
+  - sphere-fill-3d    args: { levels?:number[], count?, radius?, spacing?, cage?, cageThickness?, fillScale? }
+                      → row of glass spheres with liquid fills. For labels (today): emit separate text-3d-pipe at sphere front (−z) face.
+  - kpi-card-3d       args: { width?, height?, depth?, cornerRadius?, value?:number, label?:string, unit?:string, trend?:'up'|'down'|'flat', trendValue?:number }
+                      → rounded KPI card (value/label/unit are object-attached, render via internal text-3d)
+  - funnel-3d         args: { stages?:number, topRadius?, bottomRadius?, stageHeight?, gap? }
+                      → sales / conversion funnel
+  - gauge-3d          args: { value:0..1, radius?, tube?, needleLen?, needleWidth?, depth? }
+                      → speedometer dial (KPI gauge)
+  - gantt-3d          args: { tasks?:number, segments?:[{start,dur}], rowHeight?, barH?, depth?, trackLength? }
+                      → schedule / project timeline
+  - radial-spoke-3d   args: { spokes?:number, hubRadius?, spokeThickness?, minLen?, maxLen?, nodeRadius? }
+                      → spider / radar / radial bars
+  - scatter-3d        args: { count?, spread?, dotRadius?, axes?:boolean, axisRadius? }
+                      → XY dot cloud with L-axes
+  - traffic-light-3d  args: { lights?:number, lightRadius?, spacing?, housingPad?, depth? }
+                      → RAG status indicator
+  - venn-3d           args: { sets?:2..5, radius?, tube?, overlap? }
+                      → overlapping rings
+  - waterfall-3d      args: { count?:number, deltas?:number[], barW?, gap?, depth? }
+                      → cumulative gains/losses bridge
+
+### CHARTS / DIAGRAMS
+  - flow-chart-3d        args: { steps?:number, nodeW?, nodeH?, nodeD?, gap?, linkThickness? }
+                         → left-to-right process flow (boxes + connectors)
+  - tree-diagram-3d      args: { levels?:1..5, branching?:1..4, nodeRadius?, levelWidth?, spread?, linkThickness? }
+                         → left-to-right branching tree (sphere nodes)
+  - org-chart-3d         args: { levels?:1..5, branching?:1..5, nodeW?, nodeH?, nodeD?, levelHeight?, spread?, linkThickness? }
+                         → top-down org chart (box cards)
+  - mindmap-3d           args: { branches?:number, centerRadius?, branchRadius?, leafRadius?, mainDist?, leafDist?, leavesPerBranch?, linkThickness? }
+                         → radial mind map (centre + branches + leaves)
+  - relationship-graph-3d args: { count?, radius?, nodeRadius?, linkThickness?, edges?:[[i,j]] }
+                         → node-link network (ring layout + chords)
+  - timeline-3d          args: { count?, axisLength?, axisRadius?, markerRadius?, stemHeight?, stemThickness?, alternate? }
+                         → horizontal axis + milestone markers
+  - fishbone-3d          args: { ribs?:number, spineLength?, spineRadius?, ribLength?, ribThickness?, headSize? }
+                         → Ishikawa root-cause diagram (head + spine + alternating ribs)
+
+### CHARTS / HIERARCHY
+  - pyramid-3d        args: { levels?:1..20, baseWidth?, topWidth?, layerHeight?, gap?, depth? }
+                      → stacked tapered tiers
+
+### CHARTS / LAYERS
+  - layer-stack-3d    args: { layers?:number, layerW?, layerD?, layerH?, gap?, taper? }
+                      → stacked wide slabs (OSI / tech stack / strata)
+
+### CHARTS / LISTS
+  - bullet-list-3d    args: { items?:number, rowHeight?, bulletRadius?, lineW?, lineH?, depth? }
+                      → round bullet rows + content bars
+
+### CHARTS / MATRIX
+  - matrix-grid-3d    args: { rows?:1..6, cols?:1..6, cardW?, cardH?, cardD?, gap? }
+                      → N×M card grid (SWOT / 2×2 / BCG). No connector auto-expand yet — emit separate text-3d-pipe on each card's −z front face (Fallback A). Scheduled to join the connector soon.
+
+### CHARTS / PROGRESSION
+  - progression-3d    args: { steps?:number, run?, stepRise?, depth? }
+                      → ascending staircase (growth / maturity)
+
+### ICONS
+  - business-icon     args: { name:'arrow-up'|'arrow-down'|'check'|'x-mark'|'dollar'|'percent'|'person'|'gear'|'document'|'calendar', size?, thickness?, depth? }
+                      → 10 core business icons (extruded). Use for small decoration / status badges.
+
+### PRESENTATION
+  - cover-3d          args: { stageWidth?, stageDepth?, stageThickness?, backdropHeight?, backdropThickness?, cornerRadius? }
+                      → stage + backdrop geometry ONLY. NO label / title / subtitle / author / date in args — ALL cover text lives in the top-level \`overlay\` field (cover-3d is a stage; the words live on the screen overlay above the stage, not on the stage geometry itself).
+
+### SHAPES (single primitives)
+  - arrow-3d          args: { length?, shaftWidth?, headLength?, headWidth?, depth?, double? }
+                      → directional arrow (single or double-headed)
+  - cube-3d           args: { count?, arrangement?:'row'|'flow'|'semicircle'|'hub-spokes'|'steps'|'stack'|'tower'|'grid'|'grid3d'|'cluster', cubeSize?, cornerRadius?, spacing?, arrangementParams?, labels?, material?, colors?, connector? }
+                      → parameterized cube arrangement (rich layout modes — use for "N modules" / process steps / cluster diagrams)
+  - cube-segmented-3d args: { segments?, size?, gap?, axis?:'x'|'y'|'z' }
+                      → ONE cube sliced into N parallel slabs (sliced-bread look)
+  - diamond-3d        args: { width?, crownHeight?, pavilionHeight?, tableRatio? }
+                      → brilliant-cut gem (value / premium)
+  - gear-3d           args: { teeth?, radius?, thickness?, toothDepth?, toothWidth?, holeRadius? }
+                      → cog wheel
+  - puzzle-piece-3d   args: { size?, depth?, knob? }
+                      → SINGLE jigsaw piece (tab + blank). Distinct from 2D \`puzzle-pieces\` (multi).
+
+### SHAPES (circle family)
+  - circle-frame-3d   args: { radius?, frameWidth?, backDepth?, back? }
+                      → avatar / photo frame (ring + optional backing disk)
+  - circle-loop-3d    args: { segments?, radius?, tube?, headLength?, headRadius? }
+                      → cycle arrows around a ring (PDCA / lifecycle)
+  - circle-segmented-3d args: { segments?, radius?, innerRatio?, thickness?, gapWidth? }
+                      → flat segmented donut ring
+  - circle-stack-3d   args: { count?, radius?, taper?, diskHeight?, gap? }
+                      → tiered disks (wedding-cake / coin pile)
+
+### SHAPES (sphere family)
+  - sphere-network-3d args: { count?, hubRadius?, satelliteRadius?, radius?, linkThickness?, arrangement?:'ring'|'ring-xy'|'sphere' }
+                      → hub + N satellites with links
+  - sphere-segmented-3d args: { segments?:2..24, radius?, explode?, gapAngle? }
+                      → sphere split into longitudinal orange wedges
+  - sphere-tree-3d    args: { levels?:1..5, branching?:1..5, rootRadius?, radiusFalloff?, levelHeight?, spread?, linkThickness? }
+                      → top-down hierarchical sphere tree
+
+## ⚡ Data label patterns (Phase C v4 — args.labels is the default)
+
+> **Decision rule** — put a \`labels\` array on the chart atom (parallel to
+> \`values\`). The runtime anchors them. Only hand-emit \`text-3d-pipe\` subjects
+> or \`annotations\` for tree atoms, > 10 labels, or custom placement.
+
+### Default — \`args.labels\` auto-expansion (the connector path)
+
+Supported atoms today: \`bar-3d\` / \`line-3d\` / \`column-3d\` / \`pie-3d\`.
+
+Include \`labels: string[]\` on the chart atom, parallel to \`values\`. The
+compositor's \`expandChartLabels(sceneData)\` (\`src/scene/chart-labels.js\`,
+shipped in #89) runs at scene-load and inside \`renderLiftedSceneData\`. For each
+chart subject carrying \`args.labels\`, it appends camera-facing \`text-3d-pipe\`
+subjects positioned by the atom's anchor maths. ZERO extra subjects in lift
+output. ZERO geometry math in the LLM.
+
+LLM still pre-formats label strings (\`"$3.4M"\`, \`"35%"\`) — the connector treats
+labels as opaque text.
+
+If \`labels.length < values.length\`, only those elements get labels. Omit or
+empty \`labels\` → no labels rendered (no error).
+
+**Coming soon via 3D-side connector extension**: \`sphere-fill-3d\` (labels
+parallel to \`levels\`), \`matrix-grid-3d\` (row-major array of length rows*cols).
+Use the manual fallback below for those two until the connector ships them.
+
+### Fallback A — separate \`text-3d-pipe\` subjects (manual placement)
+
+Use for:
+- \`sphere-fill-3d\` / \`matrix-grid-3d\` — until the connector extends.
+- Tree-shaped atoms — \`tree-diagram-3d\` / \`org-chart-3d\` / \`mindmap-3d\`
+  (internal node order undocumented; "open question for Phase D").
+- Any atom with custom / non-standard label placement.
+
+Emit one \`text-3d-pipe\` subject per data point in \`subjects[]\`, positioned with
+\`transform.translate: [x, y, z]\`. **Always anchor on the −z front face** — the
+studio camera faces −z. (Common bug: putting label at +z hides it behind the
+geometry. The connector uses −z everywhere; mirror that here.)
+
+Reference anchors (mirror what the connector does for the 4 supported atoms;
+extrapolate for others):
+
+  - **sphere-fill-3d** (row of spheres along +X):
+    sphere i centre = \`(i·(2·radius+spacing) − (N−1)·(2·radius+spacing)/2, 0, 0)\`
+    label anchor = \`(sphereCentreX, 0, −radius − 0.05)\` (front of sphere, camera-facing)
+
+  - **matrix-grid-3d** (N×M cards centred in XY plane, row-major):
+    card (r,c) centre = \`((c − (cols−1)/2)·(cardW+gap), (r − (rows−1)/2)·(cardH+gap), 0)\`
+    label anchor = \`(cardCentreX, cardCentreY, −cardD/2 − 0.02)\` (front face of card)
+
+For atoms not listed, anchor a small margin in front of the −z face of the
+labelled sub-object.
+
+### Fallback B — DOM annotation overlay (camera-tracked, cheap)
+
+Add a top-level \`annotations: [{pos:[x,y,z], text}]\` array. The compositor's
+\`studio.project()\` reprojects each pos onto the canvas every frame and
+positions a DOM div there. Tracks the moving camera. Zero shader cost. Plain
+CSS (Inter font); no 3D lighting / depth on text.
+
+Use when: more than ~10 labels per chart (SDF budget tight), OR when the chart
+geometry is too complex to compute anchors for, OR when you want the cheap
+non-sculptural look.
+
+### Lift mapping (2D atom args → 3D output)
+
+| 2D atom arg | Maps to | Notes |
+|---|---|---|
+| values / levels / points | same name in 3D atom args | per-object data |
+| labels: string[] (bar / line / column / pie) | \`args.labels\` on same atom (default — connector auto-anchors) | LLM pre-formats strings ('$3.4M', not 3.4 + format) |
+| labels: string[] (sphere-fill / matrix-grid) | separate text-3d-pipe subjects (Fallback A); connector extension coming | same pre-formatting |
+| labels: string[] (other / tree atoms / >10 labels) | separate text-3d-pipe (Fallback A) OR \`annotations[]\` (Fallback B) | anchor on −z front |
+| title / subtitle | top-level \`overlay.title\` / \`overlay.subtitle\` | NOT in subjects[].args |
+| format ('currency' / 'percent') | (none) | LLM-side string formatting only |
+| author / date / version (cover) | top-level \`overlay.author\` / \`overlay.date\` / \`overlay.version\` | NOT in subjects[].args |
+
+### Label length
+
+Keep label strings short (≤ ~20 chars). text-3d-pipe cost is per-character.
+For long labels (multi-word descriptions), prefer Fallback B (annotation
+overlay).
+
+### Worked example — bar chart with 5 SDF value labels (default path)
+
+Real example from \`chart-autolabel-bar.json\` (verified end-to-end in #90).
+ONE subject; \`expandChartLabels\` injects the 5 SDF labels at scene-load.
+
+\`\`\`json
+{
+  "v": 1,
+  "name": "compare: Quarterly revenue",
+  "subjects": [
+    {
+      "type": "bar-3d",
+      "args": {
+        "values": [0.4, 0.66, 1, 0.6, 0.78],
+        "labels": ["$1.2M", "$2.0M", "$3.4M", "$1.8M", "$2.6M"],
+        "barWidth": 0.5, "barDepth": 0.5, "gap": 0.45, "maxHeight": 2.2
+      },
+      "transform": { "translate": [0, 0, 0] }
+    }
+  ]
+}
+\`\`\`
+
+That's the entire scene. No manual text-3d-pipe subjects. No anchor math in
+the lift output. The renderer handles positioning per the atom's layout.
+
+## Constraints
+
+- Slide titles and ambient narrative copy go in the top-level \`overlay\` field,
+  NOT in \`subjects[].args.title\` and NOT as separate text-3d subjects.
+- Per-data-point labels follow the decision rule above:
+    - **Default** — \`args.labels\` on \`bar-3d\` / \`line-3d\` / \`column-3d\` / \`pie-3d\`.
+    - **Fallback A** — separate \`text-3d-pipe\` subjects for sphere-fill-3d,
+      matrix-grid-3d, tree-shaped atoms, custom placement. Anchor on −z front face.
+    - **Fallback B** — top-level \`annotations: [{pos,text}]\` for > 10 labels or
+      cheap DOM overlay text.
+- For 2D→3D lift mapping: 2D atom's \`title\` arg maps to \`overlay.title\`;
+  data-bearing args (values / labels / items / sets) map to the equivalent 3D
+  atom args (preferring \`args.labels\` per the decision rule).
 `;
 
 /**
@@ -774,7 +1367,9 @@ export async function callLiftLLM(originalPrompt, code2d, apiKey, opts = {}) {
         text:
           opts.mode === '2d'
             ? CACHED_SYSTEM_PROMPT_LIFT + MODE_2D_ADDENDUM
-            : CACHED_SYSTEM_PROMPT_LIFT,
+            : opts.mode === '3d'
+              ? CACHED_SYSTEM_PROMPT_LIFT + MODE_3D_ADDENDUM
+              : CACHED_SYSTEM_PROMPT_LIFT,
         cache_control: { type: 'ephemeral' },
       },
     ],
@@ -844,48 +1439,19 @@ export async function callLiftLLM(originalPrompt, code2d, apiKey, opts = {}) {
   throw lastError || new Error('Anthropic API: exhausted retries with no specific error');
 }
 
-/**
- * Create a renderer instance for the given renderer id. Returns an object
- * with `.render(sdf)` and `.unmount()` methods. Caller owns lifecycle.
- *
- * Sprint 1 supports: 'studio', 'fly3d', 'silhouette'. Sprint 2+ will add
- * 'bob-gpu', 'blueprint', 'crayon', 'topo', 'bob', 'lines'.
- *
- * @param {string} rendererId
- * @param {HTMLCanvasElement} canvas
- * @param {object} [opts]
- * @param {Function} [opts.getControls] — for GPU renderers; receives renderer time + returns camera/light state
- * @param {Function} [opts.onFps] — for GPU renderers; called per frame with FPS
- * @returns {{render:Function, unmount:Function}}
- */
-export function createRendererForId(rendererId, canvas, opts = {}) {
-  if (rendererId === 'silhouette') {
-    return {
-      render(layers, renderOpts = {}) {
-        const ctx = canvas.getContext('2d');
-        silhouette(ctx, layers, renderOpts);
-      },
-      unmount() {
-        // No-op for CPU silhouette
-      },
-    };
-  }
-  if (rendererId === 'studio') {
-    return createStudioRenderer({
-      canvas,
-      getControls: opts.getControls || (() => ({})),
-      onFps: opts.onFps || (() => {}),
-    });
-  }
-  if (rendererId === 'fly3d') {
-    return createFly3DRenderer({
-      canvas,
-      getControls: opts.getControls || (() => ({})),
-      onFps: opts.onFps || (() => {}),
-    });
-  }
-  throw new Error(`[compositor-api] unknown renderer id: ${rendererId}`);
-}
+// createRendererForId + the renderer id/alias constants now live in
+// render/renderer-registry.js (single source of truth). Re-exported here so
+// existing call sites that import them from compositor-api keep working — and
+// so Present's silhouette/lines/crayon/topo no longer hit an "unknown renderer"
+// throw (the registry maps all four to their CPU 2D renderer).
+export {
+  createRendererForId,
+  normalizeRendererId,
+  isGpuRenderer,
+  PRESENT_EFFECTS,
+  GPU_RENDERER_IDS,
+  RENDERER_ALIASES,
+};
 
 /**
  * Runtime sanitizer for 2D-mode sceneData. Defense layer 2 of 2 (paired with

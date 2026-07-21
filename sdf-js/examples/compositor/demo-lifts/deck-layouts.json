@@ -1,0 +1,90 @@
+{
+  "id": "deck-layouts",
+  "name": "Chapter layouts (linear / arc / grid)",
+  "segments": [
+    {
+      "file": "deck-lay-linear.json",
+      "title": "Linear layout · 5 stations",
+      "kind": "chapter",
+      "stationTitles": [
+        {
+          "t": 0,
+          "title": "Spheres"
+        },
+        {
+          "t": 4,
+          "title": "Bars"
+        },
+        {
+          "t": 8,
+          "title": "Cubes"
+        },
+        {
+          "t": 12,
+          "title": "Peaks"
+        },
+        {
+          "t": 16,
+          "title": "Ring"
+        }
+      ],
+      "durationSec": 20
+    },
+    {
+      "file": "deck-lay-arc.json",
+      "title": "Arc layout · 5 stations",
+      "kind": "chapter",
+      "stationTitles": [
+        {
+          "t": 0,
+          "title": "Spheres"
+        },
+        {
+          "t": 4,
+          "title": "Bars"
+        },
+        {
+          "t": 8,
+          "title": "Cubes"
+        },
+        {
+          "t": 12,
+          "title": "Peaks"
+        },
+        {
+          "t": 16,
+          "title": "Ring"
+        }
+      ],
+      "durationSec": 20
+    },
+    {
+      "file": "deck-lay-grid.json",
+      "title": "Grid layout · 5 stations",
+      "kind": "chapter",
+      "stationTitles": [
+        {
+          "t": 0,
+          "title": "Spheres"
+        },
+        {
+          "t": 4,
+          "title": "Bars"
+        },
+        {
+          "t": 8,
+          "title": "Cubes"
+        },
+        {
+          "t": 12,
+          "title": "Peaks"
+        },
+        {
+          "t": 16,
+          "title": "Ring"
+        }
+      ],
+      "durationSec": 20
+    }
+  ]
+}

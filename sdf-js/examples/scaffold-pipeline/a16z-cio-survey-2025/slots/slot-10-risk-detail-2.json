@@ -1,0 +1,72 @@
+{
+  "slotIdx": 10,
+  "slotName": "risk-detail-2",
+  "slotTitle": "Secondary Risks",
+  "slotPurpose": "Remaining risks / upside factors",
+  "sourceSlideIdx": 6,
+  "sourceSlideTitle": "Google and Anthropic Gain Ground",
+  "sceneData": {
+    "name": "news-briefing/risk-detail-2",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Secondary Risks",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "balance-scale",
+        "x": 90,
+        "y": 180,
+        "w": 1100,
+        "h": 480,
+        "args": {
+          "title": "Competitive Pressure Points",
+          "leftLabel": "Google",
+          "rightLabel": "Anthropic",
+          "leftItems": [
+            "Enterprise adoption momentum",
+            "Cloud infrastructure advantage",
+            "Search integration leverage"
+          ],
+          "rightItems": [
+            "Enterprise adoption momentum",
+            "Constitutional AI differentiation",
+            "Safety-first positioning"
+          ],
+          "leftAccent": "rgb(38, 70, 130)",
+          "rightAccent": "rgb(110, 95, 75)",
+          "verdict": "Traditional and emerging players expanding market share"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["balance-scale", "icon-grid", "bullet-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4415,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 323,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.021992400000000002,
+    "elapsedSec": 7,
+    "generatedAt": "2026-07-07T03:46:23.428Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

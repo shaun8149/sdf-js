@@ -1,0 +1,109 @@
+{
+  "slotIdx": 6,
+  "slotName": "ask",
+  "slotTitle": "Ask",
+  "slotPurpose": "What we need from LPs — intros, advice, resources",
+  "sourceSlideIdx": 7,
+  "sourceSlideTitle": "Thank You & How to Help",
+  "sceneData": {
+    "name": "investor-update/ask",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Ask",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 40,
+        "y": 160,
+        "w": 560,
+        "h": 220,
+        "args": {
+          "value": "$25",
+          "label": "Clean Water Access",
+          "sublabel": "One person for one year",
+          "icon": "drop",
+          "style": "light"
+        }
+      },
+      {
+        "type": "icon-row",
+        "x": 40,
+        "y": 412,
+        "w": 1200,
+        "h": 268,
+        "args": {
+          "items": [
+            {
+              "icon": "hand-heart",
+              "label": "Volunteer",
+              "sublabel": "4 country programs open"
+            },
+            {
+              "icon": "handshake",
+              "label": "Corporate Matching",
+              "sublabel": "Contact partnerships team"
+            },
+            {
+              "icon": "file-text",
+              "label": "Transparency",
+              "sublabel": "Board & audit at clearwatertrust.org/reports"
+            }
+          ],
+          "iconSize": "medium",
+          "iconStyle": "card"
+        }
+      },
+      {
+        "type": "stat-banner",
+        "x": 640,
+        "y": 160,
+        "w": 600,
+        "h": 220,
+        "args": {
+          "value": "clearwatertrust.org/reports",
+          "label": "Full Financial Transparency",
+          "bg": [
+            58,
+            138,
+            200
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "investor-update",
+    "theme": "financial-navy-cerulean",
+    "recommendedAtoms": [
+      "bullet-list",
+      "icon-row",
+      "call-to-action"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5171,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 519,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0272004,
+    "elapsedSec": 10.6,
+    "generatedAt": "2026-07-10T07:23:50.667Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

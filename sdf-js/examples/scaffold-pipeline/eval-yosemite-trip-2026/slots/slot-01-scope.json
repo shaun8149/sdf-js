@@ -1,0 +1,77 @@
+{
+  "slotIdx": 1,
+  "slotName": "scope",
+  "slotTitle": "Scope & Methodology",
+  "slotPurpose": "What was analyzed and how data was collected",
+  "sourceSlideIdx": 1,
+  "sourceSlideTitle": "Our Goal",
+  "sceneData": {
+    "name": "analysis-report/scope",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Scope & Methodology"
+        }
+      },
+      {
+        "type": "icon-row",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 460,
+        "args": {
+          "items": [
+            {
+              "icon": "mountains",
+              "label": "High Country",
+              "sublabel": "3 days granite peaks & alpine lakes"
+            },
+            {
+              "icon": "waves",
+              "label": "Valley",
+              "sublabel": "2 days waterfalls & lower trails"
+            },
+            {
+              "icon": "path",
+              "label": "45 Miles",
+              "sublabel": "Relaxed pace, mixed terrain"
+            }
+          ],
+          "iconSize": "large",
+          "iconStyle": "circle"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "analysis-report",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "bullet-list",
+      "icon-row"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 3950,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 12983,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 310,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0203949,
+    "elapsedSec": 6.2,
+    "generatedAt": "2026-07-05T05:05:19.867Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

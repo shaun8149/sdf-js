@@ -1,0 +1,35 @@
+{
+  "slotIdx": 2,
+  "slotName": "costbenefit",
+  "slotTitle": "cost-benefit-matrix",
+  "sceneData": {
+    "subjects": [
+      {
+        "type": "cost-benefit-matrix",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 640,
+        "args": {
+          "title": "2026 Initiative Prioritization",
+          "xAxis": "Implementation Cost",
+          "yAxis": "Business Impact",
+          "quadrantLabels": {
+            "tl": "Quick Wins",
+            "tr": "Strategic Bets",
+            "bl": "Low Priority",
+            "br": "Question Marks"
+          },
+          "items": [
+            { "label": "AI Customer Support", "cost": "low", "benefit": "high" },
+            { "label": "Mobile App Rewrite", "cost": "low", "benefit": "high" },
+            { "label": "ERP Migration", "cost": "high", "benefit": "high" },
+            { "label": "Data Warehouse", "cost": "high", "benefit": "high" },
+            { "label": "Email Automation", "cost": "low", "benefit": "low" },
+            { "label": "Brand Refresh", "cost": "high", "benefit": "low" }
+          ]
+        }
+      }
+    ]
+  }
+}

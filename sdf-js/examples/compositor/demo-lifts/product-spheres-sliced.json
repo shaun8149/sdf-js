@@ -1,0 +1,95 @@
+{
+  "id": "product-spheres-sliced",
+  "title": "Spheres Sliced · Nested cross-section",
+  "prompt": "spheres: Spheres Sliced · Nested cross-section",
+  "code2d": "// vision-authored pixel-align of a PresentationLoad product cover (\"spheres\").",
+  "sceneData": {
+    "v": 1,
+    "name": "Spheres Sliced · Nested cross-section",
+    "source": {
+      "format": "vision-authored",
+      "prompt": "spheres product cover pixel-align"
+    },
+    "subjects": [
+      {
+        "id": "slice-outer",
+        "type": "difference",
+        "material": {
+          "hue": 0.6,
+          "sat": 0.06,
+          "value": 0.26,
+          "metal": 0.4,
+          "glow": 0
+        },
+        "transform": {
+          "translate": [0, 1.1, 0]
+        },
+        "children": [
+          {
+            "id": "so",
+            "type": "sphere",
+            "args": {
+              "radius": 1.3
+            }
+          },
+          {
+            "id": "wedge0",
+            "type": "box",
+            "args": {
+              "size": [3, 6, 3]
+            },
+            "transform": {
+              "translate": [-1.5, 0, -1.5]
+            }
+          }
+        ]
+      },
+      {
+        "id": "s1",
+        "type": "sphere",
+        "args": {
+          "radius": 0.92
+        },
+        "transform": {
+          "translate": [0, 1.1, 0]
+        },
+        "material": {
+          "hue": 0.57,
+          "sat": 0.9,
+          "value": 0.98,
+          "metal": 0.3,
+          "glow": 0.35
+        }
+      }
+    ],
+    "defaults": {
+      "camera": {
+        "yaw": 0.5,
+        "pitch": 0.3,
+        "distance": 10,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 1.1,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": 0.6,
+        "altitude": 0.55,
+        "distance": 25,
+        "intensity": 1.2
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.4
+      },
+      "studioBg": "dark"
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-06-21",
+    "model": "vision-authored",
+    "pattern": "spheres",
+    "costUSD": 0
+  }
+}

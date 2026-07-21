@@ -1,0 +1,74 @@
+{
+  "slotIdx": 12,
+  "slotName": "outlook",
+  "slotTitle": "Outlook",
+  "slotPurpose": "What to watch next — timeline or conditions",
+  "sourceSlideIdx": 13,
+  "sourceSlideTitle": "市场展望",
+  "sceneData": {
+    "name": "news-briefing/outlook",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "市场展望",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 480,
+        "args": {
+          "items": [
+            {
+              "icon": "chart-line-up",
+              "label": "英伟达数据中心业务保持强劲增长"
+            },
+            {
+              "icon": "cpu",
+              "label": "云厂商自研芯片重塑竞争格局"
+            },
+            {
+              "icon": "factory",
+              "label": "供应链产能扩张2026年缓解瓶颈"
+            },
+            {
+              "icon": "globe",
+              "label": "地缘政治与技术演进带来结构性不确定性"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["timeline", "mountain-path", "bullet-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4689,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 343,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0231144,
+    "elapsedSec": 7.6,
+    "generatedAt": "2026-07-07T05:02:01.021Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

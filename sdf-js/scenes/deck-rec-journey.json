@@ -1,0 +1,36 @@
+{
+  "id": "deck-rec-journey",
+  "name": "Customer Journey / Experience Map",
+  "segments": [
+    {
+      "file": "rec-journey-1.json",
+      "title": "Journey",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-journey-2.json",
+      "title": "Stages",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-journey-3.json",
+      "title": "Touchpoints",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-journey-4.json",
+      "title": "Satisfaction",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-journey-5.json",
+      "title": "Conversion Funnel",
+      "kind": "slide",
+      "durationSec": 7
+    }
+  ]
+}

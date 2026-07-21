@@ -1,0 +1,79 @@
+{
+  "slotIdx": 12,
+  "slotName": "outlook",
+  "slotTitle": "Outlook",
+  "slotPurpose": "What to watch next — timeline or conditions",
+  "sourceSlideIdx": 13,
+  "sourceSlideTitle": "未来展望与政策建议",
+  "sceneData": {
+    "name": "news-briefing/outlook",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Outlook",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 480,
+        "args": {
+          "title": "未来展望与政策建议",
+          "items": [
+            {
+              "icon": "lightning",
+              "label": "加快农村电网升级改造保障充电需求"
+            },
+            {
+              "icon": "certificate",
+              "label": "建立健全新能源二手车评估流通体系"
+            },
+            {
+              "icon": "currency-dollar",
+              "label": "优化补贴政策实现市场平稳过渡"
+            },
+            {
+              "icon": "map-pin",
+              "label": "持续推进充电设施县乡全覆盖目标"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "timeline",
+      "mountain-path",
+      "bullet-list"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5176,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 352,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0247104,
+    "elapsedSec": 6.7,
+    "generatedAt": "2026-07-10T07:27:23.287Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

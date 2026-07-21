@@ -1,0 +1,157 @@
+{
+  "slotIdx": 2,
+  "slotName": "what-we-do",
+  "slotTitle": "What We Do",
+  "slotPurpose": "Products + service overview",
+  "sourceSlideIdx": 3,
+  "sourceSlideTitle": "Product Suite",
+  "sceneData": {
+    "name": "company-overview/what-we-do",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "What We Do",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "icon-row",
+        "x": 40,
+        "y": 150,
+        "w": 1200,
+        "h": 160,
+        "args": {
+          "items": [
+            {
+              "icon": "wallet",
+              "label": "Lightweight Wallet",
+              "sublabel": "Mobile-first self-custodial"
+            },
+            {
+              "icon": "chats-circle",
+              "label": "Chat Module",
+              "sublabel": "Social & alpha-sharing"
+            },
+            {
+              "icon": "lightning",
+              "label": "Trading Acceleration",
+              "sublabel": "Aggregated DEX routing"
+            }
+          ],
+          "iconStyle": "card",
+          "iconSize": "medium"
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 40,
+        "y": 330,
+        "w": 580,
+        "h": 340,
+        "args": {
+          "title": "Competitive Advantages",
+          "items": [
+            {
+              "icon": "lightning",
+              "label": "Sub-second execution beats every wallet"
+            },
+            {
+              "icon": "lock-key",
+              "label": "Self-custodial without UX compromises"
+            },
+            {
+              "icon": "brain",
+              "label": "AI-native — agents not chatbots"
+            },
+            {
+              "icon": "users",
+              "label": "Network effects from embedded social"
+            },
+            {
+              "icon": "plugs-connected",
+              "label": "Open ecosystem for plugin developers"
+            },
+            {
+              "icon": "shield-check",
+              "label": "Top-tier security audited by Trail of Bits"
+            }
+          ]
+        }
+      },
+      {
+        "type": "dashboard-multi-kpi-composite",
+        "x": 660,
+        "y": 330,
+        "w": 580,
+        "h": 340,
+        "args": {
+          "title": "Growth Metrics",
+          "kpis": [
+            {
+              "value": "$300K",
+              "label": "Daily trading volume",
+              "sublabel": "After 4 weeks"
+            },
+            {
+              "value": "12K",
+              "label": "Monthly active wallets"
+            },
+            {
+              "value": "47%",
+              "label": "Week-over-week growth",
+              "trend": "up"
+            },
+            {
+              "value": "92%",
+              "label": "User retention",
+              "sublabel": "At day 30"
+            },
+            {
+              "value": "8 min",
+              "label": "Average session",
+              "sublabel": "3x industry norm"
+            },
+            {
+              "value": "72",
+              "label": "NPS score",
+              "sublabel": "Top quartile crypto product"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "company-overview",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "flow-chart",
+      "magazine-column-grid",
+      "icon-row",
+      "bullet-list"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5320,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 871,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.032927399999999996,
+    "elapsedSec": 15.4,
+    "generatedAt": "2026-07-10T07:19:01.665Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

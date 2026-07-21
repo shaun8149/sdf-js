@@ -1,0 +1,66 @@
+{
+  "slotIdx": 1,
+  "slotName": "mission",
+  "sceneData": {
+    "name": "company-overview/mission",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": { "title": "Our Mission · Team · Focus", "subtitle": "Why we exist + who we are" }
+      },
+      {
+        "type": "bullet-list",
+        "x": 40,
+        "y": 160,
+        "w": 400,
+        "h": 480,
+        "args": {
+          "title": "Our Mission",
+          "items": [
+            { "text": "Make on-chain trading as natural as messaging" },
+            { "name": "Replace centralized exchanges with self-custodial UX" },
+            "Lower the barrier to DeFi for the next 100 million users"
+          ]
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 460,
+        "y": 160,
+        "w": 400,
+        "h": 480,
+        "args": {
+          "title": "Team Heritage",
+          "items": [
+            { "label": "Built by ex-Binance + ex-Coinbase engineers" },
+            { "label": "5 years of crypto-native product experience" },
+            { "label": "Previously shipped wallets serving 10M+ users" },
+            { "label": "Backed by Sequoia, Paradigm, and Multicoin" },
+            { "label": "Based across NYC, Singapore, and Lisbon" }
+          ]
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 880,
+        "y": 160,
+        "w": 360,
+        "h": 480,
+        "args": {
+          "title": "Our Focus",
+          "items": [
+            { "title": "Mobile-first wallet with embedded trading" },
+            { "title": "AI co-pilot for portfolio decisions" },
+            { "title": "Privacy by default, zero-knowledge architecture" },
+            { "title": "Cross-chain liquidity aggregation" }
+          ]
+        }
+      }
+    ]
+  }
+}

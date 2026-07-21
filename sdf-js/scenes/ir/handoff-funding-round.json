@@ -1,0 +1,58 @@
+{
+  "title": "eval-funding-round",
+  "slides": [
+    {
+      "structure": "hold",
+      "title": "Redo Announces $81 Million Series B to Support Commerce Technology Expansion",
+      "nodes": ["Series B financing announcement · Commerce technology platform"]
+    },
+    {
+      "structure": "hold",
+      "title": "TL;DR",
+      "nodes": [
+        "AI-Driven Personalization · Agentic shopping + marketing agents",
+        "Every merchant is fighting to own the relationship with their shoppers",
+        "Platform Evolution",
+        "AI Agents",
+        "Funding Acceleration"
+      ]
+    },
+    {
+      "structure": "magnitude",
+      "nodes": ["Single Product · 2,350", "Multi-Product · 1,750"],
+      "magnitude": [2350, 1750],
+      "emphasis": [0],
+      "title": "Platform Adoption"
+    },
+    {
+      "structure": "hold",
+      "title": "Wins",
+      "nodes": ["ReturnBear Acquisition", "100+ Countries", "International Infrastructure"]
+    },
+    {
+      "structure": "hold",
+      "title": "Challenges",
+      "nodes": ["Returns Network Scaling", "Infrastructure", "Operations", "Network", "Efficiency"]
+    },
+    {
+      "structure": "sequence",
+      "nodes": ["", "", ""],
+      "magnitude": [2, 2, 2],
+      "order": [0, 1, 2],
+      "title": "Q4 Priorities"
+    },
+    {
+      "structure": "hold",
+      "title": "Ask",
+      "nodes": ["Strategic Intros", "Hiring Support", "Retention Expertise"]
+    },
+    {
+      "structure": "magnitude",
+      "nodes": ["Series B Financing", "Valuation"],
+      "magnitude": [81000000, 1250000000],
+      "display": ["$81M", "$1.25B"],
+      "emphasis": [1],
+      "title": "Financials"
+    }
+  ]
+}

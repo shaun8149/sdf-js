@@ -1,0 +1,22 @@
+{
+  "v": 1,
+  "name": "hierarchy: Org Chart — Toolbox 3D (twin)",
+  "subjects": [
+    {
+      "id": "org",
+      "type": "org-chart-3d",
+      "args": { "levels": 3, "branching": 2, "nodeW": 0.62, "nodeH": 0.36, "nodeD": 0.2, "levelHeight": 1.15, "spread": 4.0 },
+      "transform": { "translate": [0, 3.0, 0] },
+      "material": { "hue": 0.57, "sat": 0.5, "value": 0.64, "kind": "normal", "roughness": 0.3, "clearcoat": 0.45 }
+    }
+  ],
+  "overlay": [{ "text": "ORG CHART — TOOLBOX 3D", "anchor": [0, 4.5, 0], "role": "title" }],
+  "cameraSequence": {
+    "loop": false,
+    "shots": [
+      { "duration": 0.01, "pos": [1.0, 2.6, 11.0], "target": [0, 2.0, 0], "fov": 54, "aperture": 0, "focalDistance": 10, "ease": "smooth" },
+      { "duration": 13, "pos": [0, 2.3, 9.6], "target": [0, 2.0, 0], "fov": 50, "transition": "blend", "aperture": 0, "focalDistance": 9.6, "ease": "smooth" }
+    ]
+  },
+  "defaults": { "stage": { "size": [18, 10, 11] } }
+}

@@ -1,0 +1,36 @@
+{
+  "v": 1,
+  "name": "relation: 3D Gearwheels (twin)",
+  "subjects": [
+    {
+      "id": "g1",
+      "type": "gear-3d",
+      "args": { "teeth": 14, "radius": 0.95, "thickness": 0.3, "toothDepth": 0.18, "toothWidth": 0.2, "holeRadius": 0.3 },
+      "transform": { "translate": [-1.0, 1.6, 0], "rotate": [1.5708, 0, 0] },
+      "material": { "hue": 0.6, "sat": 0.04, "value": 0.78, "metal": 0.85, "kind": "normal", "roughness": 0.22, "clearcoat": 0.5 }
+    },
+    {
+      "id": "g2",
+      "type": "gear-3d",
+      "args": { "teeth": 10, "radius": 0.66, "thickness": 0.3, "toothDepth": 0.16, "toothWidth": 0.18, "holeRadius": 0.22 },
+      "transform": { "translate": [0.62, 1.78, 0.05], "rotate": [1.5708, 0, 0.22] },
+      "material": { "hue": 0.57, "sat": 0.5, "value": 0.62, "kind": "normal", "roughness": 0.28, "clearcoat": 0.45 }
+    },
+    {
+      "id": "g3",
+      "type": "gear-3d",
+      "args": { "teeth": 9, "radius": 0.56, "thickness": 0.3, "toothDepth": 0.15, "toothWidth": 0.17, "holeRadius": 0.2 },
+      "transform": { "translate": [0.95, 0.72, -0.05], "rotate": [1.5708, 0, 0.1] },
+      "material": { "hue": 0.6, "sat": 0.04, "value": 0.78, "metal": 0.85, "kind": "normal", "roughness": 0.22, "clearcoat": 0.5 }
+    }
+  ],
+  "overlay": [{ "text": "3D GEARWHEELS", "anchor": [0, 3.7, 0], "role": "title" }],
+  "cameraSequence": {
+    "loop": false,
+    "shots": [
+      { "duration": 0.01, "pos": [1.0, 1.9, 9.3], "target": [0, 1.4, 0], "fov": 50, "aperture": 0, "focalDistance": 8.5, "ease": "smooth" },
+      { "duration": 13, "pos": [0.1, 1.6, 7.8], "target": [0, 1.4, 0], "fov": 46, "transition": "blend", "aperture": 0, "focalDistance": 7.8, "ease": "smooth" }
+    ]
+  },
+  "defaults": { "stage": { "size": [16, 8, 11] } }
+}

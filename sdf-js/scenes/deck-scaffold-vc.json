@@ -1,0 +1,60 @@
+{
+  "id": "deck-scaffold-vc",
+  "name": "vc-pitch (lifted 3D)",
+  "segments": [
+    {
+      "file": "scaffold-vc-00.json",
+      "title": "Title",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "scaffold-vc-01.json",
+      "title": "Problem",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "scaffold-vc-02.json",
+      "title": "Market Size",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "scaffold-vc-03.json",
+      "title": "Our Solution",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "scaffold-vc-04.json",
+      "title": "Product Demo",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "scaffold-vc-05.json",
+      "title": "Traction",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "scaffold-vc-06.json",
+      "title": "Business Model",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "scaffold-vc-07.json",
+      "title": "Team",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "scaffold-vc-08.json",
+      "title": "The Ask",
+      "kind": "slide",
+      "durationSec": 7
+    }
+  ]
+}

@@ -1,0 +1,120 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Deck A/B — which reads better?</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        background: #0e0f12;
+        font-family: -apple-system, Inter, sans-serif;
+        color: #eee;
+      }
+      .bar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        padding: 12px;
+      }
+      .bar .q {
+        font-size: 14px;
+        font-weight: 600;
+        margin-right: 12px;
+        color: #bbb;
+      }
+      .bar button {
+        font-size: 14px;
+        padding: 9px 20px;
+        border-radius: 6px;
+        border: 1px solid #555;
+        background: #1c1e24;
+        color: #eee;
+        cursor: pointer;
+      }
+      .bar button.play {
+        border-color: #3b82f6;
+      }
+      .bar button.pick {
+        border-color: #f59e0b;
+      }
+      .bar button:disabled {
+        opacity: 0.35;
+        cursor: default;
+      }
+      #stage {
+        position: fixed;
+        inset: 56px 0 0 0;
+      }
+      #stage iframe {
+        width: 100%;
+        height: 100%;
+        border: 0;
+      }
+      #verdict {
+        text-align: center;
+        padding: 10px;
+        font-size: 14px;
+        color: #f59e0b;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bar">
+      <span class="q">同一份 deck、同一艺术 seed、同一镜头纪律 — 哪个版本读起来更好?</span>
+      <button class="play" data-arm="A">▶ 版本 A</button>
+      <button class="play" data-arm="B">▶ 版本 B</button>
+      <button class="pick" data-arm="A" disabled>选 A</button>
+      <button class="pick" data-arm="B" disabled>选 B</button>
+    </div>
+    <div id="stage"></div>
+    <div id="verdict"></div>
+    <script type="module">
+      // W5 blind instrument (spec §5): baseline = the SHIPPED radial (never
+      // line — that would smuggle in the already-shipped ring-vs-line delta),
+      // both arms share one decor seed (等价装饰, user decision #4), and the
+      // conclusion is only ever "courtyard 体验 > radial", nothing grander.
+      const params = new URLSearchParams(location.search);
+      const deck = params.get('deck') || 'bytedance-bp';
+      const seed = params.get('seed') || 'atlas-01';
+      const stage = params.get('stage') || '1';
+      const ARMS = ['radial', 'courtyard'];
+
+      // Stable per-session shuffle: refreshing mid-test must not reshuffle.
+      const key = `blind-deck:${deck}:${seed}`;
+      let flip = sessionStorage.getItem(key);
+      if (flip == null) {
+        flip = Math.random() < 0.5 ? '1' : '0';
+        sessionStorage.setItem(key, flip);
+      }
+      const armOf = { A: ARMS[+flip], B: ARMS[1 - +flip] };
+
+      const stageEl = document.getElementById('stage');
+      const watched = new Set();
+      const picks = document.querySelectorAll('button.pick');
+      document.querySelectorAll('button.play').forEach((b) =>
+        b.addEventListener('click', () => {
+          const arm = b.dataset.arm;
+          stageEl.innerHTML = '';
+          const f = document.createElement('iframe');
+          // fps=0: the HUD is a potential tell (warm-up counts differ)
+          f.src = `./figure.html?deck=${encodeURIComponent(deck)}&layout=${armOf[arm]}&stage=${stage}&seed=${encodeURIComponent(seed)}&fps=0`;
+          stageEl.appendChild(f);
+          watched.add(arm);
+          if (watched.size === 2) picks.forEach((p) => (p.disabled = false));
+        }),
+      );
+      picks.forEach((b) =>
+        b.addEventListener('click', () => {
+          const arm = b.dataset.arm;
+          const layout = armOf[arm];
+          console.log('BLIND PICK', arm, '→', layout); // tally offline
+          document.getElementById('verdict').textContent =
+            `已记录:你选了版本 ${arm} = ${layout}(A=${armOf.A} · B=${armOf.B})`;
+        }),
+      );
+    </script>
+  </body>
+</html>

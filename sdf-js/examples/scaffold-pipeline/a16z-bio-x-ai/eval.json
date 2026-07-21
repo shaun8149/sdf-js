@@ -1,0 +1,63 @@
+{
+  "deckDir": "/Users/hexiaoyang/Documents/sdf-main/sdf-js/examples/scaffold-pipeline/a16z-bio-x-ai",
+  "deckName": "a16z-bio-x-ai",
+  "structure": {
+    "slots_total": 14,
+    "slots_baked": 11,
+    "slots_empty": 3,
+    "slots_errored": 0,
+    "fill_rate": 0.7857142857142857,
+    "pick_method": "forced",
+    "scaffold_id": "news-briefing",
+    "theme_id": "editorial-navy"
+  },
+  "atomQuality": {
+    "atom_instances": 11,
+    "atom_types_distinct": 9,
+    "variety_ratio": 0.8181818181818182,
+    "unknown_atom_count": 0,
+    "unknown_atom_types": [],
+    "arg_violations": 0,
+    "arg_violations_top_offenders": []
+  },
+  "threeDReadiness": {
+    "twin_coverage": 1,
+    "untwinned_types": [],
+    "lift_success": 11,
+    "lift_attempted": 11,
+    "lift_errors": [],
+    "lifted_subject_rate": 1
+  },
+  "textBudget": {
+    "chars_per_slot": 243.27272727272728,
+    "max_slot_chars": 518
+  },
+  "fidelity": {
+    "numbers_total": 0,
+    "numbers_found": 0,
+    "number_recall": 1,
+    "missing_numbers": [],
+    "deck_numbers_total": 0,
+    "hallucinated_numbers": [],
+    "deck_entities_total": 22,
+    "hallucinated_entities": [],
+    "entity_precision": 1,
+    "number_precision": 1,
+    "entities_total": 4,
+    "entities_found": 4,
+    "entity_recall": 1,
+    "missing_entities": []
+  },
+  "score": {
+    "total": 94.6,
+    "breakdown": {
+      "structure": 19.6,
+      "variety": 15,
+      "hallucination": 15,
+      "twin": 20,
+      "lift": 15,
+      "text": 10
+    }
+  },
+  "generatedAt": "2026-07-07T05:12:51.706Z"
+}

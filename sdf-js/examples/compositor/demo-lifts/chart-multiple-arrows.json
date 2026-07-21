@@ -1,0 +1,133 @@
+{
+  "id": "chart-multiple-arrows",
+  "title": "Multiple Arrows",
+  "prompt": "arrows: Multiple Arrows",
+  "code2d": "// vision-authored chart-product cover (PresentationLoad Charts & Diagrams).",
+  "sceneData": {
+    "v": 1,
+    "name": "Multiple Arrows",
+    "source": {
+      "format": "vision-authored",
+      "prompt": "arrows chart product"
+    },
+    "subjects": [
+      {
+        "id": "s0",
+        "type": "arrow-3d",
+        "args": {
+          "length": 1.1,
+          "shaftWidth": 0.22,
+          "headLength": 0.45,
+          "headWidth": 0.6,
+          "depth": 0.28
+        },
+        "transform": {
+          "translate": [0.95, 1, 0],
+          "rotate": [0, 0, 0]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.75,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "s1",
+        "type": "arrow-3d",
+        "args": {
+          "length": 1.1,
+          "shaftWidth": 0.22,
+          "headLength": 0.45,
+          "headWidth": 0.6,
+          "depth": 0.28
+        },
+        "transform": {
+          "translate": [0, 1.95, 0],
+          "rotate": [0, 0, 1.5707963267948966]
+        },
+        "material": {
+          "hue": 0.5,
+          "sat": 0.72,
+          "value": 0.7,
+          "metal": 0.28,
+          "glow": 0
+        }
+      },
+      {
+        "id": "s2",
+        "type": "arrow-3d",
+        "args": {
+          "length": 1.1,
+          "shaftWidth": 0.22,
+          "headLength": 0.45,
+          "headWidth": 0.6,
+          "depth": 0.28
+        },
+        "transform": {
+          "translate": [-0.95, 1, 0],
+          "rotate": [0, 0, 3.141592653589793]
+        },
+        "material": {
+          "hue": 0.07,
+          "sat": 0.88,
+          "value": 0.85,
+          "metal": 0.25,
+          "glow": 0
+        }
+      },
+      {
+        "id": "s3",
+        "type": "arrow-3d",
+        "args": {
+          "length": 1.1,
+          "shaftWidth": 0.22,
+          "headLength": 0.45,
+          "headWidth": 0.6,
+          "depth": 0.28
+        },
+        "transform": {
+          "translate": [0, 0.05, 0],
+          "rotate": [0, 0, -1.5707963267948966]
+        },
+        "material": {
+          "hue": 0.33,
+          "sat": 0.8,
+          "value": 0.62,
+          "metal": 0.2,
+          "glow": 0.1
+        }
+      }
+    ],
+    "defaults": {
+      "camera": {
+        "yaw": 0.5,
+        "pitch": 0.3,
+        "distance": 10,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 1,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": 0.6,
+        "altitude": 0.55,
+        "distance": 25,
+        "intensity": 1.2
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.4
+      },
+      "studioBg": "dark"
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-06-21",
+    "model": "vision-authored",
+    "pattern": "arrows",
+    "costUSD": 0
+  }
+}

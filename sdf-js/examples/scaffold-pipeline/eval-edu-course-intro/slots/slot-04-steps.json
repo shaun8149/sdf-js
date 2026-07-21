@@ -1,0 +1,103 @@
+{
+  "slotIdx": 4,
+  "slotName": "steps",
+  "slotTitle": "Step by Step",
+  "slotPurpose": "Sequential process",
+  "sourceSlideIdx": 3,
+  "sourceSlideTitle": "Weekly Topics",
+  "sceneData": {
+    "name": "training/steps",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Step by Step",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "timeline",
+        "x": 60,
+        "y": 160,
+        "w": 1160,
+        "h": 520,
+        "args": {
+          "events": [
+            {
+              "date": "Week 1-2",
+              "label": "Networking & RPC",
+              "sublabel": "Fundamentals"
+            },
+            {
+              "date": "Week 3-4",
+              "label": "Replication",
+              "sublabel": "Consistency models"
+            },
+            {
+              "date": "Week 5-6",
+              "label": "Consensus",
+              "sublabel": "Paxos and Raft"
+            },
+            {
+              "date": "Week 7-8",
+              "label": "Partitioning",
+              "sublabel": "Sharding strategies"
+            },
+            {
+              "date": "Week 9-10",
+              "label": "Fault Tolerance",
+              "sublabel": "Failure detection"
+            },
+            {
+              "date": "Week 11-12",
+              "label": "Transactions",
+              "sublabel": "Distributed"
+            },
+            {
+              "date": "Week 13-14",
+              "label": "Case Studies",
+              "sublabel": "Spanner, DynamoDB, Kafka"
+            },
+            {
+              "date": "Week 15",
+              "label": "Final Projects",
+              "sublabel": "Presentations"
+            }
+          ],
+          "axisLabel": "Course Timeline"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "training",
+    "theme": "organic-teal",
+    "recommendedAtoms": [
+      "progression",
+      "flow-chart",
+      "timeline"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4029,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 509,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0236244,
+    "elapsedSec": 8,
+    "generatedAt": "2026-07-05T05:46:51.430Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

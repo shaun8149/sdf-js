@@ -1,0 +1,795 @@
+{
+  "id": "_alpine-test",
+  "title": "anchored alpine — lesson 07",
+  "prompt": "山地植被锚定",
+  "sceneData": {
+    "v": 1,
+    "name": "anchored alpine (lesson 07)",
+    "defaults": {
+      "camera": {
+        "yaw": 0.5,
+        "pitch": -0.18,
+        "distance": 40,
+        "focal": 1.2,
+        "targetX": 0,
+        "targetY": 0,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": 0.7,
+        "altitude": 0.4,
+        "distance": 90,
+        "intensity": 1.2
+      }
+    },
+    "cameraSequence": {
+      "loop": false,
+      "shots": [
+        {
+          "duration": 999,
+          "pos": [8.495649819262326, 7.589782258348912, -9.619571679271758],
+          "target": [-3.5043501807376742, 0.589782258348912, -25.619571679271758],
+          "fov": 48
+        }
+      ]
+    },
+    "subjects": [
+      {
+        "id": "env-terrain",
+        "type": "terrain-elevated",
+        "args": {
+          "maxHeight": 9,
+          "scale": 0.02,
+          "ridgePower": 1.2,
+          "mountainness": 0.15
+        },
+        "transform": {
+          "translate": [0, 0.13872231902525944, 0]
+        }
+      },
+      {
+        "id": "conifer-alpine-stand-0-ph",
+        "type": "union",
+        "children": [
+          {
+            "id": "conifer-alpine-stand-0-ph-trunk",
+            "type": "cylinder",
+            "args": {
+              "radius": 0.16677356495943604,
+              "height": 3.1818441957845662
+            },
+            "transform": {
+              "translate": [0, 1.5909220978922831, 0]
+            },
+            "material": {
+              "hue": 0.10322861815802753,
+              "sat": 0.1777396356407553,
+              "value": 0.41606250167824327,
+              "metal": 0,
+              "glow": 0,
+              "kind": "normal",
+              "roughness": 0.9
+            }
+          },
+          {
+            "id": "conifer-alpine-stand-0-ph-c0",
+            "type": "ellipsoid",
+            "args": {
+              "dims": [1.8872233835004135, 2.675013574277044, 1.8872233835004135]
+            },
+            "transform": {
+              "translate": [0, 3.3729165939472123, 0]
+            },
+            "material": {
+              "hue": 0.4161153846234083,
+              "sat": 0.3848714342340827,
+              "value": 0.2467126736789942,
+              "metal": 0,
+              "glow": 0,
+              "kind": "normal",
+              "roughness": 0.85
+            }
+          },
+          {
+            "id": "conifer-alpine-stand-0-ph-c1",
+            "type": "ellipsoid",
+            "args": {
+              "dims": [1.0379728609252274, 2.4202503767268495, 1.0379728609252274]
+            },
+            "transform": {
+              "translate": [0, 6.239002566386903, 0]
+            },
+            "material": {
+              "hue": 0.4161153846234083,
+              "sat": 0.3848714342340827,
+              "value": 0.2467126736789942,
+              "metal": 0,
+              "glow": 0,
+              "kind": "normal",
+              "roughness": 0.85
+            }
+          }
+        ],
+        "transform": {
+          "translate": [-3.5043501807376742, -0.41021774165108804, -25.619571679271758],
+          "rotate": [0, 1.1577706084215942, 0]
+        }
+      },
+      {
+        "id": "conifer-alpine-stand-1-ph",
+        "type": "union",
+        "children": [
+          {
+            "id": "conifer-alpine-stand-1-ph-trunk",
+            "type": "cylinder",
+            "args": {
+              "radius": 0.12843027381698657,
+              "height": 2.4502991310822857
+            },
+            "transform": {
+              "translate": [0, 1.2251495655411428, 0]
+            },
+            "material": {
+              "hue": 0.10322861815802753,
+              "sat": 0.1777396356407553,
+              "value": 0.41606250167824327,
+              "metal": 0,
+              "glow": 0,
+              "kind": "normal",
+              "roughness": 0.9
+            }
+          },
+          {
+            "id": "conifer-alpine-stand-1-ph-c0",
+            "type": "ellipsoid",
+            "args": {
+              "dims": [1.4343226176587391, 2.0599950950986643, 1.4343226176587391]
+            },
+            "transform": {
+              "translate": [0, 2.5974416378750473, 0]
+            },
+            "material": {
+              "hue": 0.4161153846234083,
+              "sat": 0.3848714342340827,
+              "value": 0.2467126736789942,
+              "metal": 0,
+              "glow": 0,
+              "kind": "normal",
+              "roughness": 0.85
+            }
+          },
+          {
+            "id": "conifer-alpine-stand-1-ph-c1",
+            "type": "ellipsoid",
+            "args": {
+              "dims": [0.7888774397123066, 1.8638050860416486, 0.7888774397123066]
+            },
+            "transform": {
+              "translate": [0, 4.804579239766474, 0]
+            },
+            "material": {
+              "hue": 0.4161153846234083,
+              "sat": 0.3848714342340827,
+              "value": 0.2467126736789942,
+              "metal": 0,
+              "glow": 0,
+              "kind": "normal",
+              "roughness": 0.85
+            }
+          }
+        ],
+        "transform": {
+          "translate": [27.62221046257764, 1.3725449139593127, 3.3938613859936595],
+          "rotate": [0, 0.4866953177506763, 0]
+        }
+      },
+      {
+        "id": "conifer-alpine-stand-2-ph",
+        "type": "union",
+        "children": [
+          {
+            "id": "conifer-alpine-stand-2-ph-trunk",
+            "type": "cylinder",
+            "args": {
+              "radius": 0.1590317146555744,
+              "height": 3.034138763811779
+            },
+            "transform": {
+              "translate": [0, 1.5170693819058896, 0]
+            },
+            "material": {
+              "hue": 0.10322861815802753,
+              "sat": 0.1777396356407553,
+              "value": 0.41606250167824327,
+              "metal": 0,
+              "glow": 0,
+              "kind": "normal",
+              "roughness": 0.9
+            }
+          },
+          {
+            "id": "conifer-alpine-stand-2-ph-c0",
+            "type": "ellipsoid",
+            "args": {
+              "dims": [1.6246962834362502, 2.550835892652934, 1.6246962834362502]
+            },
+            "transform": {
+              "translate": [0, 3.216341327572703, 0]
+            },
+            "material": {
+              "hue": 0.4161153846234083,
+              "sat": 0.3848714342340827,
+              "value": 0.2467126736789942,
+              "metal": 0,
+              "glow": 0,
+              "kind": "normal",
+              "roughness": 0.85
+            }
+          },
+          {
+            "id": "conifer-alpine-stand-2-ph-c1",
+            "type": "ellipsoid",
+            "args": {
+              "dims": [0.8935829558899376, 2.3078991409717022, 0.8935829558899376]
+            },
+            "transform": {
+              "translate": [0, 5.949379783986561, 0]
+            },
+            "material": {
+              "hue": 0.4161153846234083,
+              "sat": 0.3848714342340827,
+              "value": 0.2467126736789942,
+              "metal": 0,
+              "glow": 0,
+              "kind": "normal",
+              "roughness": 0.85
+            }
+          }
+        ],
+        "transform": {
+          "translate": [-17.06374109722674, -0.06831007414229048, 6.333375913091004],
+          "rotate": [0, 1.8520840133846768, 0]
+        }
+      },
+      {
+        "id": "conifer-alpine-stand-3-ph",
+        "type": "union",
+        "children": [
+          {
+            "id": "conifer-alpine-stand-3-ph-trunk",
+            "type": "cylinder",
+            "args": {
+              "radius": 0.14588457525530052,
+              "height": 2.783306749744641
+            },
+            "transform": {
+              "translate": [0, 1.3916533748723205, 0]
+            },
+            "material": {
+              "hue": 0.10322861815802753,
+              "sat": 0.1777396356407553,
+              "value": 0.41606250167824327,
+              "metal": 0,
+              "glow": 0,
+              "kind": "normal",
+              "roughness": 0.9
+            }
+          },
+          {
+            "id": "conifer-alpine-stand-3-ph-c0",
+            "type": "ellipsoid",
+            "args": {
+              "dims": [1.6531135208392511, 2.339958489107598, 1.6531135208392511]
+            },
+            "transform": {
+              "translate": [0, 2.9504466418237554, 0]
+            },
+            "material": {
+              "hue": 0.4161153846234083,
+              "sat": 0.3848714342340827,
+              "value": 0.2467126736789942,
+              "metal": 0,
+              "glow": 0,
+              "kind": "normal",
+              "roughness": 0.85
+            }
+          },
+          {
+            "id": "conifer-alpine-stand-3-ph-c1",
+            "type": "ellipsoid",
+            "args": {
+              "dims": [0.9092124364615882, 2.1171052996687796, 0.9092124364615882]
+            },
+            "transform": {
+              "translate": [0, 5.457545023010468, 0]
+            },
+            "material": {
+              "hue": 0.4161153846234083,
+              "sat": 0.3848714342340827,
+              "value": 0.2467126736789942,
+              "metal": 0,
+              "glow": 0,
+              "kind": "normal",
+              "roughness": 0.85
+            }
+          }
+        ],
+        "transform": {
+          "translate": [2.607910428196192, -0.3671090387778233, -23.677916675806046],
+          "rotate": [0, 3.8155071551881, 0]
+        }
+      },
+      {
+        "id": "conifer-alpine-stand-4-ph",
+        "type": "union",
+        "children": [
+          {
+            "id": "conifer-alpine-stand-4-ph-trunk",
+            "type": "cylinder",
+            "args": {
+              "radius": 0.1894900927630797,
+              "height": 3.615248927271735
+            },
+            "transform": {
+              "translate": [0, 1.8076244636358676, 0]
+            },
+            "material": {
+              "hue": 0.10322861815802753,
+              "sat": 0.1777396356407553,
+              "value": 0.41606250167824327,
+              "metal": 0,
+              "glow": 0,
+              "kind": "normal",
+              "roughness": 0.9
+            }
+          },
+          {
+            "id": "conifer-alpine-stand-4-ph-c0",
+            "type": "ellipsoid",
+            "args": {
+              "dims": [2.268156556556531, 3.039381993516442, 2.268156556556531]
+            },
+            "transform": {
+              "translate": [0, 3.832347641094339, 0]
+            },
+            "material": {
+              "hue": 0.4161153846234083,
+              "sat": 0.3848714342340827,
+              "value": 0.2467126736789942,
+              "metal": 0,
+              "glow": 0,
+              "kind": "normal",
+              "roughness": 0.85
+            }
+          },
+          {
+            "id": "conifer-alpine-stand-4-ph-c1",
+            "type": "ellipsoid",
+            "args": {
+              "dims": [1.247486106106092, 2.7499170417529712, 1.247486106106092]
+            },
+            "transform": {
+              "translate": [0, 7.088828348433384, 0]
+            },
+            "material": {
+              "hue": 0.4161153846234083,
+              "sat": 0.3848714342340827,
+              "value": 0.2467126736789942,
+              "metal": 0,
+              "glow": 0,
+              "kind": "normal",
+              "roughness": 0.85
+            }
+          }
+        ],
+        "transform": {
+          "translate": [-3.4766431991010904, -0.8089520882779837, -6.055085412226617],
+          "rotate": [0, 1.9256945679254533, 0]
+        }
+      },
+      {
+        "id": "conifer-alpine-stand-5-ph",
+        "type": "union",
+        "children": [
+          {
+            "id": "conifer-alpine-stand-5-ph-trunk",
+            "type": "cylinder",
+            "args": {
+              "radius": 0.1593121908783687,
+              "height": 3.0394899214833844
+            },
+            "transform": {
+              "translate": [0, 1.5197449607416922, 0]
+            },
+            "material": {
+              "hue": 0.10322861815802753,
+              "sat": 0.1777396356407553,
+              "value": 0.41606250167824327,
+              "metal": 0,
+              "glow": 0,
+              "kind": "normal",
+              "roughness": 0.9
+            }
+          },
+          {
+            "id": "conifer-alpine-stand-5-ph-c0",
+            "type": "ellipsoid",
+            "args": {
+              "dims": [1.5013003145172799, 2.5553346734004654, 1.5013003145172799]
+            },
+            "transform": {
+              "translate": [0, 3.222013826726275, 0]
+            },
+            "material": {
+              "hue": 0.4161153846234083,
+              "sat": 0.3848714342340827,
+              "value": 0.2467126736789942,
+              "metal": 0,
+              "glow": 0,
+              "kind": "normal",
+              "roughness": 0.85
+            }
+          },
+          {
+            "id": "conifer-alpine-stand-5-ph-c1",
+            "type": "ellipsoid",
+            "args": {
+              "dims": [0.825715172984504, 2.311969466409945, 0.825715172984504]
+            },
+            "transform": {
+              "translate": [0, 5.959872405369631, 0]
+            },
+            "material": {
+              "hue": 0.4161153846234083,
+              "sat": 0.3848714342340827,
+              "value": 0.2467126736789942,
+              "metal": 0,
+              "glow": 0,
+              "kind": "normal",
+              "roughness": 0.85
+            }
+          }
+        ],
+        "transform": {
+          "translate": [-0.03858055919408798, -0.5590276554023375, -14.773501362651587],
+          "rotate": [0, 1.8974199397508411, 0]
+        }
+      },
+      {
+        "id": "conifer-alpine-stand-6-ph",
+        "type": "union",
+        "children": [
+          {
+            "id": "conifer-alpine-stand-6-ph-trunk",
+            "type": "cylinder",
+            "args": {
+              "radius": 0.1799775151862866,
+              "height": 3.4337600938524133
+            },
+            "transform": {
+              "translate": [0, 1.7168800469262067, 0]
+            },
+            "material": {
+              "hue": 0.10322861815802753,
+              "sat": 0.1777396356407553,
+              "value": 0.41606250167824327,
+              "metal": 0,
+              "glow": 0,
+              "kind": "normal",
+              "roughness": 0.9
+            }
+          },
+          {
+            "id": "conifer-alpine-stand-6-ph-c0",
+            "type": "ellipsoid",
+            "args": {
+              "dims": [1.921612218027595, 2.8868022117598175, 1.921612218027595]
+            },
+            "transform": {
+              "translate": [0, 3.639960251835258, 0]
+            },
+            "material": {
+              "hue": 0.4161153846234083,
+              "sat": 0.3848714342340827,
+              "value": 0.2467126736789942,
+              "metal": 0,
+              "glow": 0,
+              "kind": "normal",
+              "roughness": 0.85
+            }
+          },
+          {
+            "id": "conifer-alpine-stand-6-ph-c1",
+            "type": "ellipsoid",
+            "args": {
+              "dims": [1.0568867199151772, 2.611868667782692, 1.0568867199151772]
+            },
+            "transform": {
+              "translate": [0, 6.7329626215779195, 0]
+            },
+            "material": {
+              "hue": 0.4161153846234083,
+              "sat": 0.3848714342340827,
+              "value": 0.2467126736789942,
+              "metal": 0,
+              "glow": 0,
+              "kind": "normal",
+              "roughness": 0.85
+            }
+          }
+        ],
+        "transform": {
+          "translate": [17.51613209489733, -0.2709702416048793, 5.560423834249377],
+          "rotate": [0, 3.3306338726467892, 0]
+        }
+      },
+      {
+        "id": "conifer-alpine-stand-7-ph",
+        "type": "union",
+        "children": [
+          {
+            "id": "conifer-alpine-stand-7-ph-trunk",
+            "type": "cylinder",
+            "args": {
+              "radius": 0.13002674613771312,
+              "height": 2.480757952231009
+            },
+            "transform": {
+              "translate": [0, 1.2403789761155044, 0]
+            },
+            "material": {
+              "hue": 0.10322861815802753,
+              "sat": 0.1777396356407553,
+              "value": 0.41606250167824327,
+              "metal": 0,
+              "glow": 0,
+              "kind": "normal",
+              "roughness": 0.9
+            }
+          },
+          {
+            "id": "conifer-alpine-stand-7-ph-c0",
+            "type": "ellipsoid",
+            "args": {
+              "dims": [1.3154520065876518, 2.0856021817489965, 1.3154520065876518]
+            },
+            "transform": {
+              "translate": [0, 2.6297295366416518, 0]
+            },
+            "material": {
+              "hue": 0.4161153846234083,
+              "sat": 0.3848714342340827,
+              "value": 0.2467126736789942,
+              "metal": 0,
+              "glow": 0,
+              "kind": "normal",
+              "roughness": 0.85
+            }
+          },
+          {
+            "id": "conifer-alpine-stand-7-ph-c1",
+            "type": "ellipsoid",
+            "args": {
+              "dims": [0.7234986036232086, 1.8869734025348062, 0.7234986036232086]
+            },
+            "transform": {
+              "translate": [0, 4.86430330280129, 0]
+            },
+            "material": {
+              "hue": 0.4161153846234083,
+              "sat": 0.3848714342340827,
+              "value": 0.2467126736789942,
+              "metal": 0,
+              "glow": 0,
+              "kind": "normal",
+              "roughness": 0.85
+            }
+          }
+        ],
+        "transform": {
+          "translate": [-28.917295555584133, 0.7365866375209295, 0.8406435046344995],
+          "rotate": [0, 0.8836125423291254, 0]
+        }
+      },
+      {
+        "id": "conifer-alpine-stand-8-ph",
+        "type": "union",
+        "children": [
+          {
+            "id": "conifer-alpine-stand-8-ph-trunk",
+            "type": "cylinder",
+            "args": {
+              "radius": 0.16882603802954732,
+              "height": 3.221002976894307
+            },
+            "transform": {
+              "translate": [0, 1.6105014884471536, 0]
+            },
+            "material": {
+              "hue": 0.10322861815802753,
+              "sat": 0.1777396356407553,
+              "value": 0.41606250167824327,
+              "metal": 0,
+              "glow": 0,
+              "kind": "normal",
+              "roughness": 0.9
+            }
+          },
+          {
+            "id": "conifer-alpine-stand-8-ph-c0",
+            "type": "ellipsoid",
+            "args": {
+              "dims": [1.5513504320904077, 2.707934818868303, 1.5513504320904077]
+            },
+            "transform": {
+              "translate": [0, 3.414426892527757, 0]
+            },
+            "material": {
+              "hue": 0.4161153846234083,
+              "sat": 0.3848714342340827,
+              "value": 0.2467126736789942,
+              "metal": 0,
+              "glow": 0,
+              "kind": "normal",
+              "roughness": 0.85
+            }
+          },
+          {
+            "id": "conifer-alpine-stand-8-ph-c1",
+            "type": "ellipsoid",
+            "args": {
+              "dims": [0.8532427376497242, 2.4500362646903695, 0.8532427376497242]
+            },
+            "transform": {
+              "translate": [0, 6.31578562702951, 0]
+            },
+            "material": {
+              "hue": 0.4161153846234083,
+              "sat": 0.3848714342340827,
+              "value": 0.2467126736789942,
+              "metal": 0,
+              "glow": 0,
+              "kind": "normal",
+              "roughness": 0.85
+            }
+          }
+        ],
+        "transform": {
+          "translate": [14.71973308827728, 0.474961128227804, 13.359888377599418],
+          "rotate": [0, 4.635785405172588, 0]
+        }
+      },
+      {
+        "id": "conifer-alpine-stand-9-ph",
+        "type": "union",
+        "children": [
+          {
+            "id": "conifer-alpine-stand-9-ph-trunk",
+            "type": "cylinder",
+            "args": {
+              "radius": 0.1546699547952858,
+              "height": 2.9509214967452575
+            },
+            "transform": {
+              "translate": [0, 1.4754607483726287, 0]
+            },
+            "material": {
+              "hue": 0.10322861815802753,
+              "sat": 0.1777396356407553,
+              "value": 0.41606250167824327,
+              "metal": 0,
+              "glow": 0,
+              "kind": "normal",
+              "roughness": 0.9
+            }
+          },
+          {
+            "id": "conifer-alpine-stand-9-ph-c0",
+            "type": "ellipsoid",
+            "args": {
+              "dims": [1.7897564671396153, 2.480874164384748, 1.7897564671396153]
+            },
+            "transform": {
+              "translate": [0, 3.128126794201311, 0]
+            },
+            "material": {
+              "hue": 0.4161153846234083,
+              "sat": 0.3848714342340827,
+              "value": 0.2467126736789942,
+              "metal": 0,
+              "glow": 0,
+              "kind": "normal",
+              "roughness": 0.85
+            }
+          },
+          {
+            "id": "conifer-alpine-stand-9-ph-c1",
+            "type": "ellipsoid",
+            "args": {
+              "dims": [0.9843660569267885, 2.2446004344433437, 0.9843660569267885]
+            },
+            "transform": {
+              "translate": [0, 5.786206256042112, 0]
+            },
+            "material": {
+              "hue": 0.4161153846234083,
+              "sat": 0.3848714342340827,
+              "value": 0.2467126736789942,
+              "metal": 0,
+              "glow": 0,
+              "kind": "normal",
+              "roughness": 0.85
+            }
+          }
+        ],
+        "transform": {
+          "translate": [9.492001491598785, -0.7002540729161415, -14.698917609639466],
+          "rotate": [0, 2.5961487240607677, 0]
+        }
+      },
+      {
+        "id": "boulder-alpine-rocks-0-ph",
+        "type": "rounded_box",
+        "args": {
+          "dims": [2.107817227928264, 0.2858495643653876, 2.2446887702321545],
+          "cornerR": 0.05002367376394283
+        },
+        "transform": {
+          "translate": [5.124701703898609, 1.0328777855563127, 23.575672949664295],
+          "rotate": [0, 3.021169198886679, 0]
+        },
+        "material": {
+          "hue": 0.5788651568256319,
+          "sat": 0.18298931427299975,
+          "value": 0.25639710810035465,
+          "metal": 0,
+          "glow": 0,
+          "kind": "normal",
+          "roughness": 0.8779448803281411
+        }
+      },
+      {
+        "id": "boulder-alpine-rocks-1-ph",
+        "type": "rounded_box",
+        "args": {
+          "dims": [1.098383085199569, 0.2506132524818219, 1.9082976350888743],
+          "cornerR": 0.04385731918431884
+        },
+        "transform": {
+          "translate": [25.118711474351585, 0.9383419388865007, -4.2916520638391376],
+          "rotate": [0, 4.591233349812083, 0]
+        },
+        "material": {
+          "hue": 0.5788651568256319,
+          "sat": 0.18298931427299975,
+          "value": 0.25639710810035465,
+          "metal": 0,
+          "glow": 0,
+          "kind": "normal",
+          "roughness": 0.8779448803281411
+        }
+      },
+      {
+        "id": "boulder-alpine-rocks-2-ph",
+        "type": "rounded_box",
+        "args": {
+          "dims": [2.4663427844316486, 0.30655617523280826, 1.1311153934128535],
+          "cornerR": 0.05364733066574144
+        },
+        "transform": {
+          "translate": [-21.3863419694826, 2.6006033089141485, 22.578299744054675],
+          "rotate": [0, 4.482251874799065, 0]
+        },
+        "material": {
+          "hue": 0.5788651568256319,
+          "sat": 0.18298931427299975,
+          "value": 0.25639710810035465,
+          "metal": 0,
+          "glow": 0,
+          "kind": "normal",
+          "roughness": 0.8779448803281411
+        }
+      }
+    ]
+  }
+}

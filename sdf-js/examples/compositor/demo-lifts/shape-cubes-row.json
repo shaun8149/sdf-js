@@ -1,0 +1,66 @@
+{
+  "id": "shape-cubes-row",
+  "title": "Cubes · Connected row",
+  "prompt": "cubes: Cubes · Connected row",
+  "code2d": "// vision-authored showcase — PresentationLoad shape category \"cubes\".",
+  "sceneData": {
+    "v": 1,
+    "name": "Cubes · Connected row",
+    "source": {
+      "format": "vision-authored",
+      "prompt": "cubes shape showcase"
+    },
+    "subjects": [
+      {
+        "id": "s0",
+        "type": "cube-3d",
+        "args": {
+          "count": 4,
+          "arrangement": "row",
+          "cubeSize": 0.62,
+          "spacing": 0.5,
+          "connector": "pipe-through"
+        },
+        "transform": {
+          "translate": [0, 0.6, 0]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.72,
+          "metal": 0.3,
+          "glow": 0
+        }
+      }
+    ],
+    "defaults": {
+      "camera": {
+        "yaw": 0.5,
+        "pitch": 0.3,
+        "distance": 10,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 0.6,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": 0.6,
+        "altitude": 0.55,
+        "distance": 25,
+        "intensity": 1.2
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.4
+      },
+      "studioBg": "dark"
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-06-21",
+    "model": "vision-authored",
+    "pattern": "cubes",
+    "costUSD": 0
+  }
+}

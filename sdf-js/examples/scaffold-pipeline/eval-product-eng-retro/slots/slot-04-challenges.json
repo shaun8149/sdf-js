@@ -1,0 +1,151 @@
+{
+  "slotIdx": 4,
+  "slotName": "challenges",
+  "slotTitle": "Challenges",
+  "slotPurpose": "What did not go to plan",
+  "sourceSlideIdx": 2,
+  "sourceSlideTitle": "Incidents & Postmortems",
+  "sceneData": {
+    "name": "qbr/challenges",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Challenges",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "risk-heatmap",
+        "x": 40,
+        "y": 160,
+        "w": 580,
+        "h": 520,
+        "args": {
+          "title": "Incident Severity Distribution",
+          "xAxis": "Frequency",
+          "yAxis": "Impact",
+          "xLabels": [
+            "Rare",
+            "Occasional",
+            "Frequent"
+          ],
+          "yLabels": [
+            "Low",
+            "Medium",
+            "High",
+            "Critical"
+          ],
+          "risks": [
+            {
+              "x": 0,
+              "y": 3,
+              "label": "Payment webhook queue backup",
+              "severity": "high",
+              "description": "Aug 14, 47 min downtime"
+            },
+            {
+              "x": 1,
+              "y": 2,
+              "label": "Auth token expiry bug",
+              "severity": "medium"
+            },
+            {
+              "x": 1,
+              "y": 2,
+              "label": "DB connection pool exhaustion",
+              "severity": "medium"
+            }
+          ]
+        }
+      },
+      {
+        "type": "fishbone",
+        "x": 660,
+        "y": 160,
+        "w": 580,
+        "h": 340,
+        "args": {
+          "effect": "6 incidents this quarter",
+          "branches": [
+            {
+              "label": "Testing Gap",
+              "causes": [
+                "Insufficient load testing",
+                "4 of 6 traced to pre-release"
+              ]
+            },
+            {
+              "label": "Infrastructure",
+              "causes": [
+                "Queue backup",
+                "Connection pool limits"
+              ]
+            },
+            {
+              "label": "Auth System",
+              "causes": [
+                "Token expiry bug"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 660,
+        "y": 516,
+        "w": 580,
+        "h": 164,
+        "args": {
+          "title": "Actions Taken",
+          "items": [
+            {
+              "icon": "check-circle",
+              "label": "Mandatory load-test gate added",
+              "sublabel": "Starting Q4 release checklist",
+              "status": "done"
+            },
+            {
+              "icon": "chart-line-down",
+              "label": "Incidents down -45% (11→6)",
+              "status": "highlight"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "qbr",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "risk-heatmap",
+      "bullet-list",
+      "fishbone",
+      "waterfall"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5219,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 756,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0308994,
+    "elapsedSec": 13.3,
+    "generatedAt": "2026-07-10T07:24:27.466Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

@@ -21,6 +21,7 @@
 import { rounded_box, wireframe_box, capsule } from '../../../sdf/d3.js';
 import { union } from '../../../sdf/dn.js';
 import { text3dPipeSDF, text3dExtrudedSDF } from '../typography/text-3d.js';
+import { resolveMaterial } from '../../spec.js';
 
 // ---- Arrangements -----------------------------------------------------------
 // Each arrangement returns an array of cube positions [x, y, z] for indices
@@ -271,6 +272,13 @@ export function cube3dSDF({
       if (rz) cube = cube.rotate(rz, [0, 0, 1]);
     }
     cube = cube.translate(effectivePositions[i]);
+    // Per-cube colour: colors[i] mirrors `material` (preset name or {hue,sat,value})
+    // and rides as a per-leaf _subjectMaterial so one subject carries N colours
+    // (flattenUnion's child-overrides-parent rule; survives the compile push-down).
+    if (colors && colors[i] != null) {
+      const m = resolveMaterial(colors[i]);
+      if (m) cube._subjectMaterial = m;
+    }
     cubes.push(cube);
   }
 

@@ -21,6 +21,9 @@
 // =============================================================================
 
 import { SDF3 } from '../../../../sdf/core.js';
+import { box } from '../../../../sdf/d3.js';
+import { union } from '../../../../sdf/dn.js';
+import { resolveMaterial } from '../../../spec.js';
 
 /**
  * Multi-level parametric pyramid SDF.
@@ -40,10 +43,29 @@ export function pyramid3dSDF({
   layerHeight = 0.3,
   gap = 0.05,
   depth = 0.6,
+  colors = null,
 } = {}) {
   // Clamp levels to [1, 20] (GPU loop is unrolled to 20)
   const N = Math.max(1, Math.min(20, Math.floor(levels)));
   const totalH = N * layerHeight + (N - 1) * gap;
+
+  // per-leaf colours: same tiers as a union of coloured boxes (only when colors[] given;
+  // the fused no-colours path below is untouched so existing behaviour/tests are stable).
+  if (Array.isArray(colors) && colors.length) {
+    const parts = [];
+    for (let i = 0; i < N; i++) {
+      const t = N > 1 ? i / (N - 1) : 0;
+      const w = baseWidth + t * (topWidth - baseWidth);
+      const yc = i * (layerHeight + gap) - totalH / 2 + layerHeight / 2;
+      const tier = box([w, layerHeight, depth]).translate([0, yc, 0]);
+      if (colors[i] != null) {
+        const m = resolveMaterial(colors[i]);
+        if (m) tier._subjectMaterial = m;
+      }
+      parts.push(tier);
+    }
+    return parts.length === 1 ? parts[0] : union(...parts);
+  }
 
   const inst = SDF3((p) => {
     let minDist = Infinity;

@@ -1,1 +1,11 @@
+# Block direct commits on main — the PR workflow is squash-merge only, and
+# after every `gh pr merge` the local checkout lands back on main, where an
+# agent's next commit silently pollutes it (happened four times before this
+# guard). Escape hatch: ALLOW_MAIN=1 git commit ...
+branch="$(git branch --show-current)"
+if [ "$branch" = "main" ] && [ -z "$ALLOW_MAIN" ]; then
+  echo "✗ direct commit on main blocked — create a feature branch first (or ALLOW_MAIN=1 to override)" >&2
+  exit 1
+fi
+
 npx lint-staged

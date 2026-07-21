@@ -1,0 +1,36 @@
+{
+  "id": "deck-rec-marketing",
+  "name": "Marketing Toolbox",
+  "segments": [
+    {
+      "file": "rec-marketing-1.json",
+      "title": "Marketing Mix",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-marketing-2.json",
+      "title": "AIDA Funnel",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-marketing-3.json",
+      "title": "Channel Mix",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-marketing-4.json",
+      "title": "Campaign",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-marketing-5.json",
+      "title": "Segments",
+      "kind": "slide",
+      "durationSec": 7
+    }
+  ]
+}

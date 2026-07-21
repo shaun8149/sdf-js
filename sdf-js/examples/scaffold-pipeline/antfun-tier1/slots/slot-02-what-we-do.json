@@ -1,0 +1,114 @@
+{
+  "slotIdx": 2,
+  "slotName": "what-we-do",
+  "slotTitle": "What We Do",
+  "slotPurpose": "Products + service overview",
+  "sourceSlideIdx": 2,
+  "sourceSlideTitle": "Market Opportunity",
+  "sceneData": {
+    "name": "company-overview/what-we-do",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "What We Do"
+        }
+      },
+      {
+        "type": "icon-grid",
+        "x": 40,
+        "y": 160,
+        "w": 580,
+        "h": 500,
+        "args": {
+          "title": "User Groups",
+          "items": [
+            {
+              "icon": "currency-btc",
+              "label": "Crypto Traders",
+              "sublabel": "Frustrated by slow wallets"
+            },
+            {
+              "icon": "chart-line-up",
+              "label": "DeFi Power Users",
+              "sublabel": "Need unified UX"
+            },
+            {
+              "icon": "users",
+              "label": "Mainstream Users",
+              "sublabel": "Want wallet + trading combined"
+            },
+            {
+              "icon": "lightbulb",
+              "label": "Smart Money",
+              "sublabel": "Follow on-chain alpha"
+            }
+          ]
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 660,
+        "y": 160,
+        "w": 580,
+        "h": 500,
+        "args": {
+          "title": "Core Differentiators",
+          "items": [
+            {
+              "icon": "lightning",
+              "label": "Sub-second DEX execution"
+            },
+            {
+              "icon": "robot",
+              "label": "AI strategy automation"
+            },
+            {
+              "icon": "lock-key",
+              "label": "Self-custodial speed"
+            },
+            {
+              "icon": "chats-circle",
+              "label": "Community alpha-sharing chat"
+            },
+            {
+              "icon": "microphone",
+              "label": "Live trading audio rooms"
+            },
+            {
+              "icon": "code",
+              "label": "Open API ecosystem"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "company-overview",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["flow-chart", "magazine-column-grid", "icon-row", "bullet-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 2218,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 5921,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 582,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0171603,
+    "elapsedSec": 7.6,
+    "generatedAt": "2026-06-24T03:58:27.567Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

@@ -1,0 +1,94 @@
+{
+ "slotIdx": 4,
+ "slotName": "theme-1-detail",
+ "slotTitle": "Theme 1 — Detail",
+ "sourceSlideIdx": 4,
+ "sceneData": {
+  "name": "news-briefing/theme-1-detail",
+  "layout": "grid",
+  "subjects": [
+   {
+    "type": "cover",
+    "x": 0,
+    "y": 0,
+    "w": 1280,
+    "h": 120,
+    "args": {
+     "title": "计价资产与自动路由"
+    }
+   },
+   {
+    "type": "bullet-list",
+    "x": 40,
+    "y": 160,
+    "w": 580,
+    "h": 520,
+    "args": {
+     "title": "核心机制",
+     "items": [
+      {
+       "icon": "currency-circle-dollar",
+       "label": "内盘 quote 资产为 ANT",
+       "sublabel": "collect_fee_mode = 0 仅以 ANT 收费"
+      },
+      {
+       "icon": "arrows-merge",
+       "label": "前端原子兑换 SOL/USDT → ANT",
+       "sublabel": "用户无需预先持有 ANT"
+      },
+      {
+       "icon": "arrow-u-left-down",
+       "label": "卖出方向可选一键换回 USDT"
+      },
+      {
+       "icon": "waves",
+       "label": "前置条件: ANT/USDT 与 ANT/SOL 主池深度",
+       "sublabel": "需支撑路由滑点"
+      }
+     ]
+    }
+   },
+   {
+    "type": "bullet-list",
+    "x": 660,
+    "y": 160,
+    "w": 580,
+    "h": 520,
+    "args": {
+     "title": "毕业门槛机制",
+     "items": [
+      {
+       "icon": "currency-dollar",
+       "label": "毕业门槛以 ANT 计, 锚定美元",
+       "sublabel": "初值 = 定稿日 65 SOL 美元价值向整数取整"
+      },
+      {
+       "icon": "link",
+       "label": "双链统一口径",
+       "sublabel": "不再以 SOL 为锚"
+      },
+      {
+       "icon": "arrows-clockwise",
+       "label": "配置代际机制",
+       "sublabel": "每周或 ANT/USDT 24h TWAP 偏移超 ±15% 时按当时价格换算"
+      },
+      {
+       "icon": "shield-check",
+       "label": "热路径无预言机、无外部依赖",
+       "sublabel": "漂移限制在代际周期之内"
+      }
+     ]
+    }
+   }
+  ]
+ },
+ "meta": {
+  "bakedBy": "validate-auto-scaffold",
+  "model": "live"
+ },
+ "sectionAccent": [
+  96,
+  132,
+  92
+ ]
+}

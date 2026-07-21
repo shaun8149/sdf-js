@@ -1,0 +1,66 @@
+{
+  "id": "shape-circles-stack",
+  "title": "Circles · Tiered stack",
+  "prompt": "circles: Circles · Tiered stack",
+  "code2d": "// vision-authored showcase — PresentationLoad shape category \"circles\".",
+  "sceneData": {
+    "v": 1,
+    "name": "Circles · Tiered stack",
+    "source": {
+      "format": "vision-authored",
+      "prompt": "circles shape showcase"
+    },
+    "subjects": [
+      {
+        "id": "s0",
+        "type": "circle-stack-3d",
+        "args": {
+          "count": 4,
+          "radius": 0.85,
+          "taper": 0.8,
+          "diskHeight": 0.2,
+          "gap": 0.1
+        },
+        "transform": {
+          "translate": [0, 0.5, 0]
+        },
+        "material": {
+          "hue": 0.48,
+          "sat": 0.7,
+          "value": 0.7,
+          "metal": 0.25,
+          "glow": 0
+        }
+      }
+    ],
+    "defaults": {
+      "camera": {
+        "yaw": 0.5,
+        "pitch": 0.3,
+        "distance": 10,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 0.5,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": 0.6,
+        "altitude": 0.55,
+        "distance": 25,
+        "intensity": 1.2
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.4
+      },
+      "studioBg": "dark"
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-06-21",
+    "model": "vision-authored",
+    "pattern": "circles",
+    "costUSD": 0
+  }
+}

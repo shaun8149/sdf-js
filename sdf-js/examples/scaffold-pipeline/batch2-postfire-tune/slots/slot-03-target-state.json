@@ -1,0 +1,101 @@
+{
+  "slotIdx": 3,
+  "slotName": "target-state",
+  "slotTitle": "Target State",
+  "slotPurpose": "To-be vision — what success looks like",
+  "sourceSlideIdx": 6,
+  "sourceSlideTitle": "Tier Comparison: Current vs Target vs Future State",
+  "sceneData": {
+    "name": "change-roadmap/target-state",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Target State",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "comparison-table",
+        "x": 60,
+        "y": 160,
+        "w": 1160,
+        "h": 520,
+        "args": {
+          "title": "12-Month Transformation Goals",
+          "columns": [
+            {
+              "label": "Dimension",
+              "width": 0.25
+            },
+            {
+              "label": "Current",
+              "width": 0.25
+            },
+            {
+              "label": "Target (12mo)",
+              "width": 0.25
+            },
+            {
+              "label": "Future (3yr)",
+              "width": 0.25
+            }
+          ],
+          "features": [
+            {
+              "label": "Process Automation",
+              "values": ["Manual", "Semi-Auto", "Full Auto"]
+            },
+            {
+              "label": "Real-time Data",
+              "values": [false, true, true]
+            },
+            {
+              "label": "Customer Self-Service",
+              "values": ["Limited", "Core Flows", "Complete"]
+            },
+            {
+              "label": "AI Decision Support",
+              "values": [false, "Pilot", "Enterprise"]
+            },
+            {
+              "label": "API Ecosystem",
+              "values": ["None", "REST v1", "GraphQL + Events"]
+            },
+            {
+              "label": "Cloud-native Architecture",
+              "values": [false, "Hybrid", true]
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "change-roadmap",
+    "theme": "consulting-charcoal",
+    "recommendedAtoms": ["bullet-list", "icon-grid", "kpi-card"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 3313,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 11000,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 468,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.020259,
+    "elapsedSec": 7.5,
+    "generatedAt": "2026-06-25T05:00:43.593Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

@@ -27,6 +27,9 @@ const TESTS = [
   { category: 'smoke', file: 'sdf-js/test/smoke.mjs' },
   { category: 'smoke', file: 'sdf-js/test/smoke2d.mjs' },
   { category: 'smoke', file: 'sdf-js/test/scene-smoke.mjs' },
+  { category: 'smoke', file: 'sdf-js/scripts/test-glsl-prune.mjs' },
+  { category: 'smoke', file: 'sdf-js/scripts/test-uniform-args.mjs' },
+  { category: 'smoke', file: 'sdf-js/scripts/test-feature-gates.mjs' },
 
   // Geometry sanity checker (M5 prereq)
   { category: 'sanity', file: 'sdf-js/scripts/test-sanity.mjs' },
@@ -55,6 +58,7 @@ const TESTS = [
   { category: 'math', file: 'sdf-js/scripts/test-extra.mjs' },
   // IQ-shader program W13 — gap-fill (2D bbox, multires/box AO, GI, implicit dist)
   { category: 'math', file: 'sdf-js/scripts/test-gaps.mjs' },
+  { category: 'math', file: 'sdf-js/scripts/test-expr-anim-builtins.mjs' },
 
   // M7 world runtime — determinism CI (the foundation Fable 5 asked for)
   { category: 'world', file: 'sdf-js/scripts/world/test-determinism.mjs' },
@@ -63,6 +67,9 @@ const TESTS = [
   { category: 'scene', file: 'sdf-js/scripts/test-composite-atoms.mjs' },
   { category: 'scene', file: 'sdf-js/scripts/test-type-aliases.mjs' },
   { category: 'scene', file: 'sdf-js/scripts/test-gbms-batch.mjs' },
+  { category: 'scene', file: 'sdf-js/scripts/test-primitive-registry-sync.mjs' },
+  { category: 'scene', file: 'sdf-js/scripts/test-stage.mjs' },
+  { category: 'scene', file: 'sdf-js/scripts/test-apply-studio-scene.mjs' },
 
   // Generator-S (Phase 2 ops: array, mirror)
   { category: 'generator', file: 'sdf-js/scripts/test-generator-s.mjs' },
@@ -133,6 +140,55 @@ const TESTS = [
   { category: 'diagram', file: 'sdf-js/scripts/test-waterfall-3d.mjs' },
   { category: 'diagram', file: 'sdf-js/scripts/test-scatter-3d.mjs' },
   { category: 'diagram', file: 'sdf-js/scripts/test-gantt-3d.mjs' },
+  { category: 'diagram', file: 'sdf-js/scripts/test-gauge-3d.mjs' },
+  { category: 'diagram', file: 'sdf-js/scripts/test-funnel-3d-radii.mjs' },
+  { category: 'scene', file: 'sdf-js/scripts/test-chart-labels.mjs' },
+  { category: 'scene', file: 'sdf-js/scripts/test-lift-2d-to-3d.mjs' },
+  { category: 'scene', file: 'sdf-js/scripts/test-lift-scaffold.mjs' },
+  { category: 'scene', file: 'sdf-js/scripts/test-ir.mjs' },
+  { category: 'scene', file: 'sdf-js/scripts/test-render-sequence.mjs' },
+  { category: 'scene', file: 'sdf-js/scripts/test-stage-preset.mjs' },
+  { category: 'scene', file: 'sdf-js/scripts/test-render-matrix.mjs' },
+  { category: 'scene', file: 'sdf-js/scripts/test-beats.mjs' },
+  { category: 'scene', file: 'sdf-js/scripts/test-script-spans.mjs' },
+  { category: 'scene', file: 'sdf-js/scripts/test-atlas-deck-handoff.mjs' },
+  { category: 'scene', file: 'sdf-js/scripts/audit-handoff-fidelity.mjs' },
+  { category: 'scene', file: 'sdf-js/scripts/test-deck-windows.mjs' },
+  { category: 'scene', file: 'sdf-js/scripts/test-render-hold.mjs' },
+  { category: 'scene', file: 'sdf-js/scripts/test-analytic-renderer.mjs' },
+  { category: 'scene', file: 'sdf-js/scripts/test-render-hierarchy.mjs' },
+  { category: 'scene', file: 'sdf-js/scripts/test-render-network.mjs' },
+  { category: 'scene', file: 'sdf-js/scripts/test-render-magnitude.mjs' },
+  { category: 'scene', file: 'sdf-js/scripts/test-assemble-deck.mjs' },
+  { category: 'scene', file: 'sdf-js/scripts/test-assemble-deck-golden.mjs' },
+  { category: 'scene', file: 'sdf-js/scripts/test-deck-decor.mjs' },
+  { category: 'scene', file: 'sdf-js/scripts/test-layout-tokens.mjs' },
+  { category: 'scene', file: 'sdf-js/scripts/test-tempo-tokens.mjs' },
+  { category: 'scene', file: 'sdf-js/scripts/test-courtyard.mjs' },
+  { category: 'scene', file: 'sdf-js/scripts/test-scene-collections.mjs' },
+  { category: 'scene', file: 'sdf-js/scripts/test-modifiers.mjs' },
+  { category: 'scene', file: 'sdf-js/scripts/test-domain-lowering.mjs' },
+  { category: 'scene', file: 'sdf-js/scripts/test-boulder-factory.mjs' },
+  { category: 'scene', file: 'sdf-js/scripts/test-asset-collection.mjs' },
+  { category: 'scene', file: 'sdf-js/scripts/test-conifer-factory.mjs' },
+  { category: 'scene', file: 'sdf-js/scripts/test-material-slots.mjs' },
+  { category: 'scene', file: 'sdf-js/scripts/test-density-scatter.mjs' },
+  { category: 'scene', file: 'sdf-js/scripts/test-terrain-anchor.mjs' },
+  { category: 'scene', file: 'sdf-js/scripts/test-weathering.mjs' },
+  { category: 'scene', file: 'sdf-js/scripts/test-mount-palette.mjs' },
+  { category: 'scene', file: 'sdf-js/scripts/test-nature-dressing.mjs' },
+  { category: 'scene', file: 'sdf-js/scripts/test-theater-layout.mjs' },
+  { category: 'scene', file: 'sdf-js/scripts/test-tone.mjs' },
+  { category: 'scene', file: 'sdf-js/scripts/audit-2d-fidelity.mjs' },
+  { category: 'scene', file: 'sdf-js/scripts/test-camera-shake.mjs' },
+  { category: 'scene', file: 'sdf-js/scripts/test-text-to-ir.mjs' },
+  { category: 'scene', file: 'sdf-js/scripts/test-hitstop.mjs' },
+  { category: 'scene', file: 'sdf-js/scripts/test-scaffold-to-ir.mjs' },
+  { category: 'scene', file: 'sdf-js/scripts/test-atoms-to-ir.mjs' },
+  { category: 'scene', file: 'sdf-js/scripts/test-ir-to-2d.mjs' },
+  { category: 'scene', file: 'sdf-js/scripts/test-atom-3d-coverage.mjs' },
+  // Sprint 28: matrix IR structure + ir-to-2d smart chart selection
+  { category: 'scene', file: 'sdf-js/scripts/test-ir-matrix.mjs' },
 
   // Sprint 5 Wave C: fishbone / traffic-light / radial-spoke + puzzle-piece.
   { category: 'diagram', file: 'sdf-js/scripts/test-fishbone-3d.mjs' },
@@ -151,6 +207,47 @@ const TESTS = [
   { category: 'present', file: 'sdf-js/scripts/test-branding-palettes.mjs' },
   { category: 'present', file: 'sdf-js/scripts/test-waypoint-tween.mjs' },
   { category: 'present', file: 'sdf-js/scripts/test-pipeline.mjs' },
+  { category: 'present', file: 'sdf-js/scripts/test-atoms-2d-framework.mjs' },
+  { category: 'present', file: 'sdf-js/scripts/test-page-lint.mjs' },
+  { category: 'present', file: 'sdf-js/scripts/test-pdf-export-safety.mjs' },
+  { category: 'present', file: 'sdf-js/scripts/test-icon-library.mjs' },
+  { category: 'present', file: 'sdf-js/scripts/test-scaffolds.mjs' },
+  { category: 'present', file: 'sdf-js/scripts/test-picker-llm.mjs' },
+  { category: 'present', file: 'sdf-js/scripts/test-mapper-llm.mjs' },
+  { category: 'present', file: 'sdf-js/scripts/test-icon-library-expanded.mjs' },
+  { category: 'present', file: 'sdf-js/scripts/test-atoms-icons.mjs' },
+  { category: 'present', file: 'sdf-js/scripts/test-atom-catalog.mjs' },
+  { category: 'present', file: 'sdf-js/scripts/test-atoms-image.mjs' },
+  // Sprint 19 Batch 1 — new atoms (quote-pull / swot / value-chain-diagram / change-curve-chart)
+  { category: 'present', file: 'sdf-js/scripts/test-sprint19-atoms.mjs' },
+  // Sprint 19 Batch 2 — new atoms (radial-wheel-segmented / section-number-divider / stat-banner / comparison-table)
+  { category: 'present', file: 'sdf-js/scripts/test-sprint19-batch2-atoms.mjs' },
+  // Sprint 20 Batch 1 — new atoms (process-arrows / stat-grid-large / number-list / call-to-action)
+  { category: 'present', file: 'sdf-js/scripts/test-sprint20-batch1-atoms.mjs' },
+  // Sprint 20 Batch 2 — new atoms (vertical-timeline / segmented-bar / pull-quote-banner / circle-process-cycle)
+  { category: 'present', file: 'sdf-js/scripts/test-sprint20-batch2-atoms.mjs' },
+  // Sprint 20 Batch 3 — new atoms (feature-card-grid / stat-with-icon / callout-banner / numbered-grid)
+  { category: 'present', file: 'sdf-js/scripts/test-sprint20-batch3-atoms.mjs' },
+  // Sprint 22 Batch 1 — new atoms (mountain-path / strategy-map / radar-chart / okr-tree)
+  { category: 'present', file: 'sdf-js/scripts/test-sprint22-batch1-atoms.mjs' },
+  // Sprint 22 Batch 2 — new atoms (decision-tree-3-arm / maturity-model / cost-benefit-matrix / journey-flow-curve)
+  { category: 'present', file: 'sdf-js/scripts/test-sprint22-batch2-atoms.mjs' },
+  // Sprint 22 Batch 3 — new atoms (risk-heatmap / org-vs-org-matrix / kanban-board / donut-with-center)
+  { category: 'present', file: 'sdf-js/scripts/test-sprint22-batch3-atoms.mjs' },
+  // Sprint 22 Batch 4 — new atoms (funnel-with-conversion / pillar-3up / testimonial-wall / balance-scale)
+  { category: 'present', file: 'sdf-js/scripts/test-sprint22-batch4-atoms.mjs' },
+  // Sprint 24 P2 — eval harness scorer (structure / atom quality / 3D readiness / text budget)
+  { category: 'present', file: 'sdf-js/scripts/test-eval-harness.mjs' },
+  { category: 'present', file: 'sdf-js/scripts/test-expand-news.mjs' },
+  { category: 'present', file: 'sdf-js/scripts/test-lift-pool.mjs' },
+  { category: 'present', file: 'sdf-js/scripts/test-visual-audit.mjs' },
+  { category: 'present', file: 'sdf-js/scripts/test-slide-reroll.mjs' },
+  { category: 'present', file: 'sdf-js/scripts/test-retheme.mjs' },
+  { category: 'present', file: 'sdf-js/scripts/test-decor.mjs' },
+  { category: 'present', file: 'sdf-js/scripts/test-deck-io.mjs' },
+  { category: 'present', file: 'sdf-js/scripts/test-deck-contract.mjs' },
+  { category: 'present', file: 'sdf-js/scripts/test-slide-digest.mjs' },
+  { category: 'present', file: 'sdf-js/scripts/test-quality-lights.mjs' },
 ];
 
 // -----------------------------------------------------------------------------

@@ -1,0 +1,87 @@
+{
+  "id": "deck-biz-revenue",
+  "title": "Revenue by quarter",
+  "prompt": "Revenue by quarter",
+  "code2d": "// Revenue by quarter — chart atom + args.labels; connector auto-labels at load.",
+  "sceneData": {
+    "v": 1,
+    "name": "Revenue by quarter",
+    "source": {
+      "format": "authored",
+      "prompt": "Revenue by quarter"
+    },
+    "subjects": [
+      {
+        "id": "bar-3d",
+        "type": "bar-3d",
+        "args": {
+          "values": [0.5, 0.7, 0.85, 1],
+          "labels": ["$1.2M", "$1.8M", "$2.4M", "$3.4M"],
+          "barWidth": 0.5,
+          "barDepth": 0.5,
+          "gap": 0.45,
+          "maxHeight": 2.4
+        },
+        "transform": {
+          "translate": [0, 0, 0]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.75,
+          "metal": 0.3,
+          "glow": 0
+        }
+      }
+    ],
+    "cameraSequence": {
+      "loop": false,
+      "shots": [
+        {
+          "duration": 0.01,
+          "pos": [-2.6, 2.2, -7.8],
+          "target": [0, 1.2, 0],
+          "fov": 33,
+          "transition": "cut"
+        },
+        {
+          "duration": 6,
+          "pos": [2.6, 2.2, -7.8],
+          "target": [0, 1.2, 0],
+          "fov": 33,
+          "ease": "smooth",
+          "transition": "blend"
+        }
+      ]
+    },
+    "defaults": {
+      "camera": {
+        "yaw": 0.4,
+        "pitch": 0.22,
+        "distance": 9,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 1.2,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": 0.6,
+        "altitude": 0.55,
+        "distance": 25,
+        "intensity": 1.2
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.4
+      },
+      "studioBg": "dark"
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-06-22",
+    "model": "authored",
+    "pattern": "data-deck",
+    "costUSD": 0
+  }
+}

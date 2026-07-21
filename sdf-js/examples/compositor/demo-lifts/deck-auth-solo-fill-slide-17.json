@@ -1,0 +1,129 @@
+{
+  "id": "deck-auth-solo-fill-slide-17",
+  "title": "compare: Fill Levels · Two heroes (80/90)",
+  "prompt": "compare: Fill Levels · Two heroes (80/90)",
+  "code2d": "// auto-authored deck segment.",
+  "sceneData": {
+    "v": 1,
+    "name": "compare: Fill Levels · Two heroes (80/90)",
+    "source": {
+      "format": "vision-authored",
+      "prompt": "Two large fill spheres 80% and 90% stacked with side text."
+    },
+    "subjects": [
+      {
+        "id": "liq0",
+        "type": "sphere-fill-3d",
+        "args": {
+          "levels": [0.8],
+          "radius": 0.7,
+          "cage": false,
+          "fillScale": 1
+        },
+        "transform": {
+          "translate": [-1.4, 1.45, 0]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.72,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "emp0",
+        "type": "cut-sphere",
+        "args": {
+          "radius": 0.7,
+          "h": 0.42000000000000004
+        },
+        "transform": {
+          "translate": [-1.4, 1.45, 0]
+        },
+        "material": "porcelain"
+      },
+      {
+        "id": "liq1",
+        "type": "sphere-fill-3d",
+        "args": {
+          "levels": [0.9],
+          "radius": 0.75,
+          "cage": false,
+          "fillScale": 1
+        },
+        "transform": {
+          "translate": [-1.4, -0.05, 0]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.72,
+          "metal": 0.3,
+          "glow": 0
+        }
+      },
+      {
+        "id": "emp1",
+        "type": "cut-sphere",
+        "args": {
+          "radius": 0.75,
+          "h": 0.6000000000000001
+        },
+        "transform": {
+          "translate": [-1.4, -0.05, 0]
+        },
+        "material": "porcelain"
+      }
+    ],
+    "defaults": {
+      "camera": {
+        "yaw": 0.5,
+        "pitch": 0.28,
+        "distance": 10,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 0.7,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": 0.6,
+        "altitude": 0.55,
+        "distance": 25,
+        "intensity": 1.2
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.4
+      },
+      "studioBg": "dark"
+    },
+    "cameraSequence": {
+      "loop": false,
+      "shots": [
+        {
+          "duration": 0.01,
+          "pos": [-2.9, 1.9, -6],
+          "target": [-1.4, 0.7000000000000001, 0],
+          "fov": 34,
+          "transition": "cut"
+        },
+        {
+          "duration": 6,
+          "pos": [0.10000000000000009, 1.9, -6],
+          "target": [-1.4, 0.7000000000000001, 0],
+          "fov": 34,
+          "ease": "smooth",
+          "transition": "blend"
+        }
+      ]
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-06-21",
+    "model": "authored",
+    "pattern": "deck-segment",
+    "costUSD": 0
+  }
+}

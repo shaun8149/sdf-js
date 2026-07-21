@@ -1,0 +1,109 @@
+{
+  "slotIdx": 1,
+  "slotName": "tldr",
+  "slotTitle": "TL;DR",
+  "slotPurpose": "Headline summary — 3 key points this quarter",
+  "sourceSlideIdx": 15,
+  "sourceSlideTitle": "Outlook",
+  "sceneData": {
+    "name": "investor-update/tldr",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "TL;DR",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "stat-banner",
+        "x": 40,
+        "y": 160,
+        "w": 1200,
+        "h": 140,
+        "args": {
+          "value": "$81M Series B",
+          "label": "Capital raise with ReturnBear acquisition",
+          "bg": [
+            58,
+            138,
+            200
+          ]
+        }
+      },
+      {
+        "type": "pillar-3up",
+        "x": 40,
+        "y": 330,
+        "w": 1200,
+        "h": 350,
+        "args": {
+          "pillars": [
+            {
+              "icon": "brain",
+              "heading": "AI Growth",
+              "body": "Marketing agent for personalized email and text campaigns",
+              "accent": [
+                58,
+                138,
+                200
+              ]
+            },
+            {
+              "icon": "globe",
+              "heading": "Platform Expansion",
+              "body": "Local returns network enables inspect, refurbish, re-fulfill, and reship",
+              "accent": [
+                100,
+                150,
+                200
+              ]
+            },
+            {
+              "icon": "rocket",
+              "heading": "$1.25B Valuation",
+              "body": "Post-purchase to comprehensive commerce platform — Smash Capital",
+              "accent": [
+                180,
+                210,
+                235
+              ]
+            }
+          ],
+          "accentLine": true
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "investor-update",
+    "theme": "financial-navy-cerulean",
+    "recommendedAtoms": [
+      "stat-banner",
+      "kpi-card",
+      "quote-pull"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5453,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 468,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.027281399999999997,
+    "elapsedSec": 9.2,
+    "generatedAt": "2026-07-10T07:29:13.905Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

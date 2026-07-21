@@ -1,0 +1,39 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>agenda showcase test</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Inter+Display:wght@900&display=swap">
+<style>body { background: #f8f7f4; padding: 40px; font-family: Inter; }
+canvas { background: white; border: 1px solid #d0cec3; display: block; margin-bottom: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+.label { font-family: 'IBM Plex Mono', monospace; font-size: 11px; background: #1e1b1e; color: white; padding: 4px 10px; display: inline-block; }
+</style></head>
+<body>
+<h2>Agenda showcase mode test</h2>
+<div class="label">6 items, 1100x500 — should be 2-col PL-style</div>
+<canvas id="c1" width="1100" height="500"></canvas>
+<div class="label">4 items, 900x420 — should be 1-col showcase (w≥800)</div>
+<canvas id="c2" width="900" height="420"></canvas>
+<div class="label">4 items, 480x320 — compact fallback</div>
+<canvas id="c3" width="480" height="320"></canvas>
+<script type="module">
+import { renderAtom } from '/src/present/atoms-2d/registry.js';
+const theme = {bg:[248,246,240], silhouetteColor:[22,35,70], accent:[255,120,40], colors:[[255,120,40]]};
+const items6 = [
+  {label:'Recap last quarter', sublabel:'5 min'},
+  {label:'KPI dashboard review', sublabel:'15 min'},
+  {label:'Wins and losses', sublabel:'20 min'},
+  {label:'Challenges and risks', sublabel:'15 min'},
+  {label:'Next-quarter plan', sublabel:'20 min'},
+  {label:'Q&A and next steps', sublabel:'10 min'},
+];
+const items4 = items6.slice(0, 4);
+await renderAtom(document.getElementById('c1').getContext('2d'), 'agenda-list', {items: items6, title: 'Agenda', subtitle: 'Q3 board review'}, 'pseudo3d', {x:0,y:0,w:1100,h:500,palette:theme});
+await renderAtom(document.getElementById('c2').getContext('2d'), 'agenda-list', {items: items4, title: 'Agenda'}, 'pseudo3d', {x:0,y:0,w:900,h:420,palette:theme});
+await renderAtom(document.getElementById('c3').getContext('2d'), 'agenda-list', {items: items4, title: 'Agenda'}, 'pseudo3d', {x:0,y:0,w:480,h:320,palette:theme});
+
+// Cover section-style test (PL slide 31 pattern)
+const sec = document.createElement('div');
+sec.innerHTML = `<div class="label" style="margin-top:24px;">Cover · style: section — PL section-divider</div><canvas id="c4" width="1280" height="500"></canvas><div class="label">Cover · style: gradient (default)</div><canvas id="c5" width="1280" height="500"></canvas>`;
+document.body.appendChild(sec);
+const navyTheme = {bg:[248,246,240], silhouetteColor:[22,35,70], accent:[38,70,130], colors:[[38,70,130]]};
+await renderAtom(document.getElementById('c4').getContext('2d'), 'cover', {title: 'OUR VISION', subtitle: 'Where we are going next.', style:'section'}, 'pseudo3d', {x:0,y:0,w:1280,h:500,palette:navyTheme});
+await renderAtom(document.getElementById('c5').getContext('2d'), 'cover', {title: 'OUR VISION', subtitle: 'Where we are going next.'}, 'pseudo3d', {x:0,y:0,w:1280,h:500,palette:navyTheme});
+</script></body></html>

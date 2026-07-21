@@ -1,0 +1,88 @@
+{
+  "slotIdx": 5,
+  "slotName": "values",
+  "slotTitle": "Values",
+  "slotPurpose": "Company values 3-6 items",
+  "sourceSlideIdx": 5,
+  "sourceSlideTitle": "Technology Stack",
+  "sceneData": {
+    "name": "company-overview/values",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Values"
+        }
+      },
+      {
+        "type": "icon-grid",
+        "x": 60,
+        "y": 160,
+        "w": 1160,
+        "h": 520,
+        "args": {
+          "items": [
+            {
+              "icon": "shield-check",
+              "label": "Self-Custodial",
+              "sublabel": "Browser-side key management"
+            },
+            {
+              "icon": "network",
+              "label": "Multi-Chain",
+              "sublabel": "Ethereum, Solana, Base, Arbitrum"
+            },
+            {
+              "icon": "brain",
+              "label": "AI Privacy",
+              "sublabel": "On-device inference first"
+            },
+            {
+              "icon": "lock-key",
+              "label": "E2E Encryption",
+              "sublabel": "Signal protocol chat"
+            },
+            {
+              "icon": "arrows-merge",
+              "label": "MEV Protection",
+              "sublabel": "Proprietary DEX aggregator"
+            },
+            {
+              "icon": "eye",
+              "label": "Smart Money",
+              "sublabel": "50K wallets tracked real-time"
+            }
+          ],
+          "iconSize": "large"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "company-overview",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["icon-row", "icon-grid", "bullet-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 2419,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 5921,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 421,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.015348300000000002,
+    "elapsedSec": 6.3,
+    "generatedAt": "2026-06-24T04:02:02.320Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

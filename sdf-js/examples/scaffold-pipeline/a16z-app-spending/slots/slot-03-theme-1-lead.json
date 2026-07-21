@@ -1,0 +1,111 @@
+{
+  "slotIdx": 3,
+  "slotName": "theme-1-lead",
+  "slotTitle": "Theme 1 — Lead",
+  "slotPurpose": "First major theme: the core facts and figures",
+  "sourceSlideIdx": 2,
+  "sourceSlideTitle": "Horizontal vs. Vertical Split",
+  "sceneData": {
+    "name": "news-briefing/theme-1-lead",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Theme 1 — Lead",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "donut-with-center",
+        "x": 140,
+        "y": 180,
+        "w": 500,
+        "h": 480,
+        "args": {
+          "title": "Company Type Distribution",
+          "centerValue": "200K+",
+          "centerLabel": "Customers",
+          "segments": [
+            {
+              "label": "Horizontal",
+              "value": 60,
+              "color": [38, 70, 130]
+            },
+            {
+              "label": "Vertical",
+              "value": 40,
+              "color": [165, 130, 90]
+            }
+          ],
+          "showPct": true
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 680,
+        "y": 180,
+        "w": 480,
+        "h": 200,
+        "args": {
+          "value": "60%",
+          "label": "Horizontal Companies",
+          "sublabel": "Majority of database",
+          "icon": "chart-pie",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 680,
+        "y": 400,
+        "w": 480,
+        "h": 200,
+        "args": {
+          "value": "40%",
+          "label": "Vertical Companies",
+          "sublabel": "Mercury database segment",
+          "icon": "buildings",
+          "style": "light"
+        }
+      },
+      {
+        "type": "stat-banner",
+        "x": 140,
+        "y": 640,
+        "w": 1000,
+        "h": 60,
+        "args": {
+          "value": "June-August 2025",
+          "label": "Analysis Period"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["bar", "column", "stat-banner", "kpi-card"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4929,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 595,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.027614399999999997,
+    "elapsedSec": 9.6,
+    "generatedAt": "2026-07-07T06:39:59.254Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

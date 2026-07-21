@@ -1,0 +1,107 @@
+{
+  "slotIdx": 5,
+  "slotName": "outlook",
+  "slotTitle": "Outlook",
+  "slotPurpose": "Forecast + next-Q targets",
+  "sourceSlideIdx": 5,
+  "sourceSlideTitle": "Q4 Outlook",
+  "sceneData": {
+    "name": "qbr/outlook",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Outlook"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 40,
+        "y": 160,
+        "w": 360,
+        "h": 200,
+        "args": {
+          "label": "Q4 ARR Target",
+          "value": "$2.4M",
+          "sublabel": "3.2× Q3",
+          "icon": "chart-line-up",
+          "style": "dark"
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 440,
+        "y": 160,
+        "w": 800,
+        "h": 500,
+        "args": {
+          "items": [
+            {
+              "icon": "lightning",
+              "label": "Perp DEX sub-second matching"
+            },
+            {
+              "icon": "shield-check",
+              "label": "Insurance expansion to 10 tokens"
+            },
+            {
+              "icon": "globe-hemisphere-west",
+              "label": "Asia regulatory clearance (SG + HK)"
+            },
+            {
+              "icon": "rocket-launch",
+              "label": "Series B exploratory conversations"
+            }
+          ]
+        }
+      },
+      {
+        "type": "progression",
+        "x": 40,
+        "y": 400,
+        "w": 360,
+        "h": 260,
+        "args": {
+          "steps": [
+            {
+              "label": "Q3",
+              "sublabel": "$740K"
+            },
+            {
+              "label": "Q4F",
+              "sublabel": "$2.4M"
+            }
+          ],
+          "orientation": "vertical"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "qbr",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["line", "progression", "kpi-card"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 2438,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 5921,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 535,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0171153,
+    "elapsedSec": 7.1,
+    "generatedAt": "2026-06-24T04:50:50.430Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

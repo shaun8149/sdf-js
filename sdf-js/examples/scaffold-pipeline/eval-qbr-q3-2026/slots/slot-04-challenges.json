@@ -1,0 +1,83 @@
+{
+  "slotIdx": 4,
+  "slotName": "challenges",
+  "slotTitle": "Challenges",
+  "slotPurpose": "What did not go to plan",
+  "sourceSlideIdx": 4,
+  "sourceSlideTitle": "Challenges",
+  "sceneData": {
+    "name": "qbr/challenges",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Challenges",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 40,
+        "y": 160,
+        "w": 1200,
+        "h": 520,
+        "args": {
+          "items": [
+            {
+              "icon": "plugs-connected",
+              "label": "Bridge integration delayed",
+              "sublabel": "Third-party API instability"
+            },
+            {
+              "icon": "speedometer",
+              "label": "Perp DEX latency 2s vs 800ms",
+              "sublabel": "Higher than target goal"
+            },
+            {
+              "icon": "globe-hemisphere-west",
+              "label": "Asia GTM slower",
+              "sublabel": "Regulatory uncertainty blocking progress"
+            },
+            {
+              "icon": "headset",
+              "label": "Support response 8h vs 2h SLA",
+              "sublabel": "Average time exceeds target"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "qbr",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "risk-heatmap",
+      "bullet-list",
+      "fishbone",
+      "waterfall"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5158,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 357,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0247314,
+    "elapsedSec": 10.8,
+    "generatedAt": "2026-07-10T07:19:33.835Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

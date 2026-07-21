@@ -1,0 +1,99 @@
+{
+  "slotIdx": 8,
+  "slotName": "outlook",
+  "slotTitle": "Outlook & Forecast",
+  "slotPurpose": "Forward guidance and scenario planning",
+  "sourceSlideIdx": 15,
+  "sourceSlideTitle": "Updated Full Year FY2026 Revenue Outlook",
+  "sceneData": {
+    "name": "financial-summary/outlook",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Outlook & Forecast",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 40,
+        "y": 160,
+        "w": 560,
+        "h": 240,
+        "args": {
+          "value": "$963-969M",
+          "label": "Subscription & Support Revenue",
+          "sublabel": "FY2026 Guidance",
+          "icon": "chart-line-up",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 680,
+        "y": 160,
+        "w": 560,
+        "h": 240,
+        "args": {
+          "value": "$1,460-1,470M",
+          "label": "Total Revenue",
+          "sublabel": "FY2026 Guidance",
+          "icon": "currency-dollar",
+          "style": "light"
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 40,
+        "y": 436,
+        "w": 1200,
+        "h": 240,
+        "args": {
+          "title": "Guidance Drivers",
+          "items": [
+            {
+              "icon": "trend-up",
+              "label": "Q3 results exceeded expectations"
+            },
+            {
+              "icon": "eye",
+              "label": "Strong pipeline visibility"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "financial-summary",
+    "theme": "financial-navy-cerulean",
+    "recommendedAtoms": [
+      "line",
+      "progression",
+      "timeline"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5151,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 478,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.026525399999999998,
+    "elapsedSec": 7.6,
+    "generatedAt": "2026-07-10T07:28:22.397Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

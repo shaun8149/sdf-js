@@ -1,0 +1,67 @@
+{
+  "deckName": "sprint22-b3-atomdemo",
+  "scaffold": {
+    "id": "demo",
+    "label": "Sprint 22 B3 Atom Demo",
+    "description": "Direct render of 4 PL-rec atoms (risk-heatmap / org-vs-org-matrix / kanban-board / donut-with-center)",
+    "pickScore": 0,
+    "pickSignals": ["manual demo"],
+    "fallback": false,
+    "pickerMethod": "manual"
+  },
+  "theme": {
+    "id": "hr-slate-teal",
+    "label": "HR Slate Teal",
+    "macroCluster": "consulting",
+    "bg": [32, 42, 54],
+    "accent": [48, 186, 180],
+    "colors": [
+      [48, 186, 180],
+      [80, 160, 220],
+      [200, 130, 60],
+      [180, 80, 160],
+      [220, 160, 40]
+    ],
+    "silhouetteColor": [240, 240, 240]
+  },
+  "meta": { "model": "manual-demo", "timestamp": "2026-06-27" },
+  "totals": { "slotsBaked": 4, "slotsEmpty": 0, "totalCostUSD": 0 },
+  "slots": [
+    {
+      "slotIdx": 0,
+      "slotName": "risk",
+      "slotTitle": "risk-heatmap",
+      "slotPurpose": "5x5 likelihood × impact risk grid demo",
+      "sourceSlideIdx": 0,
+      "subjectTypes": ["risk-heatmap"],
+      "liftFile": "slots/slot-00-risk-heatmap.json"
+    },
+    {
+      "slotIdx": 1,
+      "slotName": "competitive",
+      "slotTitle": "org-vs-org-matrix",
+      "slotPurpose": "Magic Quadrant competitive positioning demo",
+      "sourceSlideIdx": 1,
+      "subjectTypes": ["org-vs-org-matrix"],
+      "liftFile": "slots/slot-01-org-vs-org-matrix.json"
+    },
+    {
+      "slotIdx": 2,
+      "slotName": "kanban",
+      "slotTitle": "kanban-board",
+      "slotPurpose": "Sprint kanban workflow columns demo",
+      "sourceSlideIdx": 2,
+      "subjectTypes": ["kanban-board"],
+      "liftFile": "slots/slot-02-kanban-board.json"
+    },
+    {
+      "slotIdx": 3,
+      "slotName": "donut",
+      "slotTitle": "donut-with-center",
+      "slotPurpose": "Hero KPI donut chart demo",
+      "sourceSlideIdx": 3,
+      "subjectTypes": ["donut-with-center"],
+      "liftFile": "slots/slot-03-donut-with-center.json"
+    }
+  ]
+}

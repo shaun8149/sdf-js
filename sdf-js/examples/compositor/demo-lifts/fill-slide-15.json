@@ -1,0 +1,65 @@
+{
+  "id": "fill-slide-15",
+  "title": "Fill Levels · Hero 100% + 4 labels",
+  "prompt": "kpi-hero: A single full fill sphere with four surrounding labels.",
+  "code2d": "// vision-authored from PDF slide (D0961 3D Spheres Fill Levels).",
+  "sceneData": {
+    "v": 1,
+    "name": "kpi-hero: Fill Levels · Hero 100% + 4 labels",
+    "source": {
+      "format": "vision-authored",
+      "prompt": "A single full fill sphere with four surrounding labels."
+    },
+    "subjects": [
+      {
+        "id": "liq0",
+        "type": "sphere-fill-3d",
+        "args": {
+          "levels": [1],
+          "radius": 1.1,
+          "cage": false,
+          "fillScale": 1
+        },
+        "transform": {
+          "translate": [0, 1, 0]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.72,
+          "metal": 0.3,
+          "glow": 0
+        }
+      }
+    ],
+    "defaults": {
+      "camera": {
+        "yaw": 0.5,
+        "pitch": 0.28,
+        "distance": 10,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 1,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": 0.6,
+        "altitude": 0.55,
+        "distance": 25,
+        "intensity": 1.2
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.4
+      },
+      "studioBg": "dark"
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-06-21",
+    "model": "vision-authored",
+    "pattern": "kpi-hero",
+    "costUSD": 0
+  }
+}

@@ -1,0 +1,133 @@
+{
+  "slotIdx": 2,
+  "slotName": "metrics",
+  "slotTitle": "Key Metrics",
+  "slotPurpose": "Current quarter KPIs — revenue, users, growth rates",
+  "sourceSlideIdx": 4,
+  "sourceSlideTitle": "Current Platform Adoption",
+  "sceneData": {
+    "name": "investor-update/metrics",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Key Metrics",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "dashboard-multi-kpi-composite",
+        "x": 40,
+        "y": 160,
+        "w": 1200,
+        "h": 280,
+        "args": {
+          "title": "Platform Adoption",
+          "kpis": [
+            {
+              "value": "4,100+",
+              "label": "Total Brands",
+              "sublabel": "Active on platform",
+              "color": [
+                58,
+                138,
+                200
+              ]
+            },
+            {
+              "value": "1,750+",
+              "label": "Multi-Product Users",
+              "sublabel": "Cross-suite adoption",
+              "color": [
+                100,
+                150,
+                200
+              ]
+            },
+            {
+              "value": "43%",
+              "label": "Cross-Product Rate",
+              "sublabel": "1,750 of 4,100",
+              "trend": "up",
+              "color": [
+                180,
+                210,
+                235
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "type": "agenda-list",
+        "x": 40,
+        "y": 460,
+        "w": 1200,
+        "h": 220,
+        "args": {
+          "title": "Meeting Agenda",
+          "items": [
+            {
+              "label": "Series B Financing",
+              "sublabel": "Details and valuation"
+            },
+            {
+              "label": "Platform Adoption",
+              "sublabel": "Current metrics"
+            },
+            {
+              "label": "Strategic Vision",
+              "sublabel": "Market positioning"
+            },
+            {
+              "label": "AI Product Development",
+              "sublabel": "Planned initiatives"
+            },
+            {
+              "label": "Returns Network",
+              "sublabel": "Infrastructure overview"
+            },
+            {
+              "label": "ReturnBear Acquisition",
+              "sublabel": "International expansion"
+            }
+          ],
+          "numbered": true,
+          "style": "compact"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "investor-update",
+    "theme": "financial-navy-cerulean",
+    "recommendedAtoms": [
+      "donut-with-center",
+      "dashboard-multi-kpi-composite",
+      "stat-grid-large",
+      "line"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5278,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 622,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0290664,
+    "elapsedSec": 11.9,
+    "generatedAt": "2026-07-10T07:29:13.905Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

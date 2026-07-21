@@ -1,0 +1,76 @@
+{
+  "slotIdx": 5,
+  "slotName": "theme-2-lead",
+  "slotTitle": "Theme 2 — Lead",
+  "slotPurpose": "Second major theme: the core facts",
+  "sourceSlideIdx": 8,
+  "sourceSlideTitle": "通胀回落与货币政策转向",
+  "sceneData": {
+    "name": "news-briefing/theme-2-lead",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "通胀回落与货币政策转向",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "process-arrows",
+        "x": 40,
+        "y": 180,
+        "w": 1200,
+        "h": 480,
+        "args": {
+          "steps": [
+            {
+              "label": "通胀持续回落",
+              "sublabel": "多数主要经济体"
+            },
+            {
+              "label": "货币政策转向",
+              "sublabel": "紧缩→宽松周期"
+            },
+            {
+              "label": "支持经济增长",
+              "sublabel": "美联储·英国央行·欧洲央行降息空间"
+            }
+          ],
+          "color": "gradient"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "process-arrows",
+      "timeline",
+      "stat-banner",
+      "kpi-card"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5189,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 321,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.024284399999999998,
+    "elapsedSec": 7.7,
+    "generatedAt": "2026-07-10T07:26:22.515Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

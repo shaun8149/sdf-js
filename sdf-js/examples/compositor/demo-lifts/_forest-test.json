@@ -1,0 +1,376 @@
+{
+  "id": "_forest-test",
+  "title": "conifer stand — Infinigen lesson 04",
+  "prompt": "一片针叶林与石头",
+  "sceneData": {
+    "v": 1,
+    "name": "conifer stand (lesson 04)",
+    "defaults": {
+      "camera": {
+        "yaw": 0.3,
+        "pitch": -0.12,
+        "distance": 13,
+        "focal": 1.3,
+        "targetX": 0,
+        "targetY": 2.2,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": 0.7,
+        "altitude": 0.5,
+        "distance": 40,
+        "intensity": 1.15
+      }
+    },
+    "subjects": [
+      {
+        "id": "conifer-vignette-1-0",
+        "type": "union",
+        "children": [
+          {
+            "id": "conifer-vignette-1-0-trunk",
+            "type": "cylinder",
+            "args": {
+              "radius": 0.21889943878869175,
+              "height": 4.289353121073571
+            },
+            "transform": {
+              "translate": [0, 2.1446765605367855, 0]
+            },
+            "material": {
+              "hue": 0.08011517325416208,
+              "sat": 0.1093329908978194,
+              "value": 0.4455901098321192,
+              "metal": 0,
+              "glow": 0,
+              "kind": "normal",
+              "roughness": 0.9
+            }
+          },
+          {
+            "id": "conifer-vignette-1-0-crown",
+            "type": "displace",
+            "source": {
+              "id": "conifer-vignette-1-0-body",
+              "type": "smoothUnion",
+              "args": {
+                "k": 0.3154347899943383
+              },
+              "children": [
+                {
+                  "id": "conifer-vignette-1-0-tier0",
+                  "type": "cone",
+                  "args": {
+                    "height": 2.2475367825793775,
+                    "baseRadius": 1.71016486245301
+                  },
+                  "transform": {
+                    "translate": [0, 1.93706865718018, 0]
+                  }
+                },
+                {
+                  "id": "conifer-vignette-1-0-tier1",
+                  "type": "cone",
+                  "args": {
+                    "height": 2.2475367825793775,
+                    "baseRadius": 1.409830593763331
+                  },
+                  "transform": {
+                    "translate": [0, 3.299212161773742, 0]
+                  }
+                },
+                {
+                  "id": "conifer-vignette-1-0-tier2",
+                  "type": "cone",
+                  "args": {
+                    "height": 2.2475367825793775,
+                    "baseRadius": 1.039761126929013
+                  },
+                  "transform": {
+                    "translate": [0, 4.661355666367305, 0]
+                  }
+                },
+                {
+                  "id": "conifer-vignette-1-0-tier3",
+                  "type": "cone",
+                  "args": {
+                    "height": 2.2475367825793775,
+                    "baseRadius": 0.7926781389394225
+                  },
+                  "transform": {
+                    "translate": [0, 6.023499170960866, 0]
+                  }
+                }
+              ]
+            },
+            "args": {
+              "kind": "sinfold",
+              "freq": 1.2554100326318087,
+              "amp": 0.08762077499842733,
+              "offset": [50.911440211348236, 48.498270590789616, 15.470430674031377]
+            },
+            "material": {
+              "hue": 0.36397181256674227,
+              "sat": 0.36124879741109905,
+              "value": 0.3165091556124389,
+              "metal": 0,
+              "glow": 0,
+              "kind": "normal",
+              "roughness": 0.85
+            }
+          }
+        ],
+        "transform": {
+          "translate": [-2.6, 0, -1.2],
+          "rotate": [-0.004499405823892961, 4.394653089226604, 0.054143477683426235]
+        }
+      },
+      {
+        "id": "conifer-vignette-1-1",
+        "type": "union",
+        "children": [
+          {
+            "id": "conifer-vignette-1-1-trunk",
+            "type": "cylinder",
+            "args": {
+              "radius": 0.20964380508103006,
+              "height": 4.107988191354421
+            },
+            "transform": {
+              "translate": [0, 2.0539940956772105, 0]
+            },
+            "material": {
+              "hue": 0.08011517325416208,
+              "sat": 0.1093329908978194,
+              "value": 0.4455901098321192,
+              "metal": 0,
+              "glow": 0,
+              "kind": "normal",
+              "roughness": 0.9
+            }
+          },
+          {
+            "id": "conifer-vignette-1-1-crown",
+            "type": "displace",
+            "source": {
+              "id": "conifer-vignette-1-1-body",
+              "type": "smoothUnion",
+              "args": {
+                "k": 0.2957451968284888
+              },
+              "children": [
+                {
+                  "id": "conifer-vignette-1-1-tier0",
+                  "type": "cone",
+                  "args": {
+                    "height": 2.15250512183523,
+                    "baseRadius": 1.5843296699137654
+                  },
+                  "transform": {
+                    "translate": [0, 1.8551643907432118, 0]
+                  }
+                },
+                {
+                  "id": "conifer-vignette-1-1-tier1",
+                  "type": "cone",
+                  "args": {
+                    "height": 2.15250512183523,
+                    "baseRadius": 1.4105816298266591
+                  },
+                  "transform": {
+                    "translate": [0, 3.1597129494312304, 0]
+                  }
+                },
+                {
+                  "id": "conifer-vignette-1-1-tier2",
+                  "type": "cone",
+                  "args": {
+                    "height": 2.15250512183523,
+                    "baseRadius": 0.9153077371160775
+                  },
+                  "transform": {
+                    "translate": [0, 4.4642615081192485, 0]
+                  }
+                },
+                {
+                  "id": "conifer-vignette-1-1-tier3",
+                  "type": "cone",
+                  "args": {
+                    "height": 2.15250512183523,
+                    "baseRadius": 0.6909216686876474
+                  },
+                  "transform": {
+                    "translate": [0, 5.7688100668072675, 0]
+                  }
+                }
+              ]
+            },
+            "args": {
+              "kind": "sinfold",
+              "freq": 1.338990469656391,
+              "amp": 0.08215144356346912,
+              "offset": [62.77550032828003, 87.27851503062993, 39.742731396108866]
+            },
+            "material": {
+              "hue": 0.36397181256674227,
+              "sat": 0.36124879741109905,
+              "value": 0.3165091556124389,
+              "metal": 0,
+              "glow": 0,
+              "kind": "normal",
+              "roughness": 0.85
+            }
+          }
+        ],
+        "transform": {
+          "translate": [0.8, 0, 0.6],
+          "rotate": [-0.004499405823892961, 4.348028510508611, 0.054143477683426235]
+        }
+      },
+      {
+        "id": "conifer-vignette-1-2",
+        "type": "union",
+        "children": [
+          {
+            "id": "conifer-vignette-1-2-trunk",
+            "type": "cylinder",
+            "args": {
+              "radius": 0.2723887973544847,
+              "height": 5.337481651589748
+            },
+            "transform": {
+              "translate": [0, 2.668740825794874, 0]
+            },
+            "material": {
+              "hue": 0.08011517325416208,
+              "sat": 0.1093329908978194,
+              "value": 0.4455901098321192,
+              "metal": 0,
+              "glow": 0,
+              "kind": "normal",
+              "roughness": 0.9
+            }
+          },
+          {
+            "id": "conifer-vignette-1-2-crown",
+            "type": "displace",
+            "source": {
+              "id": "conifer-vignette-1-2-body",
+              "type": "smoothUnion",
+              "args": {
+                "k": 0.34229950019019745
+              },
+              "children": [
+                {
+                  "id": "conifer-vignette-1-2-tier0",
+                  "type": "cone",
+                  "args": {
+                    "height": 2.796735544889806,
+                    "baseRadius": 1.8722991673131102
+                  },
+                  "transform": {
+                    "translate": [0, 2.4104027166178064, 0]
+                  }
+                },
+                {
+                  "id": "conifer-vignette-1-2-tier1",
+                  "type": "cone",
+                  "args": {
+                    "height": 2.796735544889806,
+                    "baseRadius": 1.5037226057276165
+                  },
+                  "transform": {
+                    "translate": [0, 4.105393955944962, 0]
+                  }
+                },
+                {
+                  "id": "conifer-vignette-1-2-tier2",
+                  "type": "cone",
+                  "args": {
+                    "height": 2.796735544889806,
+                    "baseRadius": 1.2571161178651726
+                  },
+                  "transform": {
+                    "translate": [0, 5.800385195272118, 0]
+                  }
+                },
+                {
+                  "id": "conifer-vignette-1-2-tier3",
+                  "type": "cone",
+                  "args": {
+                    "height": 2.796735544889806,
+                    "baseRadius": 0.8232589804575813
+                  },
+                  "transform": {
+                    "translate": [0, 7.495376434599273, 0]
+                  }
+                }
+              ]
+            },
+            "args": {
+              "kind": "sinfold",
+              "freq": 1.1568816191083073,
+              "amp": 0.09508319449727709,
+              "offset": [75.64070748630911, 61.68105623219162, 27.599114389158785]
+            },
+            "material": {
+              "hue": 0.36397181256674227,
+              "sat": 0.36124879741109905,
+              "value": 0.3165091556124389,
+              "metal": 0,
+              "glow": 0,
+              "kind": "normal",
+              "roughness": 0.85
+            }
+          }
+        ],
+        "transform": {
+          "translate": [3.2, 0, -2],
+          "rotate": [-0.004499405823892961, 3.1462738290595413, 0.054143477683426235]
+        }
+      },
+      {
+        "id": "boulder-vignette-rocks-0-ph",
+        "type": "rounded_box",
+        "args": {
+          "dims": [1.4966248649573561, 0.9785318379447567, 1.6668224958702165],
+          "cornerR": 0.17124307164033242
+        },
+        "transform": {
+          "translate": [-0.9, 0.4109833719367978, 1.8],
+          "rotate": [0, 1.6999420136139882, 0]
+        },
+        "material": {
+          "hue": 0.6474755072314292,
+          "sat": 0.23081483186222612,
+          "value": 0.19107932141050699,
+          "metal": 0,
+          "glow": 0,
+          "kind": "normal",
+          "roughness": 0.8833961459109559
+        }
+      },
+      {
+        "id": "boulder-vignette-rocks-1-ph",
+        "type": "rounded_box",
+        "args": {
+          "dims": [0.8655509516598427, 0.6597866118775103, 0.5765546485415658],
+          "cornerR": 0.10089706349477401
+        },
+        "transform": {
+          "translate": [2, 0.27711037698855434, 2.4],
+          "rotate": [0, 1.8125474249042133, 0]
+        },
+        "material": {
+          "hue": 0.6474755072314292,
+          "sat": 0.23081483186222612,
+          "value": 0.19107932141050699,
+          "metal": 0,
+          "glow": 0,
+          "kind": "normal",
+          "roughness": 0.8833961459109559
+        }
+      }
+    ]
+  }
+}

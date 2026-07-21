@@ -8,6 +8,7 @@
 
 import { cylinder } from '../../../sdf/d3.js';
 import { union } from '../../../sdf/dn.js';
+import { resolveMaterial } from '../../spec.js';
 
 /**
  * @param {object} opts
@@ -24,6 +25,7 @@ export function circleStack3dSDF({
   taper = 0.85,
   diskHeight = 0.18,
   gap = 0.06,
+  colors = null,
 } = {}) {
   const N = Math.max(1, Math.floor(count));
   const stride = diskHeight + gap;
@@ -32,7 +34,12 @@ export function circleStack3dSDF({
   for (let i = 0; i < N; i++) {
     const r = radius * Math.pow(taper, i);
     const y = i * stride - offset;
-    disks.push(cylinder(r, diskHeight).translate([0, y, 0]));
+    const disk = cylinder(r, diskHeight).translate([0, y, 0]);
+    if (colors && colors[i] != null) {
+      const m = resolveMaterial(colors[i]);
+      if (m) disk._subjectMaterial = m;
+    }
+    disks.push(disk);
   }
   return disks.length === 1 ? disks[0] : union(...disks);
 }

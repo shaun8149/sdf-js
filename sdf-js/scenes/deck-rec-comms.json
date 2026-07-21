@@ -1,0 +1,36 @@
+{
+  "id": "deck-rec-comms",
+  "name": "Communication Toolbox",
+  "segments": [
+    {
+      "file": "rec-comms-1.json",
+      "title": "Channels",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-comms-2.json",
+      "title": "Comm Model",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-comms-3.json",
+      "title": "Stakeholders",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-comms-4.json",
+      "title": "Plan",
+      "kind": "slide",
+      "durationSec": 7
+    },
+    {
+      "file": "rec-comms-5.json",
+      "title": "Channel Mix",
+      "kind": "slide",
+      "durationSec": 7
+    }
+  ]
+}

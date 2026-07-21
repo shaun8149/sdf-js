@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Atlas Present</title>
+    <style>
+      :root {
+        color-scheme: dark;
+      }
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        background: #06080d;
+        overflow: hidden;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      }
+      #canvas-wrap {
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+        outline: none;
+      }
+      #c-present {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+      /* on-screen touch nav (keyboard still works: ← → Space P R) */
+      .nav-btn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 44px;
+        height: 64px;
+        border: none;
+        border-radius: 10px;
+        background: rgba(8, 11, 18, 0.4);
+        color: rgba(230, 238, 250, 0.7);
+        font-size: 22px;
+        cursor: pointer;
+        z-index: 50;
+        opacity: 0.35;
+        transition: opacity 0.2s ease;
+      }
+      .nav-btn:hover {
+        opacity: 1;
+      }
+      #nav-prev {
+        left: 14px;
+      }
+      #nav-next {
+        right: 14px;
+      }
+      #btn-fs {
+        position: absolute;
+        bottom: 14px;
+        right: 14px;
+        border: none;
+        border-radius: 8px;
+        background: rgba(8, 11, 18, 0.4);
+        color: rgba(230, 238, 250, 0.7);
+        padding: 6px 12px;
+        font-size: 13px;
+        cursor: pointer;
+        z-index: 50;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="canvas-wrap" tabindex="-1">
+      <canvas id="c-present"></canvas>
+      <button id="nav-prev" class="nav-btn" aria-label="previous">‹</button>
+      <button id="nav-next" class="nav-btn" aria-label="next">›</button>
+      <button id="btn-fs" aria-label="fullscreen">⛶ Fullscreen</button>
+    </div>
+    <script type="module" src="./present.js"></script>
+    <script type="module" src="./deck-player.js"></script>
+    <script>
+      // fullscreen toggle (plain, no module needed)
+      document.getElementById('btn-fs').addEventListener('click', () => {
+        const w = document.getElementById('canvas-wrap');
+        if (!document.fullscreenElement) w.requestFullscreen?.();
+        else document.exitFullscreen?.();
+      });
+      // The ‹ › arrows navigate a DECK (wired in deck-player.js). In single-scene
+      // mode (?scene=) there is no next/prev slide, so they'd be dead — hide them
+      // to avoid the "buttons do nothing" confusion. Visible only when ?deck= is set.
+      if (!new URLSearchParams(location.search).get('deck')) {
+        document.getElementById('nav-prev').style.display = 'none';
+        document.getElementById('nav-next').style.display = 'none';
+      }
+    </script>
+  </body>
+</html>

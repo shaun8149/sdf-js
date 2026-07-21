@@ -1,0 +1,114 @@
+{
+  "id": "shape-gear-mechanism",
+  "title": "Gears · Meshing mechanism",
+  "prompt": "gear wheels: Gears · Meshing mechanism",
+  "code2d": "// vision-authored showcase — PresentationLoad shape category \"gear wheels\".",
+  "sceneData": {
+    "v": 1,
+    "name": "Gears · Meshing mechanism",
+    "source": {
+      "format": "vision-authored",
+      "prompt": "gear wheels shape showcase"
+    },
+    "subjects": [
+      {
+        "id": "s0",
+        "type": "gear-3d",
+        "args": {
+          "teeth": 16,
+          "radius": 0.95,
+          "thickness": 0.3,
+          "toothDepth": 0.18,
+          "toothWidth": 0.2,
+          "holeRadius": 0.32
+        },
+        "transform": {
+          "translate": [0, 1, 0],
+          "rotate": [1.5707963267948966, 0, 0]
+        },
+        "material": {
+          "hue": 0.6,
+          "sat": 0.04,
+          "value": 0.62,
+          "metal": 0.95,
+          "glow": 0
+        }
+      },
+      {
+        "id": "s1",
+        "type": "gear-3d",
+        "args": {
+          "teeth": 11,
+          "radius": 0.66,
+          "thickness": 0.3,
+          "toothDepth": 0.16,
+          "toothWidth": 0.18,
+          "holeRadius": 0.24
+        },
+        "transform": {
+          "translate": [1.5, 1.55, 0],
+          "rotate": [1.5707963267948966, 0, 0]
+        },
+        "material": {
+          "hue": 0.13,
+          "sat": 0.85,
+          "value": 0.9,
+          "metal": 0.95,
+          "glow": 0
+        }
+      },
+      {
+        "id": "s2",
+        "type": "gear-3d",
+        "args": {
+          "teeth": 9,
+          "radius": 0.55,
+          "thickness": 0.3,
+          "toothDepth": 0.15,
+          "toothWidth": 0.17,
+          "holeRadius": 0.2
+        },
+        "transform": {
+          "translate": [-1.2, 0.45, 0],
+          "rotate": [1.5707963267948966, 0, 0]
+        },
+        "material": {
+          "hue": 0.06,
+          "sat": 0.7,
+          "value": 0.62,
+          "metal": 0.9,
+          "glow": 0
+        }
+      }
+    ],
+    "defaults": {
+      "camera": {
+        "yaw": 0.5,
+        "pitch": 0.3,
+        "distance": 10,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 1,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": 0.6,
+        "altitude": 0.55,
+        "distance": 25,
+        "intensity": 1.2
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.4
+      },
+      "studioBg": "dark"
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-06-21",
+    "model": "vision-authored",
+    "pattern": "gear wheels",
+    "costUSD": 0
+  }
+}

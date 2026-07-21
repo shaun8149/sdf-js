@@ -1,0 +1,86 @@
+{
+  "slotIdx": 5,
+  "slotName": "outlook",
+  "slotTitle": "Outlook",
+  "slotPurpose": "Forecast + next-Q targets",
+  "sourceSlideIdx": 5,
+  "sourceSlideTitle": "Q4 Outlook",
+  "sceneData": {
+    "name": "qbr/outlook",
+    "layout": "hierarchy",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Q4 Outlook",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "okr-tree",
+        "x": 40,
+        "y": 160,
+        "w": 1200,
+        "h": 520,
+        "args": {
+          "objective": "Scale to $2.4M ARR",
+          "keyResults": [
+            {
+              "label": "Launch Perp DEX sub-second matching",
+              "progress": 0,
+              "sublabel": "Core product milestone"
+            },
+            {
+              "label": "Insurance expansion to 10 tokens",
+              "progress": 0,
+              "sublabel": "Risk coverage growth"
+            },
+            {
+              "label": "Asia regulatory clearance SG + HK",
+              "progress": 0,
+              "sublabel": "Market access"
+            },
+            {
+              "label": "Series B exploratory conversations",
+              "progress": 0,
+              "sublabel": "Capital readiness"
+            }
+          ],
+          "quarter": "Q4"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "qbr",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "okr-tree",
+      "change-curve-chart",
+      "line",
+      "progression",
+      "kpi-card"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5174,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 368,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0249444,
+    "elapsedSec": 10.2,
+    "generatedAt": "2026-07-10T07:19:33.836Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

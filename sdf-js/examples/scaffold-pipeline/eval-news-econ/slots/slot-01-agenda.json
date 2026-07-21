@@ -1,0 +1,106 @@
+{
+  "slotIdx": 1,
+  "slotName": "agenda",
+  "slotTitle": "Overview",
+  "slotPurpose": "One line per major theme of the briefing",
+  "sourceSlideIdx": 1,
+  "sourceSlideTitle": "展望概览",
+  "sceneData": {
+    "name": "news-briefing/agenda",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Overview",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "agenda-list",
+        "x": 40,
+        "y": 160,
+        "w": 560,
+        "h": 520,
+        "args": {
+          "title": "全球经济展望",
+          "items": [
+            {
+              "label": "全球经济增长预测差异",
+              "sublabel": "国际机构预测分化"
+            },
+            {
+              "label": "货币政策转向降息",
+              "sublabel": "主要经济体政策调整"
+            },
+            {
+              "label": "地缘冲突与能源风险",
+              "sublabel": "价格波动影响"
+            },
+            {
+              "label": "市场不确定性",
+              "sublabel": "金融与就业市场"
+            }
+          ],
+          "numbered": true
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 640,
+        "y": 160,
+        "w": 600,
+        "h": 520,
+        "args": {
+          "title": "关键风险评估",
+          "items": [
+            {
+              "icon": "chart-line-up",
+              "label": "低收入国家增速5.4%",
+              "sublabel": "高于全球平均但需关注人均实际效果"
+            },
+            {
+              "icon": "users",
+              "label": "就业市场走弱风险",
+              "sublabel": "中等概率中等影响，可能削弱消费支出"
+            },
+            {
+              "icon": "chart-bar",
+              "label": "金融市场估值回调",
+              "sublabel": "低概率高影响，历史高位可能引发连锁反应"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "agenda-list",
+      "number-list"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5497,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 601,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0294084,
+    "elapsedSec": 11,
+    "generatedAt": "2026-07-10T07:26:22.513Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

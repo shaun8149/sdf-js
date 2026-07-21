@@ -1,0 +1,76 @@
+{
+  "slotIdx": 6,
+  "slotName": "theme-2-detail",
+  "slotTitle": "Theme 2 — Detail",
+  "slotPurpose": "Second theme drill-down: sequence, conditions, thresholds",
+  "sourceSlideIdx": 5,
+  "sourceSlideTitle": "Training-Focused Startup Cost Structure",
+  "sceneData": {
+    "name": "news-briefing/theme-2-detail",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Theme 2 — Detail",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "funnel-with-conversion",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 480,
+        "args": {
+          "title": "Training-Focused Startup Cost Structure",
+          "stages": [
+            {
+              "label": "Total Capital",
+              "value": 100,
+              "sublabel": "100%"
+            },
+            {
+              "label": "Cloud Providers",
+              "value": 85,
+              "sublabel": "80-90%"
+            },
+            {
+              "label": "Compute Training",
+              "value": 85,
+              "sublabel": "Intensive workloads"
+            }
+          ],
+          "showAbsolute": false,
+          "showConversion": true
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["timeline", "funnel-with-conversion", "bullet-list", "flow-chart"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4795,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 331,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0232524,
+    "elapsedSec": 6.8,
+    "generatedAt": "2026-07-07T05:16:21.935Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

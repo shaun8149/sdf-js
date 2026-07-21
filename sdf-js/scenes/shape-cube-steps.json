@@ -1,0 +1,35 @@
+{
+  "v": 1,
+  "name": "sequence: 3D Cubes — Flow Steps (twin)",
+  "subjects": [
+    {
+      "id": "cubes",
+      "type": "cube-3d",
+      "args": {
+        "count": 4,
+        "arrangement": "steps",
+        "cubeSize": 0.85,
+        "spacing": 0.25,
+        "cornerRadius": 0.05,
+        "material": "solid",
+        "colors": [
+          { "hue": 0.57, "sat": 0.35, "value": 0.8 },
+          { "hue": 0.57, "sat": 0.48, "value": 0.7 },
+          { "hue": 0.57, "sat": 0.6, "value": 0.62 },
+          { "hue": 0.04, "sat": 0.7, "value": 0.62 }
+        ]
+      },
+      "transform": { "translate": [0, 1.0, 0] },
+      "material": { "hue": 0.57, "sat": 0.5, "value": 0.66, "kind": "normal", "roughness": 0.3, "clearcoat": 0.4 }
+    }
+  ],
+  "overlay": [{ "text": "3D CUBES — FLOW STEPS", "anchor": [0, 4.0, 0], "role": "title" }],
+  "cameraSequence": {
+    "loop": false,
+    "shots": [
+      { "duration": 0.01, "pos": [1.1, 2.2, 10.0], "target": [0, 1.7, 0], "fov": 52, "aperture": 0, "focalDistance": 9, "ease": "smooth" },
+      { "duration": 13, "pos": [0.1, 1.9, 8.5], "target": [0, 1.7, 0], "fov": 48, "transition": "blend", "aperture": 0, "focalDistance": 8.5, "ease": "smooth" }
+    ]
+  },
+  "defaults": { "stage": { "size": [18, 9, 10] } }
+}

@@ -1,0 +1,103 @@
+{
+  "slotIdx": 5,
+  "slotName": "theme-2-lead",
+  "slotTitle": "Theme 2 — Lead",
+  "slotPurpose": "Second major theme: the core facts",
+  "sourceSlideIdx": 3,
+  "sourceSlideTitle": "谷歌自研TPU进展",
+  "sceneData": {
+    "name": "news-briefing/theme-2-lead",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "谷歌自研TPU进展",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "process-arrows",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 160,
+        "args": {
+          "steps": [
+            {
+              "label": "第一代",
+              "sublabel": "初代TPU"
+            },
+            {
+              "label": "第四代",
+              "sublabel": "中期迭代"
+            },
+            {
+              "label": "第七代",
+              "sublabel": "最新一代"
+            }
+          ],
+          "color": "gradient"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 80,
+        "y": 400,
+        "w": 520,
+        "h": 240,
+        "args": {
+          "value": "40%",
+          "label": "成本降低",
+          "sublabel": "相比采购GPU方案",
+          "trend": "down",
+          "trendValue": "−40%",
+          "icon": "chart-line-down",
+          "style": "dark"
+        }
+      },
+      {
+        "type": "stat-with-icon",
+        "x": 680,
+        "y": 400,
+        "w": 520,
+        "h": 240,
+        "args": {
+          "value": "自研路线",
+          "label": "云厂商成本优势",
+          "sublabel": "训练成本显著下降",
+          "icon": "lightning",
+          "iconColor": "rgb(38, 70, 130)",
+          "trend": "up",
+          "trendDirection": "up"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["process-arrows", "timeline", "stat-banner", "kpi-card"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4675,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 539,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.026012399999999998,
+    "elapsedSec": 9.7,
+    "generatedAt": "2026-07-07T05:02:01.018Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

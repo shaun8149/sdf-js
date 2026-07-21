@@ -1,0 +1,90 @@
+{
+  "slotIdx": 9,
+  "slotName": "risk-detail-1",
+  "slotTitle": "Top Risk — Detail",
+  "slotPurpose": "The single highest-probability / highest-impact item, expanded",
+  "sourceSlideIdx": 6,
+  "sourceSlideTitle": "A100 GPU Instance Pricing Baseline",
+  "sceneData": {
+    "name": "news-briefing/risk-detail-1",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Top Risk — Detail",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "callout-banner",
+        "x": 40,
+        "y": 160,
+        "w": 1200,
+        "h": 140,
+        "args": {
+          "type_": "warning",
+          "heading": "A100 GPU Instance Pricing Baseline",
+          "body": "Nearly 4x differences exist among vendors for equivalent compute resources.",
+          "icon": "warning"
+        }
+      },
+      {
+        "type": "bar",
+        "x": 40,
+        "y": 340,
+        "w": 580,
+        "h": 320,
+        "args": {
+          "values": [0.25, 1],
+          "labels": ["Low End", "High End"],
+          "format": "currency",
+          "title": "A100 Pricing Range (per hour)",
+          "max": 1.2
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 660,
+        "y": 340,
+        "w": 580,
+        "h": 320,
+        "args": {
+          "value": "4x",
+          "label": "Pricing Variation",
+          "sublabel": "Among vendors for equivalent compute",
+          "icon": "chart-line",
+          "style": "dark",
+          "trend": "up",
+          "trendValue": "Impacts total costs"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["callout-banner", "stat-with-icon", "bullet-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4929,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 477,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.025844399999999997,
+    "elapsedSec": 10.8,
+    "generatedAt": "2026-07-07T06:39:14.657Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "slotIdx": 0,
+  "slotName": "cover",
+  "slotTitle": "Title",
+  "slotPurpose": "Company name + update period + author",
+  "sourceSlideIdx": 0,
+  "sourceSlideTitle": "Q3 2026 Portfolio Strategic Review",
+  "sceneData": {
+    "name": "investor-update/cover",
+    "layout": "cover",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 720,
+        "args": {
+          "title": "Q3 2026 Portfolio Strategic Review",
+          "subtitle": "12 active holdings across SaaS, FinTech, and DeepTech",
+          "author": "Investment Committee",
+          "date": "September 2026",
+          "style": "gradient"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "investor-update",
+    "theme": "financial-navy-cerulean",
+    "recommendedAtoms": [
+      "cover"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5113,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 166,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.021731399999999998,
+    "elapsedSec": 4.4,
+    "generatedAt": "2026-07-10T07:21:19.046Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

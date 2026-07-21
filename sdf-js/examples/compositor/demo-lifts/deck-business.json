@@ -1,0 +1,30 @@
+{
+  "id": "deck-business",
+  "name": "Quarterly business review (real-data charts + spatial narrative)",
+  "segments": [
+    {
+      "file": "deck-biz-revenue.json",
+      "title": "Revenue by quarter",
+      "kind": "slide",
+      "durationSec": 6.5
+    },
+    {
+      "file": "deck-biz-share.json",
+      "title": "Market share",
+      "kind": "slide",
+      "durationSec": 6.5
+    },
+    {
+      "file": "deck-biz-trend.json",
+      "title": "Growth trend",
+      "kind": "slide",
+      "durationSec": 6.5
+    },
+    {
+      "file": "deck-biz-swot.json",
+      "title": "SWOT",
+      "kind": "slide",
+      "durationSec": 6.5
+    }
+  ]
+}

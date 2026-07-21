@@ -1,0 +1,63 @@
+{
+  "id": "chart-7s",
+  "title": "7-S Model",
+  "prompt": "diagrams: 7-S Model",
+  "code2d": "// vision-authored chart-product cover (PresentationLoad Charts & Diagrams).",
+  "sceneData": {
+    "v": 1,
+    "name": "7-S Model",
+    "source": {
+      "format": "vision-authored",
+      "prompt": "diagrams chart product"
+    },
+    "subjects": [
+      {
+        "id": "s0",
+        "type": "relationship-graph-3d",
+        "args": {
+          "count": 7,
+          "radius": 1.4
+        },
+        "transform": {
+          "translate": [0, 1.2, 0]
+        },
+        "material": {
+          "hue": 0.58,
+          "sat": 0.85,
+          "value": 0.75,
+          "metal": 0.3,
+          "glow": 0
+        }
+      }
+    ],
+    "defaults": {
+      "camera": {
+        "yaw": 0.5,
+        "pitch": 0.3,
+        "distance": 10,
+        "focal": 1.5,
+        "targetX": 0,
+        "targetY": 1.2,
+        "targetZ": 0
+      },
+      "light": {
+        "azimuth": 0.6,
+        "altitude": 0.55,
+        "distance": 25,
+        "intensity": 1.2
+      },
+      "shadow": {
+        "enabled": true,
+        "mode": "darken",
+        "strength": 0.4
+      },
+      "studioBg": "dark"
+    }
+  },
+  "meta": {
+    "generatedAt": "2026-06-21",
+    "model": "vision-authored",
+    "pattern": "diagrams",
+    "costUSD": 0
+  }
+}

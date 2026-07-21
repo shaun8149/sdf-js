@@ -1,0 +1,97 @@
+{
+  "slotIdx": 4,
+  "slotName": "channels",
+  "slotTitle": "Channels",
+  "slotPurpose": "Where we will show up — digital, social, OOH, events",
+  "sourceSlideIdx": 7,
+  "sourceSlideTitle": "AI-Driven Commerce Tools Development",
+  "sceneData": {
+    "name": "marketing-campaign/channels",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Channels",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "icon-grid",
+        "x": 40,
+        "y": 160,
+        "w": 1200,
+        "h": 520,
+        "args": {
+          "title": "Platform Infrastructure",
+          "items": [
+            {
+              "icon": "brain",
+              "label": "AI Commerce Tools",
+              "sublabel": "Personalization & lifetime value"
+            },
+            {
+              "icon": "shopping-cart",
+              "label": "Commerce Lifecycle",
+              "sublabel": "Three major AI initiatives"
+            },
+            {
+              "icon": "map-pin",
+              "label": "Local Returns Network",
+              "sublabel": "Inspect, refurbish, re-fulfill"
+            },
+            {
+              "icon": "recycle",
+              "label": "Inventory Management",
+              "sublabel": "End-to-end returns process"
+            },
+            {
+              "icon": "warehouse",
+              "label": "Physical Infrastructure",
+              "sublabel": "Platform service support"
+            },
+            {
+              "icon": "package",
+              "label": "Reship Inventory",
+              "sublabel": "Local fulfillment capability"
+            }
+          ],
+          "cols": 3,
+          "iconStyle": "card",
+          "iconSize": "medium",
+          "colorMode": "auto"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "marketing-campaign",
+    "theme": "pitch-cobalt-orange",
+    "recommendedAtoms": [
+      "icon-grid",
+      "icon-row",
+      "comparison-table"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5205,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 457,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0263724,
+    "elapsedSec": 12.1,
+    "generatedAt": "2026-07-10T04:20:14.661Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

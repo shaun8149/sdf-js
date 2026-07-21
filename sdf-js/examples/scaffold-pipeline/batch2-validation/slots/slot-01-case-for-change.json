@@ -1,0 +1,125 @@
+{
+  "slotIdx": 1,
+  "slotName": "case-for-change",
+  "slotTitle": "Case for Change",
+  "slotPurpose": "Why change is necessary — data, context, burning platform",
+  "sourceSlideIdx": 1,
+  "sourceSlideTitle": "Why Change Now: The Case for Transformation",
+  "sceneData": {
+    "name": "change-roadmap/case-for-change",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Case for Change",
+          "style": "section"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 40,
+        "y": 160,
+        "w": 360,
+        "h": 220,
+        "args": {
+          "value": "3%",
+          "label": "Revenue Growth",
+          "sublabel": "vs. industry 12%",
+          "trend": "down",
+          "trendValue": "-9pp",
+          "icon": "chart-line-down",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 460,
+        "y": 160,
+        "w": 360,
+        "h": 220,
+        "args": {
+          "value": "$4.2M",
+          "label": "Annual Inefficiency",
+          "sublabel": "Legacy systems cost",
+          "icon": "currency-dollar",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 880,
+        "y": 160,
+        "w": 360,
+        "h": 220,
+        "args": {
+          "value": "44",
+          "label": "Customer NPS",
+          "sublabel": "Dropped from 67",
+          "trend": "down",
+          "trendValue": "-23pts",
+          "icon": "smiley-sad",
+          "style": "light"
+        }
+      },
+      {
+        "type": "fishbone",
+        "x": 40,
+        "y": 420,
+        "w": 1200,
+        "h": 260,
+        "args": {
+          "effect": "Digital acceleration mandate (2026)",
+          "branches": [
+            {
+              "label": "Market Pressure",
+              "causes": ["Competitor gains", "Industry growth gap"]
+            },
+            {
+              "label": "Operational",
+              "causes": ["Legacy systems", "Process inefficiency"]
+            },
+            {
+              "label": "Customer",
+              "causes": ["NPS decline", "Service gaps"]
+            },
+            {
+              "label": "Talent",
+              "causes": ["Attrition risk", "Skills shortage"]
+            },
+            {
+              "label": "Regulatory",
+              "causes": ["Compliance changes", "New mandates"]
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "change-roadmap",
+    "theme": "consulting-charcoal",
+    "recommendedAtoms": ["bullet-list", "kpi-card", "fishbone"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 3049,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 11000,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 713,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.023142,
+    "elapsedSec": 10,
+    "generatedAt": "2026-06-25T04:32:41.985Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

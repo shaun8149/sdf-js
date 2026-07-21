@@ -1,0 +1,111 @@
+{
+  "slotIdx": 1,
+  "slotName": "agenda",
+  "slotTitle": "Overview",
+  "slotPurpose": "One line per major theme of the briefing",
+  "sourceSlideIdx": 1,
+  "sourceSlideTitle": "Agenda",
+  "sceneData": {
+    "name": "news-briefing/agenda",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Overview",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "dashboard-multi-kpi-composite",
+        "x": 40,
+        "y": 160,
+        "w": 1200,
+        "h": 200,
+        "args": {
+          "kpis": [
+            {
+              "value": "1T",
+              "label": "Daily Tokens",
+              "sublabel": "Routine baseline",
+              "trend": "neutral"
+            },
+            {
+              "value": "300+",
+              "label": "Models",
+              "sublabel": "Unified interface",
+              "trend": "up"
+            },
+            {
+              "value": "5M+",
+              "label": "Developers",
+              "sublabel": "Community share",
+              "trend": "up"
+            },
+            {
+              "value": "11.6%",
+              "label": "vs OpenAI",
+              "sublabel": "Oct API volume",
+              "trend": "neutral"
+            }
+          ]
+        }
+      },
+      {
+        "type": "agenda-list",
+        "x": 40,
+        "y": 400,
+        "w": 1200,
+        "h": 280,
+        "args": {
+          "items": [
+            {
+              "label": "Platform growth and developer adoption",
+              "sublabel": "5M+ developers, unified routing"
+            },
+            {
+              "label": "Token volume and infrastructure",
+              "sublabel": "1T daily tokens sustained baseline"
+            },
+            {
+              "label": "Model diversity and provider ecosystem",
+              "sublabel": "300+ models, application-specific selection"
+            },
+            {
+              "label": "Market positioning vs OpenAI",
+              "sublabel": "11.6% of 8.6T daily API volume"
+            }
+          ],
+          "numbered": true,
+          "style": "compact"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["agenda-list", "number-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4848,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 583,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.027191399999999998,
+    "elapsedSec": 9.6,
+    "generatedAt": "2026-07-07T04:11:32.294Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

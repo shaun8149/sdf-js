@@ -1,0 +1,120 @@
+{
+  "slotIdx": 6,
+  "slotName": "team",
+  "slotTitle": "Team",
+  "slotPurpose": "Leadership and culture",
+  "sourceSlideIdx": 6,
+  "sourceSlideTitle": "Get in Touch",
+  "sceneData": {
+    "name": "company-overview/team",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Team"
+        }
+      },
+      {
+        "type": "icon-grid",
+        "x": 80,
+        "y": 180,
+        "w": 560,
+        "h": 460,
+        "args": {
+          "items": [
+            {
+              "icon": "envelope",
+              "label": "Email",
+              "sublabel": "team@antfun.io"
+            },
+            {
+              "icon": "globe",
+              "label": "Website",
+              "sublabel": "antfun.io"
+            },
+            {
+              "icon": "brand:telegram",
+              "label": "Telegram"
+            },
+            {
+              "icon": "brand:discord",
+              "label": "Discord"
+            },
+            {
+              "icon": "brand:x",
+              "label": "Twitter Spaces",
+              "sublabel": "Every Friday"
+            },
+            {
+              "icon": "users-three",
+              "label": "Community",
+              "sublabel": "12K members"
+            }
+          ]
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 700,
+        "y": 180,
+        "w": 500,
+        "h": 460,
+        "args": {
+          "items": [
+            {
+              "icon": "rocket-launch",
+              "label": "Weekly shipping + feedback"
+            },
+            {
+              "icon": "chats-circle",
+              "label": "Direct founder access"
+            },
+            {
+              "icon": "key",
+              "label": "Beta access"
+            },
+            {
+              "icon": "hand-coins",
+              "label": "Revenue share contributors"
+            },
+            {
+              "icon": "code",
+              "label": "Open-source SDK"
+            },
+            {
+              "icon": "chart-line",
+              "label": "Real-time analytics dashboard"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "company-overview",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["org-chart", "circle-image-hub-spoke", "icon-row", "bullet-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 2231,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 5921,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 584,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.017229300000000003,
+    "elapsedSec": 7.4,
+    "generatedAt": "2026-06-24T03:58:58.242Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

@@ -1,0 +1,141 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Atlas 4D — four-dimensional SDF toy</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        background: #0e0f12;
+        overflow: hidden;
+        font: 500 13px -apple-system, Inter, sans-serif;
+        color: #e8eaf0;
+      }
+      #c {
+        display: block;
+        width: 100%;
+        height: 100%;
+        cursor: grab;
+      }
+      #panel {
+        position: fixed;
+        left: 14px;
+        top: 14px;
+        z-index: 10;
+        background: rgba(16, 18, 24, 0.86);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 10px;
+        padding: 14px 16px;
+        width: 250px;
+        user-select: none;
+      }
+      #panel h1 {
+        font-size: 14px;
+        margin: 0 0 10px;
+        letter-spacing: 0.06em;
+      }
+      #panel label {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        margin: 7px 0;
+        color: rgba(232, 234, 240, 0.85);
+      }
+      #panel select,
+      #panel input[type='range'] {
+        flex: 1;
+      }
+      #panel .row {
+        display: flex;
+        gap: 6px;
+        margin: 8px 0;
+      }
+      #panel button {
+        flex: 1;
+        background: #22262f;
+        color: #e8eaf0;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 6px;
+        padding: 5px 0;
+        cursor: pointer;
+        font: 600 12px -apple-system, Inter, sans-serif;
+      }
+      #panel button.on {
+        background: #2d6fd6;
+        border-color: #2d6fd6;
+      }
+      #panel .sect {
+        margin-top: 12px;
+        padding-top: 10px;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        font-size: 11px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: rgba(232, 234, 240, 0.5);
+      }
+      #wval {
+        width: 44px;
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+        color: #9fc2ff;
+      }
+      #hud {
+        position: fixed;
+        right: 14px;
+        top: 14px;
+        z-index: 10;
+        font: 700 12px ui-monospace, monospace;
+        color: #7fd77f;
+        background: rgba(14, 15, 18, 0.72);
+        padding: 3px 8px;
+        border-radius: 4px;
+      }
+      #hint {
+        position: fixed;
+        left: 50%;
+        bottom: 14px;
+        transform: translateX(-50%);
+        color: rgba(232, 234, 240, 0.45);
+        font-size: 12px;
+        z-index: 10;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="c"></canvas>
+    <div id="panel">
+      <h1>ATLAS · 4D</h1>
+      <label>形状
+        <select id="shape">
+          <option value="0">超球 hypersphere</option>
+          <option value="1" selected>超立方 tesseract</option>
+          <option value="2">对偶柱 duocylinder</option>
+          <option value="3">球环 spheritorus</option>
+          <option value="4">四维环 duotorus</option>
+          <option value="5">布尔混合 blend</option>
+        </select>
+      </label>
+      <div class="row">
+        <button id="mode0" class="on">3D 切片</button>
+        <button id="mode1">厚投影</button>
+        <button id="mode2">洋葱层</button>
+      </div>
+      <label>w 切片 <input id="w" type="range" min="-1.6" max="1.6" step="0.01" value="0" /><span id="wval">0.00</span></label>
+      <label><span>w 呼吸动画</span><input id="wanim" type="checkbox" /></label>
+      <div class="sect">旋转平面(速度)</div>
+      <label>xy <input id="rxy" type="range" min="-1" max="1" step="0.05" value="0" /></label>
+      <label>xz <input id="rxz" type="range" min="-1" max="1" step="0.05" value="0" /></label>
+      <label>yz <input id="ryz" type="range" min="-1" max="1" step="0.05" value="0" /></label>
+      <label>xw <input id="rxw" type="range" min="-1" max="1" step="0.05" value="0.25" /></label>
+      <label>yw <input id="ryw" type="range" min="-1" max="1" step="0.05" value="0" /></label>
+      <label>zw <input id="rzw" type="range" min="-1" max="1" step="0.05" value="0" /></label>
+      <div class="row"><button id="reset">复位</button></div>
+    </div>
+    <div id="hud">— fps</div>
+    <div id="hint">拖拽旋转视角 · 滚轮推拉 · xw/yw/zw 是第四维的三个旋转平面 · 厚投影按 w 深度着色</div>
+    <script type="module" src="./fourd.js"></script>
+  </body>
+</html>

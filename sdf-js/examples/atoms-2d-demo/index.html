@@ -1,0 +1,578 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Atlas 2D Atom Library Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=IBM+Plex+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    body { margin: 24px; font-family: 'Inter', system-ui; background: #fafafa; color: #1e1b1e; }
+    h1 { margin: 0 0 4px; font-size: 22px; }
+    h1 + p { margin: 0 0 24px; color: #666; font-size: 13px; }
+    .palette-bar { margin: 8px 0 24px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: 12px; }
+    .palette-bar .label { color: #666; margin-right: 6px; }
+    .palette-bar button { padding: 4px 10px; border: 1px solid #ccc; background: #fff; cursor: pointer; font: inherit; border-radius: 3px; }
+    .palette-bar button.active { background: #1e1b1e; color: #fff; border-color: #1e1b1e; }
+    .palette-swatch { display: inline-flex; gap: 1px; margin-left: 4px; vertical-align: middle; }
+    .palette-swatch span { width: 8px; height: 12px; display: inline-block; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; }
+    .sample { background: var(--bg, #fff); padding: 0; border-radius: 6px; border: 1px solid #e5e5e5; overflow: hidden; }
+    .sample h3 { margin: 0; padding: 10px 14px; font-size: 12px; font-weight: 600; background: #f5f5f5; border-bottom: 1px solid #e5e5e5; }
+    .sample canvas { display: block; width: 100%; height: auto; }
+    .meta { padding: 8px 14px; font-size: 11px; color: #666; border-top: 1px solid #e5e5e5; font-family: 'IBM Plex Mono', monospace; }
+  </style>
+</head>
+<body>
+  <h1>Atlas 2D Atom Library — Pseudo-3D Style Demo</h1>
+  <p>Phase 0 hello-world: <code>kpi-card</code> atom rendered in main-page Canvas2D (not iframe). Switch palette to see how branding affects each atom.</p>
+  <div id="palette-bar" class="palette-bar"></div>
+  <div id="grid" class="grid"></div>
+
+  <script type="module">
+    import { renderSceneDataToCanvas } from '/src/present/atoms-2d/renderer.js';
+    import { listAtomTypes } from '/src/present/atoms-2d/registry.js';
+    import { BRANDING_PALETTES, getPalette } from '/src/present/branding-palettes.js';
+
+    const FEATURED_PALETTES = [
+      'mono-light',
+      'chromotome:hilda01',
+      'chromotome:jung_bird',
+      'chromotome:kov_03',
+      'chromotome:rag-mysore',
+    ];
+
+    let currentPaletteId = 'mono-light';
+
+    // Demo cases — KPI card in different content shapes
+    const SAMPLES = [
+      { title: 'Hero Revenue + Trend Up',
+        atom: { type: 'kpi-card', args: { value: '$3.4M', label: 'Q3 Revenue', sublabel: 'vs Q2 2024', trend: 'up', trendValue: '+127%', icon: 'chart-bar' } } },
+      { title: 'User Growth',
+        atom: { type: 'kpi-card', args: { value: '12,450', label: 'Monthly Active Users', sublabel: '+1.2k from last month', trend: 'up', trendValue: '+10.6%', icon: 'users' } } },
+      { title: 'Churn Drop',
+        atom: { type: 'kpi-card', args: { value: '2.1%', label: 'Monthly Churn', sublabel: 'down from 3.4%', trend: 'down', trendValue: '-1.3pt', icon: 'arrow-down' } } },
+      { title: 'NPS Steady',
+        atom: { type: 'kpi-card', args: { value: '68', label: 'NPS Score', sublabel: 'unchanged QoQ', trend: 'neutral', trendValue: '0', icon: 'star' } } },
+      { title: 'Minimal (no trend, no icon)',
+        atom: { type: 'kpi-card', args: { value: '$10M', label: 'Total ARR' } } },
+      { title: 'Long Label',
+        atom: { type: 'kpi-card', args: { value: '94%', label: 'Customer Satisfaction Score', sublabel: 'Based on Q3 NPS survey, n=1,250', trend: 'up', trendValue: '+3pt', icon: 'heart' } } },
+      // ---- Bar chart samples (Phase 1a) ----
+      { title: 'Bar — Quarterly Revenue',
+        size: { w: 540, h: 280 },
+        atom: { type: 'bar', args: { values: [1.2, 1.8, 2.4, 3.1], labels: ['Q1', 'Q2', 'Q3', 'Q4'], format: 'currency', title: 'Quarterly Revenue ($M)' } } },
+      { title: 'Bar — Market Share',
+        size: { w: 540, h: 280 },
+        atom: { type: 'bar', args: { values: [32, 23, 11, 8, 26], labels: ['AWS', 'Azure', 'GCP', 'Alibaba', 'Others'], format: 'percent', title: 'Cloud Market Share' } } },
+      { title: 'Bar — Survey Response',
+        size: { w: 540, h: 280 },
+        atom: { type: 'bar', args: { values: [62, 48, 35, 22, 18, 12], labels: ['Pricing', 'UX', 'Speed', 'Docs', 'Mobile', 'API'], format: 'number', title: 'Top Pain Points (% mentions)' } } },
+      // ---- Line chart samples (Phase 1b) ----
+      { title: 'Line — Revenue Trajectory',
+        size: { w: 540, h: 300 },
+        atom: { type: 'line', args: { values: [1.2, 1.8, 2.4, 3.1], labels: ['Q1', 'Q2', 'Q3', 'Q4'], format: 'currency', title: 'Quarterly Revenue ($M)', showValues: true } } },
+      { title: 'Line — With Annotation',
+        size: { w: 540, h: 300 },
+        atom: { type: 'line', args: { values: [120, 142, 168, 240, 285, 310], labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'], format: 'number', title: 'MAU (thousands)', annotations: [{ index: 3, text: '↑ feature launch' }] } } },
+      { title: 'Line — Steady Growth',
+        size: { w: 540, h: 280 },
+        atom: { type: 'line', args: { values: [85, 88, 92, 94, 96, 95, 97], labels: ['W1', 'W2', 'W3', 'W4', 'W5', 'W6', 'W7'], format: 'percent', title: 'Weekly Retention' } } },
+      // ---- Pie chart samples (Phase 1b) ----
+      { title: 'Pie — Solid Cloud Share',
+        size: { w: 480, h: 320 },
+        atom: { type: 'pie', args: { values: [32, 23, 11, 8, 26], labels: ['AWS', 'Azure', 'GCP', 'Alibaba', 'Others'], format: 'percent', title: 'Cloud Market Share' } } },
+      { title: 'Pie — Donut + Center Label',
+        size: { w: 480, h: 320 },
+        atom: { type: 'pie', args: { values: [45, 25, 15, 10, 5], labels: ['Eng', 'Sales', 'Marketing', 'Support', 'Other'], format: 'percent', title: 'Headcount Split', donutRatio: 0.55, centerLabel: '120' } } },
+      { title: 'Pie — Revenue by Segment',
+        size: { w: 480, h: 320 },
+        atom: { type: 'pie', args: { values: [4.2, 2.1, 1.5, 0.8], labels: ['Enterprise', 'Mid-market', 'SMB', 'Indie'], format: 'currency', title: 'Revenue $M by Segment', donutRatio: 0.4 } } },
+      // ---- Column chart samples (Phase 1c) ----
+      { title: 'Column — Quarterly Revenue',
+        size: { w: 540, h: 320 },
+        atom: { type: 'column', args: { values: [1.2, 1.8, 2.4, 3.1], labels: ['Q1', 'Q2', 'Q3', 'Q4'], format: 'currency', title: 'Quarterly Revenue ($M)' } } },
+      { title: 'Column — Monthly Signups',
+        size: { w: 540, h: 320 },
+        atom: { type: 'column', args: { values: [340, 420, 510, 580, 670, 820], labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'], format: 'number', title: 'Monthly Signups' } } },
+      { title: 'Column — Conversion by Channel',
+        size: { w: 540, h: 320 },
+        atom: { type: 'column', args: { values: [4.2, 8.7, 3.1, 12.5, 6.3], labels: ['Organic', 'Paid', 'Email', 'Referral', 'Social'], format: 'percent', title: 'Conversion Rate by Channel' } } },
+      // ---- Flow chart samples (Phase 2a) ----
+      { title: 'Flow — User Journey',
+        size: { w: 720, h: 220 },
+        atom: { type: 'flow-chart', args: { steps: ['Sign up', 'Verify', 'Onboard', 'Purchase', 'Retain'], sublabels: ['Day 0', 'Day 0', 'Day 1', 'Day 3', 'Day 30'], highlight: 3, title: 'User Activation Funnel' } } },
+      { title: 'Flow — Build Pipeline',
+        size: { w: 720, h: 200 },
+        atom: { type: 'flow-chart', args: { steps: ['Commit', 'Test', 'Build', 'Deploy'], title: 'CI/CD Pipeline' } } },
+      { title: 'Flow — Vertical Decision',
+        size: { w: 320, h: 540 },
+        atom: { type: 'flow-chart', args: { steps: ['Request', 'Auth check', 'Rate limit', 'Process', 'Response'], orientation: 'vertical', title: 'Request Pipeline' } } },
+      // ---- Tree diagram (Phase 2b) ----
+      { title: 'Tree — Product Categories',
+        size: { w: 720, h: 360 },
+        atom: { type: 'tree-diagram', args: { title: 'Product Categories', root: { label: 'Software', children: [{ label: 'Enterprise', children: [{ label: 'CRM' }, { label: 'ERP' }] }, { label: 'Consumer', children: [{ label: 'Mobile' }, { label: 'Web' }, { label: 'Desktop' }] }, { label: 'Developer' }] } } } },
+      // ---- Org chart (Phase 2b) ----
+      { title: 'Org — Executive Team',
+        size: { w: 720, h: 380 },
+        atom: { type: 'org-chart', args: { title: 'Executive Team', root: { name: 'Sarah Chen', title: 'CEO', children: [{ name: 'Mike Park', title: 'CTO', children: [{ name: 'Alex Wu', title: 'Eng Manager' }, { name: 'Jamie Lee', title: 'Sr Engineer' }] }, { name: 'Lisa Wang', title: 'CMO', children: [{ name: 'Tom Chen', title: 'Brand Lead' }] }, { name: 'David Liu', title: 'CFO' }] } } } },
+      // ---- Mindmap (Phase 2c) ----
+      { title: 'Mindmap — Atlas Architecture',
+        size: { w: 720, h: 480 },
+        atom: { type: 'mindmap', args: { title: 'Atlas Architecture', root: { label: 'Atlas', children: [{ label: 'Engine', children: [{ label: 'SDF' }, { label: 'Renderer' }, { label: 'Compiler' }] }, { label: 'Present', children: [{ label: 'Atoms' }, { label: 'Pipeline' }] }, { label: 'Compositor', children: [{ label: 'Lift' }] }, { label: 'Studio' }] } } } },
+      // ---- Relationship graph (Phase 2c) ----
+      { title: 'Relationship — Team Dependencies',
+        size: { w: 720, h: 460 },
+        atom: { type: 'relationship-graph', args: { title: 'Team Dependencies', nodes: [{ id: 'eng', label: 'Engineering', group: 0 }, { id: 'design', label: 'Design', group: 0 }, { id: 'pm', label: 'Product Mgmt', group: 0 }, { id: 'figma', label: 'Figma', group: 1 }, { id: 'github', label: 'GitHub', group: 1 }, { id: 'jira', label: 'Jira', group: 1 }], edges: [{ from: 'eng', to: 'github', label: 'uses' }, { from: 'eng', to: 'jira', label: 'uses' }, { from: 'design', to: 'figma', label: 'uses' }, { from: 'design', to: 'jira', label: 'uses' }, { from: 'pm', to: 'jira', label: 'owns' }, { from: 'pm', to: 'figma', label: 'reviews' }] } } },
+      // ---- Timeline (Phase 2c part 2) ----
+      { title: 'Timeline — Company Milestones',
+        size: { w: 800, h: 280 },
+        atom: { type: 'timeline', args: { title: 'Company Milestones', axisLabel: '2024-2026', events: [{ date: '2024 Q1', label: 'Seed Round', sublabel: '$2M' }, { date: '2024 Q4', label: 'Product Launch', sublabel: 'Public beta' }, { date: '2025 Q3', label: 'Series A', sublabel: '$15M' }, { date: '2026 Q2', label: 'Profitable', sublabel: '$10M ARR' }] } } },
+      // ---- Pyramid (closes Phase 2) ----
+      { title: 'Pyramid — Maslow Hierarchy',
+        size: { w: 480, h: 480 },
+        atom: { type: 'pyramid', args: { title: "Maslow's Hierarchy", layers: [{ label: 'Physiological', sublabel: 'food, water, sleep' }, { label: 'Safety', sublabel: 'security, employment' }, { label: 'Belonging', sublabel: 'friends, family' }, { label: 'Esteem', sublabel: 'confidence, status' }, { label: 'Self-Actualization', sublabel: 'fulfillment' }] } } },
+      { title: 'Pyramid — Inverted Funnel',
+        size: { w: 480, h: 480 },
+        atom: { type: 'pyramid', args: { title: 'Sales Funnel', inverted: true, layers: [{ label: 'Visitors', value: '10K' }, { label: 'Trial', value: '1.2K' }, { label: 'Active', value: '400' }, { label: 'Paying', value: '120' }, { label: 'Champions', value: '24' }] } } },
+      // ---- Sphere fill (generic glass sphere visualization) ----
+      { title: 'Sphere Fill — 80%',
+        size: { w: 320, h: 320 },
+        atom: { type: 'sphere-fill', args: { value: 80, color: [50, 130, 200] } } },
+      { title: 'Sphere Fill — 50%',
+        size: { w: 320, h: 320 },
+        atom: { type: 'sphere-fill', args: { value: 50, color: [50, 130, 200] } } },
+      { title: 'Sphere Fill — 20%',
+        size: { w: 320, h: 320 },
+        atom: { type: 'sphere-fill', args: { value: 20, color: [50, 130, 200] } } },
+      { title: 'Sphere Fill — Green 60%',
+        size: { w: 320, h: 320 },
+        atom: { type: 'sphere-fill', args: { value: 60, color: [140, 180, 70] } } },
+      { title: 'Sphere Fill — Red 40%',
+        size: { w: 320, h: 320 },
+        atom: { type: 'sphere-fill', args: { value: 40, color: [180, 50, 70] } } },
+      { title: 'Sphere Fill — Purple 70%',
+        size: { w: 320, h: 320 },
+        atom: { type: 'sphere-fill', args: { value: 70, color: [150, 90, 180] } } },
+      // ---- Cube grid (generic isometric voxel grid) ----
+      { title: 'Cube Grid — 3x3x3 uniform',
+        size: { w: 380, h: 380 },
+        atom: { type: 'cube-grid', args: { size: 3, colors: [[60, 130, 200]] } } },
+      { title: 'Cube Grid — 3x3x3 top accent',
+        size: { w: 380, h: 380 },
+        atom: { type: 'cube-grid', args: { size: 3, colors: [[200, 200, 205]], colorPattern: 'top-accent' } } },
+      { title: 'Cube Grid — 2x2x2 corner accent',
+        size: { w: 380, h: 380 },
+        atom: { type: 'cube-grid', args: { size: 2, colors: [[200, 200, 205]], colorPattern: 'corner-accent' } } },
+      { title: 'Cube Grid — 4x4x4 alternating',
+        size: { w: 380, h: 380 },
+        atom: { type: 'cube-grid', args: { size: 4, colors: [[60, 130, 200], [200, 200, 205]], colorPattern: 'alternating' } } },
+      { title: 'Cube Grid — solid (no spacing)',
+        size: { w: 380, h: 380 },
+        atom: { type: 'cube-grid', args: { size: 3, colors: [[60, 130, 200]], spacing: 0 } } },
+      { title: 'Cube Grid — large gap',
+        size: { w: 380, h: 380 },
+        atom: { type: 'cube-grid', args: { size: 3, colors: [[60, 130, 200]], spacing: 0.3 } } },
+      // ---- Gear cluster ----
+      { title: 'Gear Cluster — 3 interlocked',
+        size: { w: 440, h: 360 },
+        atom: { type: 'gear-cluster', args: { title: 'Process Engine' } } },
+      // ---- Puzzle pieces ----
+      { title: 'Puzzle — 2x2 integration',
+        size: { w: 380, h: 380 },
+        atom: { type: 'puzzle-pieces', args: { rows: 2, cols: 2, highlight: 0, title: 'Integration' } } },
+      { title: 'Puzzle — 3x2 strategy',
+        size: { w: 440, h: 380 },
+        atom: { type: 'puzzle-pieces', args: { rows: 2, cols: 3, highlight: 2 } } },
+      // ---- Funnel ----
+      { title: 'Funnel — Sales pipeline',
+        size: { w: 540, h: 380 },
+        atom: { type: 'funnel', args: { title: 'Sales Funnel', format: 'number', stages: [{ label: 'Visitors', value: 10000 }, { label: 'Trial', value: 1200 }, { label: 'Active', value: 400 }, { label: 'Paying', value: 120 }] } } },
+      // ---- Waterfall ----
+      { title: 'Waterfall — Q1 → Q2 bridge',
+        size: { w: 620, h: 380 },
+        atom: { type: 'waterfall', args: { title: 'Q1 → Q2 Revenue Bridge', format: 'number', bars: [{ label: 'Q1', value: 100, kind: 'start' }, { label: 'New', value: 30, kind: 'positive' }, { label: 'Churn', value: -8, kind: 'negative' }, { label: 'Upsell', value: 12, kind: 'positive' }, { label: 'Q2', value: 134, kind: 'end' }] } } },
+      // ---- Gantt ----
+      { title: 'Gantt — Project plan',
+        size: { w: 640, h: 340 },
+        atom: { type: 'gantt', args: { title: 'Project Plan', periods: ['Q1', 'Q2', 'Q3', 'Q4'], tasks: [{ label: 'Research', start: 0, end: 0.25 }, { label: 'Design', start: 0.15, end: 0.5 }, { label: 'Build', start: 0.4, end: 0.85, complete: 0.6 }, { label: 'Launch', start: 0.8, end: 1 }] } } },
+      // ---- B3 PR 1: charts/data new atoms (2D twins of gauge/radial-spoke/scatter/traffic-light/venn) ----
+      { title: 'Gauge — Server load 70%',
+        size: { w: 360, h: 280 },
+        atom: { type: 'gauge', args: { value: 0.7, label: 'Utilization', title: 'Server Load', min: '0', max: '100' } } },
+      { title: 'Radial spoke — Vehicle profile',
+        size: { w: 440, h: 440 },
+        atom: { type: 'radial-spoke', args: { title: 'Vehicle Profile', values: [0.6, 0.9, 0.3, 0.75, 0.5, 0.8], labels: ['Speed', 'Power', 'Range', 'Comfort', 'Safety', 'MPG'] } } },
+      { title: 'Scatter — Cost vs Value',
+        size: { w: 520, h: 400 },
+        atom: { type: 'scatter', args: { title: 'Cost vs Value', xAxis: 'Cost', yAxis: 'Value', points: [{ x: 0.2, y: 0.3, label: 'A', group: 'small' }, { x: 0.5, y: 0.7, label: 'B', group: 'large' }, { x: 0.8, y: 0.4, label: 'C', group: 'small' }, { x: 0.35, y: 0.85, label: 'D', group: 'large' }, { x: 0.65, y: 0.55, label: 'E', group: 'small' }] } } },
+      // ---- Bubble chart (Sprint 15a) ----
+      { title: 'Bubble — Product Portfolio',
+        size: { w: 540, h: 420 },
+        atom: { type: 'bubble', args: { title: 'Product Portfolio', xAxis: 'Cost', yAxis: 'Revenue', sizeScale: 40, points: [{ x: 0.2, y: 0.35, size: 0.45, label: 'Core' }, { x: 0.55, y: 0.75, size: 0.85, label: 'Platform' }, { x: 0.8, y: 0.45, size: 0.25, label: 'Add-on' }, { x: 0.35, y: 0.6, size: 0.6, label: 'Pro' }] } } },
+      { title: 'Bubble — Risk Map',
+        size: { w: 540, h: 420 },
+        atom: { type: 'bubble', args: { title: 'Risk Exposure Map', xAxis: 'Probability', yAxis: 'Impact', sizeScale: 38, points: [{ x: 0.15, y: 0.8, size: 0.3, label: 'Reg' }, { x: 0.6, y: 0.65, size: 0.75, label: 'Market' }, { x: 0.85, y: 0.35, size: 0.5, label: 'Ops' }, { x: 0.4, y: 0.9, size: 0.55, label: 'Tech' }, { x: 0.7, y: 0.2, size: 0.2, label: 'Legal' }, { x: 0.25, y: 0.45, size: 0.4, label: 'People' }] } } },
+      // ---- Histogram (Sprint 15a Task 3.1) ----
+      { title: 'Histogram — Survey response distribution + bell curve',
+        size: { w: 560, h: 340 },
+        atom: { type: 'histogram', args: { title: 'Survey Response Distribution', bellCurve: true, milestones: [{ value: 25, label: 'Median' }], bins: [{ range: [0, 10], count: 5 }, { range: [10, 20], count: 12 }, { range: [20, 30], count: 18 }, { range: [30, 40], count: 14 }, { range: [40, 50], count: 7 }] } } },
+      { title: 'Histogram — Age distribution with milestones',
+        size: { w: 560, h: 340 },
+        atom: { type: 'histogram', args: { title: 'Customer Age Distribution', bins: [{ range: [18, 25], count: 320 }, { range: [25, 35], count: 540 }, { range: [35, 45], count: 410 }, { range: [45, 55], count: 290 }, { range: [55, 65], count: 180 }, { range: [65, 75], count: 90 }], milestones: [{ value: 38, label: 'Avg Age' }] } } },
+      { title: 'Traffic light — Project status',
+        size: { w: 280, h: 460 },
+        atom: { type: 'traffic-light', args: { title: 'Project Status', lights: [{ color: 'red', label: 'Stop' }, { color: 'amber', label: 'Slow' }, { color: 'green', active: true, label: 'Go' }] } } },
+      { title: 'Venn — Cross-functional',
+        size: { w: 500, h: 420 },
+        atom: { type: 'venn', args: { title: 'Cross-functional Work', sets: [{ label: 'Engineering' }, { label: 'Design' }, { label: 'Product' }] } } },
+      // ---- B3 PR 2: shapes/circle-* (2D twins of circle-frame/loop/segmented/stack -3d) ----
+      { title: 'Circle frame — Avatar',
+        size: { w: 280, h: 320 },
+        atom: { type: 'circle-frame', args: { label: 'JC', title: 'Jane Chen' } } },
+      { title: 'Circle loop — PDCA cycle',
+        size: { w: 400, h: 400 },
+        atom: { type: 'circle-loop', args: { segments: 4, labels: ['Plan', 'Do', 'Check', 'Act'], title: 'PDCA Cycle' } } },
+      { title: 'Circle segmented — Process phases',
+        size: { w: 420, h: 420 },
+        atom: { type: 'circle-segmented', args: { segments: 6, labels: ['Discover', 'Design', 'Build', 'Test', 'Launch', 'Scale'], title: 'Process Phases' } } },
+      { title: 'Circle stack — Maturity model',
+        size: { w: 520, h: 380 },
+        atom: { type: 'circle-stack', args: { title: 'Maturity Stack', layers: [{ label: 'Foundation', sublabel: 'Year 1' }, { label: 'Build', sublabel: 'Year 2' }, { label: 'Scale', sublabel: 'Year 3' }, { label: 'Optimize', sublabel: 'Year 4+' }] } } },
+      // ---- B3 PR 3: shapes/sphere-* + cube-segmented (2D twins of sphere-network/segmented/tree + cube-segmented -3d) ----
+      { title: 'Sphere network — Product surface',
+        size: { w: 480, h: 480 },
+        atom: { type: 'sphere-network', args: { title: 'Product Surface', hub: { label: 'Platform' }, satellites: [{ label: 'API' }, { label: 'Web' }, { label: 'Mobile' }, { label: 'CLI' }, { label: 'SDK' }, { label: 'Docs' }] } } },
+      { title: 'Sphere segmented — Regions',
+        size: { w: 420, h: 420 },
+        atom: { type: 'sphere-segmented', args: { title: 'Regions', segments: 4, labels: ['North', 'South', 'East', 'West'], explode: 0.06 } } },
+      { title: 'Sphere tree — Decision tree',
+        size: { w: 600, h: 400 },
+        atom: { type: 'sphere-tree', args: { title: 'Decision Tree', root: { label: 'Start', children: [{ label: 'Yes', children: [{ label: 'A' }, { label: 'B' }] }, { label: 'No', children: [{ label: 'C' }, { label: 'D' }] }] } } } },
+      { title: 'Cube segmented — Quarterly layers',
+        size: { w: 380, h: 380 },
+        atom: { type: 'cube-segmented', args: { title: 'Quarterly Layers', segments: 4, labels: ['Q1', 'Q2', 'Q3', 'Q4'] } } },
+      // ---- B3 PR 4: agenda-list / fishbone / layer-stack / bullet-list (closes B3) ----
+      { title: 'Agenda — Today’s meeting',
+        size: { w: 560, h: 360 },
+        atom: { type: 'agenda-list', args: { title: 'Today’s Agenda', items: [{ label: 'Recap last quarter', sublabel: '5 min' }, { label: 'Goals review', sublabel: '15 min' }, { label: 'Next-quarter plan', sublabel: '20 min' }, { label: 'Q&A', sublabel: '10 min' }] } } },
+      { title: 'Fishbone — Q3 conversion drop',
+        size: { w: 760, h: 400 },
+        atom: { type: 'fishbone', args: { title: 'Q3 Conversion Drop', effect: 'Low Conversion', branches: [{ label: 'Marketing', causes: ['Targeting', 'Channels'] }, { label: 'Product', causes: ['Onboarding', 'Feature gaps'] }, { label: 'Pricing', causes: ['Tier confusion'] }, { label: 'Support', causes: ['Slow response'] }] } } },
+      { title: 'Layer stack — OSI model',
+        size: { w: 520, h: 460 },
+        atom: { type: 'layer-stack', args: { title: 'OSI Model', layers: [{ label: 'Physical', sublabel: 'Layer 1' }, { label: 'Data Link', sublabel: 'Layer 2' }, { label: 'Network', sublabel: 'Layer 3' }, { label: 'Transport', sublabel: 'Layer 4' }, { label: 'Session', sublabel: 'Layer 5' }, { label: 'Presentation', sublabel: 'Layer 6' }, { label: 'Application', sublabel: 'Layer 7' }] } } },
+      { title: 'Bullet list — Key improvements',
+        size: { w: 560, h: 360 },
+        atom: { type: 'bullet-list', args: { title: 'Key Improvements', items: [{ label: 'Faster onboarding', status: 'done' }, { label: 'Better defaults', status: 'done' }, { label: 'Edge-case fixes', status: 'highlight' }, { label: 'Docs refresh', status: 'todo' }] } } },
+      // ---- Progression ----
+      { title: 'Progression — 5 steps',
+        size: { w: 700, h: 180 },
+        atom: { type: 'progression', args: { title: 'Project Status', steps: [{ label: 'Discovery', status: 'done' }, { label: 'Design', status: 'done' }, { label: 'Build', status: 'current' }, { label: 'Test', status: 'todo' }, { label: 'Launch', status: 'todo' }] } } },
+      // ---- Matrix grid ----
+      { title: 'Matrix — SWOT 2x2',
+        size: { w: 500, h: 500 },
+        atom: { type: 'matrix-grid', args: { rows: 2, cols: 2, title: 'SWOT Analysis', cells: [{ label: 'Strengths' }, { label: 'Weaknesses' }, { label: 'Opportunities' }, { label: 'Threats' }] } } },
+      // ---- Nine-field matrix (GE/McKinsey) ----
+      { title: 'Nine-field Matrix — GE/McKinsey classic',
+        size: { w: 520, h: 540 },
+        atom: { type: 'nine-field-matrix', args: {
+          title: 'GE / McKinsey Matrix',
+          xAxis: 'Business Strength',
+          yAxis: 'Industry Attractiveness',
+          cells: [
+            { label: 'Invest', sublabel: 'High priority' }, { label: 'Invest', sublabel: 'High priority' }, { label: 'Selective', sublabel: 'Medium priority' },
+            { label: 'Invest', sublabel: 'High priority' }, { label: 'Selective', sublabel: 'Medium priority' }, { label: 'Harvest', sublabel: 'Low priority' },
+            { label: 'Selective', sublabel: 'Medium priority' }, { label: 'Harvest', sublabel: 'Low priority' }, { label: 'Divest', sublabel: 'Low priority' },
+          ],
+        } } },
+      { title: 'Nine-field Matrix — Portfolio with bubbles',
+        size: { w: 520, h: 540 },
+        atom: { type: 'nine-field-matrix', args: {
+          title: 'Product Portfolio',
+          xAxis: 'Business Strength',
+          yAxis: 'Industry Attractiveness',
+          cells: [
+            { label: 'Invest' }, { label: 'Invest' }, { label: 'Selective' },
+            { label: 'Invest' }, { label: 'Selective' }, { label: 'Harvest' },
+            { label: 'Selective' }, { label: 'Harvest' }, { label: 'Divest' },
+          ],
+          bubbles: [
+            { row: 0, col: 0, label: 'Alpha', size: 0.65 },
+            { row: 0, col: 1, label: 'Beta', size: 0.5 },
+            { row: 1, col: 1, label: 'Gamma', size: 0.55 },
+            { row: 2, col: 2, label: 'Delta', size: 0.45 },
+          ],
+        } } },
+      // ---- Shape primitives (Phase 3 — split from `shape` enum to 4 atoms 1:1 with 3D) ----
+      { title: 'Cube — Product',
+        size: { w: 280, h: 280 },
+        atom: { type: 'cube', args: { label: 'Product' } } },
+      { title: 'Diamond — Premium',
+        size: { w: 280, h: 280 },
+        atom: { type: 'diamond', args: { label: 'Premium', color: [180, 60, 180] } } },
+      { title: 'Arrow Up — Growth',
+        size: { w: 280, h: 280 },
+        atom: { type: 'arrow', args: { direction: 'up', label: '+127% Growth', color: [40, 160, 100] } } },
+      { title: 'Gear — Process',
+        size: { w: 280, h: 280 },
+        atom: { type: 'gear', args: { label: 'Process', color: [200, 130, 40] } } },
+      // ---- Icon badges (Phase 4) ----
+      { title: 'Icon — Users (Engineering)',
+        size: { w: 240, h: 240 },
+        atom: { type: 'icon-badge', args: { name: 'users', label: 'Engineering', color: [60, 100, 200] } } },
+      { title: 'Icon — Lightning (Performance)',
+        size: { w: 240, h: 240 },
+        atom: { type: 'icon-badge', args: { name: 'lightning', label: 'Performance', color: [220, 170, 30] } } },
+      { title: 'Icon — Cloud (Infrastructure)',
+        size: { w: 240, h: 240 },
+        atom: { type: 'icon-badge', args: { name: 'cloud', label: 'Infrastructure', color: [60, 140, 200] } } },
+      { title: 'Icon — Shield (Security)',
+        size: { w: 240, h: 240 },
+        atom: { type: 'icon-badge', args: { name: 'shield', label: 'Security', color: [40, 160, 100] } } },
+      { title: 'Icon — Chart Bar (Analytics)',
+        size: { w: 240, h: 240 },
+        atom: { type: 'icon-badge', args: { name: 'chart-bar', label: 'Analytics', color: [180, 60, 180] } } },
+      { title: 'Icon — Heart (Customer)',
+        size: { w: 240, h: 240 },
+        atom: { type: 'icon-badge', args: { name: 'heart', label: 'Customer', color: [220, 80, 100] } } },
+      // ---- Cover (Phase 4) ----
+      { title: 'Cover — Q3 Board Review',
+        size: { w: 720, h: 400 },
+        atom: { type: 'cover', args: { title: 'Q3 2025 Board Review', subtitle: 'Acme Corporation', author: 'Sarah Chen, CEO', date: 'November 2025', version: 'v1.0' } } },
+      { title: 'Cover — Series A Pitch',
+        size: { w: 720, h: 400 },
+        atom: { type: 'cover', args: { title: 'Atlas Present', subtitle: 'AI-native deck builder for consultants', author: 'Founding Team', date: '2026' } } },
+      // ---- Break-even (Sprint 15a) ----
+      { title: 'Break-even — SaaS Pricing Analysis',
+        size: { w: 600, h: 340 },
+        atom: { type: 'break-even', args: { fixedCost: 50000, variableCostPerUnit: 25, pricePerUnit: 50, maxUnits: 5000, title: 'SaaS Pricing Analysis', currency: '$' } } },
+      { title: 'Break-even — Manufacturing',
+        size: { w: 600, h: 340 },
+        atom: { type: 'break-even', args: { fixedCost: 120000, variableCostPerUnit: 40, pricePerUnit: 75, maxUnits: 8000, title: 'Manufacturing Break-Even', currency: '$' } } },
+      // ---- Stacked area (Sprint 15a Task 5.1) ----
+      { title: 'Stacked Area — Revenue by Product',
+        size: { w: 620, h: 360 },
+        atom: { type: 'stacked-area', args: {
+          title: 'Revenue by Product Over Time ($M)',
+          format: 'currency',
+          xLabels: ['Q1 24', 'Q2 24', 'Q3 24', 'Q4 24', 'Q1 25', 'Q2 25'],
+          series: [
+            { name: 'Platform', values: [1.2, 1.5, 1.8, 2.1, 2.4, 2.8] },
+            { name: 'Add-ons', values: [0.4, 0.6, 0.9, 1.1, 1.4, 1.7] },
+            { name: 'Services', values: [0.2, 0.3, 0.4, 0.5, 0.7, 0.9] },
+          ],
+        } } },
+      { title: 'Stacked Area — Headcount by Team',
+        size: { w: 620, h: 360 },
+        atom: { type: 'stacked-area', args: {
+          title: 'Headcount by Team Over Quarters',
+          format: 'number',
+          xLabels: ['Q1', 'Q2', 'Q3', 'Q4'],
+          series: [
+            { name: 'Engineering', values: [18, 24, 31, 38] },
+            { name: 'Sales', values: [8, 12, 16, 20] },
+            { name: 'Marketing', values: [4, 5, 7, 9] },
+            { name: 'Support', values: [3, 4, 5, 6] },
+          ],
+        } } },
+      // ---- Seven-S Model (Sprint 15a Task 6.1) ----
+      { title: 'McKinsey 7S Framework — Classic',
+        size: { w: 560, h: 440 },
+        atom: { type: 'seven-s-model', args: {
+          title: '7S Framework',
+          center: 'Shared Values',
+          satellites: [
+            { label: 'Strategy' },
+            { label: 'Structure' },
+            { label: 'Systems' },
+            { label: 'Style' },
+            { label: 'Staff' },
+            { label: 'Skills' },
+          ],
+        } } },
+      { title: 'McKinsey 7S — Digital Transformation',
+        size: { w: 560, h: 440 },
+        atom: { type: 'seven-s-model', args: {
+          title: 'Digital Transformation 7S',
+          center: 'Customer Focus',
+          satellites: [
+            { label: 'Strategy', description: 'Cloud-first' },
+            { label: 'Structure', description: 'Flat org' },
+            { label: 'Systems', description: 'AI-driven' },
+            { label: 'Style', description: 'Agile' },
+            { label: 'Staff', description: 'T-shaped' },
+            { label: 'Skills', description: 'Data literacy' },
+          ],
+        } } },
+      // ---- Multiple Arrows (Sprint 15a Task 7.1) ----
+      { title: 'Multiple Arrows — Converge (3 → 1)',
+        size: { w: 560, h: 320 },
+        atom: { type: 'multiple-arrows', args: {
+          title: '3 → 1 Aggregation',
+          mode: 'converge',
+          arrows: [
+            { label: 'Input A' },
+            { label: 'Input B' },
+            { label: 'Input C' },
+          ],
+          centerLabel: 'Output',
+        } } },
+      { title: 'Multiple Arrows — Diverge (1 → 4)',
+        size: { w: 560, h: 360 },
+        atom: { type: 'multiple-arrows', args: {
+          title: 'Market Channels',
+          mode: 'diverge',
+          arrows: [
+            { label: 'Enterprise' },
+            { label: 'Mid-Market' },
+            { label: 'SMB' },
+            { label: 'Developer' },
+          ],
+          centerLabel: 'GTM',
+        } } },
+      { title: 'Multiple Arrows — Parallel Lanes',
+        size: { w: 560, h: 320 },
+        atom: { type: 'multiple-arrows', args: {
+          title: 'Parallel Workstreams',
+          mode: 'parallel',
+          arrows: [
+            { label: 'Engineering' },
+            { label: 'Design' },
+            { label: 'Marketing' },
+          ],
+        } } },
+      // ---- Sprint 15b B1: circle-image-hub-spoke ----
+      { title: 'Hub-Spoke — Atlas Integrations (5 satellites)',
+        size: { w: 560, h: 440 },
+        atom: { type: 'circle-image-hub-spoke', args: {
+          title: 'Atlas Integrations',
+          center: { label: 'Atlas' },
+          satellites: [
+            { label: 'Sketch' }, { label: 'Notion' }, { label: 'Loom' },
+            { label: 'Figma' }, { label: 'Slack' },
+          ],
+        } } },
+      { title: 'Hub-Spoke — Ecosystem (6 satellites)',
+        size: { w: 580, h: 460 },
+        atom: { type: 'circle-image-hub-spoke', args: {
+          title: 'Customer Success Stories',
+          center: { label: 'Our Product' },
+          satellites: [
+            { label: 'Acme Corp' }, { label: 'TechCo' }, { label: 'DataFlow' },
+            { label: 'CloudBase' }, { label: 'NexGen' }, { label: 'ProServ' },
+          ],
+        } } },
+      // ---- Sprint 15b B1: magazine-column-grid ----
+      { title: 'Magazine Grid — Q3 Department Snapshot',
+        size: { w: 660, h: 420 },
+        atom: { type: 'magazine-column-grid', args: {
+          title: 'Q3 Department Snapshot',
+          categories: [
+            { name: 'Sales', items: [{ label: 'Revenue', value: '$3.4M' }, { label: 'Leads', value: '1,200' }, { label: 'Win Rate', value: '38%' }] },
+            { name: 'Product', items: [{ label: 'Releases', value: '8' }, { label: 'NPS', value: '72' }, { label: 'Features', value: '24' }] },
+            { name: 'Engineering', items: [{ label: 'PRs Merged', value: '340' }, { label: 'Uptime', value: '99.9%' }, { label: 'Bugs Fixed', value: '82' }] },
+          ],
+        } } },
+      { title: 'Magazine Grid — 4 columns (2-item each)',
+        size: { w: 720, h: 380 },
+        atom: { type: 'magazine-column-grid', args: {
+          title: 'Regional KPIs',
+          categories: [
+            { name: 'North', items: [{ label: 'Revenue', value: '$1.2M' }, { label: 'Growth', value: '+18%' }] },
+            { name: 'South', items: [{ label: 'Revenue', value: '$0.9M' }, { label: 'Growth', value: '+22%' }] },
+            { name: 'East', items: [{ label: 'Revenue', value: '$1.5M' }, { label: 'Growth', value: '+31%' }] },
+            { name: 'West', items: [{ label: 'Revenue', value: '$2.1M' }, { label: 'Growth', value: '+41%' }] },
+          ],
+        } } },
+      // ---- Sprint 15b B1: dashboard-multi-kpi-composite ----
+      { title: 'Dashboard — 4 KPIs (2×2)',
+        size: { w: 620, h: 420 },
+        atom: { type: 'dashboard-multi-kpi-composite', args: {
+          title: 'Q3 Dashboard',
+          kpis: [
+            { value: '$3.4M', label: 'Revenue', trend: 'up', trendValue: '+27%' },
+            { value: '12,450', label: 'MAU', trend: 'up', trendValue: '+10%' },
+            { value: '2.1%', label: 'Churn', trend: 'down', trendValue: '-1.3pt' },
+            { value: '68', label: 'NPS', trend: 'neutral' },
+          ],
+        } } },
+      { title: 'Dashboard — 6 KPIs (2×3)',
+        size: { w: 720, h: 420 },
+        atom: { type: 'dashboard-multi-kpi-composite', args: {
+          title: 'Executive Dashboard — Q4',
+          kpis: [
+            { value: '$5.2M', label: 'ARR', trend: 'up', trendValue: '+38%' },
+            { value: '18,200', label: 'MAU', trend: 'up', trendValue: '+46%' },
+            { value: '1.8%', label: 'Churn', trend: 'down', trendValue: '-0.3pt' },
+            { value: '74', label: 'NPS', trend: 'up', trendValue: '+6pt' },
+            { value: '94%', label: 'Uptime', trend: 'neutral' },
+            { value: '$420', label: 'CAC', trend: 'down', trendValue: '-12%' },
+          ],
+        } } },
+    ];
+
+    function rgbCss(rgb) { return `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`; }
+
+    function renderPaletteBar() {
+      const bar = document.getElementById('palette-bar');
+      bar.innerHTML = '<span class="label">Palette:</span>';
+      for (const id of FEATURED_PALETTES) {
+        const p = getPalette(id);
+        if (!p) continue;
+        const btn = document.createElement('button');
+        btn.textContent = p.label || id;
+        if (id === currentPaletteId) btn.classList.add('active');
+        const sw = document.createElement('span');
+        sw.className = 'palette-swatch';
+        sw.innerHTML += `<span style="background:${rgbCss(p.bg)}"></span>`;
+        for (const c of (p.colors || [p.silhouetteColor]).slice(0, 4)) {
+          sw.innerHTML += `<span style="background:${rgbCss(c)}"></span>`;
+        }
+        btn.appendChild(sw);
+        btn.addEventListener('click', () => { currentPaletteId = id; renderAll(); });
+        bar.appendChild(btn);
+      }
+    }
+
+    async function renderAll() {
+      renderPaletteBar();
+      const grid = document.getElementById('grid');
+      grid.innerHTML = '';
+      const palette = getPalette(currentPaletteId);
+      const sceneDataBg = rgbCss(palette.bg);
+
+      for (const sample of SAMPLES) {
+        const card = document.createElement('div');
+        card.className = 'sample';
+        card.style.setProperty('--bg', sceneDataBg);
+        card.innerHTML = `<h3>${sample.title}</h3>`;
+
+        const canvas = document.createElement('canvas');
+        const sz = sample.size || { w: 320, h: 180 };
+        canvas.width = sz.w;
+        canvas.height = sz.h;
+        card.appendChild(canvas);
+
+        const sceneData = {
+          subjects: [
+            { ...sample.atom, x: 20, y: 20, w: sz.w - 40, h: sz.h - 40, style: 'pseudo3d' },
+          ],
+        };
+        const result = await renderSceneDataToCanvas(canvas, sceneData, { palette });
+
+        const meta = document.createElement('div');
+        meta.className = 'meta';
+        meta.textContent = `rendered: ${result.rendered} / skipped: ${result.skipped} / errors: ${result.errors.length}`;
+        if (result.errors.length) meta.textContent += ' — ' + result.errors[0].error;
+        card.appendChild(meta);
+
+        grid.appendChild(card);
+      }
+    }
+
+    console.log('Loaded atoms:', listAtomTypes());
+    renderAll();
+  </script>
+</body>
+</html>

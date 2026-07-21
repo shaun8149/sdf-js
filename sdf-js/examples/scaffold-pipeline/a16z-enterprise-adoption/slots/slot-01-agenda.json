@@ -1,0 +1,79 @@
+{
+  "slotIdx": 1,
+  "slotName": "agenda",
+  "slotTitle": "Overview",
+  "slotPurpose": "One line per major theme of the briefing",
+  "sourceSlideIdx": 1,
+  "sourceSlideTitle": "Overview: Key Themes",
+  "sceneData": {
+    "name": "news-briefing/agenda",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Overview"
+        }
+      },
+      {
+        "type": "agenda-list",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 480,
+        "args": {
+          "title": "Key Themes",
+          "numbered": true,
+          "items": [
+            {
+              "label": "Enterprise Penetration",
+              "sublabel": "Fortune 500 and Global 2000 adoption rates"
+            },
+            {
+              "label": "Coding Sector Dominance",
+              "sublabel": "Largest revenue category, nearly an order of magnitude over others"
+            },
+            {
+              "label": "Legal AI Success",
+              "sublabel": "Harvey and Eve demonstrate rapid enterprise adoption"
+            },
+            {
+              "label": "Revenue Concentration",
+              "sublabel": "Coding, support, and search represent the lion's share"
+            },
+            {
+              "label": "Post-ChatGPT Acceleration",
+              "sublabel": "Timeline and trajectory of enterprise adoption"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["agenda-list", "number-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4729,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 368,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0236094,
+    "elapsedSec": 7.9,
+    "generatedAt": "2026-07-07T03:50:46.077Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

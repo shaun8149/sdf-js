@@ -1,0 +1,125 @@
+{
+  "slotIdx": 8,
+  "slotName": "team",
+  "slotTitle": "Team",
+  "slotPurpose": "Founders + key hires with credentials",
+  "sourceSlideIdx": 7,
+  "sourceSlideTitle": "The Team",
+  "sceneData": {
+    "name": "pitch-deck-vc/team",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Team"
+        }
+      },
+      {
+        "type": "circle-image-hub-spoke",
+        "x": 80,
+        "y": 180,
+        "w": 520,
+        "h": 480,
+        "args": {
+          "center": {
+            "label": "Leadership",
+            "color": [
+              255,
+              120,
+              40
+            ]
+          },
+          "satellites": [
+            {
+              "label": "Sarah Chen · CEO",
+              "color": [
+                20,
+                60,
+                180
+              ]
+            },
+            {
+              "label": "Alex Wu · CTO",
+              "color": [
+                20,
+                60,
+                180
+              ]
+            },
+            {
+              "label": "Diana Liu · Design",
+              "color": [
+                20,
+                60,
+                180
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 660,
+        "y": 180,
+        "w": 540,
+        "h": 480,
+        "args": {
+          "items": [
+            {
+              "icon": "briefcase",
+              "label": "Ex-Figma design infra lead",
+              "sublabel": "Sarah Chen"
+            },
+            {
+              "icon": "cpu",
+              "label": "Ex-Anthropic research engineer",
+              "sublabel": "Alex Wu"
+            },
+            {
+              "icon": "palette",
+              "label": "Ex-Apple Keynote team",
+              "sublabel": "Diana Liu"
+            },
+            {
+              "icon": "users",
+              "label": "20 engineers + 5 designers",
+              "sublabel": "NYC + remote"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "pitch-deck-vc",
+    "theme": "pitch-cobalt-orange",
+    "recommendedAtoms": [
+      "circle-image-hub-spoke",
+      "isotype-stat-comparison",
+      "icon-row",
+      "bullet-list"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5174,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 525,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.027299399999999998,
+    "elapsedSec": 8.6,
+    "generatedAt": "2026-07-10T07:21:59.804Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

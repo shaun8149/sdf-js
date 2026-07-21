@@ -1,0 +1,230 @@
+{
+  "deckName": "eval-funding-round",
+  "sourceFile": "sdf-js/examples/scaffold-pipeline/eval-funding-round-slidedata.json",
+  "scaffold": {
+    "id": "investor-update",
+    "label": "Investor Update",
+    "description": "LP/seed-investor periodic update — quarterly cadence, metrics, wins, challenges",
+    "pickScore": 1,
+    "pickSignals": [
+      "forced via --scaffold investor-update"
+    ],
+    "pickerMethod": "forced"
+  },
+  "theme": {
+    "id": "financial-navy-cerulean",
+    "label": "Financial Navy",
+    "macroCluster": "pitch",
+    "bg": [
+      26,
+      40,
+      66
+    ],
+    "accent": [
+      58,
+      138,
+      200
+    ],
+    "colors": [
+      [
+        58,
+        138,
+        200
+      ],
+      [
+        26,
+        40,
+        66
+      ],
+      [
+        100,
+        150,
+        200
+      ],
+      [
+        180,
+        210,
+        235
+      ],
+      [
+        240,
+        248,
+        255
+      ]
+    ],
+    "font": {
+      "heading": "\"Inter Display\", Inter, system-ui, sans-serif",
+      "body": "Inter, system-ui, sans-serif"
+    }
+  },
+  "slots": [
+    {
+      "slotIdx": 0,
+      "slotName": "cover",
+      "slotTitle": "Title",
+      "slotPurpose": "Company name + update period + author",
+      "sourceSlideIdx": 0,
+      "sourceSlideTitle": "Redo Announces $81 Million Series B to Support Commerce Technology Expansion",
+      "mappingScore": 10,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-00-cover.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover"
+      ]
+    },
+    {
+      "slotIdx": 1,
+      "slotName": "tldr",
+      "slotTitle": "TL;DR",
+      "slotPurpose": "Headline summary — 3 key points this quarter",
+      "sourceSlideIdx": 15,
+      "sourceSlideTitle": "Outlook",
+      "mappingScore": 8,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-01-tldr.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "stat-banner",
+        "pillar-3up"
+      ]
+    },
+    {
+      "slotIdx": 2,
+      "slotName": "metrics",
+      "slotTitle": "Key Metrics",
+      "slotPurpose": "Current quarter KPIs — revenue, users, growth rates",
+      "sourceSlideIdx": 4,
+      "sourceSlideTitle": "Current Platform Adoption",
+      "mappingScore": 9,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-02-metrics.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "dashboard-multi-kpi-composite",
+        "agenda-list"
+      ]
+    },
+    {
+      "slotIdx": 3,
+      "slotName": "wins",
+      "slotTitle": "Wins",
+      "slotPurpose": "Top accomplishments this quarter",
+      "sourceSlideIdx": 2,
+      "sourceSlideTitle": "Series B Financing Round",
+      "mappingScore": 9,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-03-wins.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "stat-banner",
+        "kpi-card",
+        "kpi-card"
+      ]
+    },
+    {
+      "slotIdx": 4,
+      "slotName": "challenges",
+      "slotTitle": "Challenges",
+      "slotPurpose": "What did not go well and what we learned",
+      "sourceSlideIdx": 13,
+      "sourceSlideTitle": "International Returns Coverage Expansion",
+      "mappingScore": "floor",
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-04-challenges.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "bullet-list"
+      ]
+    },
+    {
+      "slotIdx": 5,
+      "slotName": "next-quarter",
+      "slotTitle": "Next Quarter",
+      "slotPurpose": "Plan and priorities for the coming quarter",
+      "sourceSlideIdx": 7,
+      "sourceSlideTitle": "AI-Driven Commerce Tools Development",
+      "mappingScore": 8,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-05-next-quarter.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "kanban-board"
+      ]
+    },
+    {
+      "slotIdx": 6,
+      "slotName": "ask",
+      "slotTitle": "Ask",
+      "slotPurpose": "What we need from LPs — intros, advice, resources",
+      "sourceSlideIdx": 12,
+      "sourceSlideTitle": "ReturnBear Acquisition",
+      "mappingScore": "floor",
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-06-ask.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "bullet-list"
+      ]
+    },
+    {
+      "slotIdx": 7,
+      "slotName": "cap-table-burn",
+      "slotTitle": "Financials",
+      "slotPurpose": "Burn rate, runway, cap table highlights",
+      "sourceSlideIdx": 3,
+      "sourceSlideTitle": "Investor Composition",
+      "mappingScore": 7,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-07-cap-table-burn.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": [
+        "cover",
+        "pie",
+        "quote-pull"
+      ]
+    }
+  ],
+  "droppedSlots": [],
+  "totals": {
+    "slotsBaked": 8,
+    "slotsEmpty": 0,
+    "slotsErrored": 0,
+    "totalCostUSD": 0.2043132
+  },
+  "meta": {
+    "generatedAt": "2026-07-10T07:29:13.908Z",
+    "model": "claude-sonnet-4-5-20250929",
+    "pipelineVersion": "sprint-16-v1"
+  }
+}

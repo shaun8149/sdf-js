@@ -1,0 +1,179 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Sprint 15b — render fixtures for screenshots</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=IBM+Plex+Mono:wght@400;500;700&display=swap"
+    rel="stylesheet" />
+  <style>
+    body { margin: 0; padding: 24px; font-family: 'Inter', system-ui; background: #f8f7f4; }
+    .row { display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-start; }
+    .card { background: white; border: 1px solid #e0ddd5; border-radius: 4px; }
+    .card h3 { margin: 0; padding: 8px 12px; font-size: 12px; background: #1e1b1e; color: white; font-weight: 600; font-family: 'IBM Plex Mono', monospace; }
+    .card canvas { display: block; }
+  </style>
+</head>
+<body>
+  <div class="row" id="cards"></div>
+  <script type="module">
+    import { renderAtom } from '/src/present/atoms-2d/registry.js';
+    import { getPalette } from '/src/present/branding-palettes.js';
+    const palette = getPalette('mono-light');
+
+    const SAMPLES = [
+      {
+        id: 'circle-image-hub-spoke',
+        title: 'circle-image-hub-spoke — Atlas integrations',
+        w: 480, h: 480,
+        atom: { type: 'circle-image-hub-spoke', args: {
+          center: { label: 'Atlas' },
+          satellites: [
+            { label: 'Notion' }, { label: 'Slack' }, { label: 'Figma' },
+            { label: 'Loom' }, { label: 'GitHub' }, { label: 'Sketch' },
+          ],
+          title: 'Atlas Integrations',
+        }},
+      },
+      {
+        id: 'magazine-column-grid',
+        title: 'magazine-column-grid — Q3 department snapshot',
+        w: 560, h: 400,
+        atom: { type: 'magazine-column-grid', args: {
+          categories: [
+            { name: 'Sales', items: [{label:'Revenue', value:'$3.4M'}, {label:'Leads', value:'1,200'}, {label:'CAC', value:'$48'}] },
+            { name: 'Product', items: [{label:'Releases', value:'8'}, {label:'NPS', value:'72'}, {label:'Churn', value:'2.1%'}] },
+            { name: 'Engineering', items: [{label:'PRs', value:'340'}, {label:'Uptime', value:'99.9%'}, {label:'MTTR', value:'4h'}] },
+          ],
+          title: 'Q3 Department Snapshot',
+        }},
+      },
+      {
+        id: 'dashboard-multi-kpi-composite',
+        title: 'dashboard-multi-kpi (2x2)',
+        w: 560, h: 400,
+        atom: { type: 'dashboard-multi-kpi-composite', args: {
+          kpis: [
+            { value: '$3.4M', label: 'Revenue', trend: 'up', trendValue: '+27%' },
+            { value: '12,450', label: 'MAU', trend: 'up', trendValue: '+10%' },
+            { value: '2.1%', label: 'Churn', trend: 'down', trendValue: '-1.3pt' },
+            { value: '68', label: 'NPS', trend: 'neutral' },
+          ],
+          title: 'Q3 Dashboard',
+        }},
+      },
+      {
+        id: 'device-mockup-frame-phone',
+        title: 'device-mockup-frame — phone',
+        w: 240, h: 480,
+        atom: { type: 'device-mockup-frame', args: { device: 'phone', title: 'iPhone preview', content: 'Atlas Present' } },
+      },
+      {
+        id: 'device-mockup-frame-laptop',
+        title: 'device-mockup-frame — laptop',
+        w: 480, h: 320,
+        atom: { type: 'device-mockup-frame', args: { device: 'laptop', title: 'MacBook preview', content: 'Atlas Present' } },
+      },
+      {
+        id: 'device-mockup-row',
+        title: 'device-mockup-row — watch/phone/tablet',
+        w: 640, h: 360,
+        atom: { type: 'device-mockup-row', args: {
+          devices: [
+            { kind: 'watch', label: 'Watch' },
+            { kind: 'phone', label: 'iPhone' },
+            { kind: 'tablet', label: 'iPad' },
+          ],
+          title: 'Atlas on every device',
+        }},
+      },
+      {
+        id: 'isotype-people-grid',
+        title: 'isotype-people-grid — 73/100 satisfied',
+        w: 540, h: 360,
+        atom: { type: 'isotype-people-grid', args: {
+          total: 100,
+          highlighted: 73,
+          personIcon: 'simple',
+          label: '73 of 100 customers highly satisfied',
+          title: 'Customer Satisfaction',
+        }},
+      },
+      {
+        id: 'isotype-prop-row',
+        title: 'isotype-prop-row — recycling rate',
+        w: 560, h: 320,
+        atom: { type: 'isotype-prop-row', args: {
+          count: 5,
+          fillRatios: [0.9, 0.7, 0.5, 0.3, 0.1],
+          propShape: 'bottle',
+          labels: ['90%','70%','50%','30%','10%'],
+          title: 'Bottle Recycling by Region',
+        }},
+      },
+      {
+        id: 'isotype-stat-comparison',
+        title: 'isotype-stat-comparison — staff composition',
+        w: 560, h: 360,
+        atom: { type: 'isotype-stat-comparison', args: {
+          stats: [
+            { iconName: 'stethoscope', count: 100, label: 'Doctors', caption: 'Full-time' },
+            { iconName: 'first-aid', count: 25, label: 'Nurses' },
+            { iconName: 'briefcase', count: 12, label: 'Admin' },
+          ],
+          title: 'Hospital Staff Composition',
+        }},
+      },
+      {
+        id: 'infinity-loop-flow',
+        title: 'infinity-loop-flow — Build-Measure-Learn',
+        w: 560, h: 360,
+        atom: { type: 'infinity-loop-flow', args: {
+          steps: [{ label: 'Plan' },{ label: 'Build' },{ label: 'Measure' },{ label: 'Learn' }],
+          title: 'Build-Measure-Learn Loop',
+        }},
+      },
+      {
+        id: 'kpi-water-drop',
+        title: 'kpi-water-drop — 72% recycled',
+        w: 360, h: 480,
+        atom: { type: 'kpi-water-drop', args: {
+          value: 0.72,
+          label: 'Water Recycled',
+          sublabel: 'Q3 2026',
+          format: 'percent',
+        }},
+      },
+    ];
+
+    const container = document.getElementById('cards');
+    const results = {};
+    for (const s of SAMPLES) {
+      const card = document.createElement('div');
+      card.className = 'card';
+      const h = document.createElement('h3');
+      h.textContent = s.title;
+      const c = document.createElement('canvas');
+      c.id = `canvas-${s.id}`;
+      c.width = s.w;
+      c.height = s.h;
+      card.appendChild(h);
+      card.appendChild(c);
+      container.appendChild(card);
+      const ctx = c.getContext('2d');
+      try {
+        await renderAtom(ctx, s.atom.type, s.atom.args, 'pseudo3d', {
+          x: 0, y: 0, w: s.w, h: s.h, palette,
+        });
+        results[s.id] = 'OK';
+      } catch (e) {
+        results[s.id] = 'ERR: ' + e.message;
+        console.error(s.id, e);
+      }
+    }
+    window.__RENDERED__ = results;
+    window.__SAMPLE_IDS__ = SAMPLES.map(s => s.id);
+  </script>
+</body>
+</html>

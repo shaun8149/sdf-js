@@ -1,0 +1,152 @@
+{
+  "slotIdx": 1,
+  "slotName": "case-for-change",
+  "slotTitle": "Case for Change",
+  "slotPurpose": "Why change is necessary — data, context, burning platform",
+  "sourceSlideIdx": 1,
+  "sourceSlideTitle": "Why Change Now: The Case for Transformation",
+  "sceneData": {
+    "name": "change-roadmap/case-for-change",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Case for Change",
+          "style": "section"
+        }
+      },
+      {
+        "type": "stat-banner",
+        "x": 40,
+        "y": 160,
+        "w": 1200,
+        "h": 100,
+        "args": {
+          "value": "$24M ARR",
+          "label": "Annual Recurring Revenue",
+          "trend": "+117% YoY",
+          "trendDirection": "up",
+          "bg": [
+            156,
+            142,
+            110
+          ]
+        }
+      },
+      {
+        "type": "dashboard-multi-kpi-composite",
+        "x": 40,
+        "y": 280,
+        "w": 1200,
+        "h": 180,
+        "args": {
+          "kpis": [
+            {
+              "value": "128%",
+              "label": "Net Revenue Retention",
+              "trend": "up",
+              "color": [
+                156,
+                142,
+                110
+              ]
+            },
+            {
+              "value": "+43",
+              "label": "New Enterprise Logos",
+              "sublabel": "Enterprise expansion",
+              "trend": "up",
+              "color": [
+                156,
+                142,
+                110
+              ]
+            },
+            {
+              "value": "11 months",
+              "label": "CAC Payback Period",
+              "trend": "neutral",
+              "color": [
+                100,
+                95,
+                82
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "type": "fishbone",
+        "x": 40,
+        "y": 480,
+        "w": 1200,
+        "h": 200,
+        "args": {
+          "effect": "Why Transform Now",
+          "branches": [
+            {
+              "label": "Market Performance",
+              "causes": [
+                "Revenue growth 3% vs industry 12%",
+                "Customer NPS 44 (was 67)"
+              ]
+            },
+            {
+              "label": "Operational Cost",
+              "causes": [
+                "$4.2M annual inefficiency",
+                "Legacy systems"
+              ]
+            },
+            {
+              "label": "External Pressure",
+              "causes": [
+                "Competitor pressure",
+                "Regulatory changes",
+                "Talent attrition"
+              ]
+            },
+            {
+              "label": "Board Mandate",
+              "causes": [
+                "Digital acceleration by end 2026"
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "change-roadmap",
+    "theme": "consulting-charcoal",
+    "recommendedAtoms": [
+      "stat-banner",
+      "bullet-list",
+      "kpi-card",
+      "fishbone"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5337,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 719,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0306984,
+    "elapsedSec": 11.6,
+    "generatedAt": "2026-07-10T07:20:11.434Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

@@ -1,0 +1,92 @@
+{
+  "v": 1,
+  "name": "(scaffold) pitch-deck-vc/cover",
+  "subjects": [
+    {
+      "id": "cover-0",
+      "type": "cover-3d",
+      "args": {
+        "title": "Atlas",
+        "subtitle": "LLM-native illustration platform",
+        "author": "Series A fundraise · 2026-Q3",
+        "date": "$15M to scale supply + distribution"
+      },
+      "transform": {
+        "translate": [
+          0,
+          2.5,
+          0
+        ],
+        "scale": 1.75
+      },
+      "material": {
+        "hue": 0.06201550387596899,
+        "sat": 0.72,
+        "value": 0.72,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      }
+    }
+  ],
+  "overlay": [
+    {
+      "text": "TITLE",
+      "anchor": [
+        0,
+        4.9,
+        0
+      ],
+      "role": "title"
+    }
+  ],
+  "cameraSequence": {
+    "loop": false,
+    "shots": [
+      {
+        "duration": 0.01,
+        "pos": [
+          1.4,
+          3.5,
+          14
+        ],
+        "target": [
+          0,
+          2.5,
+          0
+        ],
+        "fov": 48,
+        "aperture": 0,
+        "focalDistance": 12.5,
+        "ease": "smooth"
+      },
+      {
+        "duration": 14,
+        "pos": [
+          0,
+          2.85,
+          11.8
+        ],
+        "target": [
+          0,
+          2.5,
+          0
+        ],
+        "fov": 46,
+        "transition": "blend",
+        "aperture": 0,
+        "focalDistance": 11.8,
+        "ease": "smooth"
+      }
+    ]
+  },
+  "defaults": {
+    "stage": {
+      "size": [
+        24,
+        12,
+        13
+      ]
+    }
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "slotIdx": 1,
+  "slotName": "agenda",
+  "slotTitle": "Overview",
+  "slotPurpose": "One line per major theme of the briefing",
+  "sourceSlideIdx": 1,
+  "sourceSlideTitle": "报告概览",
+  "sceneData": {
+    "name": "news-briefing/agenda",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "报告概览",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "agenda-list",
+        "x": 140,
+        "y": 180,
+        "w": 1000,
+        "h": 480,
+        "args": {
+          "items": [
+            {
+              "label": "下乡车型销量快速增长与市场渗透现状"
+            },
+            {
+              "label": "充电基础设施建设短板与财政支持政策"
+            },
+            {
+              "label": "市场格局：主力车企、热销车型与价格分布"
+            },
+            {
+              "label": "面临的三大核心挑战与未来展望"
+            }
+          ],
+          "numbered": true,
+          "style": "showcase"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "agenda-list",
+      "number-list"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5166,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 320,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.024200399999999997,
+    "elapsedSec": 6.5,
+    "generatedAt": "2026-07-10T07:27:23.282Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

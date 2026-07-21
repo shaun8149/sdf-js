@@ -1,0 +1,83 @@
+{
+  "slotIdx": 4,
+  "slotName": "theme-1-detail",
+  "slotTitle": "Theme 1 — Detail",
+  "slotPurpose": "First theme drill-down: regional / per-entity breakdown",
+  "sourceSlideIdx": 7,
+  "sourceSlideTitle": "Ali Ghodsi's Six Recommendations",
+  "sceneData": {
+    "name": "news-briefing/theme-1-detail",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Theme 1 — Detail",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 40,
+        "y": 180,
+        "w": 360,
+        "h": 200,
+        "args": {
+          "value": "6",
+          "label": "Total Books",
+          "sublabel": "Ali Ghodsi Recommendations",
+          "icon": "books",
+          "style": "dark"
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 440,
+        "y": 180,
+        "w": 800,
+        "h": 480,
+        "args": {
+          "title": "Recommended Titles",
+          "items": [
+            {
+              "icon": "briefcase",
+              "label": "The Effective Executive",
+              "sublabel": "Peter Drucker · Management effectiveness"
+            },
+            {
+              "icon": "lightbulb",
+              "label": "Competing Against Luck",
+              "sublabel": "Clayton Christensen · Innovation theory"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["bar", "pie", "segmented-bar", "isotype-stat-comparison"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4930,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 390,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0245424,
+    "elapsedSec": 7.4,
+    "generatedAt": "2026-07-07T06:42:33.802Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

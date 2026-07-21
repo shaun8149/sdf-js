@@ -1,0 +1,101 @@
+[
+  {
+    "title": "Who Owns the Generative AI Platform?",
+    "body": [
+      "Analysis of value capture across the generative AI stack",
+      "Examining infrastructure vendors, app companies, and cloud providers",
+      "Source: Industry analysis report"
+    ]
+  },
+  {
+    "title": "Agenda",
+    "body": [
+      "Revenue distribution between infrastructure and applications",
+      "Hardware leadership and market dynamics",
+      "Cost structures for AI companies",
+      "Cloud infrastructure investment landscape",
+      "Competitive positioning and market moats",
+      "Industry outlook and market structure"
+    ]
+  },
+  {
+    "title": "Value Capture: Infrastructure Dominates",
+    "body": [
+      "Infrastructure vendors capture the majority of generative AI dollars",
+      "App companies grow fast but face retention challenges",
+      "App companies struggle with 50-60% gross margins"
+    ]
+  },
+  {
+    "title": "Nvidia's Hardware Leadership",
+    "body": [
+      "Nvidia leads hardware in the generative AI space",
+      "$3.8 billion in Q3 fiscal 2023 data center GPU revenue",
+      "Data center GPUs represent core infrastructure for AI workloads"
+    ]
+  },
+  {
+    "title": "App Company Cost Structure: Inference",
+    "body": [
+      "App companies spend 20-40% of revenue on inference",
+      "Inference costs represent ongoing operational burden",
+      "High inference spending pressures gross margins"
+    ]
+  },
+  {
+    "title": "Training-Focused Startup Cost Structure",
+    "body": [
+      "Training-focused startups dedicate 80-90% of capital to cloud providers",
+      "Training costs dominate capital allocation for model developers",
+      "Heavy reliance on cloud infrastructure for compute-intensive training"
+    ]
+  },
+  {
+    "title": "The Big 3 Cloud Providers",
+    "body": [
+      "AWS, GCP, and Azure form the dominant cloud infrastructure trio",
+      "The Big 3 clouds spend over $100 billion annually in capex",
+      "Massive capital investment creates infrastructure advantage"
+    ]
+  },
+  {
+    "title": "Emerging Cloud Challengers",
+    "body": [
+      "Coreweave emerges as specialized AI cloud challenger",
+      "Lambda Labs enters as alternative infrastructure provider",
+      "New entrants target AI-specific workload optimization"
+    ]
+  },
+  {
+    "title": "Application Layer: No Moats",
+    "body": [
+      "Apps use similar models across the ecosystem",
+      "No systemic moats exist yet in application layer",
+      "Limited differentiation creates competitive vulnerability"
+    ]
+  },
+  {
+    "title": "Model Layer: No Moats",
+    "body": [
+      "Models train on comparable datasets",
+      "No systemic moats exist yet in model development",
+      "Data and training approaches remain largely undifferentiated"
+    ]
+  },
+  {
+    "title": "Infrastructure Layer: No Moats",
+    "body": [
+      "Clouds run identical GPUs",
+      "No systemic moats exist yet in cloud infrastructure",
+      "Hardware commoditization limits sustainable advantages"
+    ]
+  },
+  {
+    "title": "Market Structure Outlook",
+    "body": [
+      "Many successful players are expected across all stack levels",
+      "Industry will not follow winner-take-all dynamics",
+      "Multiple companies can succeed simultaneously in each layer"
+    ]
+  }
+]

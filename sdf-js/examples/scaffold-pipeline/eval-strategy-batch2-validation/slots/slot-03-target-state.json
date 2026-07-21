@@ -1,0 +1,149 @@
+{
+  "slotIdx": 3,
+  "slotName": "target-state",
+  "slotTitle": "Target State",
+  "slotPurpose": "To-be vision — what success looks like",
+  "sourceSlideIdx": 6,
+  "sourceSlideTitle": "Tier Comparison: Current vs Target vs Future State",
+  "sceneData": {
+    "name": "change-roadmap/target-state",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Target State",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 40,
+        "y": 160,
+        "w": 380,
+        "h": 220,
+        "args": {
+          "value": "40%",
+          "label": "Processing Time Reduction",
+          "sublabel": "By Q3",
+          "icon": "lightning",
+          "trend": "down",
+          "trendValue": "-40%",
+          "style": "dark"
+        }
+      },
+      {
+        "type": "icon-grid",
+        "x": 460,
+        "y": 160,
+        "w": 780,
+        "h": 520,
+        "args": {
+          "title": "12-Month Target Capabilities",
+          "items": [
+            {
+              "icon": "gear",
+              "label": "Process Automation",
+              "sublabel": "Core ops automated"
+            },
+            {
+              "icon": "chart-line",
+              "label": "Real-time Data",
+              "sublabel": "Live operational insights"
+            },
+            {
+              "icon": "user-circle",
+              "label": "Customer Self-Service",
+              "sublabel": "Portal + tools"
+            },
+            {
+              "icon": "brain",
+              "label": "AI Decision Support",
+              "sublabel": "Intelligent recommendations"
+            },
+            {
+              "icon": "plugs-connected",
+              "label": "API Ecosystem",
+              "sublabel": "Partner integrations"
+            },
+            {
+              "icon": "cloud",
+              "label": "Cloud-native Architecture",
+              "sublabel": "Scalable infrastructure"
+            }
+          ],
+          "cols": 3,
+          "iconStyle": "card",
+          "iconSize": "medium"
+        }
+      },
+      {
+        "type": "stat-banner",
+        "x": 40,
+        "y": 420,
+        "w": 380,
+        "h": 100,
+        "args": {
+          "value": "Digital Core",
+          "label": "Automated operations",
+          "bg": [
+            156,
+            142,
+            110
+          ]
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 40,
+        "y": 540,
+        "w": 380,
+        "h": 140,
+        "args": {
+          "items": [
+            {
+              "icon": "rocket",
+              "label": "Reduced cost",
+              "sublabel": "Operational efficiency gains"
+            },
+            {
+              "icon": "lightning",
+              "label": "Increased speed",
+              "sublabel": "Faster processing times"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "change-roadmap",
+    "theme": "consulting-charcoal",
+    "recommendedAtoms": [
+      "bullet-list",
+      "icon-grid",
+      "kpi-card"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5246,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 794,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0315504,
+    "elapsedSec": 13.5,
+    "generatedAt": "2026-07-10T07:20:11.436Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

@@ -1,0 +1,683 @@
+{
+  "format": "atlas-deck",
+  "version": 1,
+  "title": "eval-strategy-batch2-validation",
+  "theme": {
+    "id": "consulting-charcoal",
+    "label": "Consulting Charcoal",
+    "macroCluster": "pitch",
+    "bg": [26, 26, 34],
+    "silhouetteColor": [220, 215, 200],
+    "accent": [156, 142, 110],
+    "colors": [
+      [156, 142, 110],
+      [100, 95, 82],
+      [200, 193, 174],
+      [60, 60, 72],
+      [220, 215, 200]
+    ],
+    "font": {
+      "heading": "\"Inter Display\", Inter, system-ui, sans-serif",
+      "body": "Inter, system-ui, sans-serif"
+    },
+    "featured": true
+  },
+  "scaffold": {
+    "id": "change-roadmap",
+    "label": "Change & Transformation Roadmap"
+  },
+  "decor": null,
+  "shared": null,
+  "slots": [
+    {
+      "slotIdx": 0,
+      "slotName": "cover",
+      "slotTitle": "Title",
+      "sceneData": {
+        "name": "change-roadmap/cover",
+        "layout": "cover",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 720,
+            "args": {
+              "title": "Digital Transformation Roadmap 2026",
+              "subtitle": "Organization-wide transformation program led by Executive Steering Committee",
+              "date": "Q1 2026",
+              "style": "gradient"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 1,
+      "slotName": "case-for-change",
+      "slotTitle": "Case for Change",
+      "sceneData": {
+        "name": "change-roadmap/case-for-change",
+        "layout": "grid",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Case for Change",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "stat-banner",
+            "x": 40,
+            "y": 150,
+            "w": 1200,
+            "h": 100,
+            "args": {
+              "value": "$24M ARR",
+              "label": "Annual Recurring Revenue",
+              "trend": "↑117% YoY",
+              "trendDirection": "up",
+              "bg": [156, 142, 110]
+            }
+          },
+          {
+            "type": "kpi-card",
+            "x": 40,
+            "y": 280,
+            "w": 280,
+            "h": 180,
+            "args": {
+              "value": "3%",
+              "label": "Revenue Growth",
+              "sublabel": "vs. industry 12%",
+              "trend": "down",
+              "trendValue": "-9pp gap",
+              "icon": "chart-line-down",
+              "style": "light"
+            }
+          },
+          {
+            "type": "kpi-card",
+            "x": 340,
+            "y": 280,
+            "w": 280,
+            "h": 180,
+            "args": {
+              "value": "$4.2M",
+              "label": "Annual Inefficiency",
+              "sublabel": "Legacy systems cost",
+              "icon": "warning-octagon",
+              "style": "light"
+            }
+          },
+          {
+            "type": "kpi-card",
+            "x": 640,
+            "y": 280,
+            "w": 280,
+            "h": 180,
+            "args": {
+              "value": "44",
+              "label": "Customer NPS",
+              "sublabel": "Dropped from 67",
+              "trend": "down",
+              "trendValue": "-23 pts",
+              "icon": "smiley-sad",
+              "style": "light"
+            }
+          },
+          {
+            "type": "kpi-card",
+            "x": 940,
+            "y": 280,
+            "w": 280,
+            "h": 180,
+            "args": {
+              "value": "128%",
+              "label": "Net Revenue Retention",
+              "sublabel": "Enterprise expansion",
+              "trend": "up",
+              "icon": "trend-up",
+              "style": "light"
+            }
+          },
+          {
+            "type": "bullet-list",
+            "x": 40,
+            "y": 490,
+            "w": 580,
+            "h": 190,
+            "args": {
+              "title": "Transformation Drivers",
+              "items": [
+                {
+                  "icon": "users-four",
+                  "label": "Competitor pressure intensifying"
+                },
+                {
+                  "icon": "scales",
+                  "label": "New regulatory requirements"
+                },
+                {
+                  "icon": "user-minus",
+                  "label": "Critical talent attrition"
+                }
+              ]
+            }
+          },
+          {
+            "type": "kpi-card",
+            "x": 640,
+            "y": 490,
+            "w": 280,
+            "h": 190,
+            "args": {
+              "value": "11 mo",
+              "label": "CAC Payback",
+              "sublabel": "Customer acquisition efficiency",
+              "icon": "clock",
+              "style": "accent-border"
+            }
+          },
+          {
+            "type": "kpi-card",
+            "x": 940,
+            "y": 490,
+            "w": 280,
+            "h": 190,
+            "args": {
+              "value": "End 2026",
+              "label": "Board Mandate",
+              "sublabel": "Digital acceleration deadline",
+              "icon": "flag-checkered",
+              "style": "accent-border"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 2,
+      "slotName": "current-state",
+      "slotTitle": "Current State",
+      "sceneData": {
+        "name": "change-roadmap/current-state",
+        "layout": "grid",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Current State",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "swot",
+            "x": 40,
+            "y": 160,
+            "w": 1200,
+            "h": 520,
+            "args": {
+              "title": "Current State Assessment",
+              "strengths": [
+                "Strong brand · 78% recognition",
+                "Loyal customers · 15-year avg relationship"
+              ],
+              "weaknesses": [
+                "Siloed data · 7 separate systems",
+                "Manual processes · 40% of tasks",
+                "Outdated CRM · 2014"
+              ],
+              "opportunities": [
+                "AI automation · $2M potential savings",
+                "Cloud migration · scalability",
+                "Open banking API"
+              ],
+              "threats": [
+                "FinTech disruptors · 3 new entrants",
+                "Talent war · 22% tech turnover",
+                "Regulatory complexity"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 3,
+      "slotName": "target-state",
+      "slotTitle": "Target State",
+      "sceneData": {
+        "name": "change-roadmap/target-state",
+        "layout": "grid",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Target State",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "kpi-card",
+            "x": 40,
+            "y": 160,
+            "w": 380,
+            "h": 220,
+            "args": {
+              "value": "40%",
+              "label": "Processing Time Reduction",
+              "sublabel": "Digital Core automation by Q3",
+              "icon": "lightning",
+              "trend": "down",
+              "trendValue": "Target Q3",
+              "style": "dark"
+            }
+          },
+          {
+            "type": "icon-grid",
+            "x": 460,
+            "y": 160,
+            "w": 780,
+            "h": 520,
+            "args": {
+              "title": "12-Month Transformation Dimensions",
+              "items": [
+                {
+                  "icon": "gear-six",
+                  "label": "Process Automation",
+                  "sublabel": "Core workflows digitized"
+                },
+                {
+                  "icon": "pulse",
+                  "label": "Real-time Data",
+                  "sublabel": "Live operational visibility"
+                },
+                {
+                  "icon": "user-focus",
+                  "label": "Customer Self-Service",
+                  "sublabel": "Autonomous experience channels"
+                },
+                {
+                  "icon": "brain",
+                  "label": "AI Decision Support",
+                  "sublabel": "Intelligent recommendations"
+                },
+                {
+                  "icon": "plugs-connected",
+                  "label": "API Ecosystem",
+                  "sublabel": "Partner integration platform"
+                },
+                {
+                  "icon": "cloud",
+                  "label": "Cloud-native Architecture",
+                  "sublabel": "Scalable infrastructure"
+                }
+              ],
+              "cols": 2,
+              "iconStyle": "card",
+              "iconSize": "medium",
+              "colorMode": "auto"
+            }
+          },
+          {
+            "type": "stat-banner",
+            "x": 40,
+            "y": 420,
+            "w": 380,
+            "h": 100,
+            "args": {
+              "value": "Digital Core",
+              "label": "Foundation Layer Complete",
+              "trend": "On Track",
+              "trendDirection": "up",
+              "bg": [156, 142, 110]
+            }
+          },
+          {
+            "type": "bullet-list",
+            "x": 40,
+            "y": 560,
+            "w": 380,
+            "h": 120,
+            "args": {
+              "items": [
+                {
+                  "icon": "check-circle",
+                  "label": "Cost reduction via automation",
+                  "status": "highlight"
+                },
+                {
+                  "icon": "rocket",
+                  "label": "Faster processing cycles",
+                  "status": "highlight"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 4,
+      "slotName": "journey-phases",
+      "slotTitle": "Change Journey",
+      "sceneData": {
+        "name": "change-roadmap/journey-phases",
+        "layout": "stage",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Change Journey",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "change-curve-chart",
+            "x": 40,
+            "y": 160,
+            "w": 760,
+            "h": 380,
+            "args": {
+              "title": "Transformation Curve",
+              "xAxis": "Timeline",
+              "yAxis": "Performance",
+              "phases": [
+                {
+                  "label": "Q1: Mobilise",
+                  "sublabel": "Governance + Quick Wins"
+                },
+                {
+                  "label": "Q2-Q3: Transform",
+                  "sublabel": "Core Migration + Redesign"
+                },
+                {
+                  "label": "Q4: Sustain",
+                  "sublabel": "Embed + Measure"
+                }
+              ]
+            }
+          },
+          {
+            "type": "traffic-light",
+            "x": 840,
+            "y": 160,
+            "w": 400,
+            "h": 380,
+            "args": {
+              "title": "Risk Register",
+              "lights": [
+                {
+                  "color": "red",
+                  "active": true,
+                  "label": "Change Fatigue"
+                },
+                {
+                  "color": "amber",
+                  "active": true,
+                  "label": "Data Migration"
+                },
+                {
+                  "color": "green",
+                  "active": true,
+                  "label": "Vendor Delays"
+                }
+              ]
+            }
+          },
+          {
+            "type": "progression",
+            "x": 40,
+            "y": 560,
+            "w": 1200,
+            "h": 120,
+            "args": {
+              "steps": [
+                {
+                  "label": "Q1 Mobilise",
+                  "status": "current"
+                },
+                {
+                  "label": "Q2-Q3 Transform",
+                  "status": "todo"
+                },
+                {
+                  "label": "Q4 Sustain",
+                  "status": "todo"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 5,
+      "slotName": "enablers",
+      "slotTitle": "Enablers",
+      "sceneData": {
+        "name": "change-roadmap/enablers",
+        "layout": "stage",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Enablers",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "radial-wheel-segmented",
+            "x": 80,
+            "y": 160,
+            "w": 1120,
+            "h": 520,
+            "args": {
+              "title": "Five Strategic Pillars",
+              "hub": "Transformation Core",
+              "segments": [
+                {
+                  "label": "Digitise Core",
+                  "description": "Automate top 20 workflows"
+                },
+                {
+                  "label": "Data First",
+                  "description": "Unified platform — single truth"
+                },
+                {
+                  "label": "Customer 360",
+                  "description": "Real-time personalisation engine"
+                },
+                {
+                  "label": "Talent Uplift",
+                  "description": "Digital upskilling — 800 employees"
+                },
+                {
+                  "label": "Ecosystem Play",
+                  "description": "API partnerships — 12 fintechs"
+                }
+              ],
+              "segmentColors": [
+                [156, 142, 110],
+                [100, 95, 82],
+                [200, 193, 174],
+                [60, 60, 72],
+                [220, 215, 200]
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 6,
+      "slotName": "risks",
+      "slotTitle": "Risks & Mitigations",
+      "sceneData": {
+        "name": "change-roadmap/risks",
+        "layout": "grid",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Risks & Mitigations",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "risk-heatmap",
+            "x": 40,
+            "y": 160,
+            "w": 580,
+            "h": 500,
+            "args": {
+              "title": "Risk Assessment",
+              "xAxis": "Likelihood",
+              "yAxis": "Impact",
+              "xLabels": ["Very Low", "Low", "Medium", "High", "Very High"],
+              "yLabels": ["Very Low", "Low", "Medium", "High", "Very High"],
+              "risks": [
+                {
+                  "label": "Change Fatigue",
+                  "likelihood": 4,
+                  "impact": 4,
+                  "color": [220, 53, 69]
+                },
+                {
+                  "label": "Data Migration Errors",
+                  "likelihood": 2,
+                  "impact": 3,
+                  "color": [255, 193, 7]
+                },
+                {
+                  "label": "Vendor Delays",
+                  "likelihood": 1,
+                  "impact": 2,
+                  "color": [156, 142, 110]
+                }
+              ]
+            }
+          },
+          {
+            "type": "timeline",
+            "x": 660,
+            "y": 160,
+            "w": 580,
+            "h": 500,
+            "args": {
+              "title": "Change Journey",
+              "events": [
+                {
+                  "date": "Q1",
+                  "label": "Mobilise",
+                  "sublabel": "Governance & quick wins"
+                },
+                {
+                  "date": "Q2-Q3",
+                  "label": "Transform",
+                  "sublabel": "Core migration & redesign"
+                },
+                {
+                  "date": "Q4",
+                  "label": "Sustain",
+                  "sublabel": "Embed & measure"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "slotIdx": 7,
+      "slotName": "timeline",
+      "slotTitle": "Delivery Timeline",
+      "sceneData": {
+        "name": "change-roadmap/timeline",
+        "layout": "stage",
+        "subjects": [
+          {
+            "type": "cover",
+            "x": 0,
+            "y": 0,
+            "w": 1280,
+            "h": 120,
+            "args": {
+              "title": "Delivery Timeline",
+              "style": "gradient"
+            }
+          },
+          {
+            "type": "timeline",
+            "x": 80,
+            "y": 180,
+            "w": 1120,
+            "h": 480,
+            "args": {
+              "title": "Programme Timeline 2026",
+              "events": [
+                {
+                  "date": "Jan 2026",
+                  "label": "Programme Launch",
+                  "sublabel": "Steering committee formation"
+                },
+                {
+                  "date": "Mar 2026",
+                  "label": "Design Complete",
+                  "sublabel": "Core systems architecture"
+                },
+                {
+                  "date": "Jun 2026",
+                  "label": "Wave 1 Go-Live",
+                  "sublabel": "Finance + HR modules"
+                },
+                {
+                  "date": "Sep 2026",
+                  "label": "Wave 2 Go-Live",
+                  "sublabel": "Operations + Customer"
+                },
+                {
+                  "date": "Dec 2026",
+                  "label": "Programme Completion",
+                  "sublabel": "Full deployment + retrospective"
+                },
+                {
+                  "date": "Q1 2027",
+                  "label": "Benefits Review",
+                  "sublabel": "Realisation assessment"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

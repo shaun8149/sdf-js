@@ -1,0 +1,89 @@
+{
+  "slotIdx": 6,
+  "slotName": "theme-2-detail",
+  "slotTitle": "Theme 2 — Detail",
+  "slotPurpose": "Second theme drill-down: sequence, conditions, thresholds",
+  "sourceSlideIdx": 9,
+  "sourceSlideTitle": "Cloud versus Data Center Decision Threshold",
+  "sceneData": {
+    "name": "news-briefing/theme-2-detail",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Theme 2 — Detail",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 40,
+        "y": 180,
+        "w": 360,
+        "h": 200,
+        "args": {
+          "value": "$50M",
+          "label": "Decision Threshold",
+          "sublabel": "Annual infrastructure spend",
+          "icon": "scales",
+          "style": "dark"
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 440,
+        "y": 180,
+        "w": 800,
+        "h": 480,
+        "args": {
+          "title": "Cloud versus Data Center Decision Threshold",
+          "items": [
+            {
+              "label": "Use cloud unless spend exceeds $50M annually",
+              "sublabel": "Startups should prefer cloud over building data centers",
+              "icon": "cloud",
+              "status": "highlight"
+            },
+            {
+              "label": "Cloud economics remain favorable below threshold",
+              "sublabel": "Despite premium pricing advantage persists",
+              "icon": "chart-line-up"
+            },
+            {
+              "label": "Capital efficiency and operational flexibility favor cloud",
+              "sublabel": "Key advantages for most AI startups",
+              "icon": "lightning"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["timeline", "funnel-with-conversion", "bullet-list", "flow-chart"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4940,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 451,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0254874,
+    "elapsedSec": 8.6,
+    "generatedAt": "2026-07-07T06:39:14.657Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

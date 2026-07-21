@@ -34,7 +34,12 @@ function getUrlTokenHash() {
   }
 }
 let URL_TOKEN_HASH = getUrlTokenHash(); // mutable — #btn-new-hash reroll updates this
-import { expandVariants } from '../../src/scene/generator-s.js';
+import { expandAndCompile, wireStudioScene } from '../../src/runtime/apply-studio-scene.js';
+// Renderer id set + classifier: single source of truth (renderer-registry).
+import {
+  GPU_RENDERER_IDS as GPU_RENDERERS,
+  isGpuRenderer,
+} from '../../src/render/renderer-registry.js';
 import {
   sphericalToCamState,
   parseLiftResponse,
@@ -121,9 +126,6 @@ const state = {
   // ?sceneHash= URL param to roll a new variant ordering.
   sceneHash: null, // 0x... hex string
 };
-
-const GPU_RENDERERS = new Set(['fly3d', 'bob-gpu', 'blueprint', 'crayon', 'topo', 'studio']);
-const isGpuRenderer = (name) => GPU_RENDERERS.has(name);
 
 // =============================================================================
 // History storage (localStorage cap 30)
@@ -718,26 +720,30 @@ async function loadDemoScene(demo) {
     const data = await res.json();
 
     let compiled;
+    let stagedScene;
+    let renderSdf;
     try {
-      // Generator-S: expand `subjects[i].variants[]` into N flat subjects.
-      // No-op (zero rng draws) if no subject has variants. Uses state.sceneHash
-      // → SFC32 PRNG so the same hash always yields the same expansion.
-      const sceneRng = new Random(state.sceneHash);
-      const variantScene = expandVariants(data.sceneData, sceneRng);
-      compiled = compileSceneData(variantScene, { tokenHash: URL_TOKEN_HASH });
+      // Connector pipeline + compile, defined once in src/runtime: expandVariants
+      // (Generator-S, deterministic via state.sceneHash) → expandStage (studio
+      // room + lights/volumes/camera) → expandChartLabels → compile → ground-union.
+      // stagedScene is kept as the renderer's rawScene below so its lights /
+      // volumes / cameraSequence survive past compile and reach the wiring.
+      const out = expandAndCompile(data.sceneData, {
+        rng: new Random(state.sceneHash),
+        tokenHash: URL_TOKEN_HASH,
+      });
+      stagedScene = out.stagedScene;
+      compiled = out.compiled;
+      renderSdf = out.sdf;
     } catch (e) {
       throw new Error(`compile failed: ${e.message}`);
     }
 
-    const renderSdf =
-      compiled.groundSdf && compiled.sdf
-        ? sdfUnion(compiled.sdf, compiled.groundSdf)
-        : compiled.sdf || compiled.groundSdf;
     if (!renderSdf) throw new Error('empty SDF');
 
     state.textLiftScene = compiled;
     state.textLiftSdf = renderSdf;
-    state.textLiftSceneJSON = data.sceneData; // raw — keeps cameraSequence / defaults.postFx alive past compile
+    state.textLiftSceneJSON = stagedScene || data.sceneData; // staged (expandStage) → keeps lights/volumes/camera/cameraSequence alive past compile
     state.textLiftSourcePrompt = data.prompt;
     state.liftMode = true;
     state.selectedHistoryId = null;
@@ -779,6 +785,29 @@ async function loadDemoScene(demo) {
     console.error(e);
   }
 }
+
+// Public Layer-1 hook for the Layer-2 deck player (deck-player.js): load a
+// SceneData (by demo-manifest-shaped entry) into the active GPU renderer. The
+// deck player sequences these + drives transitions; it never touches compositor
+// internals. Returns loadDemoScene's promise so the player can await the swap.
+window.atlasLoadScene = (demoEntry) => {
+  const p = loadDemoScene(demoEntry);
+  switchToTab('text'); // reveal the render canvas (mirrors gallery card behavior)
+  return p;
+};
+
+// Public Layer-1 hook: project a world point → normalized screen coords (top-left
+// [0,1]) using the studio renderer's last-rendered camera. The Layer-2 overlay
+// label system (data-label-overlay.js) uses this to pin DOM annotations onto 3D
+// chart elements — the cheap text path for LOOP chart atoms (bar/line/column),
+// whose geometry can't carry SDF labels without overflowing the shader.
+window.atlasProjectPoint = (worldXYZ) =>
+  state.studioRenderer && state.studioRenderer.project
+    ? state.studioRenderer.project(worldXYZ)
+    : { x: 0, y: 0, visible: false };
+
+// (sceneHasTimeContent moved to src/runtime/apply-studio-scene.js — the studio
+// idle-stop decision is part of the wiring it now owns.)
 
 function autofillDemoPrompt(demo) {
   const promptInput = $('prompt-input');
@@ -1621,22 +1650,24 @@ function renderLiftedSceneData(
   { shufflePalette = true } = {},
 ) {
   const liftInfo = $('lift-info');
-  let compiled;
+  // Connector pipeline + compile, defined once in src/runtime (no variants on
+  // the lift path). expandStage rewrites the scene (studio room + lights +
+  // camera); stagedScene is stored as rawScene so those survive past compile.
+  let compiled, renderSdf, stagedScene;
   try {
-    compiled = compileSceneData(sceneData, { tokenHash: URL_TOKEN_HASH });
+    const out = expandAndCompile(sceneData, { tokenHash: URL_TOKEN_HASH });
+    stagedScene = out.stagedScene;
+    compiled = out.compiled;
+    renderSdf = out.sdf;
   } catch (compileErr) {
     throw new Error(`SceneData compile failed: ${compileErr.message}`);
   }
 
-  const renderSdf =
-    compiled.groundSdf && compiled.sdf
-      ? sdfUnion(compiled.sdf, compiled.groundSdf)
-      : compiled.sdf || compiled.groundSdf;
   if (!renderSdf) throw new Error('empty SDF — no subjects + no ground');
 
   state.textLiftScene = compiled;
   state.textLiftSdf = renderSdf;
-  state.textLiftSceneJSON = sceneData;
+  state.textLiftSceneJSON = stagedScene;
   state.textLiftSourcePrompt = originalPrompt;
   state.liftMode = true;
   gpuSceneStartTime = performance.now();
@@ -1850,33 +1881,77 @@ function ensureFly3dRenderer() {
 // Studio: stripped-down FLY 3D sibling — neutral grey bg + checker floor + no
 // fog / clouds / lens flares / volumes. Atom test stage for inspecting
 // individual subjects in a clean environment.
+// One-time overlay shown when WebGL2 / GPU is unavailable — usually because the
+// browser disabled hardware acceleration after a GPU process crash. White canvas
+// + a cryptic console throw is useless to a user; this tells them what to do.
+function showGpuUnavailableOverlay() {
+  if (document.getElementById('gpu-unavailable-msg')) return;
+  const wrap = $('canvas-wrap');
+  if (!wrap) return;
+  if (getComputedStyle(wrap).position === 'static') wrap.style.position = 'relative';
+  const el = document.createElement('div');
+  el.id = 'gpu-unavailable-msg';
+  el.innerHTML =
+    '<b>GPU / WebGL2 unavailable</b><br><br>' +
+    'Your browser disabled hardware acceleration — this usually happens after a ' +
+    'GPU crash.<br><br>' +
+    '1. <b>Fully quit and reopen the browser</b> (not just the tab).<br>' +
+    '2. Check <code>chrome://gpu</code> — “WebGL2” should be <i>Hardware accelerated</i>.<br>' +
+    '3. Settings → System → enable <b>“Use graphics acceleration when available”</b>, then relaunch.';
+  Object.assign(el.style, {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%,-50%)',
+    maxWidth: '70%',
+    padding: '22px 26px',
+    borderRadius: '12px',
+    background: 'rgba(20,12,12,0.92)',
+    border: '1px solid rgba(255,140,140,0.35)',
+    color: '#f3e6e6',
+    font: '400 14px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif',
+    zIndex: '60',
+    textAlign: 'left',
+  });
+  wrap.appendChild(el);
+}
+
 function ensureStudioRenderer() {
   if (state.studioRenderer) return state.studioRenderer;
+  if (state.studioInitFailed) return null; // don't re-throw every frame
   const canvas = $('c-gpu');
-  state.studioRenderer = createStudioRenderer({
-    canvas,
-    getControls: () => {
-      const { scene } = getActiveGpuScene();
-      const sceneLight = scene?.lightStatic || { azimuth: 0.5, altitude: 0.7, distance: 30 };
-      const light = state.lightOverride ?? sceneLight;
-      const cam = scene?.cameraStatic;
-      return {
-        lightAzim: light.azimuth,
-        lightAlt: light.altitude,
-        lightDist: light.distance,
-        fov: cam?.focal || 1.5,
-        shadowsOn: true,
-        // Studio's whole point: render a built-in checker ground plane so the
-        // atom has a visible "stage". groundOn unions a y=GROUND_Y plane into
-        // mapWithGround; checkerOn picks the grey-checker shading branch.
-        groundOn: true,
-        checkerOn: true,
-      };
-    },
-    onFps: (fps) => {
-      $('fps').textContent = `FPS: ${fps.toFixed(0)}`;
-    },
-  });
+  try {
+    state.studioRenderer = createStudioRenderer({
+      canvas,
+      getControls: () => {
+        const { scene } = getActiveGpuScene();
+        const sceneLight = scene?.lightStatic || { azimuth: 0.5, altitude: 0.7, distance: 30 };
+        const light = state.lightOverride ?? sceneLight;
+        const cam = scene?.cameraStatic;
+        return {
+          lightAzim: light.azimuth,
+          lightAlt: light.altitude,
+          lightDist: light.distance,
+          fov: cam?.focal || 1.5,
+          shadowsOn: true,
+          // Studio's whole point: render a built-in checker ground plane so the
+          // atom has a visible "stage". groundOn unions a y=GROUND_Y plane into
+          // mapWithGround; checkerOn picks the grey-checker shading branch.
+          groundOn: true,
+          checkerOn: true,
+        };
+      },
+      onFps: (fps) => {
+        $('fps').textContent = `FPS: ${fps.toFixed(0)}`;
+      },
+    });
+  } catch (e) {
+    state.studioInitFailed = true;
+    console.error('[compositor] studio renderer init failed:', e);
+    setStatus(`✗ ${e.message}`, true);
+    showGpuUnavailableOverlay();
+    return null;
+  }
   return state.studioRenderer;
 }
 
@@ -1987,6 +2062,7 @@ function runActiveGpuRenderer({ keepCamera = false } = {}) {
     if (state.crayonRenderer) state.crayonRenderer.unmount();
     if (state.topoRenderer) state.topoRenderer.unmount();
     const st = ensureStudioRenderer();
+    if (!st) return { bytes: 0 }; // WebGL2 unavailable — overlay already shown
     // W12 auto-framing: instead of a fixed pose (which forced atoms to be hand-
     // scaled to fit), compute the SDF's bounding box and fit the camera to it —
     // once per scene. The camera is placed at target − forward·distance for a
@@ -1994,47 +2070,77 @@ function runActiveGpuRenderer({ keepCamera = false } = {}) {
     // re-renders of the same scene, and for unbounded/huge SDFs (e.g. an
     // in-SDF ground plane or terrain → bbox hits the search radius), which keep
     // studio's neutral default pose.
-    if (!keepCamera && scene !== _lastStudioFramedScene && sdf && sdf.f) {
+    if (
+      !keepCamera &&
+      scene !== _lastStudioFramedScene &&
+      sdf &&
+      sdf.f &&
+      !(rawScene && rawScene.cameraSequence)
+    ) {
       _lastStudioFramedScene = scene;
-      try {
-        // iso > 0 (sample where the SDF is within ~0.12 of a surface) so THIN
-        // atoms — flat rings, arrow shafts, gear teeth — aren't missed between
-        // grid samples; the bbox inflates ~iso, negligible for framing.
-        const bb = bbox3FromSDF((p) => sdf.f(p), { radius: 10, res: 56, iso: 0.12 });
-        const maxDim = Math.max(bb.size[0], bb.size[1], bb.size[2]);
-        if (!bb.empty && maxDim > 0.05 && maxDim < 20) {
-          const fit = cameraFitFromBBox(bb.min, bb.max, 1.1, 1.3);
-          const yaw = 0.5;
-          const pitch = 0.32; // downward in studio's convention (fwd.y = −sin pitch)
-          const cp = Math.cos(pitch),
-            sp = Math.sin(pitch),
-            cy = Math.cos(yaw),
-            sy = Math.sin(yaw);
-          const fwd = [sy * cp, -sp, cy * cp];
-          st.setCamState({
-            position: [
-              fit.target[0] - fwd[0] * fit.distance,
-              fit.target[1] - fwd[1] * fit.distance,
-              fit.target[2] - fwd[2] * fit.distance,
-            ],
-            yaw,
-            pitch,
-          });
+      const framedScene = scene;
+      // Auto-framing is a CPU bbox sweep (tens of thousands of sdf.f evals) — at
+      // the old radius:10/res:56 it cost ~95ms and froze scene entry, which read
+      // as "slow load vs Shadertoy". Fix: (1) DEFER off the critical path so the
+      // first studio frame paints immediately (≈1ms below), bbox + camera fit run
+      // next frame then re-render; (2) cheaper sweep — a smaller search radius
+      // gives FINER cells (better thin-atom capture) at far fewer evals.
+      requestAnimationFrame(() => {
+        if (framedScene !== _lastStudioFramedScene) return; // a newer scene loaded; abort
+        try {
+          // radius 6 (covers translated atoms) × res 36 → cell ~0.33; iso 0.2 so
+          // THIN atoms (flat rings / arrow shafts / gear teeth) still register.
+          const bb = bbox3FromSDF((p) => sdf.f(p), { radius: 6, res: 36, iso: 0.2 });
+          const maxDim = Math.max(bb.size[0], bb.size[1], bb.size[2]);
+          // maxDim ≥ ~11 means the sweep hit its boundary (unbounded SDF / ground
+          // plane) → keep studio's neutral default pose.
+          if (!bb.empty && maxDim > 0.05 && maxDim < 11) {
+            const fit = cameraFitFromBBox(bb.min, bb.max, 1.1, 1.3);
+            const yaw = 0.5;
+            const pitch = 0.32; // downward in studio's convention (fwd.y = −sin pitch)
+            const cp = Math.cos(pitch),
+              sp = Math.sin(pitch),
+              cy = Math.cos(yaw),
+              sy = Math.sin(yaw);
+            const fwd = [sy * cp, -sp, cy * cp];
+            st.setCamState({
+              position: [
+                fit.target[0] - fwd[0] * fit.distance,
+                fit.target[1] - fwd[1] * fit.distance,
+                fit.target[2] - fwd[2] * fit.distance,
+              ],
+              yaw,
+              pitch,
+            });
+            st.render(sdf); // re-render with the fitted camera (studio is on-demand)
+          } else if (scene.cameraStatic) {
+            // Sweep saturated (scene bigger than the search radius) or empty —
+            // the scene's OWN declared camera beats studio's neutral pose. A
+            // big lifted scene (D0961 slide 17 spans ±13.5 with defaults.camera
+            // distance 28) otherwise renders from INSIDE its geometry.
+            st.setCamState(sphericalToCamState(scene.cameraStatic));
+            st.render(sdf);
+          }
+        } catch (e) {
+          // unbounded SDF / eval error → the scene's declared camera still
+          // beats the neutral pose when it exists
+          if (scene.cameraStatic) {
+            try {
+              st.setCamState(sphericalToCamState(scene.cameraStatic));
+              st.render(sdf);
+            } catch (_) {
+              /* keep studio's default pose */
+            }
+          }
         }
-      } catch (e) {
-        /* unbounded SDF / eval error → keep studio's default pose */
-      }
+      });
     }
-    if (st.setPostFx) {
-      st.setPostFx(
-        rawScene || {},
-        (rawScene && rawScene.defaults && rawScene.defaults.camera) || null,
-      );
-    }
-    // Sprint 12: Rune heightmap → studio texture (same data as FLY 3D).
-    if (st.setRuneHeightmap) st.setRuneHeightmap(scene.bakedHeightmap || null);
+    // All studio feature wiring (postFx / heightmap / volumes / renderScale /
+    // cameraSequence / animated) + render lives in ONE place: src/runtime's
+    // wireStudioScene. Adding a studio feature = edit that, not this dispatch.
+    // (Auto-frame above is gallery-specific framing, so it stays here.)
     try {
-      return st.render(sdf);
+      return wireStudioScene(st, rawScene, scene, sdf);
     } catch (e) {
       setStatus(`✗ studio render: ${e.message}`, true);
       console.error(e);

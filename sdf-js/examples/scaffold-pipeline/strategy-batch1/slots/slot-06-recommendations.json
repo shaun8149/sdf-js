@@ -1,0 +1,83 @@
+{
+  "slotIdx": 6,
+  "slotName": "recommendations",
+  "slotTitle": "Recommendations",
+  "slotPurpose": "Actionable next steps based on findings",
+  "sourceSlideIdx": 6,
+  "sourceSlideTitle": "Recommendations",
+  "sceneData": {
+    "name": "analysis-report/recommendations",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Recommendations",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 480,
+        "args": {
+          "items": [
+            {
+              "icon": "buildings",
+              "label": "Open Berlin office Q1 2027",
+              "sublabel": "Double down on EMEA hiring"
+            },
+            {
+              "icon": "currency-dollar",
+              "label": "3-tier pricing with usage add-ons",
+              "sublabel": "Restructure revenue model"
+            },
+            {
+              "icon": "briefcase",
+              "label": "Acquire 1-2 healthcare AI specialists",
+              "sublabel": "Vertical expansion strategy"
+            },
+            {
+              "icon": "headset",
+              "label": "2-hour SLA response time",
+              "sublabel": "Invest in customer support"
+            },
+            {
+              "icon": "handshake",
+              "label": "Partner with 10 systems integrators",
+              "sublabel": "Launch channel program"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "analysis-report",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["bullet-list", "icon-grid"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 3019,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 10770,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 398,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.018258,
+    "elapsedSec": 6.4,
+    "generatedAt": "2026-06-25T04:06:13.904Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

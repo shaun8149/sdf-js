@@ -1,0 +1,87 @@
+{
+  "slotIdx": 4,
+  "slotName": "theme-1-detail",
+  "slotTitle": "Theme 1 — Detail",
+  "slotPurpose": "First theme drill-down: regional / per-entity breakdown",
+  "sourceSlideIdx": 6,
+  "sourceSlideTitle": "The Big 3 Cloud Providers",
+  "sceneData": {
+    "name": "news-briefing/theme-1-detail",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Theme 1 — Detail",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "icon-row",
+        "x": 40,
+        "y": 180,
+        "w": 1200,
+        "h": 200,
+        "args": {
+          "items": [
+            {
+              "icon": "brand:aws",
+              "label": "AWS"
+            },
+            {
+              "icon": "brand:googlecloud",
+              "label": "GCP"
+            },
+            {
+              "icon": "brand:azure",
+              "label": "Azure"
+            }
+          ],
+          "title": "The Big 3 Cloud Providers",
+          "iconSize": "large",
+          "iconStyle": "circle"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 240,
+        "y": 440,
+        "w": 800,
+        "h": 200,
+        "args": {
+          "value": "$100B+",
+          "label": "Annual Capex",
+          "sublabel": "Massive capital investment creates infrastructure advantage",
+          "icon": "building",
+          "style": "dark"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["bar", "pie", "segmented-bar", "isotype-stat-comparison"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4792,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 406,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0243684,
+    "elapsedSec": 6.9,
+    "generatedAt": "2026-07-07T05:16:21.934Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

@@ -1,0 +1,115 @@
+{
+  "slotIdx": 5,
+  "slotName": "next-quarter",
+  "slotTitle": "Next Quarter",
+  "slotPurpose": "Plan and priorities for the coming quarter",
+  "sourceSlideIdx": 7,
+  "sourceSlideTitle": "AI-Driven Commerce Tools Development",
+  "sceneData": {
+    "name": "investor-update/next-quarter",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Next Quarter",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "kanban-board",
+        "x": 40,
+        "y": 160,
+        "w": 1200,
+        "h": 520,
+        "args": {
+          "title": "Q1 Priorities",
+          "columns": [
+            {
+              "name": "AI Product Development",
+              "cards": [
+                {
+                  "title": "AI-driven commerce tools",
+                  "labels": [
+                    "Series B funded"
+                  ]
+                },
+                {
+                  "title": "Agentic shopping experiences",
+                  "labels": [
+                    "Personalized journeys"
+                  ]
+                },
+                {
+                  "title": "Post-purchase concierge service",
+                  "labels": [
+                    "Increase LTV"
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "Platform Expansion",
+              "cards": [
+                {
+                  "title": "Three major AI initiatives",
+                  "labels": [
+                    "Strategic investment"
+                  ]
+                },
+                {
+                  "title": "International merchant network",
+                  "labels": [
+                    "Global positioning"
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "Integration",
+              "cards": [
+                {
+                  "title": "ReturnBear acquisition synergies",
+                  "labels": [
+                    "Complement expansion"
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "investor-update",
+    "theme": "financial-navy-cerulean",
+    "recommendedAtoms": [
+      "kanban-board",
+      "bullet-list",
+      "timeline",
+      "progression"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5434,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 440,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0268044,
+    "elapsedSec": 9.3,
+    "generatedAt": "2026-07-10T07:29:13.906Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

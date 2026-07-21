@@ -1,0 +1,192 @@
+{
+  "deckName": "vc-pitch",
+  "sourceFile": "sdf-js/scripts/scaffold-pipeline-fixtures/vc-pitch.json",
+  "scaffold": {
+    "id": "pitch-deck-vc",
+    "label": "VC Pitch Deck",
+    "description": "Seed/Series A fundraise pitch (Sequoia / YC structure)",
+    "pickScore": 17,
+    "pickSignals": [
+      "title-match:VC Pitch Deck",
+      "keyword:pitch",
+      "keyword:fundraise",
+      "keyword:series",
+      "keyword:ask"
+    ],
+    "fallback": false
+  },
+  "theme": {
+    "id": "pitch-cobalt-orange",
+    "label": "Pitch · Cobalt Orange",
+    "macroCluster": "pitch",
+    "bg": [255, 255, 255],
+    "accent": [255, 120, 40],
+    "colors": [
+      [255, 120, 40],
+      [20, 60, 180],
+      [220, 220, 235],
+      [60, 65, 90]
+    ],
+    "font": {
+      "heading": "\"Inter Display\", Inter, system-ui, sans-serif",
+      "body": "Inter, system-ui, sans-serif"
+    }
+  },
+  "slots": [
+    {
+      "slotIdx": 0,
+      "slotName": "cover",
+      "slotTitle": "Title",
+      "slotPurpose": "Company name + one-line tagline + author/date",
+      "sourceSlideIdx": 0,
+      "sourceSlideTitle": "Atlas Series A Pitch",
+      "mappingScore": 0,
+      "mappingFallback": true,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-00-cover.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": ["cover"]
+    },
+    {
+      "slotIdx": 1,
+      "slotName": "problem",
+      "slotTitle": "Problem",
+      "slotPurpose": "Pain point — who hurts and how much",
+      "sourceSlideIdx": 1,
+      "sourceSlideTitle": "The Problem",
+      "mappingScore": 2,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-01-problem.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": ["bullet-list", "kpi-card", "icon-badge", "icon-badge"]
+    },
+    {
+      "slotIdx": 2,
+      "slotName": "market-size",
+      "slotTitle": "Market Size",
+      "slotPurpose": "TAM/SAM/SOM with numbers",
+      "sourceSlideIdx": 2,
+      "sourceSlideTitle": "Total Addressable Market",
+      "mappingScore": 1,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-02-market-size.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": ["pyramid", "kpi-card", "kpi-card", "kpi-card"]
+    },
+    {
+      "slotIdx": 3,
+      "slotName": "solution",
+      "slotTitle": "Our Solution",
+      "slotPurpose": "Product overview + value prop",
+      "sourceSlideIdx": 3,
+      "sourceSlideTitle": "Our Solution",
+      "mappingScore": 1,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-03-solution.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": ["flow-chart", "icon-badge", "icon-badge", "icon-badge", "icon-badge"]
+    },
+    {
+      "slotIdx": 4,
+      "slotName": "product",
+      "slotTitle": "Product Demo",
+      "slotPurpose": "Screenshot mockup or feature highlight",
+      "sourceSlideIdx": 4,
+      "sourceSlideTitle": "Product Demo",
+      "mappingScore": 2,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-04-product.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": ["device-mockup-frame", "bullet-list"]
+    },
+    {
+      "slotIdx": 5,
+      "slotName": "traction",
+      "slotTitle": "Traction",
+      "slotPurpose": "Revenue / users / growth charts",
+      "sourceSlideIdx": 5,
+      "sourceSlideTitle": "Traction",
+      "mappingScore": 1,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-05-traction.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": ["line", "kpi-card", "kpi-card"]
+    },
+    {
+      "slotIdx": 6,
+      "slotName": "business-model",
+      "slotTitle": "Business Model",
+      "slotPurpose": "How we make money — unit economics",
+      "sourceSlideIdx": 6,
+      "sourceSlideTitle": "Business Model",
+      "mappingScore": 2,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-06-business-model.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": ["break-even", "kpi-card", "bullet-list"]
+    },
+    {
+      "slotIdx": 7,
+      "slotName": "team",
+      "slotTitle": "Team",
+      "slotPurpose": "Founders + key hires with credentials",
+      "sourceSlideIdx": 7,
+      "sourceSlideTitle": "The Team",
+      "mappingScore": 1,
+      "mappingFallback": false,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-07-team.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": ["circle-image-hub-spoke", "kpi-card", "kpi-card", "icon-badge", "icon-badge"]
+    },
+    {
+      "slotIdx": 8,
+      "slotName": "ask",
+      "slotTitle": "The Ask",
+      "slotPurpose": "Funding amount + use of funds + milestones",
+      "sourceSlideIdx": 8,
+      "sourceSlideTitle": "The Ask",
+      "mappingScore": 0,
+      "mappingFallback": true,
+      "mappingEmpty": false,
+      "liftFile": "slots/slot-08-ask.json",
+      "cached": false,
+      "dryRun": false,
+      "error": null,
+      "subjectTypes": ["kpi-card", "pie", "bullet-list"]
+    }
+  ],
+  "totals": {
+    "slotsBaked": 9,
+    "slotsEmpty": 0,
+    "slotsErrored": 0,
+    "totalCostUSD": 0.6318434999999999
+  },
+  "meta": {
+    "generatedAt": "2026-06-22T15:02:44.083Z",
+    "model": "claude-sonnet-4-5-20250929",
+    "pipelineVersion": "sprint-16-v1"
+  }
+}

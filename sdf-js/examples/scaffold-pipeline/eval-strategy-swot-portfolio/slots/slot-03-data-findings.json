@@ -1,0 +1,79 @@
+{
+  "slotIdx": 3,
+  "slotName": "data-findings",
+  "slotTitle": "Data & Findings",
+  "slotPurpose": "Quantitative evidence — charts, metrics, raw data",
+  "sourceSlideIdx": 4,
+  "sourceSlideTitle": "Voice of the Customer",
+  "sceneData": {
+    "name": "analysis-report/data-findings",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Data & Findings",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "quote-pull",
+        "x": 80,
+        "y": 180,
+        "w": 1120,
+        "h": 400,
+        "args": {
+          "quote": "This platform changed how our team coordinates across timezones — we no longer lose context in handoffs.",
+          "author": "Sarah Chen",
+          "attribution": "VP Engineering at Meridian Analytics",
+          "align": "center"
+        }
+      },
+      {
+        "type": "callout-banner",
+        "x": 320,
+        "y": 620,
+        "w": 640,
+        "h": 60,
+        "args": {
+          "type_": "note",
+          "body": "Quote sourced from 32-customer interview round, Aug 2026"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "analysis-report",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "stat-banner",
+      "line",
+      "column",
+      "bar",
+      "pie",
+      "kpi-card",
+      "scatter"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5177,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 322,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0242634,
+    "elapsedSec": 8.2,
+    "generatedAt": "2026-07-10T07:20:44.445Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

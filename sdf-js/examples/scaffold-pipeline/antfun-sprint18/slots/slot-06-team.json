@@ -1,0 +1,132 @@
+{
+  "slotIdx": 6,
+  "slotName": "team",
+  "slotTitle": "Team",
+  "slotPurpose": "Leadership and culture",
+  "sourceSlideIdx": 6,
+  "sourceSlideTitle": "Get in Touch",
+  "sceneData": {
+    "name": "company-overview/team",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Team"
+        }
+      },
+      {
+        "type": "icon-row",
+        "x": 40,
+        "y": 160,
+        "w": 1200,
+        "h": 200,
+        "args": {
+          "items": [
+            {
+              "icon": "envelope",
+              "label": "Email",
+              "sublabel": "team@antfun.io"
+            },
+            {
+              "icon": "globe",
+              "label": "Website",
+              "sublabel": "antfun.io"
+            },
+            {
+              "icon": "brand:telegram",
+              "label": "Telegram",
+              "sublabel": "Chat & Groups"
+            },
+            {
+              "icon": "brand:discord",
+              "label": "Discord",
+              "sublabel": "Direct Founder Access"
+            },
+            {
+              "icon": "brand:x",
+              "label": "X Spaces",
+              "sublabel": "Every Friday"
+            },
+            {
+              "icon": "robot",
+              "label": "AI Agent",
+              "sublabel": "@antfun-bot"
+            }
+          ],
+          "colorMode": "auto"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 120,
+        "y": 400,
+        "w": 280,
+        "h": 240,
+        "args": {
+          "value": "12K",
+          "label": "Community Members",
+          "icon": "users-three",
+          "color": "rgb(38, 70, 130)"
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 480,
+        "y": 400,
+        "w": 720,
+        "h": 240,
+        "args": {
+          "items": [
+            {
+              "icon": "rocket-launch",
+              "label": "Weekly releases with community feedback"
+            },
+            {
+              "icon": "star",
+              "label": "Beta access for power users"
+            },
+            {
+              "icon": "hand-coins",
+              "label": "Revenue share for contributors"
+            },
+            {
+              "icon": "code",
+              "label": "Open-source SDK for developers"
+            },
+            {
+              "icon": "chart-line",
+              "label": "Real-time on-chain analytics"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "company-overview",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["org-chart", "circle-image-hub-spoke", "icon-row", "bullet-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 1750,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 5921,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 702,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0175563,
+    "elapsedSec": 8.9,
+    "generatedAt": "2026-06-24T03:35:04.921Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

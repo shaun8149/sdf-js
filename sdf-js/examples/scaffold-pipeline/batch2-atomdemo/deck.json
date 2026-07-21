@@ -1,0 +1,67 @@
+{
+  "deckName": "batch2-atomdemo",
+  "scaffold": {
+    "id": "demo",
+    "label": "Atom Demo",
+    "description": "Direct render of 4 Batch 2 atoms",
+    "pickScore": 0,
+    "pickSignals": ["manual demo"],
+    "fallback": false,
+    "pickerMethod": "manual"
+  },
+  "theme": {
+    "id": "hr-slate-teal",
+    "label": "HR Slate Teal",
+    "macroCluster": "editorial",
+    "bg": [13, 26, 40],
+    "accent": [42, 184, 168],
+    "colors": [
+      [42, 184, 168],
+      [78, 200, 184],
+      [120, 220, 200],
+      [200, 90, 90],
+      [200, 150, 90]
+    ],
+    "silhouetteColor": [255, 255, 255]
+  },
+  "meta": { "model": "manual-demo", "timestamp": "2026-06-25" },
+  "totals": { "slotsBaked": 4, "slotsEmpty": 0, "totalCostUSD": 0 },
+  "slots": [
+    {
+      "slotIdx": 0,
+      "slotName": "intro",
+      "slotTitle": "01 — Findings (section-number-divider)",
+      "slotPurpose": "section divider demo",
+      "sourceSlideIdx": 0,
+      "subjectTypes": ["section-number-divider"],
+      "liftFile": "slots/slot-00-intro.json"
+    },
+    {
+      "slotIdx": 1,
+      "slotName": "metric",
+      "slotTitle": "stat-banner",
+      "slotPurpose": "headline metric demo",
+      "sourceSlideIdx": 1,
+      "subjectTypes": ["stat-banner"],
+      "liftFile": "slots/slot-01-metric.json"
+    },
+    {
+      "slotIdx": 2,
+      "slotName": "pillars",
+      "slotTitle": "radial-wheel-segmented",
+      "slotPurpose": "concentric ring diagram demo",
+      "sourceSlideIdx": 2,
+      "subjectTypes": ["radial-wheel-segmented"],
+      "liftFile": "slots/slot-02-pillars.json"
+    },
+    {
+      "slotIdx": 3,
+      "slotName": "tiers",
+      "slotTitle": "comparison-table",
+      "slotPurpose": "feature matrix demo",
+      "sourceSlideIdx": 3,
+      "subjectTypes": ["comparison-table"],
+      "liftFile": "slots/slot-03-tiers.json"
+    }
+  ]
+}

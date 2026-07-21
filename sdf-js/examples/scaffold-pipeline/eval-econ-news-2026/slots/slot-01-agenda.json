@@ -1,0 +1,79 @@
+{
+  "slotIdx": 1,
+  "slotName": "agenda",
+  "slotTitle": "Overview",
+  "slotPurpose": "One line per major theme of the briefing",
+  "sourceSlideIdx": 1,
+  "sourceSlideTitle": "全球与区域增长预测",
+  "sceneData": {
+    "name": "news-briefing/agenda",
+    "layout": "row",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Overview",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "agenda-list",
+        "x": 40,
+        "y": 160,
+        "w": 1200,
+        "h": 520,
+        "args": {
+          "title": "全球与区域增长预测",
+          "items": [
+            {
+              "label": "IMF全球增长预期",
+              "sublabel": "2026年3.3%，2027年3.2%"
+            },
+            {
+              "label": "经合组织中期报告",
+              "sublabel": "全球GDP增速稳定在2.9%"
+            },
+            {
+              "label": "世界银行保守预测",
+              "sublabel": "2.5%，新兴市场面临最弱人均收入增长"
+            },
+            {
+              "label": "区域增长差异",
+              "sublabel": "中国5%，欧元区1.1%，低收入国家5.4%"
+            }
+          ],
+          "numbered": true
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": [
+      "agenda-list",
+      "number-list"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5283,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 388,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.025571399999999998,
+    "elapsedSec": 7.2,
+    "generatedAt": "2026-07-10T07:25:17.867Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

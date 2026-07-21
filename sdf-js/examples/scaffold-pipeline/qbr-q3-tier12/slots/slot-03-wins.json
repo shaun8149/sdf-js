@@ -1,0 +1,121 @@
+{
+  "slotIdx": 3,
+  "slotName": "wins",
+  "slotTitle": "Wins",
+  "slotPurpose": "What went well this quarter",
+  "sourceSlideIdx": 3,
+  "sourceSlideTitle": "Wins",
+  "sceneData": {
+    "name": "qbr/wins",
+    "layout": "grid",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Wins"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 40,
+        "y": 160,
+        "w": 280,
+        "h": 220,
+        "args": {
+          "label": "Award",
+          "value": "Web3 Product",
+          "icon": "trophy",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 340,
+        "y": 160,
+        "w": 280,
+        "h": 220,
+        "args": {
+          "label": "Funding",
+          "value": "$25M",
+          "sublabel": "Sequoia follow-on",
+          "icon": "currency-dollar",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 640,
+        "y": 160,
+        "w": 280,
+        "h": 220,
+        "args": {
+          "label": "Press",
+          "value": "3 Stories",
+          "sublabel": "TC + Bloomberg",
+          "icon": "newspaper",
+          "style": "light"
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 940,
+        "y": 160,
+        "w": 280,
+        "h": 220,
+        "args": {
+          "label": "Community",
+          "value": "24K",
+          "sublabel": "Discord members",
+          "icon": "users-three",
+          "style": "light"
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 40,
+        "y": 420,
+        "w": 1180,
+        "h": 240,
+        "args": {
+          "title": "Talent Acquisitions",
+          "items": [
+            {
+              "icon": "user-circle-gear",
+              "label": "4 engineers from Coinbase"
+            },
+            {
+              "icon": "brain",
+              "label": "2 AI experts from Anthropic"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "qbr",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["bullet-list", "kpi-card", "icon-badge"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 2454,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 5921,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 652,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0189183,
+    "elapsedSec": 9.5,
+    "generatedAt": "2026-06-24T04:50:37.338Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

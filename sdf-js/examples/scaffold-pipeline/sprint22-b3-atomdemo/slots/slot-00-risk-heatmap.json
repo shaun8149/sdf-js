@@ -1,0 +1,29 @@
+{
+  "slotIdx": 0,
+  "slotName": "risk",
+  "slotTitle": "risk-heatmap",
+  "sceneData": {
+    "subjects": [
+      {
+        "type": "risk-heatmap",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 720,
+        "args": {
+          "title": "Cybersecurity Risk Assessment",
+          "xAxis": "Likelihood",
+          "yAxis": "Impact",
+          "risks": [
+            { "label": "Data breach", "likelihood": 4, "impact": 5 },
+            { "label": "Compliance fine", "likelihood": 2, "impact": 4 },
+            { "label": "Vendor delay", "likelihood": 5, "impact": 2 },
+            { "label": "DDoS attack", "likelihood": 3, "impact": 4 },
+            { "label": "Key person loss", "likelihood": 2, "impact": 5 },
+            { "label": "Supply chain", "likelihood": 3, "impact": 3 }
+          ]
+        }
+      }
+    ]
+  }
+}

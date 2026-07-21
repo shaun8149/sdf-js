@@ -1,0 +1,174 @@
+{
+  "v": 1,
+  "name": "(lifted) ai-Value Funnel",
+  "subjects": [
+    {
+      "id": "funnel",
+      "type": "funnel-3d",
+      "args": {
+        "stages": 5,
+        "topRadius": 1.15,
+        "bottomRadius": 0.28,
+        "stageHeight": 0.55,
+        "gap": 0.1,
+        "colors": [
+          {
+            "hue": 0.04,
+            "sat": 0.7,
+            "value": 0.88
+          },
+          {
+            "hue": 0.04,
+            "sat": 0.72,
+            "value": 0.805
+          },
+          {
+            "hue": 0.04,
+            "sat": 0.74,
+            "value": 0.73
+          },
+          {
+            "hue": 0.04,
+            "sat": 0.76,
+            "value": 0.655
+          },
+          {
+            "hue": 0.04,
+            "sat": 0.7799999999999999,
+            "value": 0.5800000000000001
+          }
+        ]
+      },
+      "transform": {
+        "translate": [
+          -0.3,
+          1.6,
+          0
+        ],
+        "rotate": [
+          0.12,
+          0,
+          0
+        ]
+      },
+      "material": {
+        "hue": 0.04,
+        "sat": 0.72,
+        "value": 0.82,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      }
+    }
+  ],
+  "overlay": [
+    {
+      "text": "DATA → DECISION",
+      "anchor": [
+        0,
+        3.9,
+        0
+      ],
+      "role": "title"
+    },
+    {
+      "text": "Raw Data",
+      "anchor": [
+        3,
+        2.6,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "Features",
+      "anchor": [
+        3,
+        1.8800000000000001,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "Model",
+      "anchor": [
+        3,
+        1.1600000000000001,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "Prediction",
+      "anchor": [
+        3,
+        0.43999999999999995,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "Decision",
+      "anchor": [
+        3,
+        -0.2799999999999998,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    }
+  ],
+  "cameraSequence": {
+    "loop": false,
+    "shots": [
+      {
+        "pos": [
+          0.6,
+          0.7000000000000001,
+          9.8
+        ],
+        "target": [
+          0,
+          1.9000000000000001,
+          0
+        ],
+        "fov": 52,
+        "focalDistance": 8.4,
+        "duration": 0.01,
+        "aperture": 0,
+        "ease": "smooth"
+      },
+      {
+        "pos": [
+          0,
+          2.2,
+          8.4
+        ],
+        "target": [
+          0,
+          1.9000000000000001,
+          0
+        ],
+        "fov": 46,
+        "focalDistance": 8.4,
+        "duration": 14,
+        "transition": "blend",
+        "aperture": 0,
+        "ease": "smooth"
+      }
+    ]
+  },
+  "defaults": {
+    "stage": {
+      "size": [
+        18,
+        9,
+        11
+      ]
+    }
+  }
+}

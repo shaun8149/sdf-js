@@ -1,0 +1,127 @@
+{
+  "slotIdx": 4,
+  "slotName": "journey-phases",
+  "slotTitle": "Change Journey",
+  "slotPurpose": "Phase-by-phase transition path with milestones",
+  "sourceSlideIdx": 7,
+  "sourceSlideTitle": "Change Journey & Risk Mitigation",
+  "sceneData": {
+    "name": "change-roadmap/journey-phases",
+    "layout": "stage",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Change Journey",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "change-curve-chart",
+        "x": 40,
+        "y": 150,
+        "w": 760,
+        "h": 380,
+        "args": {
+          "title": "Transformation Phases",
+          "xAxis": "Timeline",
+          "yAxis": "Performance",
+          "phases": [
+            {
+              "label": "Q1: Mobilise",
+              "sublabel": "Governance, quick wins"
+            },
+            {
+              "label": "Q2-Q3: Transform",
+              "sublabel": "Core migration, redesign"
+            },
+            {
+              "label": "Q4: Sustain",
+              "sublabel": "Embed, measure outcomes"
+            }
+          ]
+        }
+      },
+      {
+        "type": "traffic-light",
+        "x": 840,
+        "y": 150,
+        "w": 400,
+        "h": 380,
+        "args": {
+          "title": "Risk Mitigation",
+          "lights": [
+            {
+              "color": "red",
+              "active": true,
+              "label": "Change fatigue (HIGH)"
+            },
+            {
+              "color": "amber",
+              "active": true,
+              "label": "Data migration errors (MEDIUM)"
+            },
+            {
+              "color": "green",
+              "active": true,
+              "label": "Vendor delays (LOW)"
+            }
+          ]
+        }
+      },
+      {
+        "type": "progression",
+        "x": 40,
+        "y": 560,
+        "w": 1200,
+        "h": 120,
+        "args": {
+          "steps": [
+            {
+              "label": "Q1: Mobilise",
+              "status": "done"
+            },
+            {
+              "label": "Q2-Q3: Transform",
+              "status": "current"
+            },
+            {
+              "label": "Q4: Sustain",
+              "status": "todo"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "change-roadmap",
+    "theme": "consulting-charcoal",
+    "recommendedAtoms": [
+      "change-curve-chart",
+      "progression",
+      "timeline"
+    ],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 5199,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 634,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.029009399999999998,
+    "elapsedSec": 10.7,
+    "generatedAt": "2026-07-10T07:20:11.436Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

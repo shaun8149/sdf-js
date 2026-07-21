@@ -1,0 +1,111 @@
+{
+  "slotIdx": 9,
+  "slotName": "risk-detail-1",
+  "slotTitle": "Top Risk — Detail",
+  "slotPurpose": "The single highest-probability / highest-impact item, expanded",
+  "sourceSlideIdx": 12,
+  "sourceSlideTitle": "Strategic Competition with China",
+  "sceneData": {
+    "name": "news-briefing/risk-detail-1",
+    "layout": "hierarchy",
+    "subjects": [
+      {
+        "type": "cover",
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 120,
+        "args": {
+          "title": "Top Risk — Detail",
+          "style": "gradient"
+        }
+      },
+      {
+        "type": "callout-banner",
+        "x": 40,
+        "y": 150,
+        "w": 1200,
+        "h": 140,
+        "args": {
+          "type_": "warning",
+          "heading": "Strategic Competition with China",
+          "body": "Competition intensifying across all dimensions — technology leadership framed as foundation for maintaining American primacy",
+          "icon": "warning"
+        }
+      },
+      {
+        "type": "bullet-list",
+        "x": 40,
+        "y": 320,
+        "w": 580,
+        "h": 340,
+        "args": {
+          "title": "Dimensions at Stake",
+          "items": [
+            {
+              "icon": "cpu",
+              "label": "Technological dominance",
+              "sublabel": "Losing tech leadership risks economic leadership"
+            },
+            {
+              "icon": "currency-dollar",
+              "label": "Economic leadership",
+              "sublabel": "Foundation for maintaining primacy"
+            },
+            {
+              "icon": "shield",
+              "label": "Military capabilities",
+              "sublabel": "Defense and security competition"
+            },
+            {
+              "icon": "globe",
+              "label": "Geopolitical influence",
+              "sublabel": "Global power dynamics shifting"
+            },
+            {
+              "icon": "flag",
+              "label": "Cultural leadership",
+              "sublabel": "Soft power and global norms"
+            }
+          ]
+        }
+      },
+      {
+        "type": "kpi-card",
+        "x": 660,
+        "y": 320,
+        "w": 580,
+        "h": 340,
+        "args": {
+          "value": "$1.7B",
+          "label": "Infrastructure Fund",
+          "sublabel": "Matches Apps fund as largest single-category commitment — foundational to supporting AI and technological capabilities",
+          "icon": "building",
+          "style": "accent-border"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "scaffold": "news-briefing",
+    "theme": "editorial-navy",
+    "recommendedAtoms": ["callout-banner", "stat-with-icon", "bullet-list"],
+    "forbiddenAtoms": [],
+    "tokenUsage": {
+      "input_tokens": 4531,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 13008,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 622,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "costUSD": 0.0268254,
+    "elapsedSec": 11,
+    "generatedAt": "2026-07-07T04:05:12.033Z",
+    "model": "claude-sonnet-4-5-20250929"
+  }
+}

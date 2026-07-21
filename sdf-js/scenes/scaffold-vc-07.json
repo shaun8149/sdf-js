@@ -1,0 +1,238 @@
+{
+  "v": 1,
+  "name": "(scaffold) pitch-deck-vc/team",
+  "subjects": [
+    {
+      "id": "circle-image-hub-spoke-0",
+      "type": "sphere-network-3d",
+      "args": {
+        "count": 3,
+        "arrangement": "sphere"
+      },
+      "transform": {
+        "translate": [
+          2.4375,
+          2.35,
+          0
+        ],
+        "scale": 1.6956521739130437
+      },
+      "material": {
+        "hue": 0.06201550387596899,
+        "sat": 0.72,
+        "value": 0.72,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      }
+    },
+    {
+      "id": "kpi-card-1",
+      "type": "kpi-card-3d",
+      "args": {
+        "value": "20",
+        "label": "Engineers"
+      },
+      "transform": {
+        "translate": [
+          -2.4375,
+          3.25,
+          0
+        ],
+        "scale": 0.55
+      },
+      "material": {
+        "hue": 0.625,
+        "sat": 0.72,
+        "value": 0.7058823529411765,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      }
+    },
+    {
+      "id": "kpi-card-2",
+      "type": "kpi-card-3d",
+      "args": {
+        "value": "5",
+        "label": "Designers"
+      },
+      "transform": {
+        "translate": [
+          -2.4375,
+          1.7500000000000002,
+          0
+        ],
+        "scale": 0.55
+      },
+      "material": {
+        "hue": 0.638888888888889,
+        "sat": 0.5,
+        "value": 0.5,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      }
+    },
+    {
+      "id": "icon-badge-3",
+      "type": "icon-grid-3d",
+      "args": {
+        "rows": 1,
+        "cols": 1,
+        "tileSize": 1
+      },
+      "transform": {
+        "translate": [
+          -0.9750000000000001,
+          0.5499999999999996,
+          0
+        ],
+        "scale": 0.55
+      },
+      "material": {
+        "hue": 0.06201550387596899,
+        "sat": 0.72,
+        "value": 0.72,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      }
+    },
+    {
+      "id": "icon-badge-4",
+      "type": "icon-grid-3d",
+      "args": {
+        "rows": 1,
+        "cols": 1,
+        "tileSize": 1
+      },
+      "transform": {
+        "translate": [
+          -2.275,
+          0.5499999999999996,
+          0
+        ],
+        "scale": 0.55
+      },
+      "material": {
+        "hue": 0.625,
+        "sat": 0.72,
+        "value": 0.7058823529411765,
+        "kind": "normal",
+        "roughness": 0.3,
+        "clearcoat": 0.45
+      }
+    }
+  ],
+  "overlay": [
+    {
+      "text": "Sarah Chen\nCEO\nex-Figma design infra",
+      "anchor": [
+        4.574021739130435,
+        3.706521739130435,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "Alex Wu\nCTO\nex-Anthropic research",
+      "anchor": [
+        4.574021739130435,
+        2.485652173913044,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "Diana Liu\nHead of Design\nex-Apple Keynote",
+      "anchor": [
+        4.574021739130435,
+        1.2647826086956524,
+        0
+      ],
+      "role": "card",
+      "align": "left"
+    },
+    {
+      "text": "20",
+      "anchor": [
+        -2.4375,
+        3.415,
+        0.33
+      ],
+      "role": "value",
+      "radius": 0.36
+    },
+    {
+      "text": "5",
+      "anchor": [
+        -2.4375,
+        1.915,
+        0.33
+      ],
+      "role": "value",
+      "radius": 0.36
+    },
+    {
+      "text": "TEAM",
+      "anchor": [
+        0,
+        4.9,
+        0
+      ],
+      "role": "title"
+    }
+  ],
+  "cameraSequence": {
+    "loop": false,
+    "shots": [
+      {
+        "duration": 0.01,
+        "pos": [
+          1.4,
+          3.5,
+          14
+        ],
+        "target": [
+          0,
+          2.5,
+          0
+        ],
+        "fov": 48,
+        "aperture": 0,
+        "focalDistance": 12.5,
+        "ease": "smooth"
+      },
+      {
+        "duration": 14,
+        "pos": [
+          0,
+          2.85,
+          11.8
+        ],
+        "target": [
+          0,
+          2.5,
+          0
+        ],
+        "fov": 46,
+        "transition": "blend",
+        "aperture": 0,
+        "focalDistance": 11.8,
+        "ease": "smooth"
+      }
+    ]
+  },
+  "defaults": {
+    "stage": {
+      "size": [
+        24,
+        12,
+        13
+      ]
+    }
+  }
+}

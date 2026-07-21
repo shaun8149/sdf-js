@@ -1,0 +1,107 @@
+[
+  {
+    "title": "ANTFUN",
+    "body": ["On-Chain Trading Super App", "Company Overview", "2026-Q3"]
+  },
+  {
+    "title": "Our Mission",
+    "body": [
+      "Make on-chain trading as natural as messaging",
+      "Replace centralized exchanges with self-custodial UX",
+      "Lower the barrier to DeFi for the next 100 million users",
+      "Team Heritage",
+      "Built by ex-Binance + ex-Coinbase engineers",
+      "5 years of crypto-native product experience",
+      "Previously shipped wallets serving 10M+ users",
+      "Backed by Sequoia, Paradigm, and Multicoin",
+      "Based across NYC, Singapore, and Lisbon",
+      "Our Focus",
+      "Mobile-first wallet with embedded trading",
+      "AI co-pilot for portfolio decisions",
+      "Privacy by default, zero-knowledge architecture",
+      "Cross-chain liquidity aggregation"
+    ]
+  },
+  {
+    "title": "Market Opportunity",
+    "body": [
+      "Potential User Groups",
+      "Crypto-native traders frustrated by slow wallets",
+      "DeFi power users looking for unified UX",
+      "Mainstream users wanting wallet + trading combined",
+      "Smart-money traders following on-chain alpha",
+      "Core Differentiators",
+      "Sub-second order execution on aggregated DEXs",
+      "AI agents for strategy automation",
+      "Self-custodial without compromising speed",
+      "Embedded chat groups for community alpha-sharing",
+      "Built-in audio rooms for live trading sessions",
+      "Open API for developer ecosystem"
+    ]
+  },
+  {
+    "title": "Product Suite",
+    "body": [
+      "Lightweight Wallet — mobile-first self-custodial",
+      "Chat Module — embedded social and alpha-sharing",
+      "Trading Acceleration — aggregated DEX routing",
+      "Competitive Advantages",
+      "Sub-second execution beats every existing wallet",
+      "Self-custodial without UX compromises",
+      "AI-native — agents not just chatbots",
+      "Network effects from embedded social",
+      "Open ecosystem for plugin developers",
+      "Top-tier security audited by Trail of Bits",
+      "Growth Metrics",
+      "$300K daily trading volume after 4 weeks",
+      "12K monthly active wallets",
+      "47% week-over-week growth",
+      "92% user retention at day 30",
+      "Average session: 8 minutes, 3x industry norm",
+      "NPS score 72 (top quartile crypto product)"
+    ]
+  },
+  {
+    "title": "Strategic Position",
+    "body": [
+      "User Persona — Competitive Position",
+      "Beyond For — Market Gap",
+      "1-2 Months — Timeline",
+      "OpenClaw — AI Integration",
+      "Agent Mentions — Community Features",
+      "4 Weeks — Perp DEX Launch",
+      "$300K Daily — Self-built Perp DEX",
+      "Prototype Ready — Smart Money System"
+    ]
+  },
+  {
+    "title": "Technology Stack",
+    "body": [
+      "Self-Custodial Strategy — Browser-side key management with hardware-wallet integration",
+      "Multi-chain bridge layer — Ethereum + Solana + Base + Arbitrum",
+      "OpenClaw AI inference — on-device for privacy, server for heavy lift",
+      "Chat encryption — end-to-end via Signal protocol",
+      "Order routing — proprietary DEX aggregator with MEV protection",
+      "Smart Money tracker — labels 50K wallets in real-time"
+    ]
+  },
+  {
+    "title": "Get in Touch",
+    "body": [
+      "Connect with ANTFUN",
+      "Email — team@antfun.io",
+      "Website — antfun.io",
+      "Chat & Group — Telegram + Discord",
+      "Audio/Video — Twitter Spaces every Friday",
+      "Community — 12K members across channels",
+      "AI Agent — talk to @antfun-bot on Telegram",
+      "Why Connect With Us",
+      "We ship weekly and listen to feedback",
+      "Direct access to founders via Discord",
+      "Beta access for power users",
+      "Revenue share for community contributors",
+      "Open-source SDK for developers",
+      "Real-time on-chain analytics dashboard"
+    ]
+  }
+]

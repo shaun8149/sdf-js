@@ -1,5 +1,10 @@
 # Claude Code 工作规则
 
+> **新机器 / 新 agent 接手：先读 [`docs/AGENT_HANDOFF.md`](docs/AGENT_HANDOFF.md)。**
+> 工作 agent 的持久 memory 在 repo 之外(`~/.claude/projects/.../memory/`)、**不随 git 同步**。
+> 机器轮换时,代码/git 里读不到的上下文(架构、铁律、当前状态、下一步、近期发现、产品 thesis、
+> 用户偏好)沉淀在那份交接文档里 —— 它是本地 memory 不在时的"新持久记忆"。学到新东西就往里追加并 PR。
+
 ## Git 工作流：走 PR，永不直接 push main
 
 每一次代码改动(spec/plan/memory 之外的所有源码与配置变更)走 PR 流程，不再直接 `git push origin main`。
