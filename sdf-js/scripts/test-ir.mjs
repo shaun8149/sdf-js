@@ -22,6 +22,50 @@ ok(
   !validateIR({ structure: 'sequence', nodes: ['A', 'B'], magnitude: [1] }).ok,
   'magnitude length must match nodes',
 );
+ok(
+  !validateIR({ structure: 'sequence', nodes: ['A', 'B'], order: [0, 2] }).ok,
+  'order indices must reference existing nodes',
+);
+ok(
+  !validateIR({ structure: 'sequence', nodes: ['A', 'B'], emphasis: [2] }).ok,
+  'node emphasis indices must reference existing nodes',
+);
+ok(
+  !validateIR({ structure: 'sequence', nodes: ['A', 'B'], emphasis: 1 }).ok,
+  'node emphasis must be an index array',
+);
+ok(
+  validateIR({
+    structure: 'proportion',
+    groups: [{ values: [1, 2] }, { values: [2, 1] }],
+    emphasis: 1,
+  }).ok,
+  'proportion scalar emphasis validates against groups',
+);
+ok(
+  !validateIR({
+    structure: 'proportion',
+    groups: [{ values: [1, 2] }, { values: [2, 1] }],
+    emphasis: 2,
+  }).ok,
+  'proportion emphasis must reference an existing group',
+);
+ok(
+  validateIR({
+    structure: 'roadmap',
+    milestones: [{ label: 'A' }, { label: 'B' }],
+    emphasis: 1,
+  }).ok,
+  'roadmap scalar emphasis validates against milestones',
+);
+ok(
+  !validateIR({
+    structure: 'roadmap',
+    milestones: [{ label: 'A' }, { label: 'B' }],
+    emphasis: 2,
+  }).ok,
+  'roadmap emphasis must reference an existing milestone',
+);
 
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);
