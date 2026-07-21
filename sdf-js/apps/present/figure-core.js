@@ -55,6 +55,54 @@ function plateMatrix3d(w, h, tl, tr, bl, br) {
   return `matrix3d(${t[0]},${t[3]},0,${t[6]},${t[1]},${t[4]},0,${t[7]},0,0,1,0,${t[2]},${t[5]},0,${t[8]})`;
 }
 
+export function createPauseController({
+  setSequencePaused = null,
+  requestRender = null,
+  setGlyphVisible = null,
+} = {}) {
+  let paused = false;
+  let warming = false;
+  const syncGlyph = () => {
+    if (setGlyphVisible) setGlyphVisible(paused);
+  };
+  const controller = {
+    get paused() {
+      return paused;
+    },
+    get warming() {
+      return warming;
+    },
+    reset() {
+      paused = false;
+      syncGlyph();
+    },
+    setWarming(next) {
+      const wasWarming = warming;
+      warming = !!next;
+      if (!wasWarming || warming) return;
+      if (paused) {
+        if (setSequencePaused) setSequencePaused(true);
+      } else if (requestRender) {
+        requestRender();
+      }
+    },
+    setPaused(next) {
+      const p = !!next;
+      if (p === paused) return;
+      paused = p;
+      // Shader warm-up owns a system hold. User "resume" during that phase only
+      // clears their intent; it must not unpause the hidden clock.
+      if (setSequencePaused && (!warming || p)) setSequencePaused(p);
+      syncGlyph();
+      if (!p && !warming && requestRender) requestRender(); // revive the loop on resume
+    },
+    toggle() {
+      controller.setPaused(!paused);
+    },
+  };
+  return controller;
+}
+
 /**
  * createFigure({ outdoor, stage }) → { studio, show(sceneData) }.
  * `show` may be called repeatedly (the author page regenerates in place) —
@@ -195,7 +243,7 @@ export function createFigure({
     'opacity:0;pointer-events:none;transition:opacity 0.45s ease;';
   replayBtn.addEventListener('click', () => {
     if (studio.setSequenceTime) studio.setSequenceTime(0);
-    setPaused(false); // replay always resumes — a paused replay reads as "broken"
+    pauseController.setPaused(false); // replay always resumes — a paused replay reads as "broken"
   });
   if (!present) document.body.appendChild(replayBtn);
 
@@ -205,7 +253,6 @@ export function createFigure({
   // corner glyph confirms the state — pressing a key with no visible response
   // reads as "the key doesn't work" (user report 2026-07-15). Presenter mode
   // owns its own clock, so it never gets this handler.
-  let paused = false;
   const pauseGlyph = document.createElement('div');
   pauseGlyph.id = 'pause-glyph';
   pauseGlyph.textContent = '❙❙';
@@ -218,13 +265,17 @@ export function createFigure({
     'backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);' +
     'opacity:0;transition:opacity 0.25s ease;';
   if (!present) document.body.appendChild(pauseGlyph);
-  function setPaused(p) {
-    if (p === paused || !studio.setSequencePaused) return;
-    paused = p;
-    studio.setSequencePaused(p);
-    pauseGlyph.style.opacity = p ? '1' : '0';
-    if (!p && studio.requestRender) studio.requestRender(); // revive the loop on resume
-  }
+  const pauseController = createPauseController({
+    setSequencePaused: (p) => {
+      if (studio.setSequencePaused) studio.setSequencePaused(p);
+    },
+    requestRender: () => {
+      if (studio.requestRender) studio.requestRender();
+    },
+    setGlyphVisible: (visible) => {
+      pauseGlyph.style.opacity = visible ? '1' : '0';
+    },
+  });
   if (!present) {
     window.addEventListener(
       'keydown',
@@ -234,7 +285,7 @@ export function createFigure({
         if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
         if (e.key === ' ' || e.key === 'p' || e.key === 'P') {
           e.preventDefault(); // Space would otherwise scroll the page
-          setPaused(!paused);
+          pauseController.toggle();
         }
       },
       true, // capture: win over any bubble-phase consumer (fly controls etc.)
@@ -248,7 +299,7 @@ export function createFigure({
   let plateItems = []; // 浮屏: page images perspective-mapped onto in-world screens
   let plateEls = [];
   let detachDeckWindows = null;
-  let deckWarming = false; // keep the boot loader up while window shaders warm
+  let warmupToken = 0;
   const loading = document.getElementById('loading');
 
   function show(scene) {
@@ -358,6 +409,7 @@ export function createFigure({
     replayShown = false;
     replayBtn.style.opacity = '0';
     replayBtn.style.pointerEvents = 'none';
+    pauseController.reset();
     // Deck scenes carry a window timeline — play them through the per-station
     // shader switcher (the giant full-world shader would run at single-digit
     // fps on laptop GPUs; see deck-shader-windows.js). Single-structure scenes
@@ -369,6 +421,7 @@ export function createFigure({
       detachDeckWindows();
       detachDeckWindows = null;
     }
+    const myWarmupToken = ++warmupToken;
     adaptAfter = performance.now() + ADAPT_GRACE_MS;
     lowStreak = 0;
     highStreak = 0;
@@ -394,14 +447,16 @@ export function createFigure({
     });
     if (dw) {
       detachDeckWindows = dw.detach;
-      deckWarming = true;
+      pauseController.setWarming(true);
       dw.warmed.then(() => {
-        deckWarming = false;
+        if (myWarmupToken !== warmupToken) return;
+        pauseController.setWarming(false);
         // The warm stalls also polluted the fps counter — restart the grace
         // clock so the adaptive scaler judges real playback frames only.
         adaptAfter = performance.now() + ADAPT_GRACE_MS;
       });
     } else {
+      pauseController.setWarming(false);
       applyStudioScene(studio, scene, compileOpts);
     }
   }
@@ -412,7 +467,7 @@ export function createFigure({
     if (
       loading &&
       !loading.classList.contains('done') &&
-      !deckWarming &&
+      !pauseController.warming &&
       studio.hasDrawn &&
       studio.hasDrawn()
     ) {
@@ -423,7 +478,7 @@ export function createFigure({
     // during the warm-up hold, whose clock is parked at ~0 anyway).
     if (!present && replayable) {
       const dur = studio.getSequenceDuration ? studio.getSequenceDuration() : 0;
-      const done = dur > 0 && t >= dur - 0.02 && !deckWarming;
+      const done = dur > 0 && t >= dur - 0.02 && !pauseController.warming;
       if (done !== replayShown) {
         replayShown = done;
         replayBtn.style.opacity = done ? '1' : '0';
