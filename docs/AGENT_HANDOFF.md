@@ -3,11 +3,18 @@
 > **Why this file exists.** The working agent's persistent memory lives **outside the repo**
 > (`~/.claude/projects/.../memory/`) and does **not** sync via git. The owner rotates machines
 > between Bangkok visits, so this doc carries the durable, code-not-derivable context forward.
-> A fresh agent on a new machine should read this first. Last updated **2026-06-23**.
+> A fresh agent on a new machine should read this first. Last updated **2026-06-23**;
+> **capability catalog (§0.5) + staleness banner added 2026-07-21.**
 >
 > This is a **curated** brief, not a dump. It captures decisions, rules, state, and pointers —
 > not things you can read from the code or `git log`. When in doubt, the code + `docs/STATUS.md`
 > are the source of truth for *what exists*; this file is the source of truth for *why* and *what's next*.
+>
+> ⚠️ **STALENESS (2026-07-21):** §3 "current state" and §4/§7 are frozen at the sphere-fill-gauge
+> (#134, late June) era. Since then, at least: **Theater v2** (#377, "the fighting camera", replaces
+> the #119 landing described in §3); **Present 2D end → ~S101** (#376); **4D SDF work** (`apps/fourd/`
+> + a duoprism generator) which is **absent below**. Trust this file for *why/rules/architecture*;
+> for *what's current* use §0.5 + the code + `git log`.
 
 ---
 
@@ -23,7 +30,41 @@
   this app (identity inverted: engine exists for Present). See §5.
 - **Dev server:** from `sdf-js/sdf-js/`, run `python3 dev-server.py 8001` (port 8001, `Cache-Control: no-store`).
   Visual verify via Playwright MCP (or `/browse`) at `http://127.0.0.1:8001/...` — **not** by asking the
-  user for screenshots.
+  user for screenshots. ⚠️ Multiple clones exist on the Mac (`~/dev/sdf-js`, `~/Documents/…`); a stray
+  server can serve a *different* clone than you're editing — confirm its cwd. Repo root on the Mac is
+  `~/dev/sdf-js` (the §16 `c:\altas\sdf-js` path is the old Windows machine).
+
+---
+
+## 0.5 Capability catalog (2026-07-21 — the full "what can we build" map)
+
+Core framing: **start from SDF (2D/3D/4D) → what can we build.** SDF is the engine/form-axis;
+**Present is the product.** Everything is **static + BYOK** (browser → `api.anthropic.com` directly,
+no backend); live at **https://shaun8149.github.io/sdf-js/** (Pages from `main` root, no build).
+Nested paths: apps `sdf-js/apps/`, examples `sdf-js/examples/`, engine `sdf-js/src/`.
+
+**Engine core (form axis).** 2D SDF library (`src/sdf/sdf2.glsl.js`) · 3D SDF raymarch (`src/render/studio.js`,
+PBR, 10 material kinds; +7 other renderers) · **4D SDF** (`apps/fourd/` — hypersphere/tesseract/duocylinder
++ a **duoprism generator**: any 2D SDF × any 2D SDF = a 4D body; square×square=tesseract, circle×circle=duocylinder).
+The engine is **dimension-agnostic** — same ops in 2D/3D/4D (this is the thesis, made literal).
+
+**Generation (LLM writes the world as code).** text→2D SDF illustration (`examples/mvp/`, Compositor Text tab)
+· text→3D SDF "lift" + WASD fly (Compositor) · deterministic chart 2D→3D lift (`src/scene/lift-2d-to-3d.js`, NO key).
+
+**THE PRODUCT — Atlas Present.** text → **IR** (`src/scene/text-to-ir.js`, 5 structures) → forks:
+- **text → 2D deck / "PPT"** ⭐ `apps/present/author-2d.html` — quick 3-5p / full 10-20p, **exports PPTX+PDF**,
+  `?demo=1` = no-key demo. *The capability the owner most wants exposed for others to use.*
+- **text → 3D spatial world / "video"** `apps/present/author.html` — `assembleDeck`, one continuous world,
+  camera flies between stations, presenter mode.
+- 2D deck → 3D handoff (`deck.json` contract), prebuilt deck player, `figure.html` viewer.
+
+**Showcase / no-key surfaces.** **Theater / 放映厅** ⭐ (`apps/present/landing/`, three.js, Theater v2 #377 —
+cinematic screening room, live-shader screen, clickable hero-deck posters → fly in; three.js QUARANTINED here
+only; **candidate homepage**) · Live gallery (Compositor Scenes tab) · 4D toy (`apps/fourd/`) · art-style demos
+(`examples/sdf/`) · Compositor (`examples/compositor/`, flagship multi-tab app).
+
+**Gap (2026-07-21):** the public entry only redirects to the Compositor. No front door surfaces Present /
+Theater / 4D. Direction: polish the Theater into the homepage, other capabilities as a menu.
 
 ---
 
