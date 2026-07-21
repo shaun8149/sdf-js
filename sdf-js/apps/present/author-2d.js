@@ -187,6 +187,31 @@ async function adoptDeck(deck, note) {
   if (note) setStatus(note);
 }
 
+async function restoreDeckAfterGenerateFailure(error) {
+  const msg = error?.message || String(error);
+  if (!currentDeck) {
+    exportPptxEl.disabled = true;
+    exportPdfEl.disabled = true;
+    saveEl.disabled = true;
+    syncThemeSelect();
+    syncProvenance();
+    setStatus(msg, true);
+    return;
+  }
+
+  try {
+    await renderDeck(currentDeck);
+    exportPptxEl.disabled = false;
+    exportPdfEl.disabled = false;
+    saveEl.disabled = false;
+    syncThemeSelect();
+    syncProvenance();
+    setStatus(`${msg} — previous deck restored; exports still available`, true);
+  } catch (restoreError) {
+    setStatus(`${msg}; failed to restore previous deck: ${restoreError.message}`, true);
+  }
+}
+
 saveEl.addEventListener('click', () => {
   if (!currentDeck) return;
   const blob = new Blob([JSON.stringify(serializeDeck(currentDeck), null, 1)], {
@@ -814,7 +839,7 @@ async function generate() {
     );
     autosave();
   } catch (e) {
-    setStatus(e.message, true);
+    await restoreDeckAfterGenerateFailure(e);
   } finally {
     goEl.disabled = false;
   }
