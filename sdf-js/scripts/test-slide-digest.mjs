@@ -153,6 +153,17 @@ console.log('=== slide-digest: deterministic anti-fabrication layer ===\n');
   );
   // clean JSON untouched
   ok(parseJsonLoose('x {"a": "b\\"c", "d": 1} y').a === 'b"c', 'escaped quotes still parse');
+  // multi-chart pages: a top-level ARRAY of IRs parses as an array (p27
+  // revenue columns + share pie = two stations from one page)
+  const arr = parseJsonLoose('prose first\n[{"structure":"magnitude"},{"structure":"proportion"}]');
+  ok(
+    Array.isArray(arr) && arr.length === 2 && arr[1].structure === 'proportion',
+    'top-level IR array parses (multi-chart page)',
+  );
+  ok(
+    !Array.isArray(parseJsonLoose('note [read图] first {"structure":"hold","x":[1,2]}')),
+    'bracket inside prose does not hijack an object response',
+  );
   // arity: 11 values, 6 labels → labels padded, values sacred
   const r = repairArity({ structure: 'magnitude', nodes: ['a', 'b'], magnitude: [1, 2, 3, 4] });
   ok(

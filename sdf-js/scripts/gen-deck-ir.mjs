@@ -178,20 +178,25 @@ async function main() {
   const wipeCache = FORCE && ONLY == null;
   const cache =
     existsSync(CACHE_PATH) && !wipeCache ? JSON.parse(readFileSync(CACHE_PATH, 'utf8')) : {};
-  const irs = [];
+  // Per-page slots are ARRAYS: a two-chart page (p27's revenue columns +
+  // share pie) yields two stations from one page. Old caches stored a bare
+  // object — wrap on read for compatibility.
+  const asList = (slot) => (Array.isArray(slot) ? slot : slot ? [slot] : null);
+  const pageIrs = [];
   for (let i = 0; i < slides.length; i++) {
     if (ONLY != null && i !== ONLY) {
-      irs.push(cache[i] || null);
+      pageIrs.push(asList(cache[i]));
       continue;
     }
     const forceThis = FORCE && (ONLY == null || i === ONLY);
     if (cache[i] && !forceThis) {
-      irs.push(cache[i]);
-      console.log(`  [${i}] cached (${cache[i].structure})`);
+      const cached = asList(cache[i]);
+      pageIrs.push(cached);
+      console.log(`  [${i}] cached (${cached.map((x) => x.structure).join('+')})`);
       continue;
     }
     const imageBase64 = pageImage(i);
-    const { ir: extracted, demoted } = await extractSlideIR({
+    const { irs: extractedList, demoted } = await extractSlideIR({
       slide: slides[i],
       index: i,
       callLLM: ({ system, user, maxTokens, temperature }) =>
@@ -200,39 +205,47 @@ async function main() {
       halves: pageHalves(i),
       chrome,
     });
-    let ir = extracted;
-    if (!ir) {
+    let list = extractedList;
+    if (!list || list.length === 0) {
       // Deterministic fallback keeps the deck buildable; flagged for review.
-      ir = {
-        structure: 'hold',
-        title: slides[i].title || `第 ${i + 1} 页`,
-        nodes: [],
-        needsReview: true,
-      };
+      list = [
+        {
+          structure: 'hold',
+          title: slides[i].title || `第 ${i + 1} 页`,
+          nodes: [],
+          needsReview: true,
+        },
+      ];
       console.log(`  [${i}] FELL BACK to bare hold (needsReview)`);
     }
     if (demoted) console.log(`  [${i}] chart+needsReview → demoted to hold (no fabricated series)`);
-    // An image station with an unknown path gets the baked page render,
-    // copied into the standard scenes/assets/<deck>/ home (wild corpus
-    // finding: "PLACEHOLDER" shipped verbatim and 404'd in the player).
-    if (ir.structure === 'image' && (!ir.image || ir.image === 'PLACEHOLDER') && IMAGES_DIR) {
-      const pageFile = `page-${String(i + 1).padStart(2, '0')}.png`;
-      const src = `${IMAGES_DIR}/${pageFile}`;
-      if (existsSync(src)) {
-        const assetDir = `${REPO}sdf-js/scenes/assets/${NAME}`;
-        mkdirSync(assetDir, { recursive: true });
-        writeFileSync(`${assetDir}/${pageFile}`, readFileSync(src));
-        ir.image = `assets/${NAME}/${pageFile}`;
-        console.log(`  [${i}] image PLACEHOLDER → ${ir.image}`);
+    for (const ir of list) {
+      // every station knows its source page even when the model forgot
+      if (!ir.callout) ir.callout = {};
+      if (!ir.callout.sourcePage) ir.callout.sourcePage = i + 1;
+      // An image station with an unknown path gets the baked page render,
+      // copied into the standard scenes/assets/<deck>/ home (wild corpus
+      // finding: "PLACEHOLDER" shipped verbatim and 404'd in the player).
+      if (ir.structure === 'image' && (!ir.image || ir.image === 'PLACEHOLDER') && IMAGES_DIR) {
+        const pageFile = `page-${String(i + 1).padStart(2, '0')}.png`;
+        const src = `${IMAGES_DIR}/${pageFile}`;
+        if (existsSync(src)) {
+          const assetDir = `${REPO}sdf-js/scenes/assets/${NAME}`;
+          mkdirSync(assetDir, { recursive: true });
+          writeFileSync(`${assetDir}/${pageFile}`, readFileSync(src));
+          ir.image = `assets/${NAME}/${pageFile}`;
+          console.log(`  [${i}] image PLACEHOLDER → ${ir.image}`);
+        }
       }
     }
-    irs.push(ir);
-    cache[i] = ir;
+    pageIrs.push(list);
+    cache[i] = list.length === 1 ? list[0] : list;
     writeFileSync(CACHE_PATH, JSON.stringify(cache, null, 1));
     console.log(
-      `  [${i}] ${ir.structure}${ir.form ? `·${ir.form}` : ''} "${(ir.title || '').slice(0, 36)}"`,
+      `  [${i}] ${list.map((ir) => `${ir.structure}${ir.form ? `·${ir.form}` : ''}`).join(' + ')} "${(list[0].title || '').slice(0, 36)}"${list.length > 1 ? ` (${list.length} stations from one page)` : ''}`,
     );
   }
+  const irs = pageIrs.flat().filter(Boolean);
   if (ONLY != null) {
     console.log('(--only run: cache updated, deck not assembled)');
     console.log(`cost so far: $${totalCost.toFixed(2)}`);
