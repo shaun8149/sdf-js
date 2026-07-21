@@ -3,137 +3,181 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>sdf-js</title>
+    <title>sdf-js · art &amp; experiments</title>
     <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
     <div class="page">
       <nav class="topnav">
         <a class="brand" href="./index.html">sdf-js</a>
+        <a href="../apps/present/landing/index.html">← home</a>
         <a href="https://github.com/shaun8149/sdf-js" target="_blank">source</a>
       </nav>
 
-      <h1><em>Composable</em> signed distance functions.</h1>
+      <h1><em>Generative</em> work, in signed distance fields.</h1>
       <p class="tagline">
-        A JavaScript port and extension of <a href="https://github.com/fogleman/sdf">fogleman/sdf</a>.
-        Form, generator, render — orthogonal layers meeting through
-        <code>(x, y) → number</code>. SDF is one such field; Perlin noise and proto field are siblings.
+        The playground behind Atlas — the generative renderer <strong>BOB</strong>, a shelf of
+        art-style renders, and LLM-written sketches, all built on the same form language:
+        <code>(x, y) → number</code>. Not the product; the play.
       </p>
 
-      <h2>Form</h2>
+      <h2>BOB &amp; generative</h2>
       <p class="layer-note">
-        SDF primitives, booleans, transforms; the algebra everything else consumes.
-        Sibling field families live in <code>field/</code> (Perlin noise, proto, combinators).
+        BOB — the generative GPU renderer — and the systems that feed it. Same seed, same world,
+        shareable by URL.
+      </p>
+      <ul class="work-list">
+        <li>
+          <span class="title"><a href="./sdf/autoscope-clone.html">autoscope · BOB</a></span>
+          <span class="desc"
+            >BOB GPU across six scene templates — city / sea / forest / village / city-axis /
+            abstract. Autoscope-style: same hash → same scene → a link you can share.</span
+          >
+        </li>
+        <li>
+          <span class="title"><a href="./sdf/scenedata-demo.html">scenedata-demo</a></span>
+          <span class="desc"
+            >Paste SceneData JSON → compile → BOB GPU. Sphere/ground, repetition + animation, and a
+            full autoscope-style scene (camera dolly, waves, hue-shifted shadow).</span
+          >
+        </li>
+        <li>
+          <span class="title"
+            ><a href="./sdf/shader-lambert-browser.html">shader-lambert-browser</a></span
+          >
+          <span class="desc"
+            >Fly through eight preset SDFs — WASD pointer-lock, compiled to WebGL Lambert at
+            60fps.</span
+          >
+        </li>
+      </ul>
+
+      <h2>Renderers &amp; art styles</h2>
+      <p class="layer-note">
+        One distance field, many hands. The same SDFs drawn as silhouette, brushstroke, sand,
+        hatching, and shader.
       </p>
       <ul class="work-list">
         <li>
           <span class="title"><a href="./sdf/render-showcase.html">render-showcase</a></span>
-          <span class="desc">Four renderers — silhouette, bands, sand, painted — over the same SDFs.</span>
-        </li>
-        <li>
-          <span class="title"><a href="./sdf/2d.html">2d</a></span>
-          <span class="desc">Distance-field visualisation: blue inside, red outside, periodic bands, zero-isoline.</span>
-        </li>
-        <li>
-          <span class="title"><a href="./sdf/3d.html">3d</a></span>
-          <span class="desc">Pure-JS raymarching grid; one chainable expression per panel.</span>
-        </li>
-        <li>
-          <span class="title"><a href="./compositor/">compositor · Atlas v0</a></span>
-          <span class="desc">M1 Atlas Compositor — 4-input-tab UI (text / generator / 2d-edit / 3d-edit) converging to SceneData v1 → shared renderer pool. Day 1 shell. text-tab will absorb MVP (Day 2), generator-tab will absorb autoscope-clone (Day 3).</span>
-        </li>
-        <li>
-          <span class="title"><a href="./mvp/">mvp · text → SDF</a></span>
-          <span class="desc">Type a prompt → Anthropic Claude writes JS SDF code → live render. 6 renderers × 5 patterns × 2D/3D selectable. SVG export. The flagship LLM-native creative app.</span>
-        </li>
-        <li>
-          <span class="title"><a href="./sdf/autoscope-clone.html">autoscope-clone</a></span>
-          <span class="desc">6 generative scene templates (city / sea / forest / village / city-axis / abstract) × BOB GPU shader. Erik Swahn Autoscope reimagined: same hash = same scene = shareable URL.</span>
-        </li>
-        <li>
-          <span class="title"><a href="./sdf/scenedata-demo.html">scenedata-demo</a></span>
-          <span class="desc">M0 validation: paste/load SceneData v1 JSON → compile() → BOB GPU. End-to-end proof the spec produces renderable scenes. 3 samples cover sphere/ground, rep+animation, full autoscope-style (camera dolly + waves + hue-shifted shadow).</span>
-        </li>
-        <li>
-          <span class="title"><a href="./sdf/shader-lambert-browser.html">shader-lambert-browser</a></span>
-          <span class="desc">Standalone Fly 3D scene browser — WASD pointer-lock + 8 preset SDFs compiled to WebGL Lambert at 60fps.</span>
+          <span class="desc"
+            >Four renderers — silhouette, bands, sand, painted — over the same SDFs. The overview
+            plate.</span
+          >
         </li>
         <li>
           <span class="title"><a href="./sdf/painted-scenes.html">painted-scenes</a></span>
-          <span class="desc">16 scenes rendered as gridded brushstrokes (Tyler Hobbs / kjetil-style). 2D + 3D via probe.</span>
+          <span class="desc"
+            >Sixteen scenes as gridded brushstrokes, in the lineage of Tyler Hobbs and kjetil
+            golid.</span
+          >
         </li>
         <li>
           <span class="title"><a href="./sdf/streamline-scenes.html">streamline-scenes</a></span>
-          <span class="desc">Contour-following hatching (2D analog of Pasma rayhatching) across 14 scenes.</span>
-        </li>
-        <li>
-          <span class="title"><a href="./sdf/test-pasma-capsules.html">test-pasma-capsules</a></span>
-          <span class="desc">Pasma-style 3D surface-aware rayhatching on SDF3 capsules — intensity-modulated dsep + region mask.</span>
+          <span class="desc">Contour-following hatching across fourteen scenes.</span>
         </li>
         <li>
           <span class="title"><a href="./sdf/scenes-sand.html">scenes-sand</a></span>
-          <span class="desc">Same scenes as sand-painting: cumulative random sampling, three-tier colouring.</span>
+          <span class="desc">Sand-painting: cumulative random sampling, three-tier colouring.</span>
         </li>
         <li>
-          <span class="title"><a href="./sdf/scenes-debug.html">scenes-debug</a></span>
-          <span class="desc">Silhouette debug view across all scenes; useful when authoring new SDFs.</span>
-        </li>
-        <li>
-          <span class="title"><a href="./sdf/llm-round1.html">llm-round1</a></span>
-          <span class="desc">LLM × SDF round 1 (minimal-context prompt): 7 scenes, bugs preserved as essay material.</span>
-        </li>
-        <li>
-          <span class="title"><a href="./sdf/test-torso.html">test-torso</a></span>
-          <span class="desc">Back-view female torso polygon. Toggle outline (shell+intersection) vs hatch (streamline).</span>
+          <span class="title"><a href="./sdf/test-pasma-capsules.html">pasma-capsules</a></span>
+          <span class="desc"
+            >Surface-aware 3D rayhatching on SDF capsules — intensity-modulated line spacing.</span
+          >
         </li>
         <li>
           <span class="title"><a href="./sdf/cactus-shader.html">cactus-shader</a></span>
-          <span class="desc">The cactus scene as a fragment shader — same SDF, GLSL compilation path.</span>
+          <span class="desc">The cactus scene compiled to a single GLSL fragment shader.</span>
         </li>
         <li>
           <span class="title"><a href="./sdf/cactus-sand-shader.html">cactus-sand-shader</a></span>
-          <span class="desc">Sand-painting style implemented entirely in a shader.</span>
+          <span class="desc">Sand-painting, done entirely in the shader.</span>
+        </li>
+        <li>
+          <span class="title"><a href="./sdf/test-torso.html">torso</a></span>
+          <span class="desc"
+            >A back-view torso in polygons — toggle outline against streamline hatch.</span
+          >
         </li>
       </ul>
 
-      <h2>Generator</h2>
+      <h2>LLM × SDF</h2>
       <p class="layer-note">
-        Discrete structure generators that consume an SDF as an <code>isInside</code> predicate.
+        A language model, asked for a short noun phrase, writing the scene as code. Some land, some
+        break beautifully.
+      </p>
+      <ul class="work-list">
+        <li>
+          <span class="title"><a href="./mvp/">text → SDF</a></span>
+          <span class="desc"
+            >Type a prompt → Claude writes JS SDF code → live render. Six renderers × five patterns,
+            2D/3D, SVG export.</span
+          >
+        </li>
+        <li>
+          <span class="title"><a href="./sdf/test-tree-v2.html">tree</a></span>
+          <span class="desc">Round two — a tree, written from a two-word prompt.</span>
+        </li>
+        <li>
+          <span class="title"><a href="./sdf/test-cathedral-v2.html">cathedral</a></span>
+          <span class="desc">Round two — arches and light.</span>
+        </li>
+        <li>
+          <span class="title"><a href="./sdf/test-butterfly-v2.html">butterfly</a></span>
+          <span class="desc">Round two — symmetry from a single word.</span>
+        </li>
+        <li>
+          <span class="title"><a href="./sdf/test-seurat-v2.html">seurat</a></span>
+          <span class="desc">Round two — pointillism, in distance fields.</span>
+        </li>
+        <li>
+          <span class="title"><a href="./sdf/llm-round1.html">round 1</a></span>
+          <span class="desc"
+            >The first pass — seven scenes, bugs kept as they were, as essay material.</span
+          >
+        </li>
+      </ul>
+
+      <h2>Fields, cellular, tiles</h2>
+      <p class="layer-note">
+        The other form families — Perlin noise, cellular automata, plotter tiles — in the lineage of
+        Harvey Rayner and Vera Molnár.
       </p>
       <ul class="work-list">
         <li>
           <span class="title"><a href="./ca/ca.html">ca</a></span>
-          <span class="desc">Cellular automaton (kjetil golid's Apparatus) running on any SDF; static.</span>
+          <span class="desc">kjetil golid's Apparatus, running on any SDF.</span>
         </li>
         <li>
           <span class="title"><a href="./ca/ca-animate.html">ca-animate</a></span>
-          <span class="desc">Scatter-then-assemble animation of the same CA grid.</span>
+          <span class="desc">The same grid, scattered then assembled.</span>
         </li>
-      </ul>
-
-      <h2>Flow</h2>
-      <p class="layer-note">
-        Streamline generators on scalar/vector fields. <code>field</code> as the form layer,
-        <code>streamline</code> as the path generator, <code>render.flowLines</code> as the renderer.
-      </p>
-      <ul class="work-list">
         <li>
           <span class="title"><a href="./flow/noise-curves.html">noise-curves</a></span>
-          <span class="desc">Perlin noise flow field + dense-packed streamlines. Phase A minimum pipeline.</span>
+          <span class="desc">A Perlin flow field, densely packed with streamlines.</span>
+        </li>
+        <li>
+          <span class="title"><a href="./tile/alice.html">alice</a></span>
+          <span class="desc"
+            >Proto field × line-clipped tile fill × generative palette, oscillating through a
+            stereographic projection.</span
+          >
+        </li>
+        <li>
+          <span class="title"><a href="./sdf/2d.html">2d</a></span>
+          <span class="desc">The raw distance field — blue inside, red outside, banded.</span>
+        </li>
+        <li>
+          <span class="title"><a href="./sdf/3d.html">3d</a></span>
+          <span class="desc">Pure-JS raymarching, one chainable expression per panel.</span>
         </li>
       </ul>
 
-      <h2>Tile</h2>
-      <p class="layer-note">
-        Halftone / plotter paradigm: regular grid, each cell drawn from field samples.
-        Lineage of Harvey Rayner, Vera Molnar.
+      <p class="tagline" style="margin-top: 56px">
+        Built on a JavaScript port of <a href="https://github.com/fogleman/sdf">fogleman/sdf</a>.
+        Form, generator, render — orthogonal layers meeting through <code>(x, y) → number</code>.
       </p>
-      <ul class="work-list">
-        <li>
-          <span class="title"><a href="./tile/alice.html">alice</a></span>
-          <span class="desc">Proto field × line-clipped tile fill × generative palette. Stereographic-projection oscillation.</span>
-        </li>
-      </ul>
     </div>
   </body>
 </html>
