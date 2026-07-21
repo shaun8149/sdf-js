@@ -76,11 +76,18 @@
         text-transform: uppercase;
         color: rgba(232, 234, 240, 0.5);
       }
-      #wval {
+      #wval,
+      #ngonAval,
+      #ngonBval {
         width: 44px;
         text-align: right;
         font-variant-numeric: tabular-nums;
         color: #9fc2ff;
+      }
+      #duo {
+        margin-top: 8px;
+        padding-top: 8px;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
       }
       #hud {
         position: fixed;
@@ -111,13 +118,36 @@
       <label>形状
         <select id="shape">
           <option value="0">超球 hypersphere</option>
-          <option value="1" selected>超立方 tesseract</option>
+          <option value="1">超立方 tesseract</option>
           <option value="2">对偶柱 duocylinder</option>
           <option value="3">球环 spheritorus</option>
           <option value="4">四维环 duotorus</option>
           <option value="5">布尔混合 blend</option>
+          <option value="6" selected>对偶棱柱 duoprism (A×B)</option>
         </select>
       </label>
+      <div id="duo">
+        <label>A 平面 xy
+          <select id="factorA">
+            <option value="0" selected>多边形 n-gon</option>
+            <option value="1">五角星 star</option>
+            <option value="2">齿轮 gear</option>
+            <option value="3">花 flower</option>
+            <option value="4">心 heart</option>
+          </select>
+        </label>
+        <label id="ngonArow">A 边数 <input id="ngonA" type="range" min="3" max="24" step="1" value="4" /><span id="ngonAval">4</span></label>
+        <label>B 平面 zw
+          <select id="factorB">
+            <option value="0" selected>多边形 n-gon</option>
+            <option value="1">五角星 star</option>
+            <option value="2">齿轮 gear</option>
+            <option value="3">花 flower</option>
+            <option value="4">心 heart</option>
+          </select>
+        </label>
+        <label id="ngonBrow">B 边数 <input id="ngonB" type="range" min="3" max="24" step="1" value="4" /><span id="ngonBval">4</span></label>
+      </div>
       <div class="row">
         <button id="mode0" class="on">3D 切片</button>
         <button id="mode1">厚投影</button>
@@ -135,7 +165,7 @@
       <div class="row"><button id="reset">复位</button></div>
     </div>
     <div id="hud">— fps</div>
-    <div id="hint">拖拽旋转视角 · 滚轮推拉 · xw/yw/zw 是第四维的三个旋转平面 · 厚投影按 w 深度着色</div>
+    <div id="hint">拖拽旋转视角 · 滚轮推拉 · 对偶棱柱 = 两个 2D 形状相乘成 4D · 把 A/B 边数从 4 滑到 ∞:看超立方体熔化成对偶柱</div>
     <script type="module" src="./fourd.js"></script>
   </body>
 </html>

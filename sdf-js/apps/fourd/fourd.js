@@ -35,6 +35,10 @@ uniform mat4  u_rot;    // 4D rotation (composition of the six plane rotations)
 uniform float u_w;      // slice height along the 4th axis
 uniform int   u_shape;
 uniform int   u_mode;   // 0 slice | 1 thick | 2 onion
+uniform int   u_factorA; // duoprism: 2D SDF factor in the xy-plane
+uniform int   u_factorB; // duoprism: 2D SDF factor in the zw-plane
+uniform float u_ngonA;   // side count when factor A is an n-gon (4=square … ∞=circle)
+uniform float u_ngonB;   // side count when factor B is an n-gon
 
 // ---- 4D primitives ----------------------------------------------------------
 float sdHypersphere(vec4 p, float r) { return length(p) - r; }
@@ -65,6 +69,70 @@ float smin(float a, float b, float k) {
   return mix(b, a, h) - k * h * (1.0 - h);
 }
 
+// ---- 2D SDF factors: each is one half of a duoprism ------------------------
+// The product of any two of these is a valid 4D body. The whole platform's
+// language→2D-SDF ability plugs in here — every shape you can draw is a factor.
+
+// regular n-gon by apothem r; n is a float so it can slide 3→∞ (∞ = circle).
+// exact Lipschitz-1 (intersection of half-planes) — the safe, headline factor.
+float sdNgon(vec2 p, float r, float n) {
+  n = max(n, 3.0);
+  float an = 3.14159265358979 / n; // half-sector
+  float a = atan(p.x, p.y);
+  a = mod(a + an, 2.0 * an) - an; // fold into one sector
+  return cos(a) * length(p) - r;
+}
+
+// iq's 5-point star (exact)
+float sdStar5(vec2 p, float r, float rf) {
+  const vec2 k1 = vec2(0.809016994375, -0.587785252292);
+  const vec2 k2 = vec2(-k1.x, k1.y);
+  p.x = abs(p.x);
+  p -= 2.0 * max(dot(k1, p), 0.0) * k1;
+  p -= 2.0 * max(dot(k2, p), 0.0) * k2;
+  p.x = abs(p.x);
+  p.y -= r;
+  vec2 ba = rf * vec2(-k1.y, k1.x) - vec2(0.0, 1.0);
+  float h = clamp(dot(p, ba) / dot(ba, ba), 0.0, r);
+  return length(p - ba * h) * sign(p.y * ba.x - p.x * ba.y);
+}
+
+// gear: a disc with teeth (radial modulation). Not exact — scaled to stay
+// a conservative under-estimate so the raymarch step is safe.
+float sdGear(vec2 p, float r, float teeth, float depth) {
+  float a = atan(p.y, p.x);
+  float sq = smoothstep(-0.25, 0.25, cos(teeth * a));
+  return (length(p) - (r + depth * sq)) * 0.55;
+}
+
+// flower: lobed disc — a soft-cornered rotational silhouette
+float sdFlower(vec2 p, float r, float petals) {
+  float a = atan(p.y, p.x);
+  return (length(p) - r * (0.72 + 0.28 * cos(petals * a))) * 0.6;
+}
+
+// iq's heart (exact), scaled to radius s
+float dot2(vec2 v) { return dot(v, v); }
+float sdHeart(vec2 q, float s) {
+  vec2 p = q / s;
+  p.y += 0.5;
+  p.x = abs(p.x);
+  float d;
+  if (p.y + p.x > 1.0) d = sqrt(dot2(p - vec2(0.25, 0.75))) - sqrt(2.0) / 4.0;
+  else
+    d = sqrt(min(dot2(p - vec2(0.0, 1.0)), dot2(p - 0.5 * max(p.x + p.y, 0.0)))) *
+        sign(p.x - p.y);
+  return d * s;
+}
+
+float sdFactor(int id, vec2 p, float n) {
+  if (id == 0) return sdNgon(p, 0.90, n);
+  if (id == 1) return sdStar5(p, 0.98, 0.45);
+  if (id == 2) return sdGear(p, 0.78, 9.0, 0.16);
+  if (id == 3) return sdFlower(p, 0.86, 5.0);
+  return sdHeart(p, 1.05);
+}
+
 float sd4(vec4 q) {
   vec4 p = u_rot * q;
   if (u_shape == 0) return sdHypersphere(p, 1.15);
@@ -72,6 +140,12 @@ float sd4(vec4 q) {
   if (u_shape == 2) return sdDuocylinder(p, 0.95, 0.95);
   if (u_shape == 3) return sdSpheritorus(p, 1.0, 0.34);
   if (u_shape == 4) return sdDuotorus(p, 0.85, 0.85, 0.28);
+  if (u_shape == 6) {
+    // duoprism: (2D shape in xy) × (2D shape in zw), glued by the box combinator
+    float du = sdFactor(u_factorA, p.xy, u_ngonA);
+    float dv = sdFactor(u_factorB, p.zw, u_ngonB);
+    return min(max(du, dv), 0.0) + length(max(vec2(du, dv), 0.0));
+  }
   // blend: a hypersphere orbiting THROUGH a tesseract in the w axis — the
   // union breathes as the sphere passes through the slice
   float a = sdTesseract(p, vec4(0.62), 0.05);
@@ -232,7 +306,20 @@ gl.enableVertexAttribArray(aPos);
 gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
 
 const U = {};
-for (const n of ['u_res', 'u_time', 'u_camPos', 'u_camTarget', 'u_rot', 'u_w', 'u_shape', 'u_mode'])
+for (const n of [
+  'u_res',
+  'u_time',
+  'u_camPos',
+  'u_camTarget',
+  'u_rot',
+  'u_w',
+  'u_shape',
+  'u_mode',
+  'u_factorA',
+  'u_factorB',
+  'u_ngonA',
+  'u_ngonB',
+])
   U[n] = gl.getUniformLocation(prog, n);
 
 // ---- 4D rotation: compose six plane rotations from absolute angles ------------
@@ -272,17 +359,46 @@ function rot4(angles) {
 
 // ---- state + UI ----------------------------------------------------------------
 const state = {
-  shape: 1,
+  shape: 6, // land in the duoprism — the new thing
   mode: 0,
   w: 0,
   wanim: false,
   speeds: [0, 0, 0, 0.25, 0, 0], // xw gently spinning by default — the 4D hello-world
   angles: [0, 0, 0, 0, 0, 0],
+  factorA: 0, // n-gon
+  factorB: 0, // n-gon
+  ngonA: 4, // square × square = tesseract; slide toward ∞ to melt into duocylinder
+  ngonB: 4,
   cam: { yaw: 0.6, pitch: 0.35, dist: 5.2 },
 };
 
 const $ = (id) => document.getElementById(id);
-$('shape').onchange = (e) => (state.shape = Number(e.target.value));
+// factor 0 is the n-gon; only then is the side-count slider meaningful
+const syncDuoUI = () => {
+  $('duo').style.display = state.shape === 6 ? 'block' : 'none';
+  $('ngonArow').style.display = state.shape === 6 && state.factorA === 0 ? 'flex' : 'none';
+  $('ngonBrow').style.display = state.shape === 6 && state.factorB === 0 ? 'flex' : 'none';
+};
+$('shape').onchange = (e) => {
+  state.shape = Number(e.target.value);
+  syncDuoUI();
+};
+$('factorA').onchange = (e) => {
+  state.factorA = Number(e.target.value);
+  syncDuoUI();
+};
+$('factorB').onchange = (e) => {
+  state.factorB = Number(e.target.value);
+  syncDuoUI();
+};
+$('ngonA').oninput = (e) => {
+  state.ngonA = Number(e.target.value);
+  $('ngonAval').textContent = state.ngonA >= 24 ? '∞' : String(state.ngonA);
+};
+$('ngonB').oninput = (e) => {
+  state.ngonB = Number(e.target.value);
+  $('ngonBval').textContent = state.ngonB >= 24 ? '∞' : String(state.ngonB);
+};
 for (const m of [0, 1, 2])
   $(`mode${m}`).onclick = () => {
     state.mode = m;
@@ -306,6 +422,7 @@ $('reset').onclick = () => {
   $('w').value = '0';
   ['rxy', 'rxz', 'ryz', 'rxw', 'ryw', 'rzw'].forEach((id) => ($(id).value = '0'));
 };
+syncDuoUI();
 
 // orbit camera
 let dragging = false;
@@ -375,6 +492,10 @@ function frame(now) {
   gl.uniform1f(U.u_w, state.w);
   gl.uniform1i(U.u_shape, state.shape);
   gl.uniform1i(U.u_mode, state.mode);
+  gl.uniform1i(U.u_factorA, state.factorA);
+  gl.uniform1i(U.u_factorB, state.factorB);
+  gl.uniform1f(U.u_ngonA, state.ngonA >= 24 ? 200.0 : state.ngonA);
+  gl.uniform1f(U.u_ngonB, state.ngonB >= 24 ? 200.0 : state.ngonB);
   gl.drawArrays(gl.TRIANGLES, 0, 3);
 
   frames++;
