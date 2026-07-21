@@ -28,11 +28,13 @@ export function attachPresenter({ studio, scene, script = null }) {
         // punch-in (if it has one) — the punchline stays in the presenter's
         // hand; stations without a super go straight to their payoff.
         idx = beats.findIndex((b) => b.station === span.station && b.kind === 'pre-super');
-        if (idx < 0) idx = beats.findIndex((b) => b.station === span.station && b.kind === 'station');
+        if (idx < 0)
+          idx = beats.findIndex((b) => b.station === span.station && b.kind === 'station');
       } else {
         // super span: fire the punch-in (its boundary is the punch's end)
         idx = beats.findIndex((b) => b.station === span.station && b.kind === span.kind);
-        if (idx < 0) idx = beats.findIndex((b) => b.station === span.station && b.kind === 'station');
+        if (idx < 0)
+          idx = beats.findIndex((b) => b.station === span.station && b.kind === 'station');
       }
       if (idx < 0) {
         console.warn('[presenter] span has no beat, holding:', span);
