@@ -261,6 +261,14 @@
       <div class="brand">ATLAS·PRESENT</div>
       <div class="bar"></div>
     </div>
+    <script>
+      (() => {
+        const reveal = () => document.getElementById('loading')?.classList.add('done');
+        window.addEventListener('error', reveal, { once: true });
+        window.addEventListener('unhandledrejection', reveal, { once: true });
+        window.setTimeout(reveal, 8000);
+      })();
+    </script>
     <script type="module" src="./landing.js"></script>
   </body>
 </html>
