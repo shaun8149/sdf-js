@@ -16,6 +16,7 @@ import { Reflector } from 'https://esm.sh/three@0.160.0/examples/jsm/objects/Ref
 import { EffectComposer } from 'https://esm.sh/three@0.160.0/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'https://esm.sh/three@0.160.0/examples/jsm/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'https://esm.sh/three@0.160.0/examples/jsm/postprocessing/UnrealBloomPass.js';
+import { BokehPass } from 'https://esm.sh/three@0.160.0/examples/jsm/postprocessing/BokehPass.js';
 import { ShaderPass } from 'https://esm.sh/three@0.160.0/examples/jsm/postprocessing/ShaderPass.js';
 import { OutputPass } from 'https://esm.sh/three@0.160.0/examples/jsm/postprocessing/OutputPass.js';
 
@@ -68,7 +69,8 @@ renderer.toneMappingExposure = 1.0;
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x04060a);
-scene.fog = new THREE.FogExp2(0x05080e, 0.008);
+// thicker air → the screen's light physically FILLS the room (volumetric feel)
+scene.fog = new THREE.FogExp2(0x060a12, 0.019);
 
 const camera = new THREE.PerspectiveCamera(40, W() / H(), 0.1, 200);
 camera.position.set(0.8, 2.4, 17); // starts FAR — slowly dollies toward the screen
@@ -258,6 +260,38 @@ for (const [x, z, s] of [
   scene.add(crate);
 }
 
+// ---- dust motes: fine particles adrift in the screen's light -----------------
+// Denser toward the screen (where the light pools). Additive + no depth-write so
+// they read as glints of light, not solid specks. This is the "alive air" that a
+// dry CineShader room lacks.
+const DUST_N = 900;
+const dustPos = new Float32Array(DUST_N * 3);
+const dustPhase = new Float32Array(DUST_N);
+for (let i = 0; i < DUST_N; i++) {
+  // bias z toward the screen (BACK) with a squared random → more motes in the glow
+  const zt = Math.pow(Math.random(), 1.7);
+  dustPos[i * 3 + 0] = (Math.random() * 2 - 1) * 8.5;
+  dustPos[i * 3 + 1] = Math.random() * (ROOM_H - 0.5) + 0.25;
+  dustPos[i * 3 + 2] = BACK + 1.5 + zt * (ROOM_D * 0.7);
+  dustPhase[i] = Math.random() * Math.PI * 2;
+}
+const dustGeo = new THREE.BufferGeometry();
+dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPos, 3));
+const dust = new THREE.Points(
+  dustGeo,
+  new THREE.PointsMaterial({
+    color: 0xbcd6ff,
+    size: 0.045,
+    sizeAttenuation: true,
+    transparent: true,
+    opacity: 0.55,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+    fog: true,
+  }),
+);
+scene.add(dust);
+
 // ---- Sprint 23: poster wall (right-side wall, 3 hero decks) ----------------
 // Movie-poster planes (2.4 × 1.5, 8:5). Positioned on the RIGHT wall spaced along
 // z, angled ~30° toward the camera (which hugs the left wall). Each carries a
@@ -355,8 +389,48 @@ scene.add(new THREE.HemisphereLight(0x40597a, 0x080c12, 1.7)); // room (incl. si
 // ---- post: bloom + grade --------------------------------------------------
 const composer = new EffectComposer(renderer);
 composer.addPass(new RenderPass(scene, camera));
+// depth of field: the screen (and its wall) stay crisp; foreground pillars, floor
+// edge and far corners fall soft — the single biggest "filmic camera" cue.
+const bokeh = new BokehPass(scene, camera, { focus: 19.0, aperture: 0.00062, maxblur: 0.014 });
+composer.addPass(bokeh);
 composer.addPass(new UnrealBloomPass(new THREE.Vector2(W(), H()), 0.62, 0.72, 0.82));
 composer.addPass(new OutputPass());
+
+// ---- volumetric god-rays: light shafts stream out of the bright screen -------
+// Crepuscular rays — march each pixel toward the screen's screen-space position,
+// accumulating only bright samples (the screen). Through the dusty haze this
+// reads as beams of light filling the room. The shot a dry CineShader can't do.
+const SCREEN_CENTER = new THREE.Vector3(0, SCREEN_Y, BACK);
+const godrays = new ShaderPass({
+  uniforms: {
+    tDiffuse: { value: null },
+    uLightPos: { value: new THREE.Vector2(0.5, 0.6) },
+    uStrength: { value: 0.72 },
+  },
+  vertexShader:
+    'varying vec2 vUv; void main(){ vUv=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0); }',
+  fragmentShader: `
+    uniform sampler2D tDiffuse; uniform vec2 uLightPos; uniform float uStrength; varying vec2 vUv;
+    void main(){
+      vec3 base = texture2D(tDiffuse, vUv).rgb;
+      const int N = 48;
+      vec2 delta = (vUv - uLightPos) / float(N) * 0.92;
+      vec2 coord = vUv;
+      float illum = 1.0;
+      vec3 rays = vec3(0.0);
+      for(int i=0;i<N;i++){
+        coord -= delta;
+        vec3 s = texture2D(tDiffuse, coord).rgb;
+        float luma = dot(s, vec3(0.299,0.587,0.114));
+        s *= smoothstep(0.55, 0.95, luma);   // only the bright screen throws light
+        rays += s * illum;
+        illum *= 0.955;                        // decay along the shaft
+      }
+      rays *= uStrength / float(N);
+      gl_FragColor = vec4(base + rays * vec3(0.86, 0.94, 1.12), 1.0); // cool-tinted beams
+    }`,
+});
+composer.addPass(godrays);
 const gradePass = new ShaderPass({
   uniforms: { tDiffuse: { value: null }, uTime: { value: 0 } },
   vertexShader:
@@ -389,12 +463,12 @@ let speed = 0;
 let enterProg = 0;
 let introStart = 0;
 let lastT = performance.now() * 0.001;
-const CAM_HOLD_Z = 5.5,
+const CAM_HOLD_Z = 6.8, // pulled back for the wider lens
   ENTER_Z = BACK + 3.0,
   IDLE_SPEED = 0.6,
   ENTER_SPEED = 12,
-  OBLIQUE_X = -6.0; // camera hugs the left wall → side wall + pillars frame the shot
-const lookAt = new THREE.Vector3(0, SCREEN_Y - 0.5, BACK);
+  OBLIQUE_X = -6.6; // camera hugs the left wall → side wall + pillars frame the shot
+const lookAt = new THREE.Vector3(0, SCREEN_Y - 0.2, BACK); // look slightly UP → the screen looms
 const logoEl = document.getElementById('enter-logo');
 
 function animate() {
@@ -442,11 +516,21 @@ function animate() {
   const obliqueX = OBLIQUE_X + Math.sin(time * 0.11) * 0.5;
   camera.position.x = obliqueX * (1 - enterProg);
   camera.position.y =
-    2.5 + (SCREEN_Y - 2.5) * enterProg + Math.sin(time * 0.09) * 0.1 * (1 - enterProg);
+    2.1 + (SCREEN_Y - 2.1) * enterProg + Math.sin(time * 0.09) * 0.1 * (1 - enterProg);
   camera.position.z = camZ;
-  camera.fov = 40 - enterProg * 8;
+  camera.fov = 46 - enterProg * 12; // wider lens → deeper perspective, screen looms
   camera.updateProjectionMatrix();
   camera.lookAt(lookAt);
+
+  // dust drifts gently through the light; keep the screen in focus as we dolly
+  dust.rotation.y = time * 0.008;
+  dust.position.y = Math.sin(time * 0.1) * 0.12;
+  bokeh.uniforms['focus'].value = camera.position.distanceTo(lookAt);
+
+  // steer the god-rays from the screen's current screen-space position
+  const sp = SCREEN_CENTER.clone().project(camera);
+  godrays.uniforms.uLightPos.value.set(sp.x * 0.5 + 0.5, sp.y * 0.5 + 0.5);
+
   composer.render();
   // once the room + the screen's renderer have a few frames up, reveal the page
   if (loadingEl && ++bootFrames === 14) loadingEl.classList.add('done');
