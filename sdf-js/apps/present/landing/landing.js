@@ -160,7 +160,39 @@ const fxMat = new THREE.ShaderMaterial({
 });
 fxScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), fxMat));
 
-const screenMat = new THREE.MeshBasicMaterial({ map: shaderRT.texture });
+// The screen isn't a flat texture — it's a physical LCD panel: a fine pixel /
+// RGB-subpixel grid (visible as the camera dollies in), backlight edge falloff,
+// and a soft glass sheen. The pixels foreshorten with the panel's angle, so it
+// reads as a real lit surface in the room.
+const screenMat = new THREE.ShaderMaterial({
+  uniforms: {
+    map: { value: shaderRT.texture },
+    uGrid: { value: new THREE.Vector2(168, 94) }, // pixel grid (16:9-ish)
+  },
+  vertexShader:
+    'varying vec2 vUv; void main(){ vUv=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0); }',
+  fragmentShader: `
+    uniform sampler2D map; uniform vec2 uGrid; varying vec2 vUv;
+    void main(){
+      vec3 col = texture2D(map, vUv).rgb;
+      // pixel grid: faint dark gaps between cells
+      vec2 g = fract(vUv * uGrid);
+      float lx = smoothstep(0.0, 0.12, g.x) * smoothstep(1.0, 0.88, g.x);
+      float ly = smoothstep(0.0, 0.12, g.y) * smoothstep(1.0, 0.88, g.y);
+      col *= mix(0.84, 1.0, lx * ly);
+      // RGB subpixel columns (subtle — blurs to neutral at distance)
+      float s = mod(floor(vUv.x * uGrid.x * 3.0), 3.0);
+      vec3 sub = vec3(s < 0.5 ? 1.0 : 0.6, (s >= 0.5 && s < 1.5) ? 1.0 : 0.6, s >= 1.5 ? 1.0 : 0.6);
+      col *= mix(vec3(1.0), sub, 0.09);
+      // backlight edge falloff
+      vec2 e = abs(vUv - 0.5) * 2.0;
+      col *= 1.0 - smoothstep(0.84, 1.0, max(e.x, e.y)) * 0.22;
+      // soft glass sheen across the panel surface
+      float sheen = smoothstep(0.5, 0.0, abs(vUv.x - vUv.y * 0.55 - 0.2));
+      col += sheen * 0.035 * vec3(0.72, 0.84, 1.0);
+      gl_FragColor = vec4(col, 1.0);
+    }`,
+});
 const SCREEN_W = 12.8,
   SCREEN_H = 7.2,
   SCREEN_Y = 3.7;
