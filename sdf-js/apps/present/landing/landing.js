@@ -169,7 +169,7 @@ const SCREEN_FRAG = `
   vec3 getNormal(vec3 p,float eps){ vec3 n; n.y=map_detailed(p); n.x=map_detailed(vec3(p.x+eps,p.y,p.z))-n.y; n.z=map_detailed(vec3(p.x,p.y,p.z+eps))-n.y; n.y=eps; return normalize(n); }
   float heightMapTracing(vec3 ori,vec3 dir,out vec3 p){ float tm=0.0; float tx=1000.0; float hx=map(ori+dir*tx); if(hx>0.0){ p=ori+dir*tx; return tx; } float hm=map(ori); float tmid=0.0; for(int i=0;i<NUM_STEPS;i++){ tmid=mix(tm,tx,hm/(hm-hx)); p=ori+dir*tmid; float hmid=map(p); if(hmid<0.0){ tx=tmid; hx=hmid; } else { tm=tmid; hm=hmid; } } return tmid; }
   vec3 getPixel(in vec2 coord, float time){ vec2 uv=coord/iResolution.xy; uv=uv*2.0-1.0; uv.x*=iResolution.x/iResolution.y; vec3 ang=vec3(sin(time*3.0)*0.1,sin(time)*0.2+0.3,time); vec3 ori=vec3(0.0,3.5,time*5.0); vec3 dir=normalize(vec3(uv.xy,-2.0)); dir.z+=length(uv)*0.14; dir=normalize(dir)*fromEuler(ang); vec3 p; heightMapTracing(ori,dir,p); vec3 dist=p-ori; vec3 n=getNormal(p,dot(dist,dist)*(0.1/iResolution.x)); vec3 light=normalize(vec3(0.0,1.0,0.8)); return mix(getSkyColor(dir),getSeaColor(p,n,light,dir,dist),pow(smoothstep(0.0,-0.02,dir.y),0.2)); }
-  void main(){ vec2 fragCoord=vUv*iResolution.xy; float time=iTime*0.3; vec3 color=max(getPixel(fragCoord,time), 0.0); color=pow(color,vec3(0.66)); color*=1.02; float mx=max(color.r,max(color.g,color.b)); color=mix(color, vec3(mx), smoothstep(0.8,1.08,mx)*0.85); gl_FragColor=vec4(clamp(color,0.0,1.0),1.0); }`;
+  void main(){ vec2 fragCoord=vUv*iResolution.xy; float time=iTime*0.3; vec3 color=max(getPixel(fragCoord,time), 0.0); color=pow(color,vec3(0.66)); color*=1.02; float mx=max(color.r,max(color.g,color.b)); color=mix(color, vec3(mx), smoothstep(0.8,1.08,mx)*0.85); color*=mix(1.0, 0.62, smoothstep(0.5, 1.0, vUv.y)); gl_FragColor=vec4(clamp(color,0.0,1.0),1.0); }`;
 // Render the screen shader ONCE per frame to a fixed low-res offscreen target —
 // cost is independent of screen size / DPR. The screen (and the 片头) then just
 // sample this texture (cheap). This is the pattern for ANY renderer on the screen.
@@ -420,7 +420,7 @@ composer.addPass(new RenderPass(scene, camera));
 // edge and far corners fall soft — the single biggest "filmic camera" cue.
 const bokeh = new BokehPass(scene, camera, { focus: 19.0, aperture: 0.00062, maxblur: 0.014 });
 composer.addPass(bokeh);
-composer.addPass(new UnrealBloomPass(new THREE.Vector2(W(), H()), 0.62, 0.72, 0.82));
+composer.addPass(new UnrealBloomPass(new THREE.Vector2(W(), H()), 0.46, 0.72, 0.86));
 composer.addPass(new OutputPass());
 
 // ---- volumetric god-rays: light shafts stream out of the bright screen -------
@@ -535,16 +535,22 @@ function animate() {
     // steadicam: a slow arc around the viewer at human eye height. The figure's
     // silhouette drifts across the bright screen as the angle changes — the shot
     // reads as a real camera moving through the room, not a static webpage.
-    const sweep = Math.sin(time * 0.09) * 0.34; // gentle arc — figure stays on the bright screen
-    const rad = 8.8 + Math.sin(time * 0.06) * 1.5; // emphasize dolly (depth) over a wide swing
+    // varied shots without ever throwing the figure off the screen: the lateral
+    // arc stays gentle, but the DOLLY (near intimate ↔ far establishing) and the
+    // CRANE (low looking up ↔ high looking down) swing widely — different angles
+    // on the same viewer + screen, like a real camera working the room.
+    const sweep = Math.sin(time * 0.08) * 0.32;
+    const rad = 8.6 + Math.sin(time * 0.045) * 2.6; // dolly: close-up ↔ wide establishing
+    const camY = 1.55 + Math.sin(time * 0.063) * 0.85; // crane: low ↔ high
     camera.position.set(
       FIGURE_POS.x + Math.sin(sweep) * rad + 0.2,
-      1.7 + Math.sin(time * 0.11) * 0.5, // eye height, gentle rise / fall
-      FIGURE_POS.z + Math.cos(sweep) * rad + 1.2, // on the viewer's side of the figure
+      camY,
+      FIGURE_POS.z + Math.cos(sweep) * rad + 1.2,
     );
     camera.fov = 40;
     clickFrom.copy(camera.position); // ready for an instant fly-in
-    lookNow.set(FIGURE_POS.x * 0.6, SCREEN_Y - 1.0, BACK); // figure silhouetted against the screen
+    // look target rises/falls a touch with the crane so the framing stays alive
+    lookNow.set(FIGURE_POS.x * 0.6, SCREEN_Y - 1.0 + Math.sin(time * 0.05) * 0.5, BACK);
     camera.lookAt(lookNow);
   } else {
     enterProg = Math.min(1, enterProg + dt * 0.6);
