@@ -103,8 +103,14 @@ ok(!noStage.subjects.some((s) => s.id === 'stage-platform'), 'renderIR without s
   const alpine = renderIR(ir, { env: 'alpine', stage: true });
   const pStudio = studio.subjects.find((s) => s.id === 'stage-platform');
   const pAlpine = alpine.subjects.find((s) => s.id === 'stage-platform');
-  ok(alpine.subjects.some((s) => typeof s.id === 'string' && s.id.startsWith('env-')), 'env+stage keeps outdoor environment subjects');
-  ok(Math.abs(pAlpine.args.radius - pStudio.args.radius) < 1e-9, 'env+stage: platform radius ignores environment subjects');
+  ok(
+    alpine.subjects.some((s) => typeof s.id === 'string' && s.id.startsWith('env-')),
+    'env+stage keeps outdoor environment subjects',
+  );
+  ok(
+    Math.abs(pAlpine.args.radius - pStudio.args.radius) < 1e-9,
+    'env+stage: platform radius ignores environment subjects',
+  );
   ok(
     Math.hypot(
       pAlpine.transform.translate[0] - pStudio.transform.translate[0],

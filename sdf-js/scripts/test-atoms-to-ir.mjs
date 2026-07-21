@@ -64,10 +64,7 @@ ok(parseMagnitude('-8') === -8, 'parseMagnitude: negative string');
     },
   });
   ok(
-    ir &&
-      ir.structure === 'roadmap' &&
-      ir.climb === false &&
-      ir.milestones[1].date === 'Q4',
+    ir && ir.structure === 'roadmap' && ir.climb === false && ir.milestones[1].date === 'Q4',
     'timeline → flat roadmap with dated milestones',
   );
 }

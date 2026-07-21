@@ -9,7 +9,8 @@ const presentDir = join(root, 'apps', 'present');
 
 let pass = 0;
 let fail = 0;
-const ok = (c, n) => (c ? (pass++, console.log(`  ok ${n}`)) : (fail++, console.log(`  FAIL ${n}`)));
+const ok = (c, n) =>
+  c ? (pass++, console.log(`  ok ${n}`)) : (fail++, console.log(`  FAIL ${n}`));
 
 console.log('=== stage-layer CSS ===\n');
 
