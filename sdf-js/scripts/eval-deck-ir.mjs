@@ -44,7 +44,10 @@ if (!API_KEY) {
   console.error('✗ ANTHROPIC_API_KEY env var required (eval calls the real extractor).');
   process.exit(1);
 }
-const MODEL = process.env.MODEL || 'claude-sonnet-4-5';
+// Pinned to a DATED snapshot: the floating alias drifted overnight 2026-07-20→21
+// and flipped 3 borderline golden pages (p16/p17 extraction, p18/p21 curve reads,
+// d0961 hero-100%) with zero code change — an eval instrument must not float.
+const MODEL = process.env.MODEL || 'claude-sonnet-4-5-20250929';
 const REPO = fileURLToPath(new URL('../..', import.meta.url));
 
 const arg = (flag, dflt = null) => {
