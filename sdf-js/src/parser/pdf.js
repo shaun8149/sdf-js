@@ -181,6 +181,53 @@ function mergeLine(itemsInLine) {
   };
 }
 
+/**
+ * Filter page-chrome (repeating headers, footers, page numbers, URLs) from
+ * clustered line set. Used by parsePage after clusterItemsIntoLines.
+ *
+ * Strategy: position + pattern. A line is chrome if BOTH:
+ *   1. y is in top/bottom 6% of page (typical margin for headers/footers)
+ *   2. text matches a chrome pattern (URL, page number "N/M", timestamp)
+ *      OR is the only line in that y-zone (single isolated margin item)
+ *
+ * In-body lines (between margins) are always kept, even if they happen to
+ * contain URLs (article citations / inline references stay).
+ *
+ * @param {Array<{text,x,y,w,h,fontSize,fontFamily}>} lines
+ * @param {number} pageHeight - page height in same units as line.y
+ * @returns {Array<{text,x,y,w,h,fontSize,fontFamily}>}
+ */
+export function filterPageChrome(lines, pageHeight) {
+  if (lines.length === 0) return [];
+  const TOP_BAND = pageHeight * 0.06;
+  const BOTTOM_BAND = pageHeight * 0.94;
+
+  // Chrome patterns:
+  //   URL anywhere in line:           https://... | http://... | www.foo.com
+  //   Page indicator at line end:     "13/42" or " 13/42" or "page 13"
+  //   Datestamp at line start:        "2026/6/18" "2026-06-18" "06/18/2026"
+  //   Standalone short number-ish:    "13", "Page 13", "13 of 42"
+  const chromePatterns = [
+    /https?:\/\/\S+/i,
+    /\bwww\.\S+/i,
+    /\d+\s*\/\s*\d+\s*$/, // "2/13" at end of line
+    /^\s*(?:\d{4}[/-]\d{1,2}[/-]\d{1,2}|\d{1,2}[/-]\d{1,2}[/-]\d{2,4})/,
+    /^\s*page\s+\d+/i,
+    /^\s*\d+\s+of\s+\d+\s*$/i,
+  ];
+
+  return lines.filter((line) => {
+    const inTopBand = line.y < TOP_BAND;
+    const inBotBand = line.y > BOTTOM_BAND;
+    if (!inTopBand && !inBotBand) return true; // body — always keep
+    // In margin band — filter if chrome pattern matches
+    for (const re of chromePatterns) {
+      if (re.test(line.text)) return false;
+    }
+    return true;
+  });
+}
+
 async function parsePage(pdf, pageNum) {
   const page = await pdf.getPage(pageNum);
   const viewport = page.getViewport({ scale: 1.0 });
@@ -223,7 +270,13 @@ async function parsePage(pdf, pageNum) {
   // sort by x within the line, then concatenate text (insert space only if
   // x-gap exceeds 0.3 × fontSize — preserves natural inter-word spacing in
   // English while NOT inserting spurious spaces between CJK chars).
-  const lines = clusterItemsIntoLines(items);
+  const rawLines = clusterItemsIntoLines(items);
+  // 2026-06-21 fix #2: filter page-chrome (header / footer / page number).
+  // English PDFs (e.g. blog-export PDFs from aetherlabs.ai) carry the article
+  // title in top margin + URL + "N/M" page indicator in bottom margin on
+  // every page. Without filter these get joined into body text, polluting
+  // every paragraph break with "https://... 2/13" garbage.
+  const lines = filterPageChrome(rawLines, H);
 
   // Title heuristic: largest font size LINE in top half, **excluding** items
   // that look like in-chart labels (pure numbers, percentage signs, single
