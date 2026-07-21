@@ -69,8 +69,9 @@ renderer.toneMappingExposure = 1.0;
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x04060a);
-// thicker air → the screen's light physically FILLS the room (volumetric feel)
-scene.fog = new THREE.FogExp2(0x060a12, 0.019);
+// hazy air — enough to catch the screen light, but thin enough that the real
+// industrial room (walls, pillars, trusses) stays visible → a believable cinema.
+scene.fog = new THREE.FogExp2(0x070c15, 0.0115);
 
 const camera = new THREE.PerspectiveCamera(40, W() / H(), 0.1, 200);
 camera.position.set(0.8, 2.4, 17); // starts FAR — slowly dollies toward the screen
@@ -168,7 +169,7 @@ const SCREEN_FRAG = `
   vec3 getNormal(vec3 p,float eps){ vec3 n; n.y=map_detailed(p); n.x=map_detailed(vec3(p.x+eps,p.y,p.z))-n.y; n.z=map_detailed(vec3(p.x,p.y,p.z+eps))-n.y; n.y=eps; return normalize(n); }
   float heightMapTracing(vec3 ori,vec3 dir,out vec3 p){ float tm=0.0; float tx=1000.0; float hx=map(ori+dir*tx); if(hx>0.0){ p=ori+dir*tx; return tx; } float hm=map(ori); float tmid=0.0; for(int i=0;i<NUM_STEPS;i++){ tmid=mix(tm,tx,hm/(hm-hx)); p=ori+dir*tmid; float hmid=map(p); if(hmid<0.0){ tx=tmid; hx=hmid; } else { tm=tmid; hm=hmid; } } return tmid; }
   vec3 getPixel(in vec2 coord, float time){ vec2 uv=coord/iResolution.xy; uv=uv*2.0-1.0; uv.x*=iResolution.x/iResolution.y; vec3 ang=vec3(sin(time*3.0)*0.1,sin(time)*0.2+0.3,time); vec3 ori=vec3(0.0,3.5,time*5.0); vec3 dir=normalize(vec3(uv.xy,-2.0)); dir.z+=length(uv)*0.14; dir=normalize(dir)*fromEuler(ang); vec3 p; heightMapTracing(ori,dir,p); vec3 dist=p-ori; vec3 n=getNormal(p,dot(dist,dist)*(0.1/iResolution.x)); vec3 light=normalize(vec3(0.0,1.0,0.8)); return mix(getSkyColor(dir),getSeaColor(p,n,light,dir,dist),pow(smoothstep(0.0,-0.02,dir.y),0.2)); }
-  void main(){ vec2 fragCoord=vUv*iResolution.xy; float time=iTime*0.3; vec3 color=getPixel(fragCoord,time); color=pow(color,vec3(0.62)); color*=1.14; color=mix(color, smoothstep(vec3(0.0),vec3(1.0),color), 0.18); gl_FragColor=vec4(color,1.0); }`;
+  void main(){ vec2 fragCoord=vUv*iResolution.xy; float time=iTime*0.3; vec3 color=max(getPixel(fragCoord,time), 0.0); color=pow(color,vec3(0.66)); color*=1.02; float mx=max(color.r,max(color.g,color.b)); color=mix(color, vec3(mx), smoothstep(0.8,1.08,mx)*0.85); gl_FragColor=vec4(clamp(color,0.0,1.0),1.0); }`;
 // Render the screen shader ONCE per frame to a fixed low-res offscreen target —
 // cost is independent of screen size / DPR. The screen (and the 片头) then just
 // sample this texture (cheap). This is the pattern for ANY renderer on the screen.
@@ -239,16 +240,34 @@ for (const sx of [-1, 1]) {
   scene.add(dl);
 }
 
-// ---- female human silhouette for scale ------------------------------------
-// Michelle (mixamo) only ships [SambaDance, TPose] — both bad for a calm scale
-// figure. So we DON'T animate: we pose the bind T-pose into a natural relaxed
-// stance by rotating the upper-arm (and a touch of forearm) bones down to the
-// sides. (Skinned-mesh Box3 is unreliable → fixed scale.)
-// Human silhouette temporarily DISABLED. The Mixamo Michelle skinned mesh reads
-// as a broken mannequin once scaled up (arms splay, head/shoulders collapse) and
-// posing skinned bones reliably is fragile. TODO: re-add a clean standing
-// silhouette (custom extruded shape or a fixed-pose GLB) off to the left third.
-const mixer = null;
+// ---- the viewer: a lone figure standing before the screen ------------------
+// Built from primitives (no fragile Mixamo skinning) so it ALWAYS reads as a
+// clean human silhouette against the bright screen — the "someone in the cinema"
+// that sells the space as real. ~1.75 m, near-black, standing, facing the screen.
+function makeFigure() {
+  const g = new THREE.Group();
+  const skin = new THREE.MeshStandardMaterial({ color: 0x010206, roughness: 1.0, metalness: 0.0 });
+  const add = (geo, x, y, z = 0, rz = 0) => {
+    const o = new THREE.Mesh(geo, skin);
+    o.position.set(x, y, z);
+    o.rotation.z = rz;
+    g.add(o);
+  };
+  add(new THREE.CapsuleGeometry(0.078, 0.6, 4, 8), -0.095, 0.42); // left leg
+  add(new THREE.CapsuleGeometry(0.078, 0.6, 4, 8), 0.095, 0.42); // right leg
+  add(new THREE.CapsuleGeometry(0.145, 0.32, 4, 10), 0, 0.98); // lower torso
+  add(new THREE.CapsuleGeometry(0.16, 0.24, 4, 10), 0, 1.28); // chest / shoulders
+  add(new THREE.CapsuleGeometry(0.05, 0.5, 4, 8), -0.205, 1.05, 0.02, 0.07); // left arm
+  add(new THREE.CapsuleGeometry(0.05, 0.5, 4, 8), 0.205, 1.05, 0.02, -0.07); // right arm
+  add(new THREE.CapsuleGeometry(0.045, 0.07, 4, 8), 0, 1.5); // neck
+  add(new THREE.SphereGeometry(0.11, 16, 16), 0, 1.64); // head
+  return g;
+}
+const FIGURE_POS = new THREE.Vector3(-0.8, 0, BACK + 15);
+const figure = makeFigure();
+figure.scale.setScalar(1.2);
+figure.position.copy(FIGURE_POS);
+scene.add(figure);
 
 for (const [x, z, s] of [
   [-9.5, BACK + 5, 1.1],
@@ -264,7 +283,7 @@ for (const [x, z, s] of [
 // Denser toward the screen (where the light pools). Additive + no depth-write so
 // they read as glints of light, not solid specks. This is the "alive air" that a
 // dry CineShader room lacks.
-const DUST_N = 900;
+const DUST_N = 550;
 const dustPos = new Float32Array(DUST_N * 3);
 const dustPhase = new Float32Array(DUST_N);
 for (let i = 0; i < DUST_N; i++) {
@@ -281,10 +300,10 @@ const dust = new THREE.Points(
   dustGeo,
   new THREE.PointsMaterial({
     color: 0xbcd6ff,
-    size: 0.045,
+    size: 0.04,
     sizeAttenuation: true,
     transparent: true,
-    opacity: 0.55,
+    opacity: 0.38,
     depthWrite: false,
     blending: THREE.AdditiveBlending,
     fog: true,
@@ -383,8 +402,16 @@ DECKS.forEach((deck, i) => {
 // tag the main screen so the raycaster can route it to the default deck too
 screen.userData.deckId = DEFAULT_DECK_ID;
 
-scene.add(new THREE.AmbientLight(0x1c2935, 1.0));
-scene.add(new THREE.HemisphereLight(0x40597a, 0x080c12, 1.7)); // room (incl. side walls) dimly readable
+scene.add(new THREE.AmbientLight(0x24333f, 1.7));
+scene.add(new THREE.HemisphereLight(0x51708f, 0x0a1018, 2.6)); // industrial room reads dimly — a real space, not a void
+// a cool grazing rim from the back of the room rakes the side walls / pillars so
+// the architecture has form (a real massive room, not a flat black backdrop)
+const rimL = new THREE.DirectionalLight(0x3f5f88, 0.6);
+rimL.position.set(-8, 6, BACK + ROOM_D);
+scene.add(rimL);
+const rimR = new THREE.DirectionalLight(0x2c4a6e, 0.45);
+rimR.position.set(8, 5, BACK + ROOM_D);
+scene.add(rimR);
 
 // ---- post: bloom + grade --------------------------------------------------
 const composer = new EffectComposer(renderer);
@@ -405,7 +432,7 @@ const godrays = new ShaderPass({
   uniforms: {
     tDiffuse: { value: null },
     uLightPos: { value: new THREE.Vector2(0.5, 0.6) },
-    uStrength: { value: 0.72 },
+    uStrength: { value: 0.4 },
   },
   vertexShader:
     'varying vec2 vUv; void main(){ vUv=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0); }',
@@ -458,17 +485,15 @@ composer.addPass(gradePass);
 // screen → seamlessly becomes a fullscreen Star Nest flight (片头) → ATLAS logo
 // reveal → hands off to the studio deck (the real 3D scene).
 let state = 'room'; // 'room' | 'entering' | 'intro' | 'done'
-let camZ = 16;
-let speed = 0;
 let enterProg = 0;
 let introStart = 0;
 let lastT = performance.now() * 0.001;
-const CAM_HOLD_Z = 6.8, // pulled back for the wider lens
-  ENTER_Z = BACK + 3.0,
-  IDLE_SPEED = 0.6,
-  ENTER_SPEED = 12,
-  OBLIQUE_X = -6.6; // camera hugs the left wall → side wall + pillars frame the shot
-const lookAt = new THREE.Vector3(0, SCREEN_Y - 0.2, BACK); // look slightly UP → the screen looms
+// cinematic steadicam: the camera travels/arcs around the viewer at eye height,
+// always framing the figure against the screen, then flies INTO the screen on click.
+const ENTER_TARGET = new THREE.Vector3(0, SCREEN_Y, BACK + 3.0);
+const clickFrom = new THREE.Vector3(); // camera pos captured the instant of click
+const lookNow = new THREE.Vector3(); // current idle look target
+const enterLookAt = new THREE.Vector3(0, SCREEN_Y, BACK);
 const logoEl = document.getElementById('enter-logo');
 
 function animate() {
@@ -505,27 +530,39 @@ function animate() {
       0.055 + 0.035 * (0.5 + 0.5 * Math.sin(time * 0.6 + p.position.z));
   }
 
-  // room / entering: oblique dolly toward the screen
-  if (mixer) mixer.update(dt);
   const entering = state === 'entering';
-  const targetSpeed = entering ? ENTER_SPEED : IDLE_SPEED;
-  speed += (targetSpeed - speed) * Math.min(1, dt * 1.8); // continuous → no jump
-  camZ = Math.max(entering ? ENTER_Z : CAM_HOLD_Z, camZ - speed * dt);
-  if (entering) enterProg = Math.min(1, enterProg + dt * 0.7);
-  // oblique while idle; curve toward screen-centre only while flying in
-  const obliqueX = OBLIQUE_X + Math.sin(time * 0.11) * 0.5;
-  camera.position.x = obliqueX * (1 - enterProg);
-  camera.position.y =
-    2.1 + (SCREEN_Y - 2.1) * enterProg + Math.sin(time * 0.09) * 0.1 * (1 - enterProg);
-  camera.position.z = camZ;
-  camera.fov = 46 - enterProg * 12; // wider lens → deeper perspective, screen looms
+  if (!entering) {
+    // steadicam: a slow arc around the viewer at human eye height. The figure's
+    // silhouette drifts across the bright screen as the angle changes — the shot
+    // reads as a real camera moving through the room, not a static webpage.
+    const sweep = Math.sin(time * 0.09) * 0.34; // gentle arc — figure stays on the bright screen
+    const rad = 8.8 + Math.sin(time * 0.06) * 1.5; // emphasize dolly (depth) over a wide swing
+    camera.position.set(
+      FIGURE_POS.x + Math.sin(sweep) * rad + 0.2,
+      1.7 + Math.sin(time * 0.11) * 0.5, // eye height, gentle rise / fall
+      FIGURE_POS.z + Math.cos(sweep) * rad + 1.2, // on the viewer's side of the figure
+    );
+    camera.fov = 40;
+    clickFrom.copy(camera.position); // ready for an instant fly-in
+    lookNow.set(FIGURE_POS.x * 0.6, SCREEN_Y - 1.0, BACK); // figure silhouetted against the screen
+    camera.lookAt(lookNow);
+  } else {
+    enterProg = Math.min(1, enterProg + dt * 0.6);
+    const e = enterProg * enterProg * (3 - 2 * enterProg); // smoothstep ease
+    camera.position.lerpVectors(clickFrom, ENTER_TARGET, e);
+    camera.fov = 40 - e * 8;
+    camera.lookAt(enterLookAt);
+    if (enterProg >= 0.999) {
+      state = 'intro';
+      introStart = time;
+    }
+  }
   camera.updateProjectionMatrix();
-  camera.lookAt(lookAt);
 
-  // dust drifts gently through the light; keep the screen in focus as we dolly
+  // dust drifts gently through the light; keep the figure/screen plane in focus
   dust.rotation.y = time * 0.008;
   dust.position.y = Math.sin(time * 0.1) * 0.12;
-  bokeh.uniforms['focus'].value = camera.position.distanceTo(lookAt);
+  bokeh.uniforms['focus'].value = camera.position.distanceTo(entering ? enterLookAt : lookNow);
 
   // steer the god-rays from the screen's current screen-space position
   const sp = SCREEN_CENTER.clone().project(camera);
@@ -534,10 +571,6 @@ function animate() {
   composer.render();
   // once the room + the screen's renderer have a few frames up, reveal the page
   if (loadingEl && ++bootFrames === 14) loadingEl.classList.add('done');
-  if (entering && camZ <= ENTER_Z + 0.05) {
-    state = 'intro';
-    introStart = time;
-  }
 }
 animate();
 
