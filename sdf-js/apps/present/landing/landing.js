@@ -13,7 +13,6 @@
 
 import * as THREE from 'https://esm.sh/three@0.160.0';
 import { Reflector } from 'https://esm.sh/three@0.160.0/examples/jsm/objects/Reflector.js';
-import { GLTFLoader } from 'https://esm.sh/three@0.160.0/examples/jsm/loaders/GLTFLoader.js';
 import { EffectComposer } from 'https://esm.sh/three@0.160.0/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'https://esm.sh/three@0.160.0/examples/jsm/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'https://esm.sh/three@0.160.0/examples/jsm/postprocessing/UnrealBloomPass.js';
@@ -129,9 +128,9 @@ for (const x of [-6, 6]) {
 // floor — CineShader-style reflection: a real mirror of the screen, but DIM
 // (dark tint) so it reads as a subtle wet-floor reflection, not a bright mirror.
 const floor = new Reflector(new THREE.PlaneGeometry(ROOM_W, ROOM_D), {
-  textureWidth: 1024,
-  textureHeight: 1024,
-  color: 0x13171f,
+  textureWidth: 2048,
+  textureHeight: 2048,
+  color: 0x0b0e14, // darker tint → subtle wet sheen, not a bright mirror
 });
 floor.rotation.x = -Math.PI / 2;
 floor.position.set(0, 0, BACK + ROOM_D / 2);
@@ -167,12 +166,12 @@ const SCREEN_FRAG = `
   vec3 getNormal(vec3 p,float eps){ vec3 n; n.y=map_detailed(p); n.x=map_detailed(vec3(p.x+eps,p.y,p.z))-n.y; n.z=map_detailed(vec3(p.x,p.y,p.z+eps))-n.y; n.y=eps; return normalize(n); }
   float heightMapTracing(vec3 ori,vec3 dir,out vec3 p){ float tm=0.0; float tx=1000.0; float hx=map(ori+dir*tx); if(hx>0.0){ p=ori+dir*tx; return tx; } float hm=map(ori); float tmid=0.0; for(int i=0;i<NUM_STEPS;i++){ tmid=mix(tm,tx,hm/(hm-hx)); p=ori+dir*tmid; float hmid=map(p); if(hmid<0.0){ tx=tmid; hx=hmid; } else { tm=tmid; hm=hmid; } } return tmid; }
   vec3 getPixel(in vec2 coord, float time){ vec2 uv=coord/iResolution.xy; uv=uv*2.0-1.0; uv.x*=iResolution.x/iResolution.y; vec3 ang=vec3(sin(time*3.0)*0.1,sin(time)*0.2+0.3,time); vec3 ori=vec3(0.0,3.5,time*5.0); vec3 dir=normalize(vec3(uv.xy,-2.0)); dir.z+=length(uv)*0.14; dir=normalize(dir)*fromEuler(ang); vec3 p; heightMapTracing(ori,dir,p); vec3 dist=p-ori; vec3 n=getNormal(p,dot(dist,dist)*(0.1/iResolution.x)); vec3 light=normalize(vec3(0.0,1.0,0.8)); return mix(getSkyColor(dir),getSeaColor(p,n,light,dir,dist),pow(smoothstep(0.0,-0.02,dir.y),0.2)); }
-  void main(){ vec2 fragCoord=vUv*iResolution.xy; float time=iTime*0.3; vec3 color=getPixel(fragCoord,time); color=pow(color,vec3(0.65)); gl_FragColor=vec4(color*0.92,1.0); }`;
+  void main(){ vec2 fragCoord=vUv*iResolution.xy; float time=iTime*0.3; vec3 color=getPixel(fragCoord,time); color=pow(color,vec3(0.62)); color*=1.14; color=mix(color, smoothstep(vec3(0.0),vec3(1.0),color), 0.18); gl_FragColor=vec4(color,1.0); }`;
 // Render the screen shader ONCE per frame to a fixed low-res offscreen target —
 // cost is independent of screen size / DPR. The screen (and the 片头) then just
 // sample this texture (cheap). This is the pattern for ANY renderer on the screen.
-const RT_W = 896,
-  RT_H = 504;
+const RT_W = 1600,
+  RT_H = 900;
 const shaderRT = new THREE.WebGLRenderTarget(RT_W, RT_H, { minFilter: THREE.LinearFilter });
 const fxScene = new THREE.Scene();
 const fxCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
@@ -184,9 +183,9 @@ const fxMat = new THREE.ShaderMaterial({
 fxScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), fxMat));
 
 const screenMat = new THREE.MeshBasicMaterial({ map: shaderRT.texture });
-const SCREEN_W = 10.6,
-  SCREEN_H = 5.96,
-  SCREEN_Y = 3.4;
+const SCREEN_W = 12.8,
+  SCREEN_H = 7.2,
+  SCREEN_Y = 3.7;
 const screen = new THREE.Mesh(new THREE.PlaneGeometry(SCREEN_W, SCREEN_H), screenMat);
 screen.position.set(0, SCREEN_Y, BACK + 0.06);
 scene.add(screen);
@@ -243,34 +242,11 @@ for (const sx of [-1, 1]) {
 // figure. So we DON'T animate: we pose the bind T-pose into a natural relaxed
 // stance by rotating the upper-arm (and a touch of forearm) bones down to the
 // sides. (Skinned-mesh Box3 is unreliable → fixed scale.)
+// Human silhouette temporarily DISABLED. The Mixamo Michelle skinned mesh reads
+// as a broken mannequin once scaled up (arms splay, head/shoulders collapse) and
+// posing skinned bones reliably is fragile. TODO: re-add a clean standing
+// silhouette (custom extruded shape or a fixed-pose GLB) off to the left third.
 const mixer = null;
-new GLTFLoader().load(
-  './Michelle.glb',
-  (gltf) => {
-    const m = gltf.scene;
-    m.scale.setScalar(1.05); // ~1.7 m
-    m.traverse((o) => {
-      if (o.isMesh) {
-        o.material = mat(0x03050c, 0.96);
-        o.frustumCulled = false;
-      }
-      if (o.isBone) {
-        const n = o.name;
-        if (/LeftArm$/.test(n))
-          o.rotation.z = -1.25; // drop left upper arm
-        else if (/RightArm$/.test(n))
-          o.rotation.z = 1.25; // drop right upper arm
-        else if (/LeftForeArm$/.test(n)) o.rotation.z = -0.2;
-        else if (/RightForeArm$/.test(n)) o.rotation.z = 0.2;
-      }
-    });
-    m.position.set(-2.4, 0, BACK + 8.5); // farther from the screen (more toward room centre)
-    m.rotation.y = Math.PI; // back to camera, facing the screen
-    scene.add(m);
-  },
-  undefined,
-  (err) => console.warn('[landing] model load failed', err),
-);
 
 for (const [x, z, s] of [
   [-9.5, BACK + 5, 1.1],
@@ -379,7 +355,7 @@ scene.add(new THREE.HemisphereLight(0x40597a, 0x080c12, 1.7)); // room (incl. si
 // ---- post: bloom + grade --------------------------------------------------
 const composer = new EffectComposer(renderer);
 composer.addPass(new RenderPass(scene, camera));
-composer.addPass(new UnrealBloomPass(new THREE.Vector2(W(), H()), 0.42, 0.6, 0.9));
+composer.addPass(new UnrealBloomPass(new THREE.Vector2(W(), H()), 0.62, 0.72, 0.82));
 composer.addPass(new OutputPass());
 const gradePass = new ShaderPass({
   uniforms: { tDiffuse: { value: null }, uTime: { value: 0 } },

@@ -42,19 +42,42 @@
         color: #fff;
       }
       #nav {
-        top: 32px;
+        top: 28px;
         right: 30px;
-        font-size: 13px;
-        letter-spacing: 0.12em;
-        opacity: 0.62;
+        display: flex;
+        align-items: center;
+        gap: 22px;
+        font-size: 12.5px;
+        letter-spacing: 0.13em;
+        pointer-events: auto; /* the capability menu is clickable (overrides .ui) */
       }
-      #nav span {
-        margin-left: 26px;
-      }
-      #nav .on {
-        opacity: 1;
-        border-bottom: 1px solid currentColor;
+      #nav a {
+        color: rgba(210, 224, 245, 0.6);
+        text-decoration: none;
+        text-transform: uppercase;
         padding-bottom: 3px;
+        border-bottom: 1px solid transparent;
+        transition:
+          color 0.22s ease,
+          border-color 0.22s ease;
+      }
+      #nav a:hover {
+        color: #eaf2ff;
+        border-bottom-color: rgba(111, 182, 255, 0.9);
+      }
+      #nav a.primary {
+        color: #eaf2ff;
+      }
+      #nav a.primary::before {
+        content: '';
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        margin-right: 8px;
+        border-radius: 50%;
+        background: #6fb6ff;
+        box-shadow: 0 0 8px rgba(111, 182, 255, 0.9);
+        vertical-align: middle;
       }
       /* concierge CTA: the one clickable .ui element (the class kills pointer
          events so the canvas owns the stage — the CTA opts back in) */
@@ -209,9 +232,15 @@
   <body>
     <canvas id="c-landing"></canvas>
     <div id="logo" class="ui">ATLAS<b>:</b>PRESENT</div>
-    <div id="nav" class="ui">
-      <span class="on">Home</span><span>Gallery</span><span>Editor</span><span>About</span>
-    </div>
+    <nav id="nav" class="ui">
+      <a href="../author-2d.html" class="primary" title="Type any text → a slide deck (PPTX / PDF)">Make a deck</a>
+      <a href="../author.html" title="Type any text → an immersive 3D world">3D&nbsp;world</a>
+      <a href="../../../examples/mvp/index.html" title="Type any text → a 2D SDF illustration">Illustrate</a>
+      <a href="../../../examples/compositor/index.html" title="Fly through pre-built 3D scenes — no key needed">Gallery</a>
+      <a href="../../fourd/index.html" title="A 4D SDF playground">4D</a>
+      <a href="../../../examples/index.html" title="BOB, generative renders &amp; SDF art-style experiments">Art</a>
+      <a href="https://github.com/shaun8149/sdf-js" target="_blank" rel="noopener">Source</a>
+    </nav>
     <div id="title" class="ui">
       <h1>Spatial narrative,<br />not slides.</h1>
       <p>
