@@ -82,6 +82,47 @@ const baseParams = {
   ok(calls[1].revision === null, 'plain re-roll sends no revision');
 
   let threw = null;
+  deck.slots[0].locked = true;
+  try {
+    await reliftSlot(deck, 3, { apiKey: 'k', liftFn: fakeLift });
+  } catch (e) {
+    threw = e.message;
+  }
+  ok(/locked/.test(threw || ''), 'locked slot rejects re-lift before calling lift');
+  ok(calls.length === 2, 'locked slot does not call liftFn');
+  ok(deck.slots[0].sceneData.subjects[0].type === 'bar', 'locked slot sceneData remains pinned');
+  deck.slots[0].locked = false;
+
+  let releaseLift;
+  let liftStarted;
+  const started = new Promise((resolve) => {
+    liftStarted = resolve;
+  });
+  const pendingLift = new Promise((resolve) => {
+    releaseLift = () =>
+      resolve({
+        sceneData: { subjects: [{ type: 'line', x: 0, y: 0, w: 100, h: 100, args: {} }] },
+      });
+  });
+  const slowLift = async () => {
+    liftStarted();
+    return pendingLift;
+  };
+  const inFlight = reliftSlot(deck, 3, { apiKey: 'k', liftFn: slowLift });
+  await started;
+  deck.slots[0].locked = true;
+  releaseLift();
+  threw = null;
+  try {
+    await inFlight;
+  } catch (e) {
+    threw = e.message;
+  }
+  ok(/locked/.test(threw || ''), 'slot locked during re-lift rejects returned scene');
+  ok(deck.slots[0].sceneData.subjects[0].type === 'bar', 'in-flight lock preserves pinned sceneData');
+  deck.slots[0].locked = false;
+
+  threw = null;
   try {
     await reliftSlot(deck, 4, { apiKey: 'k', liftFn: fakeLift });
   } catch (e) {

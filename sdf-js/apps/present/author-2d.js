@@ -652,7 +652,8 @@ function attachSlideControls(card, canvas, deck, slot) {
       ? '已锁定 — 重新 Generate 时保留这一页 (点击解锁)'
       : '锁定这一页 (重新 Generate 时保留, 不再重 lift)';
     card.classList.toggle('locked', !!slot.locked);
-    rollBtn.disabled = editBtn.disabled = !!slot.locked;
+    rollBtn.disabled = editBtn.disabled = editGo.disabled = !!slot.locked;
+    if (slot.locked) editRow.classList.remove('open');
   };
 
   const rollBtn = document.createElement('button');
@@ -677,6 +678,10 @@ function attachSlideControls(card, canvas, deck, slot) {
   busy.textContent = 're-lifting…';
 
   async function relift(revision) {
+    if (slot.locked) {
+      syncLock();
+      return setStatus(`slide "${slot.slotTitle}" 已锁定`, true);
+    }
     const apiKey = keyEl.value.trim();
     if (!apiKey) return setStatus('paste your Anthropic API key first', true);
     card.classList.add('busy');
@@ -694,7 +699,7 @@ function attachSlideControls(card, canvas, deck, slot) {
       setStatus(`re-lift failed: ${e.message}`, true);
     } finally {
       card.classList.remove('busy');
-      rollBtn.disabled = editGo.disabled = false;
+      syncLock();
     }
   }
 
