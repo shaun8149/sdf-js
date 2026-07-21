@@ -292,7 +292,10 @@ export function stagePreset(scene, { center = [0, 1.6, 0] } = {}) {
       minZ = Infinity,
       maxZ = -Infinity;
     for (const s of out.subjects) {
-      if (typeof s.id === 'string' && s.id.startsWith('__stage')) continue;
+      const id = typeof s.id === 'string' ? s.id : '';
+      // Fit the platform to the structure only. Outdoor env/world dressing is
+      // already placed around the hero and can sit far from the origin.
+      if (id.startsWith('__stage') || id.startsWith('env-') || id.startsWith('horizon-')) continue;
       const tr = (s.transform && s.transform.translate) || [0, 0, 0];
       minX = Math.min(minX, tr[0]);
       maxX = Math.max(maxX, tr[0]);

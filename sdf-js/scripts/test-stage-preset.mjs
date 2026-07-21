@@ -97,6 +97,23 @@ ok(!noStage.subjects.some((s) => s.id === 'stage-platform'), 'renderIR without s
   ok(inside, 'all structure subjects sit on the platform');
 }
 
+// platform fits the structure, not outdoor environment dressing
+{
+  const studio = renderIR(ir, { stage: true });
+  const alpine = renderIR(ir, { env: 'alpine', stage: true });
+  const pStudio = studio.subjects.find((s) => s.id === 'stage-platform');
+  const pAlpine = alpine.subjects.find((s) => s.id === 'stage-platform');
+  ok(alpine.subjects.some((s) => typeof s.id === 'string' && s.id.startsWith('env-')), 'env+stage keeps outdoor environment subjects');
+  ok(Math.abs(pAlpine.args.radius - pStudio.args.radius) < 1e-9, 'env+stage: platform radius ignores environment subjects');
+  ok(
+    Math.hypot(
+      pAlpine.transform.translate[0] - pStudio.transform.translate[0],
+      pAlpine.transform.translate[2] - pStudio.transform.translate[2],
+    ) < 1e-9,
+    'env+stage: platform center ignores environment subjects',
+  );
+}
+
 // deck: assembleDeck({stage:true}) → per-station platforms + deck theatre defaults
 {
   const { assembleDeck } = await import('../src/scene/assemble-deck.js');
