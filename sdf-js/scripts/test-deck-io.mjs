@@ -94,6 +94,56 @@ const deck = {
   ok(hoisted < naive, `hoisting shrinks payload (${hoisted} < ${naive})`);
 }
 
+// ── mixed outlines from locked slides must not be flattened into one shared block ──
+{
+  const oldSlides = [
+    { title: 'OLD primary', body: ['old main'] },
+    { title: 'OLD orphan', body: ['old orphan must survive'] },
+  ];
+  const newSlides = [
+    { title: 'NEW primary', body: ['new main'] },
+    { title: 'NEW orphan', body: ['new orphan'] },
+  ];
+  const mixed = {
+    ...deck,
+    slots: [
+      {
+        ...mkSlot(0),
+        liftParams: {
+          ...mkSlot(0).liftParams,
+          slide: newSlides[0],
+          slides: newSlides,
+        },
+      },
+      {
+        ...mkSlot(1),
+        locked: true,
+        liftParams: {
+          ...mkSlot(1).liftParams,
+          slide: oldSlides[0],
+          slides: oldSlides,
+          extraSlides: [1],
+        },
+      },
+    ],
+  };
+  const payload = serializeDeck(mixed);
+  const back = deserializeDeck(JSON.stringify(payload));
+  ok(payload.shared === null, 'heterogeneous liftParams are not hoisted');
+  ok(
+    back.slots[1].liftParams.slides[1].title === 'OLD orphan',
+    'locked slide keeps its own outline across deck.json round-trip',
+  );
+  ok(
+    back.slots[0].liftParams.slides[0].title === 'NEW primary',
+    'new slide keeps the new outline across deck.json round-trip',
+  );
+  ok(
+    back.slots[0].liftParams.slides !== back.slots[1].liftParams.slides,
+    'mixed outlines rehydrate as separate refs',
+  );
+}
+
 // ── guardrails ──
 {
   let threw = false;

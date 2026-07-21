@@ -20,8 +20,17 @@ export { DECK_FORMAT, DECK_FORMAT_VERSION };
 
 export function serializeDeck(deck) {
   if (!deck || !Array.isArray(deck.slots)) throw new Error('serializeDeck: not a deck');
-  const first = deck.slots.find((s) => s.liftParams);
-  const shared = first
+  const slotsWithLiftParams = deck.slots.filter((s) => s.liftParams);
+  const first = slotsWithLiftParams[0];
+  const canHoist =
+    !!first &&
+    slotsWithLiftParams.every(
+      (s) =>
+        s.liftParams.scaffold === first.liftParams.scaffold &&
+        s.liftParams.slides === first.liftParams.slides &&
+        s.liftParams.theme === first.liftParams.theme,
+    );
+  const shared = canHoist
     ? {
         scaffold: first.liftParams.scaffold,
         slides: first.liftParams.slides,
@@ -41,12 +50,14 @@ export function serializeDeck(deck) {
     slots: deck.slots.map((s) => ({
       ...s,
       liftParams: s.liftParams
-        ? {
-            ...s.liftParams,
-            scaffold: undefined,
-            slides: undefined,
-            theme: undefined,
-          }
+        ? canHoist
+          ? {
+              ...s.liftParams,
+              scaffold: undefined,
+              slides: undefined,
+              theme: undefined,
+            }
+          : s.liftParams
         : undefined,
     })),
   };
@@ -73,9 +84,9 @@ export function deserializeDeck(data) {
       liftParams: s.liftParams
         ? {
             ...s.liftParams,
-            scaffold: shared?.scaffold,
-            slides: shared?.slides,
-            theme: shared?.theme,
+            scaffold: shared?.scaffold ?? s.liftParams.scaffold,
+            slides: shared?.slides ?? s.liftParams.slides,
+            theme: shared?.theme ?? s.liftParams.theme,
           }
         : undefined,
     })),
