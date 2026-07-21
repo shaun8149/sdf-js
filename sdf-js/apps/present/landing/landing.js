@@ -16,38 +16,14 @@ import { Reflector } from 'https://esm.sh/three@0.160.0/examples/jsm/objects/Ref
 import { EffectComposer } from 'https://esm.sh/three@0.160.0/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'https://esm.sh/three@0.160.0/examples/jsm/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'https://esm.sh/three@0.160.0/examples/jsm/postprocessing/UnrealBloomPass.js';
+import { BokehPass } from 'https://esm.sh/three@0.160.0/examples/jsm/postprocessing/BokehPass.js';
 import { ShaderPass } from 'https://esm.sh/three@0.160.0/examples/jsm/postprocessing/ShaderPass.js';
 import { OutputPass } from 'https://esm.sh/three@0.160.0/examples/jsm/postprocessing/OutputPass.js';
 
-// Sprint 23: default deck (main-screen click) + 3 hero decks (poster clicks).
-// Main-screen click still routes to deck-studio-keynote (backward compat). Each
-// poster plane on the right side wall carries userData.deckId; a click on one
-// mutates targetDeckHref so the enter() → fly-in → fade sequence lands on that
-// deck's ?deck= URL instead of the default.
+// Click the screen (or anywhere) → fly INTO it → hand off to the default deck.
 const DEFAULT_DECK_ID = 'deck-studio-keynote';
 const deckUrl = (id) => `../index.html?deck=${id}`;
 let targetDeckHref = deckUrl(DEFAULT_DECK_ID);
-
-const DECKS = [
-  {
-    id: 'deck-decision-2027-strategy',
-    title: 'DECISION',
-    subtitle: '2027 · Strategic Path',
-    accent: 0xf2b04a, // gold — mountain / summit
-  },
-  {
-    id: 'deck-cybersecurity-brief',
-    title: 'CYBER',
-    subtitle: 'Brief 2027',
-    accent: 0x7de3c9, // teal — vigilance
-  },
-  {
-    id: 'deck-customer-success-review',
-    title: 'CS REVIEW',
-    subtitle: 'Q3 2027',
-    accent: 0xd77ef2, // magenta — customer heart
-  },
-];
 
 const W = () => window.innerWidth;
 const H = () => window.innerHeight;
@@ -68,7 +44,9 @@ renderer.toneMappingExposure = 1.0;
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x04060a);
-scene.fog = new THREE.FogExp2(0x05080e, 0.008);
+// hazy air — enough to catch the screen light, but thin enough that the real
+// industrial room (walls, pillars, trusses) stays visible → a believable cinema.
+scene.fog = new THREE.FogExp2(0x070c15, 0.0115);
 
 const camera = new THREE.PerspectiveCamera(40, W() / H(), 0.1, 200);
 camera.position.set(0.8, 2.4, 17); // starts FAR — slowly dollies toward the screen
@@ -166,7 +144,7 @@ const SCREEN_FRAG = `
   vec3 getNormal(vec3 p,float eps){ vec3 n; n.y=map_detailed(p); n.x=map_detailed(vec3(p.x+eps,p.y,p.z))-n.y; n.z=map_detailed(vec3(p.x,p.y,p.z+eps))-n.y; n.y=eps; return normalize(n); }
   float heightMapTracing(vec3 ori,vec3 dir,out vec3 p){ float tm=0.0; float tx=1000.0; float hx=map(ori+dir*tx); if(hx>0.0){ p=ori+dir*tx; return tx; } float hm=map(ori); float tmid=0.0; for(int i=0;i<NUM_STEPS;i++){ tmid=mix(tm,tx,hm/(hm-hx)); p=ori+dir*tmid; float hmid=map(p); if(hmid<0.0){ tx=tmid; hx=hmid; } else { tm=tmid; hm=hmid; } } return tmid; }
   vec3 getPixel(in vec2 coord, float time){ vec2 uv=coord/iResolution.xy; uv=uv*2.0-1.0; uv.x*=iResolution.x/iResolution.y; vec3 ang=vec3(sin(time*3.0)*0.1,sin(time)*0.2+0.3,time); vec3 ori=vec3(0.0,3.5,time*5.0); vec3 dir=normalize(vec3(uv.xy,-2.0)); dir.z+=length(uv)*0.14; dir=normalize(dir)*fromEuler(ang); vec3 p; heightMapTracing(ori,dir,p); vec3 dist=p-ori; vec3 n=getNormal(p,dot(dist,dist)*(0.1/iResolution.x)); vec3 light=normalize(vec3(0.0,1.0,0.8)); return mix(getSkyColor(dir),getSeaColor(p,n,light,dir,dist),pow(smoothstep(0.0,-0.02,dir.y),0.2)); }
-  void main(){ vec2 fragCoord=vUv*iResolution.xy; float time=iTime*0.3; vec3 color=getPixel(fragCoord,time); color=pow(color,vec3(0.62)); color*=1.14; color=mix(color, smoothstep(vec3(0.0),vec3(1.0),color), 0.18); gl_FragColor=vec4(color,1.0); }`;
+  void main(){ vec2 fragCoord=vUv*iResolution.xy; float time=iTime*0.3; vec3 color=max(getPixel(fragCoord,time), 0.0); color=pow(color,vec3(0.66)); color*=1.02; float mx=max(color.r,max(color.g,color.b)); color=mix(color, vec3(mx), smoothstep(0.8,1.08,mx)*0.85); color*=mix(1.0, 0.62, smoothstep(0.5, 1.0, vUv.y)); gl_FragColor=vec4(clamp(color,0.0,1.0),1.0); }`;
 // Render the screen shader ONCE per frame to a fixed low-res offscreen target —
 // cost is independent of screen size / DPR. The screen (and the 片头) then just
 // sample this texture (cheap). This is the pattern for ANY renderer on the screen.
@@ -182,7 +160,39 @@ const fxMat = new THREE.ShaderMaterial({
 });
 fxScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), fxMat));
 
-const screenMat = new THREE.MeshBasicMaterial({ map: shaderRT.texture });
+// The screen isn't a flat texture — it's a physical LCD panel: a fine pixel /
+// RGB-subpixel grid (visible as the camera dollies in), backlight edge falloff,
+// and a soft glass sheen. The pixels foreshorten with the panel's angle, so it
+// reads as a real lit surface in the room.
+const screenMat = new THREE.ShaderMaterial({
+  uniforms: {
+    map: { value: shaderRT.texture },
+    uGrid: { value: new THREE.Vector2(168, 94) }, // pixel grid (16:9-ish)
+  },
+  vertexShader:
+    'varying vec2 vUv; void main(){ vUv=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0); }',
+  fragmentShader: `
+    uniform sampler2D map; uniform vec2 uGrid; varying vec2 vUv;
+    void main(){
+      vec3 col = texture2D(map, vUv).rgb;
+      // pixel grid: faint dark gaps between cells
+      vec2 g = fract(vUv * uGrid);
+      float lx = smoothstep(0.0, 0.12, g.x) * smoothstep(1.0, 0.88, g.x);
+      float ly = smoothstep(0.0, 0.12, g.y) * smoothstep(1.0, 0.88, g.y);
+      col *= mix(0.84, 1.0, lx * ly);
+      // RGB subpixel columns (subtle — blurs to neutral at distance)
+      float s = mod(floor(vUv.x * uGrid.x * 3.0), 3.0);
+      vec3 sub = vec3(s < 0.5 ? 1.0 : 0.6, (s >= 0.5 && s < 1.5) ? 1.0 : 0.6, s >= 1.5 ? 1.0 : 0.6);
+      col *= mix(vec3(1.0), sub, 0.09);
+      // backlight edge falloff
+      vec2 e = abs(vUv - 0.5) * 2.0;
+      col *= 1.0 - smoothstep(0.84, 1.0, max(e.x, e.y)) * 0.22;
+      // soft glass sheen across the panel surface
+      float sheen = smoothstep(0.5, 0.0, abs(vUv.x - vUv.y * 0.55 - 0.2));
+      col += sheen * 0.035 * vec3(0.72, 0.84, 1.0);
+      gl_FragColor = vec4(col, 1.0);
+    }`,
+});
 const SCREEN_W = 12.8,
   SCREEN_H = 7.2,
   SCREEN_Y = 3.7;
@@ -237,16 +247,34 @@ for (const sx of [-1, 1]) {
   scene.add(dl);
 }
 
-// ---- female human silhouette for scale ------------------------------------
-// Michelle (mixamo) only ships [SambaDance, TPose] — both bad for a calm scale
-// figure. So we DON'T animate: we pose the bind T-pose into a natural relaxed
-// stance by rotating the upper-arm (and a touch of forearm) bones down to the
-// sides. (Skinned-mesh Box3 is unreliable → fixed scale.)
-// Human silhouette temporarily DISABLED. The Mixamo Michelle skinned mesh reads
-// as a broken mannequin once scaled up (arms splay, head/shoulders collapse) and
-// posing skinned bones reliably is fragile. TODO: re-add a clean standing
-// silhouette (custom extruded shape or a fixed-pose GLB) off to the left third.
-const mixer = null;
+// ---- the viewer: a lone figure standing before the screen ------------------
+// Built from primitives (no fragile Mixamo skinning) so it ALWAYS reads as a
+// clean human silhouette against the bright screen — the "someone in the cinema"
+// that sells the space as real. ~1.75 m, near-black, standing, facing the screen.
+function makeFigure() {
+  const g = new THREE.Group();
+  const skin = new THREE.MeshStandardMaterial({ color: 0x010206, roughness: 1.0, metalness: 0.0 });
+  const add = (geo, x, y, z = 0, rz = 0) => {
+    const o = new THREE.Mesh(geo, skin);
+    o.position.set(x, y, z);
+    o.rotation.z = rz;
+    g.add(o);
+  };
+  add(new THREE.CapsuleGeometry(0.078, 0.6, 4, 8), -0.095, 0.42); // left leg
+  add(new THREE.CapsuleGeometry(0.078, 0.6, 4, 8), 0.095, 0.42); // right leg
+  add(new THREE.CapsuleGeometry(0.145, 0.32, 4, 10), 0, 0.98); // lower torso
+  add(new THREE.CapsuleGeometry(0.16, 0.24, 4, 10), 0, 1.28); // chest / shoulders
+  add(new THREE.CapsuleGeometry(0.05, 0.5, 4, 8), -0.205, 1.05, 0.02, 0.07); // left arm
+  add(new THREE.CapsuleGeometry(0.05, 0.5, 4, 8), 0.205, 1.05, 0.02, -0.07); // right arm
+  add(new THREE.CapsuleGeometry(0.045, 0.07, 4, 8), 0, 1.5); // neck
+  add(new THREE.SphereGeometry(0.11, 16, 16), 0, 1.64); // head
+  return g;
+}
+const FIGURE_POS = new THREE.Vector3(-0.8, 0, BACK + 15);
+const figure = makeFigure();
+figure.scale.setScalar(1.2);
+figure.position.copy(FIGURE_POS);
+scene.add(figure);
 
 for (const [x, z, s] of [
   [-9.5, BACK + 5, 1.1],
@@ -258,105 +286,97 @@ for (const [x, z, s] of [
   scene.add(crate);
 }
 
-// ---- Sprint 23: poster wall (right-side wall, 3 hero decks) ----------------
-// Movie-poster planes (2.4 × 1.5, 8:5). Positioned on the RIGHT wall spaced along
-// z, angled ~30° toward the camera (which hugs the left wall). Each carries a
-// canvas texture with title + subtitle + accent stripe and a userData.deckId
-// used by the raycast click handler below. Raycasting picks the poster; enter()
-// then flies to that poster and hands off to that deck's URL.
-const POSTER_W = 2.4;
-const POSTER_H = 1.5;
-const POSTER_WALL_X = ROOM_W / 2 - 0.06; // just inside the right wall
-const POSTER_ROTATE_Y = -Math.PI / 2 + 0.35; // face toward left-of-room (camera side)
-const POSTER_ZS = [BACK + 10, BACK + 16, BACK + 22]; // three stations along z
-const POSTER_Y = 2.3;
-
-const posterMeshes = [];
-function makePosterTexture({ title, subtitle, accent }) {
-  const w = 512,
-    h = 320;
-  const c = document.createElement('canvas');
-  c.width = w;
-  c.height = h;
-  const g = c.getContext('2d');
-  // dark base + subtle vertical gradient so the poster reads at a glance
-  const bg = g.createLinearGradient(0, 0, 0, h);
-  bg.addColorStop(0, '#111721');
-  bg.addColorStop(1, '#04070c');
-  g.fillStyle = bg;
-  g.fillRect(0, 0, w, h);
-  // accent bar (top edge) + accent glyph strip along the left
-  const hex = `#${accent.toString(16).padStart(6, '0')}`;
-  g.fillStyle = hex;
-  g.fillRect(0, 0, w, 8);
-  g.fillRect(0, h - 8, w, 8);
-  g.fillRect(0, 0, 8, h);
-  // title (large, letter-spaced)
-  g.fillStyle = '#eaf2ff';
-  g.font = '700 62px -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif';
-  g.textAlign = 'left';
-  g.fillText(title, 44, 138);
-  // subtitle (smaller, muted)
-  g.fillStyle = 'rgba(180,200,230,0.7)';
-  g.font = '500 26px -apple-system, "SF Pro Text", sans-serif';
-  g.fillText(subtitle, 46, 184);
-  // corner "hero deck" tag
-  g.fillStyle = hex;
-  g.font = '600 16px -apple-system, sans-serif';
-  g.textAlign = 'right';
-  g.fillText('HERO DECK', w - 22, h - 24);
-  // "▸ CLICK TO ENTER" hint on the left
-  g.fillStyle = 'rgba(200,220,245,0.55)';
-  g.textAlign = 'left';
-  g.font = '500 15px -apple-system, sans-serif';
-  g.fillText('▸ CLICK TO ENTER', 46, h - 24);
-  const tex = new THREE.CanvasTexture(c);
-  tex.anisotropy = 4;
-  return tex;
+// ---- dust motes: fine particles adrift in the screen's light -----------------
+// Denser toward the screen (where the light pools). Additive + no depth-write so
+// they read as glints of light, not solid specks. This is the "alive air" that a
+// dry CineShader room lacks.
+const DUST_N = 550;
+const dustPos = new Float32Array(DUST_N * 3);
+const dustPhase = new Float32Array(DUST_N);
+for (let i = 0; i < DUST_N; i++) {
+  // bias z toward the screen (BACK) with a squared random → more motes in the glow
+  const zt = Math.pow(Math.random(), 1.7);
+  dustPos[i * 3 + 0] = (Math.random() * 2 - 1) * 8.5;
+  dustPos[i * 3 + 1] = Math.random() * (ROOM_H - 0.5) + 0.25;
+  dustPos[i * 3 + 2] = BACK + 1.5 + zt * (ROOM_D * 0.7);
+  dustPhase[i] = Math.random() * Math.PI * 2;
 }
+const dustGeo = new THREE.BufferGeometry();
+dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPos, 3));
+const dust = new THREE.Points(
+  dustGeo,
+  new THREE.PointsMaterial({
+    color: 0xbcd6ff,
+    size: 0.04,
+    sizeAttenuation: true,
+    transparent: true,
+    opacity: 0.38,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+    fog: true,
+  }),
+);
+scene.add(dust);
 
-DECKS.forEach((deck, i) => {
-  const z = POSTER_ZS[i];
-  const posterMat = new THREE.MeshStandardMaterial({
-    map: makePosterTexture(deck),
-    roughness: 0.55,
-    metalness: 0.15,
-    emissive: new THREE.Color(deck.accent),
-    emissiveIntensity: 0.06, // faint self-glow so posters read in the dim room
-  });
-  const poster = new THREE.Mesh(new THREE.PlaneGeometry(POSTER_W, POSTER_H), posterMat);
-  poster.position.set(POSTER_WALL_X, POSTER_Y, z);
-  poster.rotation.y = POSTER_ROTATE_Y;
-  poster.userData.deckId = deck.id;
-  poster.userData.accent = deck.accent;
-  scene.add(poster);
-  posterMeshes.push(poster);
-
-  // subtle frame around each poster (slightly larger, sits flush to wall)
-  const frame = new THREE.Mesh(
-    new THREE.PlaneGeometry(POSTER_W + 0.18, POSTER_H + 0.18),
-    mat(0x0a0d13, 0.6, 0.35),
-  );
-  frame.position.set(POSTER_WALL_X + 0.01, POSTER_Y, z);
-  frame.rotation.y = POSTER_ROTATE_Y;
-  scene.add(frame);
-
-  // one accent point light per poster — grazes the wall so the poster reads
-  const pl = new THREE.PointLight(deck.accent, 3.2, 6, 2.1);
-  pl.position.set(POSTER_WALL_X - 1.2, POSTER_Y + 1.0, z);
-  scene.add(pl);
-});
-// tag the main screen so the raycaster can route it to the default deck too
+// tag the main screen so a click routes it to the default deck
 screen.userData.deckId = DEFAULT_DECK_ID;
 
-scene.add(new THREE.AmbientLight(0x1c2935, 1.0));
-scene.add(new THREE.HemisphereLight(0x40597a, 0x080c12, 1.7)); // room (incl. side walls) dimly readable
+scene.add(new THREE.AmbientLight(0x24333f, 1.7));
+scene.add(new THREE.HemisphereLight(0x51708f, 0x0a1018, 2.6)); // industrial room reads dimly — a real space, not a void
+// a cool grazing rim from the back of the room rakes the side walls / pillars so
+// the architecture has form (a real massive room, not a flat black backdrop)
+const rimL = new THREE.DirectionalLight(0x3f5f88, 0.6);
+rimL.position.set(-8, 6, BACK + ROOM_D);
+scene.add(rimL);
+const rimR = new THREE.DirectionalLight(0x2c4a6e, 0.45);
+rimR.position.set(8, 5, BACK + ROOM_D);
+scene.add(rimR);
 
 // ---- post: bloom + grade --------------------------------------------------
 const composer = new EffectComposer(renderer);
 composer.addPass(new RenderPass(scene, camera));
-composer.addPass(new UnrealBloomPass(new THREE.Vector2(W(), H()), 0.62, 0.72, 0.82));
+// depth of field: the screen (and its wall) stay crisp; foreground pillars, floor
+// edge and far corners fall soft — the single biggest "filmic camera" cue.
+const bokeh = new BokehPass(scene, camera, { focus: 19.0, aperture: 0.00062, maxblur: 0.014 });
+composer.addPass(bokeh);
+composer.addPass(new UnrealBloomPass(new THREE.Vector2(W(), H()), 0.46, 0.72, 0.86));
 composer.addPass(new OutputPass());
+
+// ---- volumetric god-rays: light shafts stream out of the bright screen -------
+// Crepuscular rays — march each pixel toward the screen's screen-space position,
+// accumulating only bright samples (the screen). Through the dusty haze this
+// reads as beams of light filling the room. The shot a dry CineShader can't do.
+const SCREEN_CENTER = new THREE.Vector3(0, SCREEN_Y, BACK);
+const godrays = new ShaderPass({
+  uniforms: {
+    tDiffuse: { value: null },
+    uLightPos: { value: new THREE.Vector2(0.5, 0.6) },
+    uStrength: { value: 0.4 },
+  },
+  vertexShader:
+    'varying vec2 vUv; void main(){ vUv=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0); }',
+  fragmentShader: `
+    uniform sampler2D tDiffuse; uniform vec2 uLightPos; uniform float uStrength; varying vec2 vUv;
+    void main(){
+      vec3 base = texture2D(tDiffuse, vUv).rgb;
+      const int N = 48;
+      vec2 delta = (vUv - uLightPos) / float(N) * 0.92;
+      vec2 coord = vUv;
+      float illum = 1.0;
+      vec3 rays = vec3(0.0);
+      for(int i=0;i<N;i++){
+        coord -= delta;
+        vec3 s = texture2D(tDiffuse, coord).rgb;
+        float luma = dot(s, vec3(0.299,0.587,0.114));
+        s *= smoothstep(0.55, 0.95, luma);   // only the bright screen throws light
+        rays += s * illum;
+        illum *= 0.955;                        // decay along the shaft
+      }
+      rays *= uStrength / float(N);
+      gl_FragColor = vec4(base + rays * vec3(0.86, 0.94, 1.12), 1.0); // cool-tinted beams
+    }`,
+});
+composer.addPass(godrays);
 const gradePass = new ShaderPass({
   uniforms: { tDiffuse: { value: null }, uTime: { value: 0 } },
   vertexShader:
@@ -384,17 +404,15 @@ composer.addPass(gradePass);
 // screen → seamlessly becomes a fullscreen Star Nest flight (片头) → ATLAS logo
 // reveal → hands off to the studio deck (the real 3D scene).
 let state = 'room'; // 'room' | 'entering' | 'intro' | 'done'
-let camZ = 16;
-let speed = 0;
 let enterProg = 0;
 let introStart = 0;
 let lastT = performance.now() * 0.001;
-const CAM_HOLD_Z = 5.5,
-  ENTER_Z = BACK + 3.0,
-  IDLE_SPEED = 0.6,
-  ENTER_SPEED = 12,
-  OBLIQUE_X = -6.0; // camera hugs the left wall → side wall + pillars frame the shot
-const lookAt = new THREE.Vector3(0, SCREEN_Y - 0.5, BACK);
+// cinematic steadicam: the camera travels/arcs around the viewer at eye height,
+// always framing the figure against the screen, then flies INTO the screen on click.
+const ENTER_TARGET = new THREE.Vector3(0, SCREEN_Y, BACK + 3.0);
+const clickFrom = new THREE.Vector3(); // camera pos captured the instant of click
+const lookNow = new THREE.Vector3(); // current idle look target
+const enterLookAt = new THREE.Vector3(0, SCREEN_Y, BACK);
 const logoEl = document.getElementById('enter-logo');
 
 function animate() {
@@ -425,35 +443,53 @@ function animate() {
     return;
   }
 
-  // subtle poster idle: gentle emissive breathing so they feel alive across the room
-  for (const p of posterMeshes) {
-    p.material.emissiveIntensity =
-      0.055 + 0.035 * (0.5 + 0.5 * Math.sin(time * 0.6 + p.position.z));
-  }
-
-  // room / entering: oblique dolly toward the screen
-  if (mixer) mixer.update(dt);
   const entering = state === 'entering';
-  const targetSpeed = entering ? ENTER_SPEED : IDLE_SPEED;
-  speed += (targetSpeed - speed) * Math.min(1, dt * 1.8); // continuous → no jump
-  camZ = Math.max(entering ? ENTER_Z : CAM_HOLD_Z, camZ - speed * dt);
-  if (entering) enterProg = Math.min(1, enterProg + dt * 0.7);
-  // oblique while idle; curve toward screen-centre only while flying in
-  const obliqueX = OBLIQUE_X + Math.sin(time * 0.11) * 0.5;
-  camera.position.x = obliqueX * (1 - enterProg);
-  camera.position.y =
-    2.5 + (SCREEN_Y - 2.5) * enterProg + Math.sin(time * 0.09) * 0.1 * (1 - enterProg);
-  camera.position.z = camZ;
-  camera.fov = 40 - enterProg * 8;
+  if (!entering) {
+    // steadicam: a slow arc around the viewer at human eye height. The figure's
+    // silhouette drifts across the bright screen as the angle changes — the shot
+    // reads as a real camera moving through the room, not a static webpage.
+    // varied shots without ever throwing the figure off the screen: the lateral
+    // arc stays gentle, but the DOLLY (near intimate ↔ far establishing) and the
+    // CRANE (low looking up ↔ high looking down) swing widely — different angles
+    // on the same viewer + screen, like a real camera working the room.
+    const sweep = Math.sin(time * 0.08) * 0.32;
+    const rad = 8.6 + Math.sin(time * 0.045) * 2.6; // dolly: close-up ↔ wide establishing
+    const camY = 1.55 + Math.sin(time * 0.063) * 0.85; // crane: low ↔ high
+    camera.position.set(
+      FIGURE_POS.x + Math.sin(sweep) * rad + 0.2,
+      camY,
+      FIGURE_POS.z + Math.cos(sweep) * rad + 1.2,
+    );
+    camera.fov = 40;
+    clickFrom.copy(camera.position); // ready for an instant fly-in
+    // look target rises/falls a touch with the crane so the framing stays alive
+    lookNow.set(FIGURE_POS.x * 0.6, SCREEN_Y - 1.0 + Math.sin(time * 0.05) * 0.5, BACK);
+    camera.lookAt(lookNow);
+  } else {
+    enterProg = Math.min(1, enterProg + dt * 0.6);
+    const e = enterProg * enterProg * (3 - 2 * enterProg); // smoothstep ease
+    camera.position.lerpVectors(clickFrom, ENTER_TARGET, e);
+    camera.fov = 40 - e * 8;
+    camera.lookAt(enterLookAt);
+    if (enterProg >= 0.999) {
+      state = 'intro';
+      introStart = time;
+    }
+  }
   camera.updateProjectionMatrix();
-  camera.lookAt(lookAt);
+
+  // dust drifts gently through the light; keep the figure/screen plane in focus
+  dust.rotation.y = time * 0.008;
+  dust.position.y = Math.sin(time * 0.1) * 0.12;
+  bokeh.uniforms['focus'].value = camera.position.distanceTo(entering ? enterLookAt : lookNow);
+
+  // steer the god-rays from the screen's current screen-space position
+  const sp = SCREEN_CENTER.clone().project(camera);
+  godrays.uniforms.uLightPos.value.set(sp.x * 0.5 + 0.5, sp.y * 0.5 + 0.5);
+
   composer.render();
   // once the room + the screen's renderer have a few frames up, reveal the page
   if (loadingEl && ++bootFrames === 14) loadingEl.classList.add('done');
-  if (entering && camZ <= ENTER_Z + 0.05) {
-    state = 'intro';
-    introStart = time;
-  }
 }
 animate();
 
@@ -464,7 +500,7 @@ animate();
 // push-in intro lands on that hero deck instead of the studio keynote.
 const raycaster = new THREE.Raycaster();
 const pointer = new THREE.Vector2();
-const clickables = [screen, ...posterMeshes];
+const clickables = [screen];
 
 function pickDeckId(event) {
   const rect = canvas.getBoundingClientRect();
