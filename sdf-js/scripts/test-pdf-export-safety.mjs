@@ -1,8 +1,5 @@
 // test-pdf-export-safety.mjs — PDF export must fail loud on bad rendered pages.
-import {
-  recordPdfRenderFailure,
-  shouldRunPdfLint,
-} from '../src/present/exporters/pdf.js';
+import { recordPdfRenderFailure, shouldRunPdfLint } from '../src/present/exporters/pdf.js';
 
 let passed = 0;
 let failed = 0;

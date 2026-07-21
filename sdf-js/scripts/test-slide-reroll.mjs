@@ -119,7 +119,10 @@ const baseParams = {
     threw = e.message;
   }
   ok(/locked/.test(threw || ''), 'slot locked during re-lift rejects returned scene');
-  ok(deck.slots[0].sceneData.subjects[0].type === 'bar', 'in-flight lock preserves pinned sceneData');
+  ok(
+    deck.slots[0].sceneData.subjects[0].type === 'bar',
+    'in-flight lock preserves pinned sceneData',
+  );
   deck.slots[0].locked = false;
 
   threw = null;
