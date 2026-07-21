@@ -76,6 +76,28 @@ export function createFigure({
 } = {}) {
   const wrap = document.getElementById('wrap');
   const canvas = document.getElementById('c');
+
+  // ---- WebGL2 gate -------------------------------------------------------------
+  // The studio renderer REQUIRES WebGL2 (HDR pipeline) and throws without it —
+  // which used to leave the boot spinner turning forever on phones and old
+  // Safari (concierge testers' first contact is an emailed link opened on a
+  // phone). Probe on a scratch canvas and swap the boot loader for an honest
+  // message instead of a hang.
+  const probe = document.createElement('canvas').getContext('webgl2');
+  if (!probe) {
+    const loadingEl = document.getElementById('loading');
+    if (loadingEl) {
+      loadingEl.innerHTML =
+        '<div style="max-width:560px;padding:0 28px;text-align:center;font:400 15px/1.7 system-ui,sans-serif;color:#dce6f5">' +
+        '<div style="font:600 22px/1.3 system-ui,sans-serif;letter-spacing:.3em;margin-bottom:18px">ATLAS·PRESENT</div>' +
+        '这个演示需要 WebGL2,当前浏览器/设备不支持。<br/>' +
+        'This demo needs WebGL2, which this browser does not provide.<br/><br/>' +
+        '请在<b>电脑上的 Chrome / Edge / Firefox</b> 打开这条链接。<br/>' +
+        'Open this link in desktop Chrome, Edge or Firefox.</div>';
+    }
+    throw new Error('[figure] WebGL2 unavailable — fallback notice shown');
+  }
+
   const size = () => {
     canvas.width = Math.max(1, wrap.clientWidth || window.innerWidth);
     canvas.height = Math.max(1, wrap.clientHeight || window.innerHeight);
