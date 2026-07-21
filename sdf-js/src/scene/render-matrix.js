@@ -454,6 +454,22 @@ function renderVersusForm(ir, env, opts) {
   };
 }
 
+// renderEvolutionForm assumes axes[0] = [past, present] IN THAT ORDER; an
+// extractor that lists [现在, 过去] would render history upside down. Swap
+// the era pair (and flip the matching cell index) when past comes second.
+function normalizeEraOrder(ir) {
+  const [a, b] = ir.axes[0];
+  if (PAST_AXIS_RE.test(String(a)) && !PRESENT_AXIS_RE.test(String(a))) return ir;
+  if (PAST_AXIS_RE.test(String(b)) || !PRESENT_AXIS_RE.test(String(a))) {
+    return {
+      ...ir,
+      axes: [[b, a], ir.axes[1]],
+      cells: ir.cells.map(([x, y]) => [1 - x, y]),
+    };
+  }
+  return ir;
+}
+
 export function renderMatrix(ir, opts = {}) {
   const v = validateIR(ir);
   if (!v.ok) throw new Error(`renderMatrix: invalid IR — ${v.errors.join('; ')}`);
@@ -461,7 +477,18 @@ export function renderMatrix(ir, opts = {}) {
     throw new Error(`renderMatrix: expected structure 'matrix', got '${ir.structure}'`);
   const env = getEnvironment(opts.env);
   if ((ir.form === 'evolution' || (!ir.form && isEraAxis(ir.axes[0]))) && ir.axes[0].length === 2)
-    return renderEvolutionForm(ir, env);
+    return renderEvolutionForm(normalizeEraOrder(ir), env);
+  // era axis on the ROWS (the 2015 flagship p4: axes = [3 dimensions,
+  // [过去, 现在]]) — same evolution read, transposed orientation. Swap axes
+  // and cell coordinates into the branch's expected shape.
+  if (!ir.form && ir.axes[1].length === 2 && isEraAxis(ir.axes[1]) && !isEraAxis(ir.axes[0])) {
+    const t = {
+      ...ir,
+      axes: [ir.axes[1], ir.axes[0]],
+      cells: ir.cells.map(([x, y]) => [y, x]),
+    };
+    return renderEvolutionForm(normalizeEraOrder(t), env);
+  }
   // versus: explicit form, or the unmistakable shape — exactly 2 contenders
   // compared across ≥3 dimensions (p5/p6 VS tables). SWOT (2×2) stays a wall.
   if (

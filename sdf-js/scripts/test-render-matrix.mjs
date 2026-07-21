@@ -163,6 +163,46 @@ ok(renderIR(swot).subjects.length === scene.subjects.length, 'renderIR dispatche
     rm(era).name.startsWith('(matrix·evolution)'),
     'implicit past/present 2×N matrix renders as evolution',
   );
+  // era axis on the ROWS (the flagship p4 shape: axes = [3 dims, [过去,现在]])
+  // transposes into the same evolution branch
+  const eraRows = {
+    structure: 'matrix',
+    title: '推荐引擎开创者',
+    axes: [
+      ['产生和消费方式', '流动方式', '终端'],
+      ['过去', '现在'],
+    ],
+    nodes: ['编辑挑选', '浏览搜索', 'PC', '个性化', '推荐关注', '移动终端'],
+    cells: [
+      [0, 0],
+      [1, 0],
+      [2, 0],
+      [0, 1],
+      [1, 1],
+      [2, 1],
+    ],
+    emphasis: [3],
+  };
+  const evo = rm(eraRows);
+  ok(evo.name.startsWith('(matrix·evolution)'), 'era axis on rows transposes into evolution');
+  // 编辑挑选 (过去) must land as a grounded PAST tablet, 个性化 as a PRESENT orb
+  ok(
+    evo.subjects.some((s) => s.id === 'past-0') && evo.subjects.some((s) => s.id === 'now-3'),
+    'transposed cells keep their era assignment',
+  );
+  // reversed era listing ([现在, 过去]) is normalized, not rendered upside down
+  const revved = {
+    ...era,
+    axes: [['现在', '过去'], era.axes[1]],
+    cells: era.cells.map(([x, y]) => [1 - x, y]),
+  };
+  const evo2 = rm(revved);
+  ok(
+    evo2.name.startsWith('(matrix·evolution)') &&
+      evo2.subjects.some((s) => s.id === 'past-0') ===
+        rm(era).subjects.some((s) => s.id === 'past-0'),
+    'reversed era order normalizes to the same layout',
+  );
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);
