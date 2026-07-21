@@ -116,6 +116,7 @@ export async function exportDeckToPPTX(deck, opts = {}) {
       });
     } catch (e) {
       console.error(`[pptx] slide render failed:`, e);
+      throw e;
     }
 
     const pngDataURL = canvas.toDataURL('image/png');

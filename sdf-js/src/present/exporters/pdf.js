@@ -52,13 +52,15 @@ const PAGE_H_MM = 157.5;
  * @param {object} [opts]
  * @param {(msg: string, pct: number) => void} [opts.onProgress]
  * @param {object} [opts.artMount]  — loaded mount (see art-mount.js)
- * @param {boolean} [opts.lint]     — run page-lint per page; issues collected
- *   in the returned lint report; lint.ok === false means出厂不合格
+ * @param {boolean} [opts.lint]     — run page-lint per page (default true; pass
+ *   false only for debugging); issues collected in the returned lint report;
+ *   lint.ok === false means出厂不合格
  * @returns {Promise<{pdf: object, pageCount: number,
  *   lint: {ok: boolean, pages: Array<{slotName: string, issues: string[]}>}}>}
  */
 export async function buildDeckPdf(deck, opts = {}) {
   const onProgress = opts.onProgress || (() => {});
+  const runLint = shouldRunPdfLint(opts);
   const JsPDF = await loadJsPDF();
   onProgress('jspdf loaded', 5);
 
@@ -92,6 +94,7 @@ export async function buildDeckPdf(deck, opts = {}) {
     const layout = layoutForSlot(slot, slot.sceneData);
     // Unified slide painter (Sprint 41): same renderer as the on-screen
     // preview — decoration layer included, per-atom errors non-fatal.
+    let renderFailed = false;
     try {
       await renderSceneDataToCanvas(canvas, slot.sceneData || { subjects: [] }, {
         palette: opts.artMount
@@ -113,9 +116,12 @@ export async function buildDeckPdf(deck, opts = {}) {
       });
     } catch (e) {
       console.error(`[pdf] slide render failed:`, e);
+      if (!runLint) throw e;
+      renderFailed = true;
+      recordPdfRenderFailure(lintPages, slot, e);
     }
 
-    if (opts.lint) {
+    if (runLint && !renderFailed) {
       const ctx = canvas.getContext('2d');
       const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
       const r = lintPage(img, pageKindOf(slot, layout));
@@ -144,8 +150,9 @@ export async function buildDeckPdf(deck, opts = {}) {
  */
 export async function exportDeckToPDF(deck, opts = {}) {
   const onProgress = opts.onProgress || (() => {});
-  const { pdf, pageCount, lint } = await buildDeckPdf(deck, opts);
-  if (opts.lint && !lint.ok) {
+  const runLint = shouldRunPdfLint(opts);
+  const { pdf, pageCount, lint } = await buildDeckPdf(deck, { ...opts, lint: runLint });
+  if (runLint && !lint.ok) {
     const detail = lint.pages.map((p) => `${p.slotName}: ${p.issues.join(', ')}`).join('; ');
     throw new Error(`page-lint failed — ${detail}`);
   }
@@ -158,4 +165,16 @@ export async function exportDeckToPDF(deck, opts = {}) {
 function todayIsoDate() {
   const d = new Date();
   return `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}`;
+}
+
+export function shouldRunPdfLint(opts = {}) {
+  return opts.lint !== false;
+}
+
+export function recordPdfRenderFailure(lintPages, slot, error) {
+  const msg = error?.message ? ` (${error.message})` : '';
+  lintPages.push({
+    slotName: slot?.slotName || `slot-${slot?.slotIdx ?? 'unknown'}`,
+    issues: [`render-failed${msg}`],
+  });
 }
