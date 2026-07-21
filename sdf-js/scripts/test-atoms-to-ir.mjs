@@ -63,7 +63,13 @@ ok(parseMagnitude('-8') === -8, 'parseMagnitude: negative string');
       ],
     },
   });
-  ok(ir && ir.structure === 'sequence', 'timeline → sequence');
+  ok(
+    ir &&
+      ir.structure === 'roadmap' &&
+      ir.climb === false &&
+      ir.milestones[1].date === 'Q4',
+    'timeline → flat roadmap with dated milestones',
+  );
 }
 {
   const ir = atomToIR({
@@ -75,7 +81,10 @@ ok(parseMagnitude('-8') === -8, 'parseMagnitude: negative string');
       ],
     },
   });
-  ok(ir && ir.structure === 'sequence', 'vertical-timeline → sequence');
+  ok(
+    ir && ir.structure === 'roadmap' && ir.climb === true && ir.milestones.length === 2,
+    'vertical-timeline → climbing roadmap',
+  );
 }
 {
   const ir = atomToIR({
@@ -221,13 +230,19 @@ ok(parseMagnitude('-8') === -8, 'parseMagnitude: negative string');
     args: { values: [1.2, 1.8, 2.4], labels: ['Q1', 'Q2', 'Q3'] },
   });
   ok(
-    ir && ir.structure === 'magnitude' && ir.emphasis[0] === 2,
-    'bar → magnitude, emphasis = max index',
+    ir && ir.structure === 'magnitude' && ir.orientation === 'horizontal' && ir.emphasis[0] === 2,
+    'bar → horizontal magnitude, emphasis = max index',
   );
 }
 {
   const ir = atomToIR({ type: 'pie', args: { values: [32, 23, 45], labels: ['A', 'B', 'C'] } });
-  ok(ir && ir.structure === 'magnitude', 'pie → magnitude');
+  ok(
+    ir &&
+      ir.structure === 'proportion' &&
+      ir.groups[0].values[2] === 45 &&
+      ir.groups[0].sliceLabels[0] === 'A',
+    'pie → proportion with slice labels',
+  );
 }
 {
   const ir = atomToIR({
@@ -321,6 +336,18 @@ ok(atomToIR({ type: 'org-chart', args: {} }) === null, 'org-chart with no root �
   ok(
     ir && ir.structure === 'hierarchy' && ir.nodes.length === 4,
     'slotToIR picks richest (4 nodes > 2)',
+  );
+}
+{
+  const ir = slotToIR({
+    subjects: [
+      { type: 'bar', args: { values: [1, 2], labels: ['A', 'B'] } },
+      { type: 'pie', args: { values: [30, 20, 50], labels: ['A', 'B', 'C'] } },
+    ],
+  });
+  ok(
+    ir && ir.structure === 'proportion' && ir.groups[0].values.length === 3,
+    'slotToIR scores node-less proportion IRs instead of throwing',
   );
 }
 ok(

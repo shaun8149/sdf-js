@@ -73,7 +73,9 @@ export function renderImage(ir, opts = {}) {
       anchor: [0, CY, -0.06], // ON the slab's front face — off-axis views stay parallax-free
       w: W,
       h: H,
-      revealAt: -1.0,
+      // assembleDeck lets the outgoing plate fade 0.4s into a 1.2s transit;
+      // prelight the incoming plate only after that fade finishes.
+      revealAt: -0.8,
     },
   ];
   // optional spoken captions ride the subtitle column like everywhere else

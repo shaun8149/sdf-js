@@ -156,5 +156,22 @@ const deck = JSON.parse(
   );
 }
 
+{
+  const imageDeck = {
+    title: 'screens',
+    slides: [
+      { structure: 'image', title: 'Page A', image: 'assets/a.png' },
+      { structure: 'image', title: 'Page B', image: 'assets/b.png' },
+    ],
+  };
+  const scene = assembleDeck(imageDeck);
+  const plates = scene.overlay.filter((o) => o.role === 'plate');
+  ok(plates.length === 2, 'image stations emit one plate overlay each');
+  ok(
+    plates[0].hideAt <= plates[1].revealAt + 1e-6,
+    'consecutive image plates do not overlap during transit',
+  );
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);
