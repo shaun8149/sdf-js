@@ -275,14 +275,14 @@ async function main() {
         if (hs.every((p) => existsSync(p)))
           halves = hs.map((p) => readFileSync(p).toString('base64'));
       }
-      const { ir } = await extractSlideIR({
+      const { irs } = await extractSlideIR({
         slide: slides[i],
         index: i,
         callLLM,
         imageBase64,
         halves,
       });
-      if (!ir) {
+      if (!irs || irs.length === 0) {
         console.log(`  ✗ [${idxStr}] ${page.label} — extraction failed entirely`);
         results.push({
           suite: suite.name,
@@ -293,15 +293,29 @@ async function main() {
         });
         continue;
       }
-      let pass = 0;
-      const fails = [];
-      for (const check of page.checks) {
-        const okc = runCheck(check, ir, {
-          vision: !!imageBase64,
-          chartGeometry: !!page.chartGeometry,
-        });
-        if (okc) pass++;
-        else fails.push(check.type);
+      // Multi-chart pages return several IRs; a golden page's checks are
+      // scored against the BEST-matching one (existing single-IR goldens
+      // describe one chart — the split must not fail them for also
+      // extracting the page's second chart).
+      let ir = irs[0];
+      let pass = -1;
+      let fails = [];
+      for (const cand of irs) {
+        let p = 0;
+        const f = [];
+        for (const check of page.checks) {
+          const okc = runCheck(check, cand, {
+            vision: !!imageBase64,
+            chartGeometry: !!page.chartGeometry,
+          });
+          if (okc) p++;
+          else f.push(check.type);
+        }
+        if (p > pass) {
+          pass = p;
+          fails = f;
+          ir = cand;
+        }
       }
       const mark = pass === page.checks.length ? '✓' : '✗';
       console.log(

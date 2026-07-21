@@ -53,7 +53,7 @@ export const SLIDE_SYSTEM = `You convert ONE presentation page into ONE "IR" JSO
 ## Fidelity rules (hard — violations are audit failures)
 1. NEVER invent numbers, names, dates, or claims. Every value/label must appear on the page (or be an explicit chart read — see rule 2).
 2. A number read off a chart's bars (not printed as text) is an APPROXIMATION: keep ratios faithful and append "读图近似" (or "approx. from chart" for non-Chinese decks) inside callout.sub.
-3. If a page holds several charts, model the ONE carrying the headline claim; the other charts' key claims go into callout.sub. NEVER merge separate charts into one grouped station: "series" is ONLY for series that share one axis and one unit inside a single chart (2011 vs 2014 on the same % scale). Two charts with different units (分钟 vs 条数 vs %) or different axes are different charts — pick one. A single time-series chart → form:"line", not grouped.
+3. If a page holds TWO distinct primary charts (different chart types, or different units/axes — e.g. a revenue column chart AND a market-share pie), return a JSON ARRAY of two IR objects in page reading order, each with its own title (page title + that chart's subtitle) and its own callout. NEVER merge separate charts into one grouped station: "series" is ONLY for series that share one axis and one unit inside a single chart (2011 vs 2014 on the same % scale). Two charts with different units (分钟 vs 条数 vs %) or different axes are different charts. Minor decorative side-charts still go into callout.sub of the main chart — the ARRAY is for pages whose message needs both. A single time-series chart → form:"line", not grouped.
 4. Template placeholder copy (lorem-style "This is a placeholder text") may be copied verbatim or dropped — never rewritten into realistic-sounding content.
 5. Keep the page's own vocabulary; do not import claims from other pages.
 6. callout.text must be a claim PRESENT on the page. If the page makes no claim (template/placeholder decks), give a neutral reading ("四档:20% → 90%") — never editorialize: no "achieved" / "success" / "growth" unless the page says so.
@@ -96,15 +96,31 @@ The attached image IS the page. You can now READ chart geometry directly:
 // titles carry quotation marks ("头条号"媒体平台…) come back as "..."..."..."
 // and kill JSON.parse (eval vision rounds 1-3 lost p21 to exactly this).
 export function parseJsonLoose(text) {
-  const start = text.indexOf('{');
-  const end = text.lastIndexOf('}');
-  if (start < 0 || end <= start) throw new Error('no JSON object in response');
-  const body = text.slice(start, end + 1);
-  try {
-    return JSON.parse(body);
-  } catch {
-    return JSON.parse(escapeNakedQuotes(body));
+  // A multi-chart page returns a top-level ARRAY of IRs (rule 3). Try the
+  // slice whose opener comes first; if it doesn't parse (a '[' inside prose
+  // must not hijack an object response), fall back to the other one.
+  const candidates = [];
+  const objStart = text.indexOf('{');
+  const arrStart = text.indexOf('[');
+  const obj = objStart >= 0 ? text.slice(objStart, text.lastIndexOf('}') + 1) : null;
+  const arr = arrStart >= 0 ? text.slice(arrStart, text.lastIndexOf(']') + 1) : null;
+  if (arr && (objStart < 0 || arrStart < objStart)) candidates.push(arr, obj);
+  else candidates.push(obj, arr);
+  let lastErr = null;
+  for (const body of candidates) {
+    if (!body || body.length < 2) continue;
+    try {
+      return JSON.parse(body);
+    } catch (e) {
+      lastErr = e;
+    }
+    try {
+      return JSON.parse(escapeNakedQuotes(body));
+    } catch (e) {
+      lastErr = e;
+    }
   }
+  throw lastErr || new Error('no JSON object in response');
 }
 
 function escapeNakedQuotes(s) {
@@ -420,28 +436,49 @@ export async function extractSlideIR({
         maxTokens: imageBase64 ? 6500 : 4000,
         temperature: attempt === 0 ? 0 : 0.5,
       });
-      let cand = parseJsonLoose(raw);
-      let v = validateIR(cand);
-      if (!v.ok) {
-        // Deterministic arity repair: vision reads often produce more data
-        // points than the text layer has labels (11 monthly bars vs 6 printed
-        // dates) and the model loops on "length must match" at temperature 0.
-        // Pad labels (①…) or truncate values — never invent data.
-        cand = repairArity(cand);
-        v = validateIR(cand);
+      const parsed = parseJsonLoose(raw);
+      // Multi-chart pages return an ARRAY of IRs (rule 3) — validate, repair
+      // and gate each element; one bad element fails the whole attempt so the
+      // retry feedback covers everything the model got wrong.
+      const cands = Array.isArray(parsed) ? parsed : [parsed];
+      if (cands.length === 0) throw new Error('empty IR array');
+      const errs = [];
+      const fixed = cands.map((cand, ci) => {
+        let c = cand;
+        let v = validateIR(c);
+        if (!v.ok) {
+          // Deterministic arity repair: vision reads often produce more data
+          // points than the text layer has labels (11 monthly bars vs 6
+          // printed dates) and the model loops on "length must match" at
+          // temperature 0. Pad labels (①…) or truncate values — never invent.
+          c = repairArity(c);
+          v = validateIR(c);
+        }
+        if (!v.ok)
+          errs.push(...v.errors.map((e) => (cands.length > 1 ? `chart ${ci + 1}: ${e}` : e)));
+        return c;
+      });
+      if (errs.length === 0) {
+        const irs = [];
+        for (const c of fixed) {
+          let gated = flagUnitMismatch(
+            antiFabricationGate(c, { hadImage: !!imageBase64, ladders }),
+          );
+          gated = await verifyRoadmapPairings({ ir: gated, callLLM, halves });
+          gated = await verifyMatrixBindings({ ir: gated, callLLM, halves, imageBase64 });
+          irs.push(gated);
+        }
+        return {
+          ir: irs[0],
+          irs,
+          attempts: attempt + 1,
+          demoted: irs.some((x) => !!x.demoted),
+        };
       }
-      if (v.ok) {
-        let gated = flagUnitMismatch(
-          antiFabricationGate(cand, { hadImage: !!imageBase64, ladders }),
-        );
-        gated = await verifyRoadmapPairings({ ir: gated, callLLM, halves });
-        gated = await verifyMatrixBindings({ ir: gated, callLLM, halves, imageBase64 });
-        return { ir: gated, attempts: attempt + 1, demoted: !!gated.demoted };
-      }
-      lastErrs = v.errors;
+      lastErrs = errs;
     } catch (e) {
       lastErrs = [String(e.message || e).slice(0, 200)];
     }
   }
-  return { ir: null, attempts: retries, demoted: false, errors: lastErrs };
+  return { ir: null, irs: null, attempts: retries, demoted: false, errors: lastErrs };
 }
