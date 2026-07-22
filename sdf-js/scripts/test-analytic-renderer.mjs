@@ -28,6 +28,10 @@ console.log('=== analytic white-model renderer ===\n');
   ]);
   ok(r.ok && r.count === 2, 'two primitives compile');
   ok(r.fragSource.includes('iSphere') && r.fragSource.includes('iBox'), 'intersectors emitted');
+  ok(
+    r.fragSource.includes('iBoxSlab') && r.fragSource.includes('abs(rd) < 1e-12'),
+    'box intersector guards rays parallel to a slab',
+  );
   ok(r.fragSource.includes('rotY('), 'yaw rotation baked');
   ok(!r.fragSource.includes('for (int i'), 'ZERO loops — no marching anywhere');
   ok(r.fragSource.includes('sphOcc'), 'analytic occlusion present');

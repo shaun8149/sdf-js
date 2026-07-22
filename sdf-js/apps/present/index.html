@@ -66,11 +66,26 @@
         cursor: pointer;
         z-index: 50;
       }
+      #loading {
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        display: grid;
+        place-items: center;
+        background: #06080d;
+        opacity: 1;
+        transition: opacity 0.35s ease;
+      }
+      #loading.done {
+        opacity: 0;
+        pointer-events: none;
+      }
     </style>
   </head>
   <body>
     <div id="canvas-wrap" tabindex="-1">
       <canvas id="c-present"></canvas>
+      <div id="loading" class="done" role="status" aria-live="polite"></div>
       <button id="nav-prev" class="nav-btn" aria-label="previous">‹</button>
       <button id="nav-next" class="nav-btn" aria-label="next">›</button>
       <button id="btn-fs" aria-label="fullscreen">⛶ Fullscreen</button>

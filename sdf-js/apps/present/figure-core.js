@@ -4,6 +4,7 @@
 import { createStudioRenderer } from '../../src/render/studio.js';
 import { applyStudioScene } from '../../src/runtime/apply-studio-scene.js';
 import { attachDeckWindows } from '../../src/runtime/deck-shader-windows.js';
+import { requireWebGL2OrNotice } from './webgl2-gate.js';
 
 // ---- 浮屏 (floating-screen) homography --------------------------------------
 // A plate is a DOM <img> laid out at PLATE_PX_W×PLATE_PX_H and warped by a
@@ -131,18 +132,7 @@ export function createFigure({
   // Safari (concierge testers' first contact is an emailed link opened on a
   // phone). Probe on a scratch canvas and swap the boot loader for an honest
   // message instead of a hang.
-  const probe = document.createElement('canvas').getContext('webgl2');
-  if (!probe) {
-    const loadingEl = document.getElementById('loading');
-    if (loadingEl) {
-      loadingEl.innerHTML =
-        '<div style="max-width:560px;padding:0 28px;text-align:center;font:400 15px/1.7 system-ui,sans-serif;color:#dce6f5">' +
-        '<div style="font:600 22px/1.3 system-ui,sans-serif;letter-spacing:.3em;margin-bottom:18px">ATLAS·PRESENT</div>' +
-        '这个演示需要 WebGL2,当前浏览器/设备不支持。<br/>' +
-        'This demo needs WebGL2, which this browser does not provide.<br/><br/>' +
-        '请在<b>电脑上的 Chrome / Edge / Firefox</b> 打开这条链接。<br/>' +
-        'Open this link in desktop Chrome, Edge or Firefox.</div>';
-    }
+  if (!requireWebGL2OrNotice({ loadingEl: document.getElementById('loading') })) {
     throw new Error('[figure] WebGL2 unavailable — fallback notice shown');
   }
 

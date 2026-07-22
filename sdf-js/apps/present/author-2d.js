@@ -187,11 +187,15 @@ async function adoptDeck(deck, note) {
   if (note) setStatus(note);
 }
 
-async function restoreDeckAfterGenerateFailure(error) {
+async function restoreDeckAfterGenerateFailure(error, deckToRestore = currentDeck) {
   const msg = error?.message || String(error);
-  if (!currentDeck) {
+  if (!deckToRestore) {
+    currentDeck = null;
+    window.__atlasDeck = null;
+    slidesEl.innerHTML = '';
     exportPptxEl.disabled = true;
     exportPdfEl.disabled = true;
+    batchPdfEl.disabled = true;
     saveEl.disabled = true;
     syncThemeSelect();
     syncProvenance();
@@ -200,9 +204,12 @@ async function restoreDeckAfterGenerateFailure(error) {
   }
 
   try {
+    currentDeck = deckToRestore;
+    window.__atlasDeck = currentDeck;
     await renderDeck(currentDeck);
     exportPptxEl.disabled = false;
     exportPdfEl.disabled = false;
+    batchPdfEl.disabled = false;
     saveEl.disabled = false;
     syncThemeSelect();
     syncProvenance();
@@ -749,6 +756,7 @@ async function generate() {
   goEl.disabled = true;
   exportPptxEl.disabled = true;
   exportPdfEl.disabled = true;
+  const deckBeforeGenerate = currentDeck;
   try {
     if (!DEMO_MODE && modeEl.value === 'full') {
       // 整本模式 (Sprint 32): article → 10-20 page briefing via the SAME
@@ -844,7 +852,7 @@ async function generate() {
     );
     autosave();
   } catch (e) {
-    await restoreDeckAfterGenerateFailure(e);
+    await restoreDeckAfterGenerateFailure(e, deckBeforeGenerate);
   } finally {
     goEl.disabled = false;
   }
