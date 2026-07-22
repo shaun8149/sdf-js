@@ -218,6 +218,7 @@ const TESTS = [
   { category: 'present', file: 'sdf-js/scripts/test-atoms-icons.mjs' },
   { category: 'present', file: 'sdf-js/scripts/test-atom-catalog.mjs' },
   { category: 'present', file: 'sdf-js/scripts/test-atoms-image.mjs' },
+  { category: 'present', file: 'sdf-js/scripts/test-webgl2-gate.mjs' },
   // Sprint 19 Batch 1 — new atoms (quote-pull / swot / value-chain-diagram / change-curve-chart)
   { category: 'present', file: 'sdf-js/scripts/test-sprint19-atoms.mjs' },
   // Sprint 19 Batch 2 — new atoms (radial-wheel-segmented / section-number-divider / stat-banner / comparison-table)

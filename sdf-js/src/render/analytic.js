@@ -108,16 +108,32 @@ float iSphere(vec3 ro, vec3 rd, float r) {
   return -b - sqrt(h);
 }
 
+bool iBoxSlab(float ro, float rd, float rad, vec3 axis, inout float tN, inout float tF, inout vec3 nN) {
+  if (abs(rd) < 1e-12) {
+    return ro >= -rad && ro <= rad;
+  }
+  float m = 1.0 / rd;
+  float t1 = (-rad - ro) * m;
+  float t2 = ( rad - ro) * m;
+  float nearT = min(t1, t2);
+  float farT = max(t1, t2);
+  if (nearT > tN) {
+    tN = nearT;
+    nN = -sign(rd) * axis;
+  }
+  tF = min(tF, farT);
+  return true;
+}
+
 float iBox(vec3 ro, vec3 rd, vec3 h, out vec3 n) {
-  vec3 m = 1.0 / rd;
-  vec3 nv = m * ro;
-  vec3 k = abs(m) * h;
-  vec3 t1 = -nv - k;
-  vec3 t2 = -nv + k;
-  float tN = max(max(t1.x, t1.y), t1.z);
-  float tF = min(min(t2.x, t2.y), t2.z);
+  float tN = -1e20;
+  float tF = 1e20;
+  vec3 nN = vec3(0.0);
+  if (!iBoxSlab(ro.x, rd.x, h.x, vec3(1.0, 0.0, 0.0), tN, tF, nN)) return -1.0;
+  if (!iBoxSlab(ro.y, rd.y, h.y, vec3(0.0, 1.0, 0.0), tN, tF, nN)) return -1.0;
+  if (!iBoxSlab(ro.z, rd.z, h.z, vec3(0.0, 0.0, 1.0), tN, tF, nN)) return -1.0;
   if (tN > tF || tF < 0.0) return -1.0;
-  n = -sign(rd) * step(t1.yzx, t1.xyz) * step(t1.zxy, t1.xyz);
+  n = nN;
   return tN;
 }
 
