@@ -21,7 +21,7 @@ import { validateIR } from './ir.js';
 import { getEnvironment } from './environments.js';
 import { MODULE, SCALE, centeredRow, rowSpan as rowSpanOf } from './layout-tokens.js';
 import { TEMPO, introLead as introLeadOf } from './tempo-tokens.js';
-import { deriveMagnitudeInsight } from './insights.js';
+import { deriveMagnitudeInsight, magnitudeDisplay } from './insights.js';
 
 const label = (n) => (typeof n === 'string' ? n : (n && (n.label ?? n.name)) || '');
 
@@ -200,7 +200,7 @@ function renderHorizontalBars(ir, opts, env) {
     });
     // value chip at the bar's right tip
     overlay.push({
-      text: (ir.display && ir.display[i]) || String(mag[i]),
+      text: magnitudeDisplay(ir, i, mag[i]),
       anchor: [-L - 0.3, y, 0],
       role: 'value',
       radius: emphasis.has(i) ? 0.46 : 0.34,
@@ -342,7 +342,7 @@ function renderLineChart(ir, opts, env) {
       revealAt,
     });
     overlay.push({
-      text: (ir.display && ir.display[i]) || String(mag[i]),
+      text: magnitudeDisplay(ir, i, mag[i]),
       anchor: [xOf(i), yOf(i) + 0.62, 0],
       role: 'value',
       radius: i === emphasisIdx ? 0.46 : 0.32,
@@ -873,7 +873,7 @@ export function renderMagnitude(ir, opts = {}) {
       // ir.display[i]: the human formatting of the number ("$240.5M") — IR
       // magnitude is a bare number for geometry, but the label must not lose
       // the 2D end's formatting (Rule 18-24: numbers are payload).
-      text: (ir.display && ir.display[i]) || String(mag[i]),
+      text: magnitudeDisplay(ir, i, mag[i]),
       anchor: [x, H + 0.32, 0],
       role: 'value',
       radius: emphasis.has(i) ? 0.5 : 0.36,
