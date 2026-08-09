@@ -160,6 +160,28 @@ console.log('=== slide-digest: deterministic anti-fabrication layer ===\n');
     Array.isArray(arr) && arr.length === 2 && arr[1].structure === 'proportion',
     'top-level IR array parses (multi-chart page)',
   );
+  const objThenArr = parseJsonLoose(
+    '{"structure":"magnitude","title":"rev","nodes":["a"],"magnitude":[1]}\n' +
+      '[{"structure":"proportion","title":"pie","groups":[{"label":"g","values":[1,2],"sliceLabels":["a","b"]}]}]',
+  );
+  ok(
+    Array.isArray(objThenArr) &&
+      objThenArr.length === 2 &&
+      objThenArr[0].structure === 'magnitude' &&
+      objThenArr[1].structure === 'proportion',
+    'object+array multi-chart parses as two IRs',
+  );
+  const arrThenObj = parseJsonLoose(
+    '[{"structure":"magnitude","title":"rev","nodes":["a"],"magnitude":[1]}]\n' +
+      '{"structure":"proportion","title":"pie","groups":[{"label":"g","values":[1,2],"sliceLabels":["a","b"]}]}',
+  );
+  ok(
+    Array.isArray(arrThenObj) &&
+      arrThenObj.length === 2 &&
+      arrThenObj[0].structure === 'magnitude' &&
+      arrThenObj[1].structure === 'proportion',
+    'array+object multi-chart parses as two IRs',
+  );
   ok(
     !Array.isArray(parseJsonLoose('note [read图] first {"structure":"hold","x":[1,2]}')),
     'bracket inside prose does not hijack an object response',
@@ -172,6 +194,41 @@ console.log('=== slide-digest: deterministic anti-fabrication layer ===\n');
   );
   const r2 = repairArity({ structure: 'magnitude', nodes: ['a', 'b', 'c'], magnitude: [1, 2] });
   ok(r2.nodes.length === 2, 'arity repair trims surplus labels');
+}
+
+// ---- 3c.2 multi-chart final-attempt salvage -----------------------------------
+{
+  const { extractSlideIR } = await import('../src/mapping/slide-to-ir.js');
+  const response = JSON.stringify([
+    {
+      structure: 'magnitude',
+      title: 'Revenue',
+      nodes: ['A'],
+      magnitude: [1],
+      callout: { text: 'A = 1', sourcePage: 1 },
+    },
+    {
+      structure: 'proportion',
+      title: 'Share',
+      // invalid: proportion requires groups[]
+      callout: { text: 'share chart needs review', sourcePage: 1 },
+    },
+  ]);
+  const { irs, partialMultiChart } = await extractSlideIR({
+    slide: { title: 'Two charts', body: [] },
+    index: 0,
+    callLLM: async () => response,
+    retries: 1,
+  });
+  ok(
+    partialMultiChart === true &&
+      Array.isArray(irs) &&
+      irs.length === 2 &&
+      irs[0].structure === 'magnitude' &&
+      irs[1].structure === 'hold' &&
+      irs[1].needsReview === true,
+    'multi-chart final failure preserves valid IR and stubs failed sibling',
+  );
 }
 
 // ---- 3d. series arity + unit mismatch (final-showdown validators) ---------------

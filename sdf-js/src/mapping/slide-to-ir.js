@@ -97,31 +97,71 @@ The attached image IS the page. You can now READ chart geometry directly:
 // titles carry quotation marks ("头条号"媒体平台…) come back as "..."..."..."
 // and kill JSON.parse (eval vision rounds 1-3 lost p21 to exactly this).
 export function parseJsonLoose(text) {
-  // A multi-chart page returns a top-level ARRAY of IRs (rule 3). Try the
-  // slice whose opener comes first; if it doesn't parse (a '[' inside prose
-  // must not hijack an object response), fall back to the other one.
-  const candidates = [];
-  const objStart = text.indexOf('{');
-  const arrStart = text.indexOf('[');
-  const obj = objStart >= 0 ? text.slice(objStart, text.lastIndexOf('}') + 1) : null;
-  const arr = arrStart >= 0 ? text.slice(arrStart, text.lastIndexOf(']') + 1) : null;
-  if (arr && (objStart < 0 || arrStart < objStart)) candidates.push(arr, obj);
-  else candidates.push(obj, arr);
+  // A multi-chart page should return ONE top-level array, but models sometimes
+  // emit sibling JSON values (`{...}\n[{...}]`). Scan balanced top-level values
+  // in order so we can merge IR siblings without letting a prose "[note]" hijack
+  // an ordinary object response.
+  const parsedValues = [];
   let lastErr = null;
-  for (const body of candidates) {
-    if (!body || body.length < 2) continue;
+  for (let i = 0; i < text.length; i++) {
+    if (text[i] !== '{' && text[i] !== '[') continue;
+    const end = findJsonValueEnd(text, i);
+    if (end < 0) continue;
+    const body = text.slice(i, end + 1);
     try {
-      return JSON.parse(body);
+      parsedValues.push(JSON.parse(body));
+      i = end;
+      continue;
     } catch (e) {
       lastErr = e;
     }
     try {
-      return JSON.parse(escapeNakedQuotes(body));
+      parsedValues.push(JSON.parse(escapeNakedQuotes(body)));
+      i = end;
+      continue;
     } catch (e) {
       lastErr = e;
     }
   }
+  if (parsedValues.length === 1) return parsedValues[0];
+  if (parsedValues.length > 1) {
+    const merged = parsedValues.flatMap((v) => (Array.isArray(v) ? v : [v]));
+    if (merged.length > 1 && merged.every((v) => v && typeof v === 'object' && v.structure)) {
+      return merged;
+    }
+    return parsedValues[0];
+  }
   throw lastErr || new Error('no JSON object in response');
+}
+
+function findJsonValueEnd(s, start) {
+  const stack = [];
+  let inStr = false;
+  let esc = false;
+  for (let i = start; i < s.length; i++) {
+    const c = s[i];
+    if (inStr) {
+      if (esc) {
+        esc = false;
+      } else if (c === '\\') {
+        esc = true;
+      } else if (c === '"') {
+        inStr = false;
+      }
+      continue;
+    }
+    if (c === '"') {
+      inStr = true;
+      continue;
+    }
+    if (c === '{') stack.push('}');
+    else if (c === '[') stack.push(']');
+    else if (c === '}' || c === ']') {
+      if (stack.pop() !== c) return -1;
+      if (stack.length === 0) return i;
+    }
+  }
+  return -1;
 }
 
 function escapeNakedQuotes(s) {
@@ -400,6 +440,18 @@ export async function extractSlideIR({
   const ladders = pageLadders(slide).strong;
   const system = imageBase64 ? SLIDE_SYSTEM + VISION_ADDENDUM : SLIDE_SYSTEM;
   let lastErrs = null;
+  const finalizeIrs = async (items) => {
+    const irs = [];
+    for (const c of items) {
+      let gated = flagUnitMismatch(
+        antiFabricationGate(c, { hadImage: !!imageBase64, ladders }),
+      );
+      gated = await verifyRoadmapPairings({ ir: gated, callLLM, halves });
+      gated = await verifyMatrixBindings({ ir: gated, callLLM, halves, imageBase64 });
+      irs.push(gated);
+    }
+    return irs;
+  };
   for (let attempt = 0; attempt < retries; attempt++) {
     const text = lastErrs
       ? `${digest}\n\nYour previous attempt failed validation:\n- ${lastErrs.join('\n- ')}\nReturn a corrected IR JSON.`
@@ -444,7 +496,7 @@ export async function extractSlideIR({
       const cands = Array.isArray(parsed) ? parsed : [parsed];
       if (cands.length === 0) throw new Error('empty IR array');
       const errs = [];
-      const fixed = cands.map((cand, ci) => {
+      const checked = cands.map((cand, ci) => {
         let c = cand;
         let v = validateIR(c);
         if (!v.ok) {
@@ -457,23 +509,38 @@ export async function extractSlideIR({
         }
         if (!v.ok)
           errs.push(...v.errors.map((e) => (cands.length > 1 ? `chart ${ci + 1}: ${e}` : e)));
-        return c;
+        return { ir: c, ok: v.ok };
       });
       if (errs.length === 0) {
-        const irs = [];
-        for (const c of fixed) {
-          let gated = flagUnitMismatch(
-            antiFabricationGate(c, { hadImage: !!imageBase64, ladders }),
-          );
-          gated = await verifyRoadmapPairings({ ir: gated, callLLM, halves });
-          gated = await verifyMatrixBindings({ ir: gated, callLLM, halves, imageBase64 });
-          irs.push(gated);
-        }
+        const irs = await finalizeIrs(checked.map((x) => x.ir));
         return {
           ir: irs[0],
           irs,
           attempts: attempt + 1,
           demoted: irs.some((x) => !!x.demoted),
+        };
+      }
+      if (attempt === retries - 1 && cands.length > 1 && checked.some((x) => x.ok)) {
+        const salvaged = checked.map((x, ci) => {
+          if (x.ok) return x.ir;
+          const cand = x.ir && typeof x.ir === 'object' ? x.ir : {};
+          return {
+            structure: 'hold',
+            title: cand.title || slide.title || `第 ${index + 1} 页 · chart ${ci + 1}`,
+            nodes: [],
+            callout: cand.callout,
+            needsReview: true,
+            partialMultiChart: true,
+          };
+        });
+        const irs = await finalizeIrs(salvaged);
+        return {
+          ir: irs[0],
+          irs,
+          attempts: attempt + 1,
+          demoted: irs.some((x) => !!x.demoted),
+          partialMultiChart: true,
+          errors: errs,
         };
       }
       lastErrs = errs;
