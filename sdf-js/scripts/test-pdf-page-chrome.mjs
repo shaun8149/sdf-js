@@ -87,6 +87,43 @@ console.log('\n--- Timestamp header in top margin ---');
   );
 }
 
+console.log('\n--- Date-leading title in top margin is content ---');
+{
+  const lines = [
+    {
+      text: '2026/6/18 产品战略更新',
+      x: 50,
+      y: 30,
+      w: 220,
+      h: 14,
+      fontSize: 14,
+      fontFamily: 'Arial',
+    },
+    {
+      text: '2026-06-18 Launch Readiness',
+      x: 50,
+      y: 48,
+      w: 220,
+      h: 14,
+      fontSize: 14,
+      fontFamily: 'Arial',
+    },
+    {
+      text: '2026/6/18 09:43',
+      x: 50,
+      y: 30,
+      w: 100,
+      h: 8,
+      fontSize: 8,
+      fontFamily: 'Arial',
+    },
+  ];
+  const filtered = filterPageChrome(lines, PAGE_HEIGHT);
+  assert(filtered.some((l) => l.text === '2026/6/18 产品战略更新'), 'Chinese date-title kept');
+  assert(filtered.some((l) => l.text === '2026-06-18 Launch Readiness'), 'English date-title kept');
+  assert(!filtered.some((l) => l.text === '2026/6/18 09:43'), 'date-time-only chrome still dropped');
+}
+
 console.log('\n--- Page number alone in bottom margin ---');
 {
   const lines = [
