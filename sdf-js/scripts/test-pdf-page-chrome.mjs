@@ -119,9 +119,18 @@ console.log('\n--- Date-leading title in top margin is content ---');
     },
   ];
   const filtered = filterPageChrome(lines, PAGE_HEIGHT);
-  assert(filtered.some((l) => l.text === '2026/6/18 产品战略更新'), 'Chinese date-title kept');
-  assert(filtered.some((l) => l.text === '2026-06-18 Launch Readiness'), 'English date-title kept');
-  assert(!filtered.some((l) => l.text === '2026/6/18 09:43'), 'date-time-only chrome still dropped');
+  assert(
+    filtered.some((l) => l.text === '2026/6/18 产品战略更新'),
+    'Chinese date-title kept',
+  );
+  assert(
+    filtered.some((l) => l.text === '2026-06-18 Launch Readiness'),
+    'English date-title kept',
+  );
+  assert(
+    !filtered.some((l) => l.text === '2026/6/18 09:43'),
+    'date-time-only chrome still dropped',
+  );
 }
 
 console.log('\n--- Page number alone in bottom margin ---');
