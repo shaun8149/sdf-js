@@ -18,7 +18,7 @@ fetch('./prompts.json').then((r) => r.json()).then(async ({ prompts }) => {
     if (!head.ok) continue;
     const cell = document.createElement('div');
     cell.className = 'cell';
-    cell.innerHTML = `<iframe src="view.html?id=${id}"></iframe><span class="tag">${id}</span>`;
+    cell.innerHTML = `<iframe src="view.html?id=${id}&size=360"></iframe><span class="tag">${id}</span>`;
     document.getElementById('g').appendChild(cell);
   }
 });
