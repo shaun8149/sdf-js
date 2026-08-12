@@ -1,0 +1,160 @@
+{
+  "source": "examples/mvp/index.html data-example 按钮原文提取 (2026-08-12), 一字未改",
+  "prompts": [
+    {
+      "id": "coffee-cup",
+      "label": "coffee cup",
+      "prompt": "a coffee cup on a saucer"
+    },
+    {
+      "id": "knife",
+      "label": "knife",
+      "prompt": "a kitchen knife on a cutting board"
+    },
+    {
+      "id": "apple",
+      "label": "apple",
+      "prompt": "a red apple with a leaf"
+    },
+    {
+      "id": "bird",
+      "label": "bird",
+      "prompt": "a small bird sitting on a branch"
+    },
+    {
+      "id": "sailboat",
+      "label": "sailboat",
+      "prompt": "a sailboat on the sea, sun setting"
+    },
+    {
+      "id": "tulips",
+      "label": "tulips",
+      "prompt": "a vase with three tulips"
+    },
+    {
+      "id": "fish",
+      "label": "fish",
+      "prompt": "a fish, simple flat illustration"
+    },
+    {
+      "id": "house",
+      "label": "house",
+      "prompt": "a small house with a tree, low horizon"
+    },
+    {
+      "id": "egg-ellipse",
+      "label": "egg (ellipse)",
+      "prompt": "an egg resting on a small pillow"
+    },
+    {
+      "id": "pencil-segment",
+      "label": "pencil (segment)",
+      "prompt": "a yellow pencil with a pink eraser on a desk"
+    },
+    {
+      "id": "rainbow-arc",
+      "label": "rainbow (arc)",
+      "prompt": "a rainbow over green rolling hills"
+    },
+    {
+      "id": "clock-ring-segment",
+      "label": "clock (ring+segment)",
+      "prompt": "a wall clock showing 10:10, with hour and minute hands"
+    },
+    {
+      "id": "wine-glass-ellipse-segment",
+      "label": "wine glass (ellipse+segment)",
+      "prompt": "a wine glass half full of red wine on a table"
+    },
+    {
+      "id": "guitar-all-p0",
+      "label": "guitar (all P0)",
+      "prompt": "an acoustic guitar with strings and sound hole"
+    },
+    {
+      "id": "smile-arc-circle",
+      "label": "smile (arc+circle)",
+      "prompt": "a smiling face: round head, two eyes, an arc smile"
+    },
+    {
+      "id": "bicycle-ring-segment",
+      "label": "bicycle (ring+segment)",
+      "prompt": "a bicycle, side view"
+    },
+    {
+      "id": "twisted-doric-column",
+      "label": "twisted Doric column",
+      "prompt": "a 3D Doric column with a twisted shaft on a square base, vertical fluting"
+    },
+    {
+      "id": "vase-on-table",
+      "label": "vase on table",
+      "prompt": "a tall ceramic vase with narrow neck and wide base, smooth profile, on a wooden table"
+    },
+    {
+      "id": "wine-bottle-scene",
+      "label": "wine bottle scene",
+      "prompt": "a 3D wine bottle with a long neck and a wide base, on a flat surface"
+    },
+    {
+      "id": "wedding-ring",
+      "label": "wedding ring",
+      "prompt": "a 3D wedding ring, polished gold band, viewed at three-quarter angle"
+    },
+    {
+      "id": "croissant",
+      "label": "croissant",
+      "prompt": "a 3D croissant, crescent shape with rolled layers, bent into a curve"
+    },
+    {
+      "id": "donut-stack",
+      "label": "donut stack",
+      "prompt": "a stack of three glazed donuts of decreasing size, viewed from front"
+    },
+    {
+      "id": "snowman",
+      "label": "snowman",
+      "prompt": "a 3D snowman, three stacked spheres of decreasing size with a small orange carrot nose"
+    },
+    {
+      "id": "apple-on-table",
+      "label": "apple on table",
+      "prompt": "a 3D apple with a short stem and one leaf, on a 3D table"
+    },
+    {
+      "id": "moore-biomorphic",
+      "label": "Moore biomorphic",
+      "prompt": "a Henry Moore style biomorphic abstract sculpture, smooth blended organic curved forms"
+    },
+    {
+      "id": "stone-arch",
+      "label": "stone arch",
+      "prompt": "a 3D Greek arch bridge over a stream, single stone arch"
+    },
+    {
+      "id": "coffee-mug",
+      "label": "coffee mug",
+      "prompt": "a 3D coffee mug with a cylindrical body and curved handle, on a saucer"
+    },
+    {
+      "id": "chess-pawn",
+      "label": "chess pawn",
+      "prompt": "a 3D chess pawn on a square base, classic shape"
+    },
+    {
+      "id": "3d-dice",
+      "label": "3D dice",
+      "prompt": "a 3D dice showing the five-face up, white cube with rounded edges and black dots"
+    },
+    {
+      "id": "twisted-braid",
+      "label": "twisted braid",
+      "prompt": "a thick twisted braid of three strands, rope-like"
+    },
+    {
+      "id": "still-life",
+      "label": "still life",
+      "prompt": "a 3D still life: a tall vase with a single tulip and an apple beside it"
+    }
+  ]
+}
