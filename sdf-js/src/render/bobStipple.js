@@ -453,6 +453,64 @@ const lerpColor = (a, b, t) => [lerp(a[0], b[0], t), lerp(a[1], b[1], t), lerp(a
 
 // 从 base 色生成 5 色 palette。spread=0 → 全部 base（mono）；spread=1 → 完全展开。
 // complementWeight 单独控制互补色（震颤感的关键）。
+// ---------------------------------------------------------------------------
+// Weave mode（2026-08-12 spec: 2D 色彩升格）—— "色相听 LLM 的，颜料织法听 BOB 的"
+// 把 20 组 BOB_PIGMENTS 摊平成全局颜料池，按色相加权距离给每个 LLM 层色
+// 捞 K 支策展颜料做主织谱 pal，次近一档做 pal2；低饱和 base 走低饱和支
+// + 可选高饱和跳色。K 自适应: 强语义色(高饱和)收紧到 3，其余 5。
+// ---------------------------------------------------------------------------
+let _pigmentPool = null;
+function getPigmentPool() {
+  if (_pigmentPool) return _pigmentPool;
+  const seen = new Set();
+  const pool = [];
+  for (const set of BOB_PIGMENTS) {
+    for (const hex of set) {
+      if (seen.has(hex)) continue;
+      seen.add(hex);
+      const r = parseInt(hex.slice(1, 3), 16);
+      const g = parseInt(hex.slice(3, 5), 16);
+      const b = parseInt(hex.slice(5, 7), 16);
+      const [h, s, l] = rgbToHsl(r, g, b);
+      pool.push({ rgb: [r, g, b], style: `rgb(${r},${g},${b})`, h, s, l });
+    }
+  }
+  _pigmentPool = pool;
+  return pool;
+}
+
+const hueDist = (a, b) => {
+  const d = Math.abs(a - b);
+  return Math.min(d, 1 - d);
+};
+
+// baseRGB → { pal, pal2 }（fillStyle 字符串数组）。accent: 低饱和 base 的跳色支。
+function buildWeavePalettes(base) {
+  const pool = getPigmentPool();
+  const [h, s, l] = rgbToHsl(base[0], base[1], base[2]);
+  const K = s > 0.55 ? 3 : 5; // 强语义色收紧, 保色相纯度
+  let ranked;
+  if (s < 0.22) {
+    // 低饱和 base（纸/石/灰瓶）: 按明度差 + 低饱和优先排序
+    ranked = pool
+      .slice()
+      .sort((a, b) => a.s * 0.6 + Math.abs(a.l - l) - (b.s * 0.6 + Math.abs(b.l - l)));
+  } else {
+    // 常规: 色相为主, 饱和/明度为辅
+    const score = (p) => hueDist(p.h, h) * 3 + Math.abs(p.l - l) * 0.7 + Math.abs(p.s - s) * 0.3;
+    ranked = pool.slice().sort((a, b) => score(a) - score(b));
+  }
+  const pal = ranked.slice(0, K).map((p) => p.style);
+  const pal2 = ranked.slice(K, K * 2).map((p) => p.style);
+  return { pal, pal2, lowSat: s < 0.22 };
+}
+
+// 高饱和跳色支（BOB 震颤之源）: 从池中按 rng 抽一支 s>0.6 的颜料
+function pickAccent(rng) {
+  const vivid = getPigmentPool().filter((p) => p.s > 0.6);
+  return vivid[Math.floor(rng() * vivid.length)].style;
+}
+
 function expandColorPalette(base, spread, complementWeight) {
   if (spread === 0) {
     const s = rgbStr(base);
@@ -640,6 +698,8 @@ export function bobStipple(ctx, layers, options = {}) {
   //     spread. Muted look but lets caller drive subject colors.
   //   If explicit colorPalette is passed, it ALWAYS wins (back-compat).
   const bobPaletteMode = options.bobPaletteMode ?? true;
+  // weave 模式（2026-08-12 spec）: 语义锚定的 BOB 化。旋钮见 spec §四。
+  const weaveMode = options.colorMode === 'weave';
   const useLlmColor = options.useLlmColor ?? false;
   let colorPalette = options.colorPalette ?? null;
   let colorPalette2 = options.colorPalette2 ?? null;
@@ -687,11 +747,33 @@ export function bobStipple(ctx, layers, options = {}) {
   // didn't request LLM color mode, synthesize colorPalette + colorPalette2
   // from BOB's 20 hand-curated pigments. Uses the same `rng` (seed-driven)
   // so identical `seed` → identical palette pair (deterministic per token).
-  if (bobPaletteMode && !useLlmColor && !colorPalette) {
+  if (!weaveMode && bobPaletteMode && !useLlmColor && !colorPalette) {
     const picked = pickBobPalettes(rng);
     colorPalette = picked.pal;
     colorPalette2 = picked.pal2;
   }
+  // ---- weave 模式初始化（消耗 rng 的顺序固定, 同 seed 同图）----
+  let weaveLayers = null;
+  let weaveAccent = null;
+  let weaveAccentW = 0;
+  let weaveLight = null;
+  const weaveBgCache = new Map();
+  if (weaveMode) {
+    weaveLayers = preparedLayers.map((L) => buildWeavePalettes(L.color));
+    weaveAccentW = rng() < 0.75 ? 0.15 : 0.35; // 75% 低权重 / 25% 高权重
+    weaveAccent = pickAccent(rng);
+    const ang = rng() < 0.75 ? (3 * Math.PI) / 4 : rng() * Math.PI * 2; // 75% 左上
+    weaveLight = [Math.cos(ang), Math.sin(ang)];
+  }
+  const getWeaveBg = (col) => {
+    const key = ((col[0] >> 4) << 8) | ((col[1] >> 4) << 4) | (col[2] >> 4);
+    let w = weaveBgCache.get(key);
+    if (!w) {
+      w = buildWeavePalettes(col);
+      weaveBgCache.set(key, w);
+    }
+    return w;
+  };
   // 预转 palette 为 fillStyle 字符串，避免循环里重复 rgbStr
   const paletteStr = colorPalette ? colorPalette.map(rgbStr) : null;
   const palette2Str = colorPalette2 ? colorPalette2.map(rgbStr) : null;
@@ -813,7 +895,24 @@ export function bobStipple(ctx, layers, options = {}) {
       //   layerCount = floor(d·N) + (rng() < frac ? 1 : 0)  随机舍入
       // 2D layer 跳过，保留原 brushLayers
       let effBrushLayers = brushLayers;
-      if (hitLayerIdx >= 0 && preparedLayers[hitLayerIdx].is3D) {
+      const hit3D = hitLayerIdx >= 0 && preparedLayers[hitLayerIdx].is3D;
+      if (weaveMode && hitLayerIdx >= 0 && !hit3D) {
+        // 2D 假光照（spec 改动②）: 轮廓光 + 方向光 → 与 3D 同款密度公式。
+        // SDF 梯度 ≈ 外法向; 光向 weaveLight 为世界系(y 向上, flipY 已在 wy 处理)
+        const lsdf = preparedLayers[hitLayerIdx].sdf;
+        const d0 = lsdf([wx, wy]);
+        const eps = 0.01 * view;
+        const gx = (lsdf([wx + eps, wy]) - d0) / eps;
+        const gy = (lsdf([wx, wy + eps]) - d0) / eps;
+        const gl = Math.hypot(gx, gy) || 1;
+        const iDir = Math.min(
+          1,
+          Math.max(0, 0.5 + (0.5 * (gx * weaveLight[0] + gy * weaveLight[1])) / gl),
+        );
+        const iEdge = Math.min(1, Math.max(0, -d0 / (0.35 * view)));
+        hitIntensity = 0.5 * iEdge + 0.5 * iDir;
+      }
+      if (hit3D || (weaveMode && hitLayerIdx >= 0)) {
         const density = 1 - 0.92 * hitIntensity * hitIntensity;
         const dl = density * brushLayers;
         const base = Math.floor(dl);
@@ -827,7 +926,7 @@ export function bobStipple(ctx, layers, options = {}) {
       // - 3D path: regionOffset[region] → background/ground/object 三色分区
       //   （这是 painted.js scenes 7/8 那种 sky/ground/object 多色调的核心）
       // - LLM 模式（colorPalette=null）: colorBase 不用，走 expandColorPalette HSL 路径
-      const llmPalette = paletteMode ? null : getPalette(hitColor);
+      const llmPalette = paletteMode || weaveMode ? null : getPalette(hitColor);
       let colorBase = 0;
       if (paletteMode) {
         if (hitLayerIdx === -1) {
@@ -855,7 +954,19 @@ export function bobStipple(ctx, layers, options = {}) {
       }
 
       for (let layerIdx = 0; layerIdx < effBrushLayers; layerIdx++) {
-        if (paletteMode) {
+        if (weaveMode) {
+          // 织谱漫步 + 双板交替（spec 改动①③）: parity 保 BOB 色块震颤,
+          // 跳色只注入低饱和区 (spec 旋钮③)
+          const wl = hitLayerIdx >= 0 ? weaveLayers[hitLayerIdx] : getWeaveBg(hitColor);
+          const parity = i % 2 !== 0 ? 0 : j % 2 === 0 ? 1 : 2;
+          const useP2 = wl.pal2.length > 0 && layerIdx % 2 !== 0;
+          if (useP2 && wl.lowSat && rng() < weaveAccentW) {
+            ctx.fillStyle = weaveAccent;
+          } else {
+            const arr = useP2 ? wl.pal2 : wl.pal;
+            ctx.fillStyle = arr[(parity + layerIdx) % arr.length];
+          }
+        } else if (paletteMode) {
           // 双 palette 时奇数 brush 层用 palette2（BOB 原版交替）
           const useP2 = palette2Str && layerIdx % 2 !== 0;
           const palStr = useP2 ? palette2Str : paletteStr;
