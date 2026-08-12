@@ -4,157 +4,698 @@
     {
       "id": "coffee-cup",
       "label": "coffee cup",
-      "prompt": "a coffee cup on a saucer"
+      "prompt": "a coffee cup on a saucer",
+      "cat": "mvp-archive"
     },
     {
       "id": "knife",
       "label": "knife",
-      "prompt": "a kitchen knife on a cutting board"
+      "prompt": "a kitchen knife on a cutting board",
+      "cat": "mvp-archive"
     },
     {
       "id": "apple",
       "label": "apple",
-      "prompt": "a red apple with a leaf"
+      "prompt": "a red apple with a leaf",
+      "cat": "mvp-archive"
     },
     {
       "id": "bird",
       "label": "bird",
-      "prompt": "a small bird sitting on a branch"
+      "prompt": "a small bird sitting on a branch",
+      "cat": "mvp-archive"
     },
     {
       "id": "sailboat",
       "label": "sailboat",
-      "prompt": "a sailboat on the sea, sun setting"
+      "prompt": "a sailboat on the sea, sun setting",
+      "cat": "mvp-archive"
     },
     {
       "id": "tulips",
       "label": "tulips",
-      "prompt": "a vase with three tulips"
+      "prompt": "a vase with three tulips",
+      "cat": "mvp-archive"
     },
     {
       "id": "fish",
       "label": "fish",
-      "prompt": "a fish, simple flat illustration"
+      "prompt": "a fish, simple flat illustration",
+      "cat": "mvp-archive"
     },
     {
       "id": "house",
       "label": "house",
-      "prompt": "a small house with a tree, low horizon"
+      "prompt": "a small house with a tree, low horizon",
+      "cat": "mvp-archive"
     },
     {
       "id": "egg-ellipse",
       "label": "egg (ellipse)",
-      "prompt": "an egg resting on a small pillow"
+      "prompt": "an egg resting on a small pillow",
+      "cat": "mvp-archive"
     },
     {
       "id": "pencil-segment",
       "label": "pencil (segment)",
-      "prompt": "a yellow pencil with a pink eraser on a desk"
+      "prompt": "a yellow pencil with a pink eraser on a desk",
+      "cat": "mvp-archive"
     },
     {
       "id": "rainbow-arc",
       "label": "rainbow (arc)",
-      "prompt": "a rainbow over green rolling hills"
+      "prompt": "a rainbow over green rolling hills",
+      "cat": "mvp-archive"
     },
     {
       "id": "clock-ring-segment",
       "label": "clock (ring+segment)",
-      "prompt": "a wall clock showing 10:10, with hour and minute hands"
+      "prompt": "a wall clock showing 10:10, with hour and minute hands",
+      "cat": "mvp-archive"
     },
     {
       "id": "wine-glass-ellipse-segment",
       "label": "wine glass (ellipse+segment)",
-      "prompt": "a wine glass half full of red wine on a table"
+      "prompt": "a wine glass half full of red wine on a table",
+      "cat": "mvp-archive"
     },
     {
       "id": "guitar-all-p0",
       "label": "guitar (all P0)",
-      "prompt": "an acoustic guitar with strings and sound hole"
+      "prompt": "an acoustic guitar with strings and sound hole",
+      "cat": "mvp-archive"
     },
     {
       "id": "smile-arc-circle",
       "label": "smile (arc+circle)",
-      "prompt": "a smiling face: round head, two eyes, an arc smile"
+      "prompt": "a smiling face: round head, two eyes, an arc smile",
+      "cat": "mvp-archive"
     },
     {
       "id": "bicycle-ring-segment",
       "label": "bicycle (ring+segment)",
-      "prompt": "a bicycle, side view"
+      "prompt": "a bicycle, side view",
+      "cat": "mvp-archive"
     },
     {
       "id": "twisted-doric-column",
       "label": "twisted Doric column",
-      "prompt": "a 3D Doric column with a twisted shaft on a square base, vertical fluting"
+      "prompt": "a 3D Doric column with a twisted shaft on a square base, vertical fluting",
+      "cat": "mvp-archive"
     },
     {
       "id": "vase-on-table",
       "label": "vase on table",
-      "prompt": "a tall ceramic vase with narrow neck and wide base, smooth profile, on a wooden table"
+      "prompt": "a tall ceramic vase with narrow neck and wide base, smooth profile, on a wooden table",
+      "cat": "mvp-archive"
     },
     {
       "id": "wine-bottle-scene",
       "label": "wine bottle scene",
-      "prompt": "a 3D wine bottle with a long neck and a wide base, on a flat surface"
+      "prompt": "a 3D wine bottle with a long neck and a wide base, on a flat surface",
+      "cat": "mvp-archive"
     },
     {
       "id": "wedding-ring",
       "label": "wedding ring",
-      "prompt": "a 3D wedding ring, polished gold band, viewed at three-quarter angle"
+      "prompt": "a 3D wedding ring, polished gold band, viewed at three-quarter angle",
+      "cat": "mvp-archive"
     },
     {
       "id": "croissant",
       "label": "croissant",
-      "prompt": "a 3D croissant, crescent shape with rolled layers, bent into a curve"
+      "prompt": "a 3D croissant, crescent shape with rolled layers, bent into a curve",
+      "cat": "mvp-archive"
     },
     {
       "id": "donut-stack",
       "label": "donut stack",
-      "prompt": "a stack of three glazed donuts of decreasing size, viewed from front"
+      "prompt": "a stack of three glazed donuts of decreasing size, viewed from front",
+      "cat": "mvp-archive"
     },
     {
       "id": "snowman",
       "label": "snowman",
-      "prompt": "a 3D snowman, three stacked spheres of decreasing size with a small orange carrot nose"
+      "prompt": "a 3D snowman, three stacked spheres of decreasing size with a small orange carrot nose",
+      "cat": "mvp-archive"
     },
     {
       "id": "apple-on-table",
       "label": "apple on table",
-      "prompt": "a 3D apple with a short stem and one leaf, on a 3D table"
+      "prompt": "a 3D apple with a short stem and one leaf, on a 3D table",
+      "cat": "mvp-archive"
     },
     {
       "id": "moore-biomorphic",
       "label": "Moore biomorphic",
-      "prompt": "a Henry Moore style biomorphic abstract sculpture, smooth blended organic curved forms"
+      "prompt": "a Henry Moore style biomorphic abstract sculpture, smooth blended organic curved forms",
+      "cat": "mvp-archive"
     },
     {
       "id": "stone-arch",
       "label": "stone arch",
-      "prompt": "a 3D Greek arch bridge over a stream, single stone arch"
+      "prompt": "a 3D Greek arch bridge over a stream, single stone arch",
+      "cat": "mvp-archive"
     },
     {
       "id": "coffee-mug",
       "label": "coffee mug",
-      "prompt": "a 3D coffee mug with a cylindrical body and curved handle, on a saucer"
+      "prompt": "a 3D coffee mug with a cylindrical body and curved handle, on a saucer",
+      "cat": "mvp-archive"
     },
     {
       "id": "chess-pawn",
       "label": "chess pawn",
-      "prompt": "a 3D chess pawn on a square base, classic shape"
+      "prompt": "a 3D chess pawn on a square base, classic shape",
+      "cat": "mvp-archive"
     },
     {
       "id": "3d-dice",
       "label": "3D dice",
-      "prompt": "a 3D dice showing the five-face up, white cube with rounded edges and black dots"
+      "prompt": "a 3D dice showing the five-face up, white cube with rounded edges and black dots",
+      "cat": "mvp-archive"
     },
     {
       "id": "twisted-braid",
       "label": "twisted braid",
-      "prompt": "a thick twisted braid of three strands, rope-like"
+      "prompt": "a thick twisted braid of three strands, rope-like",
+      "cat": "mvp-archive"
     },
     {
       "id": "still-life",
       "label": "still life",
-      "prompt": "a 3D still life: a tall vase with a single tulip and an apple beside it"
+      "prompt": "a 3D still life: a tall vase with a single tulip and an apple beside it",
+      "cat": "mvp-archive"
+    },
+    {
+      "id": "wheel",
+      "label": "wheel",
+      "prompt": "a wooden cart wheel with spokes and a hub, side view, standing upright on the ground",
+      "cat": "extension"
+    },
+    {
+      "id": "stone-axe",
+      "label": "stone-axe",
+      "prompt": "a prehistoric stone axe: a knapped stone head lashed to a wooden handle, upright",
+      "cat": "extension"
+    },
+    {
+      "id": "sundial",
+      "label": "sundial",
+      "prompt": "a garden sundial on a short stone pedestal, with a triangular gnomon casting a shadow",
+      "cat": "extension"
+    },
+    {
+      "id": "bronze-ding",
+      "label": "bronze-ding",
+      "prompt": "a Chinese bronze ding cauldron with three legs and two upright ears, ceremonial and symmetric",
+      "cat": "extension"
+    },
+    {
+      "id": "pyramid",
+      "label": "pyramid",
+      "prompt": "the great pyramid in the desert with a low sun and a long shadow, a few dunes in front",
+      "cat": "extension"
+    },
+    {
+      "id": "roman-arch",
+      "label": "roman-arch",
+      "prompt": "a freestanding Roman stone arch with visible voussoirs and a keystone",
+      "cat": "extension"
+    },
+    {
+      "id": "amphora",
+      "label": "amphora",
+      "prompt": "a Greek amphora with two handles and a narrow neck, one simple decorative band",
+      "cat": "extension"
+    },
+    {
+      "id": "hourglass",
+      "label": "hourglass",
+      "prompt": "an hourglass with a wooden frame, sand flowing, upper half nearly empty",
+      "cat": "extension"
+    },
+    {
+      "id": "caravel",
+      "label": "caravel",
+      "prompt": "an age-of-discovery caravel with three masts and full square sails on a calm sea",
+      "cat": "extension"
+    },
+    {
+      "id": "dutch-windmill",
+      "label": "dutch-windmill",
+      "prompt": "a Dutch windmill with four large lattice blades, standing in a field, side view",
+      "cat": "extension"
+    },
+    {
+      "id": "lighthouse",
+      "label": "lighthouse",
+      "prompt": "a striped lighthouse on a rocky point, lamp room glowing, dusk sky",
+      "cat": "extension"
+    },
+    {
+      "id": "castle",
+      "label": "castle",
+      "prompt": "a medieval castle keep with two round towers, battlements and an arched gate, on a low hill",
+      "cat": "extension"
+    },
+    {
+      "id": "telescope",
+      "label": "telescope",
+      "prompt": "a brass telescope on a wooden tripod, tilted up toward a starry sky",
+      "cat": "extension"
+    },
+    {
+      "id": "steam-locomotive",
+      "label": "steam-locomotive",
+      "prompt": "a steam locomotive with large driving wheels and connecting rods, smokestack puffing, side view",
+      "cat": "extension"
+    },
+    {
+      "id": "hot-air-balloon",
+      "label": "hot-air-balloon",
+      "prompt": "a hot air balloon with a striped envelope and a wicker basket, floating over rolling hills",
+      "cat": "extension"
+    },
+    {
+      "id": "gear-train",
+      "label": "gear-train",
+      "prompt": "three interlocking metal gears of different sizes with meshing teeth",
+      "cat": "extension"
+    },
+    {
+      "id": "light-bulb",
+      "label": "light-bulb",
+      "prompt": "an Edison light bulb with a glowing looped filament and a screw base, centered",
+      "cat": "extension"
+    },
+    {
+      "id": "candlestick-phone",
+      "label": "candlestick-phone",
+      "prompt": "a vintage candlestick telephone with a separate earpiece hanging on a side hook",
+      "cat": "extension"
+    },
+    {
+      "id": "gramophone",
+      "label": "gramophone",
+      "prompt": "a gramophone with a large flared horn and a hand crank, sitting on a small table",
+      "cat": "extension"
+    },
+    {
+      "id": "typewriter",
+      "label": "typewriter",
+      "prompt": "a vintage typewriter with round keys and a sheet of paper rolled in, front view",
+      "cat": "extension"
+    },
+    {
+      "id": "bellows-camera",
+      "label": "bellows-camera",
+      "prompt": "a vintage bellows camera on a wooden tripod, accordion-fold body and a round brass lens",
+      "cat": "extension"
+    },
+    {
+      "id": "biplane",
+      "label": "biplane",
+      "prompt": "an early biplane with double wings and struts, a propeller at the nose, side view in flight",
+      "cat": "extension"
+    },
+    {
+      "id": "rocket-pad",
+      "label": "rocket-pad",
+      "prompt": "a retro rocket ship standing on a launch pad with a lattice gantry tower beside it",
+      "cat": "extension"
+    },
+    {
+      "id": "satellite",
+      "label": "satellite",
+      "prompt": "a satellite with a cylindrical body, a dish, and two solar panel wings, floating among stars",
+      "cat": "extension"
+    },
+    {
+      "id": "atom-model",
+      "label": "atom-model",
+      "prompt": "an atom symbol: a nucleus with three crossing elliptical electron orbits and small electrons",
+      "cat": "extension"
+    },
+    {
+      "id": "dna-helix",
+      "label": "dna-helix",
+      "prompt": "a DNA double helix: two ribbons twisting vertically with rungs between them",
+      "cat": "extension"
+    },
+    {
+      "id": "computer-chip",
+      "label": "computer-chip",
+      "prompt": "a computer chip: a black square package with a silver die and metal pins on all four sides",
+      "cat": "extension"
+    },
+    {
+      "id": "bitcoin-coin",
+      "label": "bitcoin-coin",
+      "prompt": "a gold coin with a large letter B symbol with two vertical strokes, thick edge, slight tilt",
+      "cat": "extension"
+    },
+    {
+      "id": "compass-luopan",
+      "label": "compass-luopan",
+      "prompt": "an ancient Chinese compass: a polished spoon-shaped lodestone resting on a square bronze divination plate",
+      "cat": "extension"
+    },
+    {
+      "id": "printing-press",
+      "label": "printing-press",
+      "prompt": "a Gutenberg printing press: a heavy wooden frame with a central screw and a flat platen over a paper bed",
+      "cat": "extension"
+    },
+    {
+      "id": "morandi-bottles",
+      "label": "morandi-bottles",
+      "prompt": "a Morandi still life: four muted matte bottles and jars of different heights clustered on a table",
+      "cat": "extension"
+    },
+    {
+      "id": "cezanne-fruit",
+      "label": "cezanne-fruit",
+      "prompt": "a Cezanne-style still life: a compote dish with apples and oranges on a draped white cloth",
+      "cat": "extension"
+    },
+    {
+      "id": "van-gogh-chair",
+      "label": "van-gogh-chair",
+      "prompt": "van Gogh's simple wooden chair with a woven rush seat, standing on a tiled floor",
+      "cat": "extension"
+    },
+    {
+      "id": "teapot",
+      "label": "teapot",
+      "prompt": "a round teapot with a curved spout, an arched handle and a small knob on the lid",
+      "cat": "extension"
+    },
+    {
+      "id": "umbrella",
+      "label": "umbrella",
+      "prompt": "an open umbrella seen from the side, visible ribs and a curved crook handle",
+      "cat": "extension"
+    },
+    {
+      "id": "scissors",
+      "label": "scissors",
+      "prompt": "a pair of scissors lying slightly open, two ring handles and crossed blades",
+      "cat": "extension"
+    },
+    {
+      "id": "skeleton-key",
+      "label": "skeleton-key",
+      "prompt": "an old brass skeleton key with an ornate bow and two square teeth, large and centered",
+      "cat": "extension"
+    },
+    {
+      "id": "eyeglasses",
+      "label": "eyeglasses",
+      "prompt": "a pair of round eyeglasses with thin metal frames, temples folded, lying on a surface",
+      "cat": "extension"
+    },
+    {
+      "id": "paper-plane",
+      "label": "paper-plane",
+      "prompt": "a paper airplane in flight with visible fold creases, gliding slightly downward",
+      "cat": "extension"
+    },
+    {
+      "id": "crescent-moon",
+      "label": "crescent-moon",
+      "prompt": "a crescent moon with a few scattered stars in a deep indigo night sky",
+      "cat": "extension"
+    },
+    {
+      "id": "solar-eclipse",
+      "label": "solar-eclipse",
+      "prompt": "a solar eclipse: a dark disc covering the sun with a bright corona ring, dark sky",
+      "cat": "extension"
+    },
+    {
+      "id": "saturn",
+      "label": "saturn",
+      "prompt": "the planet Saturn with tilted rings, floating in a starfield",
+      "cat": "extension"
+    },
+    {
+      "id": "comet",
+      "label": "comet",
+      "prompt": "a comet with a bright head and a long sweeping tail crossing a night sky",
+      "cat": "extension"
+    },
+    {
+      "id": "snowflake",
+      "label": "snowflake",
+      "prompt": "a six-pointed snowflake with symmetric branching arms, large and centered on deep blue",
+      "cat": "extension"
+    },
+    {
+      "id": "nautilus",
+      "label": "nautilus",
+      "prompt": "a nautilus shell in cross-section showing a logarithmic spiral of chambers",
+      "cat": "extension"
+    },
+    {
+      "id": "maple-leaf",
+      "label": "maple-leaf",
+      "prompt": "a red maple leaf with five pointed lobes and a stem, centered",
+      "cat": "extension"
+    },
+    {
+      "id": "ginkgo-leaf",
+      "label": "ginkgo-leaf",
+      "prompt": "a golden ginkgo leaf, fan-shaped with a central notch, on a thin stem",
+      "cat": "extension"
+    },
+    {
+      "id": "fern-frond",
+      "label": "fern-frond",
+      "prompt": "a green fern frond with paired leaflets, gently curving to one side",
+      "cat": "extension"
+    },
+    {
+      "id": "lotus",
+      "label": "lotus",
+      "prompt": "a pink lotus flower with layered petals above a round green lily pad on still water",
+      "cat": "extension"
+    },
+    {
+      "id": "bamboo",
+      "label": "bamboo",
+      "prompt": "three green bamboo stalks with visible joints and a few small leaf clusters",
+      "cat": "extension"
+    },
+    {
+      "id": "cactus-pot",
+      "label": "cactus-pot",
+      "prompt": "a saguaro cactus with two arms in a terracotta pot",
+      "cat": "extension"
+    },
+    {
+      "id": "mushroom",
+      "label": "mushroom",
+      "prompt": "a red spotted mushroom with a domed cap and a thick white stem, grass at the base",
+      "cat": "extension"
+    },
+    {
+      "id": "wheat-ears",
+      "label": "wheat-ears",
+      "prompt": "three golden wheat ears with fine awns on slender stalks",
+      "cat": "extension"
+    },
+    {
+      "id": "mountain-lake",
+      "label": "mountain-lake",
+      "prompt": "a snow-capped mountain reflected in a still lake, pine trees on the shore",
+      "cat": "extension"
+    },
+    {
+      "id": "wave",
+      "label": "wave",
+      "prompt": "a great cresting ocean wave with curling foam fingers, Hokusai style",
+      "cat": "extension"
+    },
+    {
+      "id": "desk-lamp",
+      "label": "desk-lamp",
+      "prompt": "an articulated desk lamp bent over a desk, casting a warm cone of light",
+      "cat": "extension"
+    },
+    {
+      "id": "book-stack",
+      "label": "book-stack",
+      "prompt": "a stack of five hardcover books of different sizes and colors, slightly offset",
+      "cat": "extension"
+    },
+    {
+      "id": "sealed-envelope",
+      "label": "sealed-envelope",
+      "prompt": "a sealed envelope with a red wax seal, lying at a slight tilt",
+      "cat": "extension"
+    },
+    {
+      "id": "pocket-watch",
+      "label": "pocket-watch",
+      "prompt": "a pocket watch on a chain with its lid open showing the face",
+      "cat": "extension"
+    },
+    {
+      "id": "fountain-pen",
+      "label": "fountain-pen",
+      "prompt": "a fountain pen with a gold nib lying diagonally, one drop of ink beside it",
+      "cat": "extension"
+    },
+    {
+      "id": "chess-knight",
+      "label": "chess-knight",
+      "prompt": "a chess knight piece on a round base, side profile, dark wood",
+      "cat": "extension"
+    },
+    {
+      "id": "paper-lantern",
+      "label": "paper-lantern",
+      "prompt": "a red paper lantern with visible ribs and a golden tassel, glowing warmly",
+      "cat": "extension"
+    },
+    {
+      "id": "folding-fan",
+      "label": "folding-fan",
+      "prompt": "an open folding fan with pleats radiating from a pivot, simple pattern on the paper",
+      "cat": "extension"
+    },
+    {
+      "id": "rocking-horse",
+      "label": "rocking-horse",
+      "prompt": "a wooden rocking horse on curved rockers, side view, small saddle",
+      "cat": "extension"
+    },
+    {
+      "id": "kite",
+      "label": "kite",
+      "prompt": "a diamond kite with a long bowed tail of ribbons, high in a windy sky",
+      "cat": "extension"
+    },
+    {
+      "id": "balloon-bunch",
+      "label": "balloon-bunch",
+      "prompt": "a bunch of five balloons of different colors on strings, floating",
+      "cat": "extension"
+    },
+    {
+      "id": "rain-boots",
+      "label": "rain-boots",
+      "prompt": "a pair of yellow rain boots standing in a shallow puddle",
+      "cat": "extension"
+    },
+    {
+      "id": "anchor",
+      "label": "anchor",
+      "prompt": "a ship anchor with a crossbar, a shank and two curved flukes, a loop of rope around it",
+      "cat": "extension"
+    },
+    {
+      "id": "compass-rose",
+      "label": "compass-rose",
+      "prompt": "a compass rose with an eight-pointed star and four cardinal letters",
+      "cat": "extension"
+    },
+    {
+      "id": "music-notes",
+      "label": "music-notes",
+      "prompt": "two eighth notes joined by a beam, large and centered on a warm background",
+      "cat": "extension"
+    },
+    {
+      "id": "violin",
+      "label": "violin",
+      "prompt": "a violin with f-holes and a scroll, standing upright with its bow beside it",
+      "cat": "extension"
+    },
+    {
+      "id": "windup-robot",
+      "label": "windup-robot",
+      "prompt": "a retro windup tin robot with a boxy body, antenna, and a key in its back",
+      "cat": "extension"
+    },
+    {
+      "id": "teacup-steam",
+      "label": "teacup-steam",
+      "prompt": "a porcelain teacup on a saucer with two wisps of steam rising",
+      "cat": "extension"
+    },
+    {
+      "id": "birdcage",
+      "label": "birdcage",
+      "prompt": "an open vintage birdcage with a dome top and a small swing inside, bird flying away",
+      "cat": "extension"
+    },
+    {
+      "id": "umbrella-rain",
+      "label": "umbrella-rain",
+      "prompt": "a closed umbrella leaning against a wall, raindrops and a small puddle",
+      "cat": "extension"
+    },
+    {
+      "id": "origami-crane",
+      "label": "origami-crane",
+      "prompt": "an origami paper crane with angular folded wings, head and tail",
+      "cat": "extension"
+    },
+    {
+      "id": "magnifier",
+      "label": "magnifier",
+      "prompt": "a magnifying glass with a wooden handle, lying over a sheet with fine lines",
+      "cat": "extension"
+    },
+    {
+      "id": "quill-ink",
+      "label": "quill-ink",
+      "prompt": "a feather quill standing in a round ink bottle, one written line on paper",
+      "cat": "extension"
+    },
+    {
+      "id": "candle",
+      "label": "candle",
+      "prompt": "a lit candle in a brass holder with a small flame and drips of wax",
+      "cat": "extension"
+    },
+    {
+      "id": "hammer-nails",
+      "label": "hammer-nails",
+      "prompt": "a claw hammer lying beside three nails, one nail half driven into a plank",
+      "cat": "extension"
+    },
+    {
+      "id": "ladder-moon",
+      "label": "ladder-moon",
+      "prompt": "a wooden ladder leaning against a large crescent moon, surreal night scene",
+      "cat": "extension"
+    },
+    {
+      "id": "swing-tree",
+      "label": "swing-tree",
+      "prompt": "a rope swing hanging from a large tree branch, empty seat, gentle hill",
+      "cat": "extension"
+    },
+    {
+      "id": "bench-autumn",
+      "label": "bench-autumn",
+      "prompt": "an empty park bench with a few fallen autumn leaves around it",
+      "cat": "extension"
+    },
+    {
+      "id": "mailbox",
+      "label": "mailbox",
+      "prompt": "a red curbside mailbox on a wooden post with its flag raised",
+      "cat": "extension"
+    },
+    {
+      "id": "well",
+      "label": "well",
+      "prompt": "a stone well with a peaked wooden roof, a crank and a hanging bucket",
+      "cat": "extension"
     }
   ]
 }
