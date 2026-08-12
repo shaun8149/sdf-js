@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>genlab gallery</title>
+<style>
+body{margin:0;background:#0d0d0d;font:12px monospace;color:#ccc}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:8px;padding:8px}
+.cell{position:relative;aspect-ratio:1}
+.cell iframe{width:100%;height:100%;border:0;background:#181818}
+.cell .tag{position:absolute;left:6px;bottom:6px;background:#000c;padding:2px 6px;border-radius:3px}
+</style></head><body>
+<div class="grid" id="g"></div>
+<script>
+// 全家福: prompts.json 里每个已生成的 id 一格 (?ids=a,b,c 可指定子集)
+const qs = new URLSearchParams(location.search);
+fetch('./prompts.json').then((r) => r.json()).then(async ({ prompts }) => {
+  const want = qs.get('ids') ? qs.get('ids').split(',') : prompts.map((p) => p.id);
+  for (const id of want) {
+    const head = await fetch(`./out/${id}.js`, { method: 'HEAD' });
+    if (!head.ok) continue;
+    const cell = document.createElement('div');
+    cell.className = 'cell';
+    cell.innerHTML = `<iframe src="view.html?id=${id}"></iframe><span class="tag">${id}</span>`;
+    document.getElementById('g').appendChild(cell);
+  }
+});
+</script>
+</body></html>
