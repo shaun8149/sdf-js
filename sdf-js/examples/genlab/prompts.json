@@ -696,6 +696,714 @@
       "label": "well",
       "prompt": "a stone well with a peaked wooden roof, a crank and a hanging bucket",
       "cat": "extension"
+    },
+    {
+      "id": "red-fuji",
+      "label": "red-fuji",
+      "prompt": "Mount Fuji glowing red at dawn with a snow-streaked peak, stylized cloud bands, Hokusai flat-color woodblock composition",
+      "cat": "landscape"
+    },
+    {
+      "id": "rain-bridge",
+      "label": "rain-bridge",
+      "prompt": "sudden rain over a wooden bridge, people with umbrellas hurrying across, dark river below, diagonal rain strokes, ukiyo-e composition",
+      "cat": "landscape"
+    },
+    {
+      "id": "blue-green-mountains",
+      "label": "blue-green-mountains",
+      "prompt": "layered blue-green mountains rolling into the distance with a winding river between them, Chinese shan-shui handscroll composition, mist bands between ridges",
+      "cat": "landscape"
+    },
+    {
+      "id": "lone-fisherman",
+      "label": "lone-fisherman",
+      "prompt": "a tiny fisherman in a small boat on a vast empty lake, one distant mountain, enormous negative space, Chinese literati painting composition",
+      "cat": "landscape"
+    },
+    {
+      "id": "sparse-trees",
+      "label": "sparse-trees",
+      "prompt": "a few bare sparse trees on a near shore, wide empty water, low distant hills, Ni Zan three-distance composition, muted ink tones",
+      "cat": "landscape"
+    },
+    {
+      "id": "guilin-peaks",
+      "label": "guilin-peaks",
+      "prompt": "karst limestone peaks rising from a calm river at dusk, a bamboo raft with a cormorant fisherman silhouetted, layered peak silhouettes fading back",
+      "cat": "landscape"
+    },
+    {
+      "id": "pine-cliff",
+      "label": "pine-cliff",
+      "prompt": "a lone pine tree leaning from a granite cliff over a sea of clouds, distant peaks poking through, Huangshan composition",
+      "cat": "landscape"
+    },
+    {
+      "id": "torii-water",
+      "label": "torii-water",
+      "prompt": "a great vermilion torii gate standing in the sea at high tide, distant island hills, symmetric reflection, centered composition",
+      "cat": "landscape"
+    },
+    {
+      "id": "bamboo-path",
+      "label": "bamboo-path",
+      "prompt": "a path through a towering bamboo grove, green stalks converging overhead, strong vertical rhythm, central vanishing point",
+      "cat": "landscape"
+    },
+    {
+      "id": "terrace-sunrise",
+      "label": "terrace-sunrise",
+      "prompt": "flooded rice terraces at sunrise, curved water bands mirroring an orange sky, stepped S-curves leading to a small hut",
+      "cat": "landscape"
+    },
+    {
+      "id": "pagoda-sakura",
+      "label": "pagoda-sakura",
+      "prompt": "a five-storied pagoda among cherry blossoms with Mount Fuji behind, layered composition: pink foreground, dark pagoda middle, pale mountain far",
+      "cat": "landscape"
+    },
+    {
+      "id": "great-wall",
+      "label": "great-wall",
+      "prompt": "the Great Wall snaking along mountain ridges into morning mist, watchtowers punctuating the S-curve, autumn hillsides",
+      "cat": "landscape"
+    },
+    {
+      "id": "starry-night",
+      "label": "starry-night",
+      "prompt": "a swirling night sky with spiral stars over a sleeping village, one dark cypress in the left foreground, van Gogh composition",
+      "cat": "landscape"
+    },
+    {
+      "id": "wheat-cypress",
+      "label": "wheat-cypress",
+      "prompt": "a golden wheat field under a windy sky with two dark cypress trees at right, rolling clouds, van Gogh composition",
+      "cat": "landscape"
+    },
+    {
+      "id": "sower-sunset",
+      "label": "sower-sunset",
+      "prompt": "a lone sower striding across a field at sunset, giant low sun behind his silhouette, diagonal field furrows, Millet-van Gogh composition",
+      "cat": "landscape"
+    },
+    {
+      "id": "haystacks",
+      "label": "haystacks",
+      "prompt": "two round haystacks in a stubble field at golden hour, long violet shadows, low horizon, Monet series composition",
+      "cat": "landscape"
+    },
+    {
+      "id": "waterlily-pond",
+      "label": "waterlily-pond",
+      "prompt": "a pond of water lilies with a green arched footbridge, willow reflections, Monet Giverny composition, no horizon",
+      "cat": "landscape"
+    },
+    {
+      "id": "impression-sunrise",
+      "label": "impression-sunrise",
+      "prompt": "a hazy harbor at sunrise, one small dark rowboat, an orange sun with a broken reflection path, Monet Impression composition",
+      "cat": "landscape"
+    },
+    {
+      "id": "mont-victoire",
+      "label": "mont-victoire",
+      "prompt": "a broad mountain seen across a patchwork valley of ochre fields and green pines, Cezanne composition, faceted planes",
+      "cat": "landscape"
+    },
+    {
+      "id": "wanderer-fog",
+      "label": "wanderer-fog",
+      "prompt": "a figure seen from behind standing on a rocky summit above a sea of fog, distant peaks emerging, Friedrich composition",
+      "cat": "landscape"
+    },
+    {
+      "id": "monk-sea",
+      "label": "monk-sea",
+      "prompt": "a tiny monk standing on a pale beach before an immense dark sea and enormous sky, extreme negative space, Friedrich composition",
+      "cat": "landscape"
+    },
+    {
+      "id": "turner-storm",
+      "label": "turner-storm",
+      "prompt": "a steamship in a swirling snow storm at sea, vortex composition, light breaking through the spiral, Turner",
+      "cat": "landscape"
+    },
+    {
+      "id": "hay-wain",
+      "label": "hay-wain",
+      "prompt": "a hay cart crossing a shallow river by a cottage, big English clouds, willows, Constable composition",
+      "cat": "landscape"
+    },
+    {
+      "id": "gleaners-field",
+      "label": "gleaners-field",
+      "prompt": "three bent figures gleaning in a harvested field, hay stacks far behind, low golden light, Millet composition",
+      "cat": "landscape"
+    },
+    {
+      "id": "grande-jatte",
+      "label": "grande-jatte",
+      "prompt": "people with parasols on a riverside park lawn, sailboats on the water, tall trees casting shade, Seurat pointillist composition",
+      "cat": "landscape"
+    },
+    {
+      "id": "hopper-lighthouse",
+      "label": "hopper-lighthouse",
+      "prompt": "a white lighthouse and keeper's house on a grassy hill in hard afternoon light, deep shadows, Hopper composition, lonely and still",
+      "cat": "landscape"
+    },
+    {
+      "id": "nighthawks-gas",
+      "label": "nighthawks-gas",
+      "prompt": "a lone gas station glowing at dusk on an empty road, dark pines behind, Hopper composition of light island in darkness",
+      "cat": "landscape"
+    },
+    {
+      "id": "rousseau-jungle",
+      "label": "rousseau-jungle",
+      "prompt": "a dense naive jungle with giant leaves, exotic flowers, a full moon, and one hiding tiger face, Rousseau flat-pattern composition",
+      "cat": "landscape"
+    },
+    {
+      "id": "klimt-birch",
+      "label": "klimt-birch",
+      "prompt": "a birch forest in autumn, white trunks with dark eyes on a carpet of gold leaves, flat decorative composition, Klimt",
+      "cat": "landscape"
+    },
+    {
+      "id": "mondrian-tree",
+      "label": "mondrian-tree",
+      "prompt": "a single great red tree with branching blue limbs against a pale sky, flattened all-over branch pattern, early Mondrian",
+      "cat": "landscape"
+    },
+    {
+      "id": "hockney-road",
+      "label": "hockney-road",
+      "prompt": "a winding road through candy-colored rolling hills with patchwork fields, playful naive perspective, Hockney composition",
+      "cat": "landscape"
+    },
+    {
+      "id": "shishkin-pines",
+      "label": "shishkin-pines",
+      "prompt": "morning in a pine forest, sun rays slanting through mist between tall trunks, Shishkin composition",
+      "cat": "landscape"
+    },
+    {
+      "id": "levitan-autumn",
+      "label": "levitan-autumn",
+      "prompt": "golden autumn birches along a small blue river bending away, Levitan composition, high russian sky",
+      "cat": "landscape"
+    },
+    {
+      "id": "volga-barge",
+      "label": "volga-barge",
+      "prompt": "a wide calm river at dusk with one barge, vast horizontal bands of water and sky, tiny figures on the far bank",
+      "cat": "landscape"
+    },
+    {
+      "id": "bruegel-winter",
+      "label": "bruegel-winter",
+      "prompt": "hunters descending a snowy hill toward a frozen village pond with skaters, bare trees framing left, Bruegel high-viewpoint composition",
+      "cat": "landscape"
+    },
+    {
+      "id": "box-hill-picnic",
+      "label": "box-hill-picnic",
+      "prompt": "a chalk hillside dropping to a patchwork of fields, picnickers under one big tree, English pastoral composition",
+      "cat": "landscape"
+    },
+    {
+      "id": "half-dome",
+      "label": "half-dome",
+      "prompt": "a granite half-dome cliff glowing at sunset above a pine valley, moon rising in a deep blue sky, Ansel Adams composition",
+      "cat": "landscape"
+    },
+    {
+      "id": "moonrise-village",
+      "label": "moonrise-village",
+      "prompt": "moonrise over a small village with white crosses in the graveyard, dark mountains behind, huge dark sky above a thin bright band, Ansel Adams composition",
+      "cat": "landscape"
+    },
+    {
+      "id": "kirkjufell",
+      "label": "kirkjufell",
+      "prompt": "a cone-shaped mountain by the sea with a waterfall in the foreground leading in, S-curve stream, Iceland composition",
+      "cat": "landscape"
+    },
+    {
+      "id": "tuscany-road",
+      "label": "tuscany-road",
+      "prompt": "a white gravel road winding up a wave of golden hills to a farmhouse crowned by cypress trees, Tuscany composition",
+      "cat": "landscape"
+    },
+    {
+      "id": "lavender-field",
+      "label": "lavender-field",
+      "prompt": "converging rows of purple lavender leading to a lone stone barn, Provence composition, warm evening light",
+      "cat": "landscape"
+    },
+    {
+      "id": "tea-hills",
+      "label": "tea-hills",
+      "prompt": "emerald tea plantation rows curving over hills like contour lines, morning mist in the valleys, one tiny picker with a basket",
+      "cat": "landscape"
+    },
+    {
+      "id": "dune-curves",
+      "label": "dune-curves",
+      "prompt": "sahara sand dunes with one sharp S-curve ridge line dividing light and shadow, one tiny camel caravan on the crest",
+      "cat": "landscape"
+    },
+    {
+      "id": "monument-valley",
+      "label": "monument-valley",
+      "prompt": "three sandstone buttes on a vast red desert plain under a huge sky, long straight empty road leading in, low sun",
+      "cat": "landscape"
+    },
+    {
+      "id": "antelope-canyon",
+      "label": "antelope-canyon",
+      "prompt": "inside a sandstone slot canyon, a single light beam falling through the twisting orange walls to the sand floor",
+      "cat": "landscape"
+    },
+    {
+      "id": "fjord-cliff",
+      "label": "fjord-cliff",
+      "prompt": "a deep blue fjord between sheer cliffs, one tiny red cabin on the green shore, high viewpoint, Norway composition",
+      "cat": "landscape"
+    },
+    {
+      "id": "dolomites-three",
+      "label": "dolomites-three",
+      "prompt": "three jagged dolomite towers glowing pink at sunset above scree slopes, alpine meadow with a small hut in front",
+      "cat": "landscape"
+    },
+    {
+      "id": "wanaka-tree",
+      "label": "wanaka-tree",
+      "prompt": "one lone willow tree standing in a still lake, mountains behind, perfect reflection, minimalist centered composition",
+      "cat": "landscape"
+    },
+    {
+      "id": "tulip-mill",
+      "label": "tulip-mill",
+      "prompt": "striped bands of red, yellow and pink tulip fields leading to a Dutch windmill, low horizon, big cloud sky",
+      "cat": "landscape"
+    },
+    {
+      "id": "stonehenge-dawn",
+      "label": "stonehenge-dawn",
+      "prompt": "megalith stone circle silhouetted against a pale dawn sky, low mist over the grass, crows circling",
+      "cat": "landscape"
+    },
+    {
+      "id": "santorini-domes",
+      "label": "santorini-domes",
+      "prompt": "white cubic houses and three blue domes stacked on a cliff over a deep blue sea, Greek island composition",
+      "cat": "landscape"
+    },
+    {
+      "id": "cinque-terre",
+      "label": "cinque-terre",
+      "prompt": "candy-colored houses stacked on a cliff above a small harbor with boats, Italian riviera composition",
+      "cat": "landscape"
+    },
+    {
+      "id": "burano-canal",
+      "label": "burano-canal",
+      "prompt": "a canal lined with brightly colored fishermen's houses reflected in the water, laundry lines, Burano composition",
+      "cat": "landscape"
+    },
+    {
+      "id": "populus-autumn",
+      "label": "populus-autumn",
+      "prompt": "golden desert poplar trees with twisted trunks in autumn, blue sky, sand dunes behind, Ejina composition",
+      "cat": "landscape"
+    },
+    {
+      "id": "zhangjiajie",
+      "label": "zhangjiajie",
+      "prompt": "impossibly tall sandstone pillar mountains rising from a misty forest valley, layered silhouettes, floating peaks composition",
+      "cat": "landscape"
+    },
+    {
+      "id": "li-river-mist",
+      "label": "li-river-mist",
+      "prompt": "layers of karst mountains in morning mist along a river, each layer paler than the last, aerial perspective composition",
+      "cat": "landscape"
+    },
+    {
+      "id": "route-66",
+      "label": "route-66",
+      "prompt": "a dead-straight desert highway running to a vanishing point between mesas, dashed center line leading in, huge sky",
+      "cat": "landscape"
+    },
+    {
+      "id": "bixby-bridge",
+      "label": "bixby-bridge",
+      "prompt": "a tall arched concrete bridge spanning a coastal canyon, waves breaking below, winding cliff road behind, Big Sur composition",
+      "cat": "landscape"
+    },
+    {
+      "id": "durdle-door",
+      "label": "durdle-door",
+      "prompt": "a natural limestone arch curving into a turquoise sea from a pale pebble beach, high chalk cliffs behind",
+      "cat": "landscape"
+    },
+    {
+      "id": "lighthouse-storm",
+      "label": "lighthouse-storm",
+      "prompt": "a huge white wave exploding around a stone lighthouse in a storm, the keeper's lamp still glowing, dramatic sea",
+      "cat": "landscape"
+    },
+    {
+      "id": "aurora-cabin",
+      "label": "aurora-cabin",
+      "prompt": "green aurora curtains rippling over a snow-covered cabin with warm windows, spruce silhouettes, arctic night",
+      "cat": "landscape"
+    },
+    {
+      "id": "milkyway-tent",
+      "label": "milkyway-tent",
+      "prompt": "the milky way arching over a single glowing yellow tent in a mountain valley, silhouetted ridge line",
+      "cat": "landscape"
+    },
+    {
+      "id": "cappadocia",
+      "label": "cappadocia",
+      "prompt": "dozens of hot air balloons drifting over eroded fairy-chimney valleys at sunrise, layered rock ridges",
+      "cat": "landscape"
+    },
+    {
+      "id": "prismatic-spring",
+      "label": "prismatic-spring",
+      "prompt": "a great hot spring seen from above: turquoise center ringed by yellow and orange bacterial mats, boardwalk with tiny people",
+      "cat": "landscape"
+    },
+    {
+      "id": "glacier-cave",
+      "label": "glacier-cave",
+      "prompt": "inside a blue glacier ice cave, light glowing through rippled ice walls toward the bright opening",
+      "cat": "landscape"
+    },
+    {
+      "id": "oasis-palms",
+      "label": "oasis-palms",
+      "prompt": "a green palm oasis in a hollow between giant orange dunes, small pool reflecting the palms",
+      "cat": "landscape"
+    },
+    {
+      "id": "flamingo-lake",
+      "label": "flamingo-lake",
+      "prompt": "a pink flock of flamingos on a mirror-flat soda lake, distant volcano, horizontal bands composition",
+      "cat": "landscape"
+    },
+    {
+      "id": "cracked-playa",
+      "label": "cracked-playa",
+      "prompt": "cracked desert playa tiles leading to a lone sailing stone with its long track, distant purple mountains, low sun",
+      "cat": "landscape"
+    },
+    {
+      "id": "sunflower-field",
+      "label": "sunflower-field",
+      "prompt": "a sea of sunflowers all facing the low sun, one crooked scarecrow, rolling hills behind",
+      "cat": "landscape"
+    },
+    {
+      "id": "vineyard-terraces",
+      "label": "vineyard-terraces",
+      "prompt": "terraced vineyards stepping down to a lake at golden hour, a small stone hut among the vines, Lavaux composition",
+      "cat": "landscape"
+    },
+    {
+      "id": "scottish-glen",
+      "label": "scottish-glen",
+      "prompt": "a lone white cottage in a vast moody green glen, one shaft of sunlight through storm clouds hitting the cottage",
+      "cat": "landscape"
+    },
+    {
+      "id": "giants-causeway",
+      "label": "giants-causeway",
+      "prompt": "hexagonal basalt columns stepping down into a churning grey-green sea, storm light on the horizon",
+      "cat": "landscape"
+    },
+    {
+      "id": "uluru-red",
+      "label": "uluru-red",
+      "prompt": "a great red monolith rock glowing at sunset on a flat desert plain, one gnarled desert oak in the foreground",
+      "cat": "landscape"
+    },
+    {
+      "id": "serengeti-acacia",
+      "label": "serengeti-acacia",
+      "prompt": "a lone flat-topped acacia tree on golden savanna, giraffe silhouette beneath it, enormous orange sun setting behind",
+      "cat": "landscape"
+    },
+    {
+      "id": "iceberg-arch",
+      "label": "iceberg-arch",
+      "prompt": "a blue iceberg with a natural arch drifting on dark polar water, small penguins on a floe in front",
+      "cat": "landscape"
+    },
+    {
+      "id": "terraced-fields-yunnan",
+      "label": "terraced-fields-yunnan",
+      "prompt": "flooded terraces reflecting a pink and violet sunset sky, black ridge lines between the mirror pools, high viewpoint",
+      "cat": "landscape"
+    },
+    {
+      "id": "autumn-lane",
+      "label": "autumn-lane",
+      "prompt": "a straight country lane under an arched tunnel of flaming autumn trees, leaves on the road, central vanishing point",
+      "cat": "landscape"
+    },
+    {
+      "id": "snow-birch-path",
+      "label": "snow-birch-path",
+      "prompt": "a path through snow-covered birches, blue winter shadows striping the snow, one red-coated walker far ahead",
+      "cat": "landscape"
+    },
+    {
+      "id": "moor-lone-tree",
+      "label": "moor-lone-tree",
+      "prompt": "a wind-bent hawthorn tree alone on a foggy moor, frost on the grass, pale sun disc in the mist",
+      "cat": "landscape"
+    },
+    {
+      "id": "rapeseed-train",
+      "label": "rapeseed-train",
+      "prompt": "a small red train crossing a sea of yellow rapeseed flowers, snow mountain backdrop, horizontal composition",
+      "cat": "landscape"
+    },
+    {
+      "id": "sea-stack-sunset",
+      "label": "sea-stack-sunset",
+      "prompt": "twelve limestone sea stacks standing in golden surf along a cliff coast, low sun, Great Ocean Road composition",
+      "cat": "landscape"
+    },
+    {
+      "id": "chocolate-hills",
+      "label": "chocolate-hills",
+      "prompt": "hundreds of round grassy mounds repeating to the horizon in morning haze, one palm tree in the foreground",
+      "cat": "landscape"
+    },
+    {
+      "id": "namib-deadvlei",
+      "label": "namib-deadvlei",
+      "prompt": "black dead camelthorn trees on a white clay pan against a towering apricot dune, hard shadow line, surreal minimal composition",
+      "cat": "landscape"
+    },
+    {
+      "id": "lone-red-barn",
+      "label": "lone-red-barn",
+      "prompt": "a lone red barn with a white roof in a vast snow field, one line of fence posts leading to it, minimalist composition",
+      "cat": "landscape"
+    },
+    {
+      "id": "one-boat-band",
+      "label": "one-boat-band",
+      "prompt": "a single rowboat on water rendered as three flat horizontal bands of sky, sea and sand, extreme minimalist composition",
+      "cat": "landscape"
+    },
+    {
+      "id": "winding-river-s",
+      "label": "winding-river-s",
+      "prompt": "a river making one perfect S-curve through green marsh at sunset, glowing water against dark land, aerial view",
+      "cat": "landscape"
+    },
+    {
+      "id": "zigzag-path",
+      "label": "zigzag-path",
+      "prompt": "a zigzag mountain path with tiny pilgrims climbing toward a summit shrine, switchbacks stacking up the composition",
+      "cat": "landscape"
+    },
+    {
+      "id": "cloud-shadow-plain",
+      "label": "cloud-shadow-plain",
+      "prompt": "a vast golden plain with giant traveling cloud shadows, one windmill water pump, huge cumulus sky, low horizon",
+      "cat": "landscape"
+    },
+    {
+      "id": "valley-fog-layers",
+      "label": "valley-fog-layers",
+      "prompt": "five mountain ridges in fog, each layer paler toward the horizon, one bird crossing the empty sky, gradient composition",
+      "cat": "landscape"
+    },
+    {
+      "id": "pier-into-mist",
+      "label": "pier-into-mist",
+      "prompt": "an old wooden pier extending into a misty lake toward nothing, perfect symmetry, centered one-point perspective",
+      "cat": "landscape"
+    },
+    {
+      "id": "window-storm",
+      "label": "window-storm",
+      "prompt": "a view through a farmhouse window: rain streaks on glass, lightning over distant hills, a candle on the sill, frame-in-frame composition",
+      "cat": "landscape"
+    },
+    {
+      "id": "gate-to-field",
+      "label": "gate-to-field",
+      "prompt": "an open wooden gate in a stone wall leading into a sunlit wheat field, path curving beyond, framing composition",
+      "cat": "landscape"
+    },
+    {
+      "id": "reflection-perfect",
+      "label": "reflection-perfect",
+      "prompt": "an alpine peak and its flawless mirror reflection in a still lake forming a diamond, one canoe breaking the symmetry with ripples",
+      "cat": "landscape"
+    },
+    {
+      "id": "golden-larch-lake",
+      "label": "golden-larch-lake",
+      "prompt": "golden larch forest around a turquoise alpine lake, scree slopes above, one small island with three trees",
+      "cat": "landscape"
+    },
+    {
+      "id": "storm-light-field",
+      "label": "storm-light-field",
+      "prompt": "a dark storm sky over a sunlit green field, dramatic light contrast band at the horizon, one white farmhouse catching the light",
+      "cat": "landscape"
+    },
+    {
+      "id": "terrace-moon",
+      "label": "terrace-moon",
+      "prompt": "a crescent moon over dark terraced hills, one lit farmhouse window, deep blue night gradient sky",
+      "cat": "landscape"
+    },
+    {
+      "id": "desert-night-cactus",
+      "label": "desert-night-cactus",
+      "prompt": "tall saguaro cactus silhouettes against a purple-orange desert twilight, thin crescent moon, minimal two-tone composition",
+      "cat": "landscape"
+    },
+    {
+      "id": "beach-umbrella-min",
+      "label": "beach-umbrella-min",
+      "prompt": "one striped beach umbrella and two empty chairs on a wide empty beach, high horizon, pastel minimalist composition",
+      "cat": "landscape"
+    },
+    {
+      "id": "snowfield-fence",
+      "label": "snowfield-fence",
+      "prompt": "a diagonal line of half-buried fence posts crossing a blank snowfield into fog, one crow on the last post",
+      "cat": "landscape"
+    },
+    {
+      "id": "waterfall-gorge",
+      "label": "waterfall-gorge",
+      "prompt": "a tall thin waterfall dropping into a mossy gorge, a small red footbridge crossing the stream below, vertical composition",
+      "cat": "landscape"
+    },
+    {
+      "id": "island-one-house",
+      "label": "island-one-house",
+      "prompt": "a tiny grass island with one white house in a calm grey sea, Faroe minimalism, huge sky",
+      "cat": "landscape"
+    },
+    {
+      "id": "canyon-river-bend",
+      "label": "canyon-river-bend",
+      "prompt": "a river making a full horseshoe bend around a rock tower, seen from the rim at sunset, orange cliffs, Horseshoe Bend composition",
+      "cat": "landscape"
+    },
+    {
+      "id": "headlight-road-hills",
+      "label": "headlight-road-hills",
+      "prompt": "a night road over rolling hills, one pair of headlights tracing the far curve, deep blue dusk, red taillight streak",
+      "cat": "landscape"
+    },
+    {
+      "id": "sun-pillar-frost",
+      "label": "sun-pillar-frost",
+      "prompt": "a low winter sun with a vertical light pillar over a frozen lake, ice-skater tracks, pink and blue frost sky",
+      "cat": "landscape"
+    },
+    {
+      "id": "mammatus-wheat",
+      "label": "mammatus-wheat",
+      "prompt": "dramatic pouch-like mammatus clouds over a ripe wheat field before a storm, eerie golden-green light",
+      "cat": "landscape"
+    },
+    {
+      "id": "fog-bridge-towers",
+      "label": "fog-bridge-towers",
+      "prompt": "two bridge towers rising above a sea of fog, cables disappearing down into the white, dawn light, Golden Gate composition",
+      "cat": "landscape"
+    },
+    {
+      "id": "moon-eclipse-sea",
+      "label": "moon-eclipse-sea",
+      "prompt": "a blood moon eclipse sequence arcing over a calm night sea, reflection path, minimal composition",
+      "cat": "landscape"
+    },
+    {
+      "id": "rainbow-waterfall",
+      "label": "rainbow-waterfall",
+      "prompt": "a rainbow forming in the mist of a great waterfall, tiny birds crossing the gorge, morning light",
+      "cat": "landscape"
+    },
+    {
+      "id": "lightning-mesa",
+      "label": "lightning-mesa",
+      "prompt": "multiple lightning bolts striking behind a desert mesa at night, purple storm sky, saguaro silhouettes",
+      "cat": "landscape"
+    },
+    {
+      "id": "snow-moon-village",
+      "label": "snow-moon-village",
+      "prompt": "full moon over a snowy village with smoking chimneys, blue night, warm yellow windows, one sled track leading in",
+      "cat": "landscape"
+    },
+    {
+      "id": "harvest-moon-field",
+      "label": "harvest-moon-field",
+      "prompt": "an enormous orange harvest moon rising behind a lone oak on a harvested field, bats crossing the moon face",
+      "cat": "landscape"
+    },
+    {
+      "id": "sunrays-forest-floor",
+      "label": "sunrays-forest-floor",
+      "prompt": "god rays breaking through a dark forest canopy onto a fern floor, one deer silhouette in the light shaft",
+      "cat": "landscape"
+    },
+    {
+      "id": "green-flash-ocean",
+      "label": "green-flash-ocean",
+      "prompt": "the last sliver of sun flashing green on an ocean horizon, layered orange-pink sky bands, one distant sailboat",
+      "cat": "landscape"
+    },
+    {
+      "id": "morning-frost-web",
+      "label": "morning-frost-web",
+      "prompt": "a spider web strung between fence wires, beaded with frost against a low fog sunrise, macro-landscape composition",
+      "cat": "landscape"
+    },
+    {
+      "id": "noctilucent",
+      "label": "noctilucent",
+      "prompt": "electric-blue noctilucent clouds rippling over dark rooftops after midnight, one lit attic window, telegraph lines",
+      "cat": "landscape"
+    },
+    {
+      "id": "dust-storm-farm",
+      "label": "dust-storm-farm",
+      "prompt": "a towering dust storm wall approaching a small farm with a windmill, birds fleeing, sepia palette",
+      "cat": "landscape"
+    },
+    {
+      "id": "moonbow-falls",
+      "label": "moonbow-falls",
+      "prompt": "a pale night rainbow in waterfall spray under a full moon, stars above, deep blue composition",
+      "cat": "landscape"
+    },
+    {
+      "id": "crepuscular-sea",
+      "label": "crepuscular-sea",
+      "prompt": "fan-shaped crepuscular light rays bursting from behind a dark cloud bank over the evening sea, one fishing boat",
+      "cat": "landscape"
     }
   ]
 }
