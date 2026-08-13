@@ -21,6 +21,7 @@ const OUT = join(ROOT, 'examples/genlab/out');
 mkdirSync(OUT, { recursive: true });
 
 const MODEL = 'claude-opus-5';
+const MAX_TOKENS = Number(process.env.MAX_TOKENS || 16384);
 
 let API_KEY = process.env.ANTHROPIC_API_KEY;
 if (!API_KEY) {
@@ -61,7 +62,7 @@ async function callAnthropic(userMessage) {
     },
     body: JSON.stringify({
       model: MODEL,
-      max_tokens: 16384,
+      max_tokens: MAX_TOKENS,
       system: [{ type: 'text', text: systemPrompt, cache_control: { type: 'ephemeral' } }],
       messages: [{ role: 'user', content: userMessage }],
     }),
