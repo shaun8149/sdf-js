@@ -1404,6 +1404,984 @@
       "label": "crepuscular-sea",
       "prompt": "fan-shaped crepuscular light rays bursting from behind a dark cloud bank over the evening sea, one fishing boat",
       "cat": "landscape"
+    },
+    {
+      "id": "porcelain-plate",
+      "label": "porcelain-plate",
+      "prompt": "a blue-and-white porcelain plate viewed from above: concentric rings of floral scrolls, a central peony medallion, cobalt on white",
+      "cat": "pattern"
+    },
+    {
+      "id": "porcelain-fish",
+      "label": "porcelain-fish",
+      "prompt": "a blue-and-white porcelain plate from above with two koi fish circling a lotus, wave-pattern border ring",
+      "cat": "pattern"
+    },
+    {
+      "id": "persian-medallion",
+      "label": "persian-medallion",
+      "prompt": "a Persian carpet seen flat from above: a central lobed medallion, corner quarter-medallions, ornate border bands, deep red and indigo",
+      "cat": "pattern"
+    },
+    {
+      "id": "persian-garden",
+      "label": "persian-garden",
+      "prompt": "a Persian garden carpet from above: a grid of flowerbed panels divided by water channels, border of cypress trees",
+      "cat": "pattern"
+    },
+    {
+      "id": "zellige-star",
+      "label": "zellige-star",
+      "prompt": "Moroccan zellige tilework: an eight-pointed star radiating interlocking geometric tiles, teal, cobalt, white and terracotta",
+      "cat": "pattern"
+    },
+    {
+      "id": "alhambra-tiles",
+      "label": "alhambra-tiles",
+      "prompt": "Alhambra-style interlocking tile pattern of eight-pointed stars and crosses filling the frame, muted jewel colors",
+      "cat": "pattern"
+    },
+    {
+      "id": "escher-birds",
+      "label": "escher-birds",
+      "prompt": "a tessellation of interlocking birds in two alternating colors filling the whole frame, Escher style",
+      "cat": "pattern"
+    },
+    {
+      "id": "escher-fish-birds",
+      "label": "escher-fish-birds",
+      "prompt": "a tessellation morphing from fish at the bottom to birds at the top, Escher metamorphosis composition",
+      "cat": "pattern"
+    },
+    {
+      "id": "greek-key",
+      "label": "greek-key",
+      "prompt": "a Greek key meander border framing a central amphora silhouette, terracotta and black, ancient pottery style",
+      "cat": "pattern"
+    },
+    {
+      "id": "aztec-sun",
+      "label": "aztec-sun",
+      "prompt": "an Aztec sun stone style circular calendar: concentric rings of geometric glyphs around a central face, stone tones",
+      "cat": "pattern"
+    },
+    {
+      "id": "celtic-knot",
+      "label": "celtic-knot",
+      "prompt": "a Celtic knot cross of interwoven endless bands, on a parchment background, green and gold",
+      "cat": "pattern"
+    },
+    {
+      "id": "hex-honeycomb",
+      "label": "hex-honeycomb",
+      "prompt": "a honeycomb of hexagons with three bees, some cells filled with amber honey, warm golds",
+      "cat": "pattern"
+    },
+    {
+      "id": "ikat-diamonds",
+      "label": "ikat-diamonds",
+      "prompt": "an ikat textile pattern of blurred-edge diamonds in vertical columns, indigo and madder red",
+      "cat": "pattern"
+    },
+    {
+      "id": "kimono-waves",
+      "label": "kimono-waves",
+      "prompt": "a Japanese seigaiha wave-scale pattern filling the frame with a red sun disc offset high, indigo and cream",
+      "cat": "pattern"
+    },
+    {
+      "id": "sashiko",
+      "label": "sashiko",
+      "prompt": "white sashiko stitch patterns on deep indigo cloth: interlocking circles and hemp-leaf stars, visible stitch dashes",
+      "cat": "pattern"
+    },
+    {
+      "id": "batik-garden",
+      "label": "batik-garden",
+      "prompt": "an Indonesian batik panel: stylized birds among curling vines and dot-textured flowers, browns and indigo",
+      "cat": "pattern"
+    },
+    {
+      "id": "william-morris",
+      "label": "william-morris",
+      "prompt": "a William Morris style wallpaper of intertwining acanthus leaves and pomegranates, sage green and plum",
+      "cat": "pattern"
+    },
+    {
+      "id": "art-deco-fans",
+      "label": "art-deco-fans",
+      "prompt": "an Art Deco pattern of radiating fan shells in alternating gold and black rows with thin sunburst lines",
+      "cat": "pattern"
+    },
+    {
+      "id": "art-nouveau-iris",
+      "label": "art-nouveau-iris",
+      "prompt": "an Art Nouveau panel: an iris flower with whiplash curve stems framed by a decorative arch, muted gold and violet",
+      "cat": "pattern"
+    },
+    {
+      "id": "mudcloth",
+      "label": "mudcloth",
+      "prompt": "an African mudcloth bogolan panel: rows of white geometric marks - zigzags, dots, crosses - on near-black brown",
+      "cat": "pattern"
+    },
+    {
+      "id": "kilim-bands",
+      "label": "kilim-bands",
+      "prompt": "a kilim rug of horizontal bands with serrated diamond motifs, dusty red, ochre, charcoal and cream",
+      "cat": "pattern"
+    },
+    {
+      "id": "navajo-blanket",
+      "label": "navajo-blanket",
+      "prompt": "a Navajo blanket pattern with stepped diamonds and zigzag bands, red, black, grey and white",
+      "cat": "pattern"
+    },
+    {
+      "id": "delft-windmill",
+      "label": "delft-windmill",
+      "prompt": "a Delft blue ceramic tile with a windmill scene inside a circular frame, corner fleur motifs, cobalt on white",
+      "cat": "pattern"
+    },
+    {
+      "id": "talavera-tile",
+      "label": "talavera-tile",
+      "prompt": "a Mexican Talavera tile: a bold eight-petal rosette with dotted rims, cobalt, yellow, terracotta and white",
+      "cat": "pattern"
+    },
+    {
+      "id": "paisley",
+      "label": "paisley",
+      "prompt": "a paisley shawl pattern of large teardrop botehs filled with tiny flowers, teal and burgundy",
+      "cat": "pattern"
+    },
+    {
+      "id": "chinoiserie-panel",
+      "label": "chinoiserie-panel",
+      "prompt": "a chinoiserie wallpaper panel: flowering branch, two long-tailed birds and a small pagoda, celadon background",
+      "cat": "pattern"
+    },
+    {
+      "id": "mamluk-lamp",
+      "label": "mamluk-lamp",
+      "prompt": "an Islamic geometric rosette radiating from a hanging mosque lamp silhouette, gold on deep blue",
+      "cat": "pattern"
+    },
+    {
+      "id": "quilt-stars",
+      "label": "quilt-stars",
+      "prompt": "an American patchwork quilt of eight-pointed star blocks in calico colors with stitch lines",
+      "cat": "pattern"
+    },
+    {
+      "id": "wedding-rings-quilt",
+      "label": "wedding-rings-quilt",
+      "prompt": "a double wedding ring quilt pattern of interlocking pastel rings on cream",
+      "cat": "pattern"
+    },
+    {
+      "id": "bargello",
+      "label": "bargello",
+      "prompt": "a bargello needlepoint flame-stitch pattern of zigzag color waves rising through the frame, warm gradient",
+      "cat": "pattern"
+    },
+    {
+      "id": "tartan",
+      "label": "tartan",
+      "prompt": "a Scottish tartan plaid of crossing red, green, navy and white bands with visible thread texture",
+      "cat": "pattern"
+    },
+    {
+      "id": "hamsa",
+      "label": "hamsa",
+      "prompt": "a hamsa hand amulet filled with tiny flowers and an eye at the palm center, symmetrical, turquoise and coral",
+      "cat": "pattern"
+    },
+    {
+      "id": "mandala-lotus",
+      "label": "mandala-lotus",
+      "prompt": "a lotus mandala of concentric petal rings alternating open and closed petals, rose and gold on deep teal",
+      "cat": "pattern"
+    },
+    {
+      "id": "rangoli",
+      "label": "rangoli",
+      "prompt": "an Indian rangoli of nested petal rings and paisley arcs with dotted outlines, vivid magenta, orange, yellow",
+      "cat": "pattern"
+    },
+    {
+      "id": "azulejo-panel",
+      "label": "azulejo-panel",
+      "prompt": "a Portuguese azulejo panel of four large tiles each with a radial cross-rosette joining into a bigger star, blue on white",
+      "cat": "pattern"
+    },
+    {
+      "id": "l36-storm",
+      "label": "l36-storm",
+      "prompt": "the lighthouse in a storm, a huge wave breaking over its base, lamp glowing",
+      "cat": "lighthouse36"
+    },
+    {
+      "id": "l36-fog",
+      "label": "l36-fog",
+      "prompt": "the lighthouse dissolving in thick fog, only its light beam and a foghorn bird visible",
+      "cat": "lighthouse36"
+    },
+    {
+      "id": "l36-dawn",
+      "label": "l36-dawn",
+      "prompt": "the lighthouse at pale dawn, low mist over a calm sea, one fishing boat leaving",
+      "cat": "lighthouse36"
+    },
+    {
+      "id": "l36-noon",
+      "label": "l36-noon",
+      "prompt": "the lighthouse at hard noon, white walls in full sun, deep short shadow, gulls circling",
+      "cat": "lighthouse36"
+    },
+    {
+      "id": "l36-sunset",
+      "label": "l36-sunset",
+      "prompt": "the lighthouse silhouetted against a giant orange setting sun, reflection path on the sea",
+      "cat": "lighthouse36"
+    },
+    {
+      "id": "l36-night",
+      "label": "l36-night",
+      "prompt": "the lighthouse at night sweeping twin light beams across a starfield",
+      "cat": "lighthouse36"
+    },
+    {
+      "id": "l36-moon",
+      "label": "l36-moon",
+      "prompt": "the lighthouse under an enormous full moon rising behind it",
+      "cat": "lighthouse36"
+    },
+    {
+      "id": "l36-aurora",
+      "label": "l36-aurora",
+      "prompt": "the lighthouse beneath green aurora curtains, snow on the rocks",
+      "cat": "lighthouse36"
+    },
+    {
+      "id": "l36-aerial",
+      "label": "l36-aerial",
+      "prompt": "the lighthouse seen from directly above: white tower circle, red lamp dot, rocks and waves radiating",
+      "cat": "lighthouse36"
+    },
+    {
+      "id": "l36-from-sea",
+      "label": "l36-from-sea",
+      "prompt": "the lighthouse seen from a rowboat at sea level, oars in the foreground, tower looming high",
+      "cat": "lighthouse36"
+    },
+    {
+      "id": "l36-through-window",
+      "label": "l36-through-window",
+      "prompt": "the lighthouse seen through a cottage window with a teacup on the sill",
+      "cat": "lighthouse36"
+    },
+    {
+      "id": "l36-arch",
+      "label": "l36-arch",
+      "prompt": "the lighthouse framed through a natural sea arch in a cliff",
+      "cat": "lighthouse36"
+    },
+    {
+      "id": "l36-winter",
+      "label": "l36-winter",
+      "prompt": "the lighthouse in snowfall, icicles on the gallery rail, grey-white sea",
+      "cat": "lighthouse36"
+    },
+    {
+      "id": "l36-spring",
+      "label": "l36-spring",
+      "prompt": "the lighthouse on a headland covered with pink wildflowers, soft blue sea",
+      "cat": "lighthouse36"
+    },
+    {
+      "id": "l36-autumn-birds",
+      "label": "l36-autumn-birds",
+      "prompt": "the lighthouse with a huge migrating flock of birds streaming past in an S-curve",
+      "cat": "lighthouse36"
+    },
+    {
+      "id": "l36-rain",
+      "label": "l36-rain",
+      "prompt": "the lighthouse in diagonal rain, keeper in yellow raincoat climbing the path",
+      "cat": "lighthouse36"
+    },
+    {
+      "id": "l36-lightning",
+      "label": "l36-lightning",
+      "prompt": "the lighthouse during a lightning storm, one bolt striking the sea behind it",
+      "cat": "lighthouse36"
+    },
+    {
+      "id": "l36-eclipse",
+      "label": "l36-eclipse",
+      "prompt": "the lighthouse under a solar eclipse: dark sun with corona ring, eerie dim light",
+      "cat": "lighthouse36"
+    },
+    {
+      "id": "l36-tide-out",
+      "label": "l36-tide-out",
+      "prompt": "the lighthouse at low tide with tide pools mirroring it on the wet sand flats",
+      "cat": "lighthouse36"
+    },
+    {
+      "id": "l36-milkyway",
+      "label": "l36-milkyway",
+      "prompt": "the lighthouse under the milky way arch, its beam joining the galaxy band",
+      "cat": "lighthouse36"
+    },
+    {
+      "id": "l36-keeper",
+      "label": "l36-keeper",
+      "prompt": "the lighthouse keeper on the gallery lighting the lamp at dusk, seen from below",
+      "cat": "lighthouse36"
+    },
+    {
+      "id": "l36-supply-boat",
+      "label": "l36-supply-boat",
+      "prompt": "a small supply boat approaching the lighthouse jetty, crates on deck, morning light",
+      "cat": "lighthouse36"
+    },
+    {
+      "id": "l36-seals",
+      "label": "l36-seals",
+      "prompt": "seals hauled out on the lighthouse rocks, tower behind, overcast silver sea",
+      "cat": "lighthouse36"
+    },
+    {
+      "id": "l36-far-dunes",
+      "label": "l36-far-dunes",
+      "prompt": "the lighthouse tiny on the horizon seen across rolling dunes with beach grass leading in",
+      "cat": "lighthouse36"
+    },
+    {
+      "id": "l36-cliff-path",
+      "label": "l36-cliff-path",
+      "prompt": "a zigzag cliff path with a hiker leading up to the lighthouse at the top",
+      "cat": "lighthouse36"
+    },
+    {
+      "id": "l36-reflection",
+      "label": "l36-reflection",
+      "prompt": "the lighthouse perfectly reflected in a still lagoon, symmetric composition",
+      "cat": "lighthouse36"
+    },
+    {
+      "id": "l36-shipwreck",
+      "label": "l36-shipwreck",
+      "prompt": "the lighthouse warning off a listing sailing ship on a reef, dramatic waves",
+      "cat": "lighthouse36"
+    },
+    {
+      "id": "l36-inside-lens",
+      "label": "l36-inside-lens",
+      "prompt": "inside the lamp room: the great fresnel lens glowing, sea visible through the windows",
+      "cat": "lighthouse36"
+    },
+    {
+      "id": "l36-stairs",
+      "label": "l36-stairs",
+      "prompt": "the spiral staircase inside the lighthouse looking up, keeper's lantern glow descending",
+      "cat": "lighthouse36"
+    },
+    {
+      "id": "l36-map",
+      "label": "l36-map",
+      "prompt": "an antique chart style view: the lighthouse on a mapped headland with compass rose and depth marks",
+      "cat": "lighthouse36"
+    },
+    {
+      "id": "l36-kite",
+      "label": "l36-kite",
+      "prompt": "children flying a red kite on the headland, lighthouse behind, big cumulus clouds",
+      "cat": "lighthouse36"
+    },
+    {
+      "id": "l36-picnic",
+      "label": "l36-picnic",
+      "prompt": "a picnic blanket and basket on the grass slope below the lighthouse, summer afternoon",
+      "cat": "lighthouse36"
+    },
+    {
+      "id": "l36-red-sky",
+      "label": "l36-red-sky",
+      "prompt": "the lighthouse under a dramatic all-red evening sky, black silhouette sea",
+      "cat": "lighthouse36"
+    },
+    {
+      "id": "l36-blue-hour",
+      "label": "l36-blue-hour",
+      "prompt": "the lighthouse in deep blue hour, its warm window lights the only orange",
+      "cat": "lighthouse36"
+    },
+    {
+      "id": "l36-gale-grass",
+      "label": "l36-gale-grass",
+      "prompt": "the lighthouse with all the headland grass blown sideways in a gale, bent lone tree",
+      "cat": "lighthouse36"
+    },
+    {
+      "id": "l36-comet",
+      "label": "l36-comet",
+      "prompt": "the lighthouse beneath a bright comet with a long tail crossing the night sky",
+      "cat": "lighthouse36"
+    },
+    {
+      "id": "s4-house-tree",
+      "label": "s4-house-tree",
+      "prompt": "four-panel four seasons of the same scene, 2x2 quadrants: a small house with one big tree; spring with blossoms, summer deep green, autumn gold and red, winter snow; identical composition each panel, thin borders between panels",
+      "cat": "seasons"
+    },
+    {
+      "id": "s4-mountain-lake",
+      "label": "s4-mountain-lake",
+      "prompt": "four-panel four seasons of the same scene, 2x2 quadrants: a mountain above a lake; spring with blossoms, summer deep green, autumn gold and red, winter snow; identical composition each panel, thin borders between panels",
+      "cat": "seasons"
+    },
+    {
+      "id": "s4-country-lane",
+      "label": "s4-country-lane",
+      "prompt": "four-panel four seasons of the same scene, 2x2 quadrants: a country lane with a fence; spring with blossoms, summer deep green, autumn gold and red, winter snow; identical composition each panel, thin borders between panels",
+      "cat": "seasons"
+    },
+    {
+      "id": "s4-pond-bridge",
+      "label": "s4-pond-bridge",
+      "prompt": "four-panel four seasons of the same scene, 2x2 quadrants: a pond with an arched footbridge; spring with blossoms, summer deep green, autumn gold and red, winter snow; identical composition each panel, thin borders between panels",
+      "cat": "seasons"
+    },
+    {
+      "id": "s4-rice-terrace",
+      "label": "s4-rice-terrace",
+      "prompt": "four-panel four seasons of the same scene, 2x2 quadrants: rice terraces on a hillside; spring with blossoms, summer deep green, autumn gold and red, winter snow; identical composition each panel, thin borders between panels",
+      "cat": "seasons"
+    },
+    {
+      "id": "s4-birch-grove",
+      "label": "s4-birch-grove",
+      "prompt": "four-panel four seasons of the same scene, 2x2 quadrants: a birch grove path; spring with blossoms, summer deep green, autumn gold and red, winter snow; identical composition each panel, thin borders between panels",
+      "cat": "seasons"
+    },
+    {
+      "id": "s4-farm-barn",
+      "label": "s4-farm-barn",
+      "prompt": "four-panel four seasons of the same scene, 2x2 quadrants: a red barn with a silo and field; spring with blossoms, summer deep green, autumn gold and red, winter snow; identical composition each panel, thin borders between panels",
+      "cat": "seasons"
+    },
+    {
+      "id": "s4-river-willow",
+      "label": "s4-river-willow",
+      "prompt": "four-panel four seasons of the same scene, 2x2 quadrants: a river bend with a willow; spring with blossoms, summer deep green, autumn gold and red, winter snow; identical composition each panel, thin borders between panels",
+      "cat": "seasons"
+    },
+    {
+      "id": "s4-orchard",
+      "label": "s4-orchard",
+      "prompt": "four-panel four seasons of the same scene, 2x2 quadrants: an apple orchard row; spring with blossoms, summer deep green, autumn gold and red, winter snow; identical composition each panel, thin borders between panels",
+      "cat": "seasons"
+    },
+    {
+      "id": "s4-village-street",
+      "label": "s4-village-street",
+      "prompt": "four-panel four seasons of the same scene, 2x2 quadrants: a small village street with three houses; spring with blossoms, summer deep green, autumn gold and red, winter snow; identical composition each panel, thin borders between panels",
+      "cat": "seasons"
+    },
+    {
+      "id": "s4-torii-hill",
+      "label": "s4-torii-hill",
+      "prompt": "four-panel four seasons of the same scene, 2x2 quadrants: a hilltop torii gate with steps; spring with blossoms, summer deep green, autumn gold and red, winter snow; identical composition each panel, thin borders between panels",
+      "cat": "seasons"
+    },
+    {
+      "id": "s4-windmill-field",
+      "label": "s4-windmill-field",
+      "prompt": "four-panel four seasons of the same scene, 2x2 quadrants: a windmill in a field; spring with blossoms, summer deep green, autumn gold and red, winter snow; identical composition each panel, thin borders between panels",
+      "cat": "seasons"
+    },
+    {
+      "id": "s4-vineyard",
+      "label": "s4-vineyard",
+      "prompt": "four-panel four seasons of the same scene, 2x2 quadrants: a vineyard slope with a hut; spring with blossoms, summer deep green, autumn gold and red, winter snow; identical composition each panel, thin borders between panels",
+      "cat": "seasons"
+    },
+    {
+      "id": "s4-lighthouse-cove",
+      "label": "s4-lighthouse-cove",
+      "prompt": "four-panel four seasons of the same scene, 2x2 quadrants: a lighthouse over a small cove; spring with blossoms, summer deep green, autumn gold and red, winter snow; identical composition each panel, thin borders between panels",
+      "cat": "seasons"
+    },
+    {
+      "id": "s4-pagoda-pond",
+      "label": "s4-pagoda-pond",
+      "prompt": "four-panel four seasons of the same scene, 2x2 quadrants: a pagoda by a lotus pond; spring with blossoms, summer deep green, autumn gold and red, winter snow; identical composition each panel, thin borders between panels",
+      "cat": "seasons"
+    },
+    {
+      "id": "s4-stone-bridge",
+      "label": "s4-stone-bridge",
+      "prompt": "four-panel four seasons of the same scene, 2x2 quadrants: an old stone bridge over a stream; spring with blossoms, summer deep green, autumn gold and red, winter snow; identical composition each panel, thin borders between panels",
+      "cat": "seasons"
+    },
+    {
+      "id": "s4-cabin-pines",
+      "label": "s4-cabin-pines",
+      "prompt": "four-panel four seasons of the same scene, 2x2 quadrants: a log cabin among pines; spring with blossoms, summer deep green, autumn gold and red, winter snow; identical composition each panel, thin borders between panels",
+      "cat": "seasons"
+    },
+    {
+      "id": "s4-sheep-meadow",
+      "label": "s4-sheep-meadow",
+      "prompt": "four-panel four seasons of the same scene, 2x2 quadrants: a meadow with grazing sheep; spring with blossoms, summer deep green, autumn gold and red, winter snow; identical composition each panel, thin borders between panels",
+      "cat": "seasons"
+    },
+    {
+      "id": "s4-castle-hill",
+      "label": "s4-castle-hill",
+      "prompt": "four-panel four seasons of the same scene, 2x2 quadrants: a small castle on a hill; spring with blossoms, summer deep green, autumn gold and red, winter snow; identical composition each panel, thin borders between panels",
+      "cat": "seasons"
+    },
+    {
+      "id": "s4-harbor-boats",
+      "label": "s4-harbor-boats",
+      "prompt": "four-panel four seasons of the same scene, 2x2 quadrants: a tiny harbor with two boats; spring with blossoms, summer deep green, autumn gold and red, winter snow; identical composition each panel, thin borders between panels",
+      "cat": "seasons"
+    },
+    {
+      "id": "s4-tea-slope",
+      "label": "s4-tea-slope",
+      "prompt": "four-panel four seasons of the same scene, 2x2 quadrants: a tea plantation slope; spring with blossoms, summer deep green, autumn gold and red, winter snow; identical composition each panel, thin borders between panels",
+      "cat": "seasons"
+    },
+    {
+      "id": "s4-cherry-park",
+      "label": "s4-cherry-park",
+      "prompt": "four-panel four seasons of the same scene, 2x2 quadrants: a park bench under a big cherry tree; spring with blossoms, summer deep green, autumn gold and red, winter snow; identical composition each panel, thin borders between panels",
+      "cat": "seasons"
+    },
+    {
+      "id": "s4-wheat-oak",
+      "label": "s4-wheat-oak",
+      "prompt": "four-panel four seasons of the same scene, 2x2 quadrants: a lone oak in a wheat field; spring with blossoms, summer deep green, autumn gold and red, winter snow; identical composition each panel, thin borders between panels",
+      "cat": "seasons"
+    },
+    {
+      "id": "s4-canal-houses",
+      "label": "s4-canal-houses",
+      "prompt": "four-panel four seasons of the same scene, 2x2 quadrants: a canal with narrow houses; spring with blossoms, summer deep green, autumn gold and red, winter snow; identical composition each panel, thin borders between panels",
+      "cat": "seasons"
+    },
+    {
+      "id": "s4-shrine-forest",
+      "label": "s4-shrine-forest",
+      "prompt": "four-panel four seasons of the same scene, 2x2 quadrants: a forest shrine with stone lanterns; spring with blossoms, summer deep green, autumn gold and red, winter snow; identical composition each panel, thin borders between panels",
+      "cat": "seasons"
+    },
+    {
+      "id": "s4-waterwheel",
+      "label": "s4-waterwheel",
+      "prompt": "four-panel four seasons of the same scene, 2x2 quadrants: a watermill with a wheel; spring with blossoms, summer deep green, autumn gold and red, winter snow; identical composition each panel, thin borders between panels",
+      "cat": "seasons"
+    },
+    {
+      "id": "s4-fuji-lake",
+      "label": "s4-fuji-lake",
+      "prompt": "four-panel four seasons of the same scene, 2x2 quadrants: Mount Fuji above a lake; spring with blossoms, summer deep green, autumn gold and red, winter snow; identical composition each panel, thin borders between panels",
+      "cat": "seasons"
+    },
+    {
+      "id": "s4-swing-tree",
+      "label": "s4-swing-tree",
+      "prompt": "four-panel four seasons of the same scene, 2x2 quadrants: a rope swing on a big tree; spring with blossoms, summer deep green, autumn gold and red, winter snow; identical composition each panel, thin borders between panels",
+      "cat": "seasons"
+    },
+    {
+      "id": "s4-fields-patchwork",
+      "label": "s4-fields-patchwork",
+      "prompt": "four-panel four seasons of the same scene, 2x2 quadrants: patchwork farm fields with a track; spring with blossoms, summer deep green, autumn gold and red, winter snow; identical composition each panel, thin borders between panels",
+      "cat": "seasons"
+    },
+    {
+      "id": "s4-alpine-hut",
+      "label": "s4-alpine-hut",
+      "prompt": "four-panel four seasons of the same scene, 2x2 quadrants: an alpine hut below peaks; spring with blossoms, summer deep green, autumn gold and red, winter snow; identical composition each panel, thin borders between panels",
+      "cat": "seasons"
+    },
+    {
+      "id": "s4-garden-gate",
+      "label": "s4-garden-gate",
+      "prompt": "four-panel four seasons of the same scene, 2x2 quadrants: a walled garden gate; spring with blossoms, summer deep green, autumn gold and red, winter snow; identical composition each panel, thin borders between panels",
+      "cat": "seasons"
+    },
+    {
+      "id": "s4-duck-pond",
+      "label": "s4-duck-pond",
+      "prompt": "four-panel four seasons of the same scene, 2x2 quadrants: a duck pond with reeds; spring with blossoms, summer deep green, autumn gold and red, winter snow; identical composition each panel, thin borders between panels",
+      "cat": "seasons"
+    },
+    {
+      "id": "cal-shan",
+      "label": "cal-shan",
+      "prompt": "the Chinese character 山 (mountain) as bold brush calligraphy, thick tapering strokes with dry-brush edges, red seal stamp in the corner, cream paper",
+      "cat": "calligraphy"
+    },
+    {
+      "id": "cal-shui",
+      "label": "cal-shui",
+      "prompt": "the Chinese character 水 (water) as flowing brush calligraphy with splashing stroke ends, blue-black ink on cream",
+      "cat": "calligraphy"
+    },
+    {
+      "id": "cal-huo",
+      "label": "cal-huo",
+      "prompt": "the Chinese character 火 (fire) as fierce brush calligraphy, strokes flicking upward like flames, one red accent stroke",
+      "cat": "calligraphy"
+    },
+    {
+      "id": "cal-mu",
+      "label": "cal-mu",
+      "prompt": "the Chinese character 木 (tree) as calm structural calligraphy, one branch stroke sprouting a tiny green leaf",
+      "cat": "calligraphy"
+    },
+    {
+      "id": "cal-ri",
+      "label": "cal-ri",
+      "prompt": "the Chinese character 日 (sun) as seal-script calligraphy inside a warm sun-disc wash",
+      "cat": "calligraphy"
+    },
+    {
+      "id": "cal-yue",
+      "label": "cal-yue",
+      "prompt": "the Chinese character 月 (moon) as slender seal-script calligraphy beside a pale crescent wash",
+      "cat": "calligraphy"
+    },
+    {
+      "id": "cal-ren",
+      "label": "cal-ren",
+      "prompt": "the Chinese character 人 (person) as two decisive strokes striding like walking legs, long dry-brush tails",
+      "cat": "calligraphy"
+    },
+    {
+      "id": "cal-tian",
+      "label": "cal-tian",
+      "prompt": "the Chinese character 田 (field) as square seal script over a faint green field-grid wash",
+      "cat": "calligraphy"
+    },
+    {
+      "id": "cal-chuan",
+      "label": "cal-chuan",
+      "prompt": "the Chinese character 川 (river) as three flowing vertical strokes with water-ripple texture",
+      "cat": "calligraphy"
+    },
+    {
+      "id": "cal-feng",
+      "label": "cal-feng",
+      "prompt": "the Chinese character 风 (wind) as cursive calligraphy with strokes trailing off like gusts, leaves blown from the last stroke",
+      "cat": "calligraphy"
+    },
+    {
+      "id": "cal-long",
+      "label": "cal-long",
+      "prompt": "the Chinese character 龙 (dragon) as wild cursive calligraphy in one continuous stroke, gold flecks along the ink",
+      "cat": "calligraphy"
+    },
+    {
+      "id": "cal-fu",
+      "label": "cal-fu",
+      "prompt": "the Chinese character 福 (fortune) as festive calligraphy on a red diamond paper, gold ink",
+      "cat": "calligraphy"
+    },
+    {
+      "id": "cal-dao",
+      "label": "cal-dao",
+      "prompt": "the Chinese character 道 (the way) as one-stroke zen calligraphy with an enso-like sweep",
+      "cat": "calligraphy"
+    },
+    {
+      "id": "cal-wu",
+      "label": "cal-wu",
+      "prompt": "the Chinese character 无 (nothingness) as sparse dry-brush calligraphy, mostly empty paper, one seal",
+      "cat": "calligraphy"
+    },
+    {
+      "id": "cal-shan-shui",
+      "label": "cal-shan-shui",
+      "prompt": "the two characters 山水 (landscape) side by side, mountain character solid, water character flowing, ink wash hills behind",
+      "cat": "calligraphy"
+    },
+    {
+      "id": "cal-enso",
+      "label": "cal-enso",
+      "prompt": "a zen enso circle drawn in one imperfect brush stroke, ink splatter at the closing gap, small signature seal",
+      "cat": "calligraphy"
+    },
+    {
+      "id": "cal-arabic-bismillah",
+      "label": "cal-arabic-bismillah",
+      "prompt": "Arabic calligraphy flowing in a boat-shaped composition, elegant curves with diacritic dots, gold on deep green",
+      "cat": "calligraphy"
+    },
+    {
+      "id": "cal-arabic-round",
+      "label": "cal-arabic-round",
+      "prompt": "circular Arabic calligraphy medallion, letters woven into a ring, white on midnight blue",
+      "cat": "calligraphy"
+    },
+    {
+      "id": "cal-devanagari-om",
+      "label": "cal-devanagari-om",
+      "prompt": "the Om symbol as thick devanagari calligraphy with a candle-flame dot, saffron on cream",
+      "cat": "calligraphy"
+    },
+    {
+      "id": "cal-hangul",
+      "label": "cal-hangul",
+      "prompt": "the Korean word 한글 as modern brush calligraphy blocks, black with one red circle stroke",
+      "cat": "calligraphy"
+    },
+    {
+      "id": "cal-hebrew-chai",
+      "label": "cal-hebrew-chai",
+      "prompt": "the Hebrew word Chai as bold square calligraphy with serif flags, silver-blue on parchment",
+      "cat": "calligraphy"
+    },
+    {
+      "id": "cal-latin-quill",
+      "label": "cal-latin-quill",
+      "prompt": "an illuminated capital letter A with gold leaf, vine flourishes and red penwork, medieval manuscript style",
+      "cat": "calligraphy"
+    },
+    {
+      "id": "cal-ampersand",
+      "label": "cal-ampersand",
+      "prompt": "a giant italic ampersand with extreme thick-thin contrast and a swash tail, letterpress poster style",
+      "cat": "calligraphy"
+    },
+    {
+      "id": "cal-greek-phi",
+      "label": "cal-greek-phi",
+      "prompt": "the Greek letter phi as a carved-stone inscription with chisel facets and a laurel sprig",
+      "cat": "calligraphy"
+    },
+    {
+      "id": "cal-tibetan",
+      "label": "cal-tibetan",
+      "prompt": "a Tibetan mantra syllable as ornate calligraphy above a lotus base, white on maroon",
+      "cat": "calligraphy"
+    },
+    {
+      "id": "cal-thai",
+      "label": "cal-thai",
+      "prompt": "a Thai character with looping heads and a tall ascender as gold calligraphy on lacquer red",
+      "cat": "calligraphy"
+    },
+    {
+      "id": "cal-seal-stamp",
+      "label": "cal-seal-stamp",
+      "prompt": "a Chinese seal stamp design: four seal-script characters in a red square with carved white lines, imprint texture",
+      "cat": "calligraphy"
+    },
+    {
+      "id": "cal-oracle-bone",
+      "label": "cal-oracle-bone",
+      "prompt": "oracle bone script characters for sun, moon, rain and mountain scratched on a bone-colored shard",
+      "cat": "calligraphy"
+    },
+    {
+      "id": "cal-cursive-scroll",
+      "label": "cal-cursive-scroll",
+      "prompt": "wild cursive Chinese calligraphy cascading down a hanging scroll, strokes linking like a waterfall",
+      "cat": "calligraphy"
+    },
+    {
+      "id": "cal-graffiti",
+      "label": "cal-graffiti",
+      "prompt": "the word FLOW as connected graffiti brush lettering with drips and one arrow swash, two-tone",
+      "cat": "calligraphy"
+    },
+    {
+      "id": "map-dragons",
+      "label": "map-dragons",
+      "prompt": "an antique nautical chart corner labeled with a sea dragon coiling through waves, rhumb lines, parchment",
+      "cat": "seamap"
+    },
+    {
+      "id": "map-archipelago",
+      "label": "map-archipelago",
+      "prompt": "an antique map of an island archipelago with tiny mountains, a compass rose, dashed shipping routes and two sailing ships",
+      "cat": "seamap"
+    },
+    {
+      "id": "map-kraken",
+      "label": "map-kraken",
+      "prompt": "an antique chart with a kraken pulling a galleon down, concentric wave rings, corner wind-cherub blowing",
+      "cat": "seamap"
+    },
+    {
+      "id": "map-treasure",
+      "label": "map-treasure",
+      "prompt": "a treasure map: dotted path from a cove past palm trees and a skull rock to a red X, burnt edges",
+      "cat": "seamap"
+    },
+    {
+      "id": "map-lighthouse-bay",
+      "label": "map-lighthouse-bay",
+      "prompt": "an antique harbor chart: a lighthouse on a headland, depth soundings as tiny numbers, anchorage symbols",
+      "cat": "seamap"
+    },
+    {
+      "id": "map-mermaid",
+      "label": "map-mermaid",
+      "prompt": "an antique chart vignette of a mermaid on a rock combing her hair, ships giving wide berth, wave hatching",
+      "cat": "seamap"
+    },
+    {
+      "id": "map-compass-grand",
+      "label": "map-compass-grand",
+      "prompt": "a grand ornate compass rose with 32 points, fleur-de-lis north, ringed by sea serpents",
+      "cat": "seamap"
+    },
+    {
+      "id": "map-terra-incognita",
+      "label": "map-terra-incognita",
+      "prompt": "an antique world map corner fading into 'unknown lands': half-drawn coastline, question marks, an elephant sketch",
+      "cat": "seamap"
+    },
+    {
+      "id": "map-whale-hunt",
+      "label": "map-whale-hunt",
+      "prompt": "an antique chart with a great spouting whale and three small whaleboats, harpoon lines, wave hatching",
+      "cat": "seamap"
+    },
+    {
+      "id": "map-trade-winds",
+      "label": "map-trade-winds",
+      "prompt": "an antique trade winds map: curved arrow streams across an ocean, cargo ships riding them, wind-head faces",
+      "cat": "seamap"
+    },
+    {
+      "id": "map-strait",
+      "label": "map-strait",
+      "prompt": "an antique chart of a narrow strait between cliffs with current arrows and a wrecked ship symbol",
+      "cat": "seamap"
+    },
+    {
+      "id": "map-islands-named",
+      "label": "map-islands-named",
+      "prompt": "an antique map of five whimsical islands shaped like a crescent, star, hand, fish and hat",
+      "cat": "seamap"
+    },
+    {
+      "id": "map-portolan",
+      "label": "map-portolan",
+      "prompt": "a portolan chart web of criss-crossing rhumb lines from compass nodes, coastline with tiny port flags",
+      "cat": "seamap"
+    },
+    {
+      "id": "map-sounding-lead",
+      "label": "map-sounding-lead",
+      "prompt": "a chart vignette: sailor casting a sounding lead from a longboat, depth numbers trailing in the water",
+      "cat": "seamap"
+    },
+    {
+      "id": "map-maelstrom",
+      "label": "map-maelstrom",
+      "prompt": "an antique chart warning of a great spiral maelstrom, a ship tilting at its edge, gothic warning banner",
+      "cat": "seamap"
+    },
+    {
+      "id": "map-sirens",
+      "label": "map-sirens",
+      "prompt": "an antique chart of siren rocks: three singing figures, music notes over the water, a ship with sailors",
+      "cat": "seamap"
+    },
+    {
+      "id": "map-northwest",
+      "label": "map-northwest",
+      "prompt": "an arctic chart: icebergs, a frozen ship in pack ice, polar bear on a floe, aurora band across the top",
+      "cat": "seamap"
+    },
+    {
+      "id": "map-volcano-isle",
+      "label": "map-volcano-isle",
+      "prompt": "an antique map of a smoking volcano island with lava rivers and fleeing ships",
+      "cat": "seamap"
+    },
+    {
+      "id": "map-cape-storms",
+      "label": "map-cape-storms",
+      "prompt": "an antique chart of a stormy cape: crossed-out route around it, storm clouds with faces blowing",
+      "cat": "seamap"
+    },
+    {
+      "id": "map-pearl-lagoon",
+      "label": "map-pearl-lagoon",
+      "prompt": "an antique map of a ring atoll lagoon with pearl oyster symbols and a diver figure",
+      "cat": "seamap"
+    },
+    {
+      "id": "map-galleon-battle",
+      "label": "map-galleon-battle",
+      "prompt": "an antique chart vignette of two galleons broadside in battle, cannon smoke, splash rings",
+      "cat": "seamap"
+    },
+    {
+      "id": "map-sea-unicorn",
+      "label": "map-sea-unicorn",
+      "prompt": "an antique chart with a narwhal drawn as a sea unicorn breaching near an iceberg",
+      "cat": "seamap"
+    },
+    {
+      "id": "map-flying-fish",
+      "label": "map-flying-fish",
+      "prompt": "an antique chart of a flying fish shoal arcing over a ship's bow, dotted flight paths",
+      "cat": "seamap"
+    },
+    {
+      "id": "map-bermuda",
+      "label": "map-bermuda",
+      "prompt": "an antique chart of a triangular region marked with three wrecks, a compass spinning wildly",
+      "cat": "seamap"
+    },
+    {
+      "id": "map-coral-reef",
+      "label": "map-coral-reef",
+      "prompt": "an antique reef passage chart: coral heads as rosettes, a safe channel marked with buoys and flags",
+      "cat": "seamap"
+    },
+    {
+      "id": "map-leviathan",
+      "label": "map-leviathan",
+      "prompt": "an antique chart with a huge leviathan tail vanishing beneath a tiny fishing boat, ripple rings",
+      "cat": "seamap"
+    },
+    {
+      "id": "map-star-navigation",
+      "label": "map-star-navigation",
+      "prompt": "an antique celestial navigation chart: constellations over a night sea, a sextant vignette, star sight-lines to a ship",
+      "cat": "seamap"
+    },
+    {
+      "id": "map-river-delta",
+      "label": "map-river-delta",
+      "prompt": "an antique map of a branching river delta with sandbars, a paddle steamer, depth shading",
+      "cat": "seamap"
+    },
+    {
+      "id": "map-smugglers-cove",
+      "label": "map-smugglers-cove",
+      "prompt": "an antique smuggler's cove map: hidden cave entrance, moon over the cliff, rowing boat, secret path dots",
+      "cat": "seamap"
+    },
+    {
+      "id": "map-voyage-line",
+      "label": "map-voyage-line",
+      "prompt": "an antique voyage map: a dotted route crossing the whole ocean visiting five tiny islands, each with a date flag",
+      "cat": "seamap"
     }
   ]
 }
