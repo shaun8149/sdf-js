@@ -2382,6 +2382,78 @@
       "label": "map-voyage-line",
       "prompt": "an antique voyage map: a dotted route crossing the whole ocean visiting five tiny islands, each with a date flag",
       "cat": "seamap"
+    },
+    {
+      "id": "map-message-bottle",
+      "label": "map-message-bottle",
+      "prompt": "an antique chart vignette of a corked message bottle floating mid-ocean, dotted drift line to a distant island, curious fish below",
+      "cat": "seamap"
+    },
+    {
+      "id": "map-sea-god",
+      "label": "map-sea-god",
+      "prompt": "an antique chart corner with a sea god blowing a conch, trident in hand, waves radiating from his breath",
+      "cat": "seamap"
+    },
+    {
+      "id": "map-anchor-ground",
+      "label": "map-anchor-ground",
+      "prompt": "an antique anchorage chart: three anchor symbols in a bay, rope depth marks, a sleeping harbor town on shore",
+      "cat": "seamap"
+    },
+    {
+      "id": "map-ice-route",
+      "label": "map-ice-route",
+      "prompt": "an antique polar route map: dashed path weaving between icebergs, a compass with a frost ring, seal colonies marked",
+      "cat": "seamap"
+    },
+    {
+      "id": "map-lighthouse-line",
+      "label": "map-lighthouse-line",
+      "prompt": "an antique coastal chart of five lighthouses along a coast, each with its light-arc drawn, ships threading between arcs",
+      "cat": "seamap"
+    },
+    {
+      "id": "map-fish-shoals",
+      "label": "map-fish-shoals",
+      "prompt": "an antique fishing chart: three shoal areas drawn as clouds of tiny fish, nets and floats marked, gulls above",
+      "cat": "seamap"
+    },
+    {
+      "id": "map-storm-glass",
+      "label": "map-storm-glass",
+      "prompt": "an antique chart vignette of a storm-glass instrument beside a barometer, storm clouds drawn in the corner sea",
+      "cat": "seamap"
+    },
+    {
+      "id": "map-current-wheel",
+      "label": "map-current-wheel",
+      "prompt": "an antique ocean-current map: great circular gyre arrows around a central calm zone with sargassum tufts",
+      "cat": "seamap"
+    },
+    {
+      "id": "cal-yong",
+      "label": "cal-yong",
+      "prompt": "the Chinese character 永 (eternity) as brush calligraphy showing the eight classic stroke types, cream paper, red seal",
+      "cat": "calligraphy"
+    },
+    {
+      "id": "cal-he",
+      "label": "cal-he",
+      "prompt": "the Chinese character 和 (harmony) as balanced brush calligraphy, one green bamboo leaf resting at its base",
+      "cat": "calligraphy"
+    },
+    {
+      "id": "cal-chan",
+      "label": "cal-chan",
+      "prompt": "the Chinese character 禅 (zen) as dry-brush calligraphy beside a small stone stack, vast empty paper",
+      "cat": "calligraphy"
+    },
+    {
+      "id": "cal-xin",
+      "label": "cal-xin",
+      "prompt": "the Chinese character 心 (heart) as three dots and a sweeping hook stroke, one dot painted red",
+      "cat": "calligraphy"
     }
   ]
 }
