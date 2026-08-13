@@ -495,6 +495,10 @@ function buildWeavePalettes(base) {
     ranked = pool
       .slice()
       .sort((a, b) => a.s * 0.6 + Math.abs(a.l - l) - (b.s * 0.6 + Math.abs(b.l - l)));
+  } else if (l < 0.28) {
+    // 深色 base（夜空/暗地）: 明度优先, 否则夜空会被织成亮色
+    const score = (p) => Math.abs(p.l - l) * 2.4 + hueDist(p.h, h) * 1.2;
+    ranked = pool.slice().sort((a, b) => score(a) - score(b));
   } else {
     // 常规: 色相为主, 饱和/明度为辅
     const score = (p) => hueDist(p.h, h) * 3 + Math.abs(p.l - l) * 0.7 + Math.abs(p.s - s) * 0.3;

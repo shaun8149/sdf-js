@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>genlab gen (程序生成)</title>
+<style>body{margin:0;background:#111;display:grid;place-items:center;height:100vh}canvas{max-width:90vmin;max-height:90vmin}</style>
+</head><body>
+<canvas id="c" width="900" height="900"></canvas>
+<script>{const sz = new URLSearchParams(location.search).get("size"); if (sz) { const c = document.getElementById("c"); c.width = c.height = Number(sz); }}</script>
+<script type="module">
+// =============================================================================
+// gen.html — 程序生成三主题（全部 weave 点彩渲染, seed 决定一切）:
+//   morph   熔化系列 (png11): 两原语 SDF 场插值, t 为熔化进度, 舞台=地平线+假影
+//   mandala 玫瑰窗   (png14): circular_array 多环花瓣曼陀罗
+//   flake   雪花结晶 (png16): 随机分支单臂 × 六重对称
+// =============================================================================
+import {
+  circle, ring, heart, star, flower, moon, cross, vesica, hexagon, egg,
+  horseshoe, segment, line, union, render,
+} from '../../src/index.js';
+
+const qs = new URLSearchParams(location.search);
+const kind = qs.get('kind') || 'morph';
+const seed = Number(qs.get('seed') ?? 1);
+const tParam = qs.get('t') !== null ? Number(qs.get('t')) : null;
+
+// mulberry32
+let _s = seed + 0x9e3779b9;
+const rnd = () => {
+  _s = (_s + 0x6d2b79f5) >>> 0;
+  let t = _s;
+  t = Math.imul(t ^ (t >>> 15), t | 1);
+  t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+  return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+};
+const pick = (a) => a[Math.floor(rnd() * a.length)];
+
+const ctx = document.getElementById('c').getContext('2d');
+let layers = [];
+let opts = { view: 1.1 };
+
+if (kind === 'morph') {
+  // 原语对: 名字 → 居中体 (半径 ~r)
+  const SHAPES = {
+    circle: (r) => circle(r),
+    heart: (r) => heart(r * 2),
+    star: (r) => star(r * 1.15, 5, 0.45),
+    flower: (r) => flower(r * 1.1, 6, 0.28),
+    moon: (r) => moon(r * 1.1),
+    cross: (r) => cross(r, r * 0.36),
+    vesica: (r) => vesica(r * 1.2, r * 0.6),
+    hexagon: (r) => hexagon(r),
+    egg: (r) => egg(r * 0.9, r * 0.55),
+    ring: (r) => ring(r * 0.85, r * 0.3),
+  };
+  const PAIRS = [
+    ['heart', 'star'], ['circle', 'star'], ['flower', 'circle'], ['moon', 'star'],
+    ['cross', 'circle'], ['vesica', 'hexagon'], ['egg', 'star'], ['ring', 'heart'],
+    ['hexagon', 'flower'], ['moon', 'heart'],
+  ];
+  const [na, nb] = PAIRS[seed % PAIRS.length];
+  const t = tParam ?? (0.15 + rnd() * 0.7);
+  const r = 0.42;
+  const A = SHAPES[na](r), B = SHAPES[nb](r);
+  const bodyF = (p) => (1 - t) * A.f(p) + t * B.f(p);
+  const cy = 0.38;                       // 地平线 (y 向下为正? weave world y-up)
+  const lift = -0.05;
+  const body = (p) => bodyF([p[0], p[1] - (cy - r) - lift]);   // 底缘近地平线
+  const shadow = (p) => bodyF([(p[0] + (p[1] + cy) * 0.55) * 1.1, (p[1] + cy) * 4]);
+  const horizon = (p) => p[1] + cy;      // y < -cy 为地
+  const PALS = [
+    { bg: { top: [246, 238, 220], bottom: [232, 218, 196] }, ground: [186, 158, 132], body: [206, 66, 58] },
+    { bg: { top: [220, 232, 240], bottom: [200, 216, 230] }, ground: [104, 128, 140], body: [232, 150, 46] },
+    { bg: { top: [40, 48, 84], bottom: [72, 84, 130] }, ground: [36, 40, 58], body: [238, 200, 80] },
+    { bg: { top: [236, 226, 238], bottom: [214, 198, 224] }, ground: [130, 110, 140], body: [58, 122, 96] },
+  ];
+  const pal = PALS[Math.floor(rnd() * PALS.length)];
+  layers = [
+    { sdf: horizon, color: pal.ground },
+    { sdf: shadow, color: pal.ground.map((c) => c * 0.72) },
+    { sdf: body, color: pal.body },
+  ];
+  opts = { view: 1.1, background: pal.bg, colorMode: 'weave', seed };
+} else if (kind === 'mandala') {
+  const PETALS = [
+    (r) => heart(r * 1.6), (r) => star(r, 5, 0.45), (r) => flower(r, 6, 0.3),
+    (r) => moon(r), (r) => vesica(r * 1.3, r * 0.5), (r) => circle(r * 0.6),
+    (r) => egg(r * 0.8, r * 0.5),
+  ];
+  const JEWELS = [
+    [186, 42, 66], [220, 150, 40], [40, 110, 150], [70, 130, 80],
+    [120, 70, 140], [210, 90, 50], [30, 80, 120], [190, 60, 110],
+  ];
+  const nRings = 3 + Math.floor(rnd() * 2);
+  layers = [{ sdf: flower(0.14 + rnd() * 0.06, pick([6, 8, 12]), 0.3), color: pick(JEWELS) }];
+  let rad = 0.3;
+  for (let i = 0; i < nRings; i++) {
+    const n = pick([6, 8, 10, 12, 16]);
+    const pr = 0.11 + rnd() * 0.08;
+    const petal = PETALS[Math.floor(rnd() * PETALS.length)](pr);
+    const ringArr = petal.translate([rad, 0]).circular_array(n);
+    layers.push({ sdf: ringArr, color: pick(JEWELS) });
+    if (rnd() < 0.5) layers.push({ sdf: ring(rad + pr * 1.35, 0.012), color: [60, 50, 46] });
+    rad += pr * 1.9 + 0.03;
+  }
+  const BGs = [
+    { top: [26, 30, 52], bottom: [14, 16, 30] },
+    { top: [244, 238, 224], bottom: [230, 220, 202] },
+    { top: [46, 26, 30], bottom: [26, 14, 18] },
+  ];
+  opts = { view: rad + 0.12, background: pick(BGs), colorMode: 'weave', seed };
+} else {
+  // flake: 单臂 = 主干 + 若干对生侧枝, 六重对称
+  const parts = [];
+  const L = 0.62 + rnd() * 0.2;
+  parts.push(segment([0, 0], [L, 0]).dilate(-0.036 + rnd() * 0.01));
+  const nb = 3 + Math.floor(rnd() * 4);
+  for (let i = 0; i < nb; i++) {
+    const at = 0.18 + (i / nb) * (L - 0.2);
+    const bl = (0.08 + rnd() * 0.16) * (1 - at / (L * 1.4));
+    const ang = (30 + rnd() * 30) * (Math.PI / 180);
+    for (const sgn of [1, -1]) {
+      parts.push(
+        segment([at, 0], [at + Math.cos(ang) * bl, sgn * Math.sin(ang) * bl]).dilate(
+          -0.041 + rnd() * 0.008,
+        ),
+      );
+    }
+    if (rnd() < 0.35) parts.push(circle(0.02 + rnd() * 0.015).translate([at, 0]));
+  }
+  if (rnd() < 0.6) parts.push(hexagon(0.05 + rnd() * 0.04));
+  if (rnd() < 0.4) parts.push(star(0.09, 6, 0.5).translate([L * 0.98, 0]));
+  const arm = union(...parts);
+  const flake = arm.circular_array(6);
+  const ICE = [[224, 238, 250], [196, 222, 244], [240, 246, 252]];
+  layers = [{ sdf: flake, color: pick(ICE) }];
+  const BGs = [
+    { top: [22, 34, 66], bottom: [10, 16, 38] },
+    { top: [30, 44, 82], bottom: [16, 24, 52] },
+    { top: [44, 30, 70], bottom: [20, 12, 40] },
+  ];
+  opts = { view: 0.95, background: pick(BGs), colorMode: 'weave', seed };
+}
+
+render.bobStipple(ctx, layers, opts);
+window.$genOK = true;
+</script>
+</body></html>
