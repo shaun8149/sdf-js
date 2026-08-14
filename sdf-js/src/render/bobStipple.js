@@ -921,6 +921,9 @@ export function bobStipple(ctx, layers, options = {}) {
         const dl = density * brushLayers;
         const base = Math.floor(dl);
         effBrushLayers = base + (rng() < dl - base ? 1 : 0);
+        // 密度地板 (2026-08-14 user 拍板): 2D weave 亮区至少 3 层——
+        // 涂抹感 = 多层 layerOffset·rH 拖带链, 单层无痕。3D 路径不动。
+        if (weaveMode && !hit3D) effBrushLayers = Math.max(3, effBrushLayers);
         if (effBrushLayers === 0) continue;
       }
 
