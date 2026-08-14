@@ -33,22 +33,41 @@
     }
   },
   "2d_style_axis": {
-    "objects": { "before": 0.5, "painted": 0.49, "neon": 0.01, "_locked": true },
+    "objects": {
+      "before": 0.5,
+      "painted": 0.49,
+      "neon": 0.01,
+      "_locked": true
+    },
     "landscapes": {
       "before": 0.475,
       "after": 0.475,
       "warp": 0.05,
       "_note": "warp 5% 为 user 裁定; before/after 平摊余量为 draft"
     },
-    "bob_六景": { "bob_原味": 1.0 },
-    "rhymes_韵脚": { "before": 0.5, "after": 0.5, "_note": "draft" },
-    "themes": { "before": 1.0, "_note": "draft — 主题件多为图案型, before 透光最合适" }
+    "bob_六景": {
+      "bob_原味": 1.0
+    },
+    "rhymes_韵脚": {
+      "before": 0.5,
+      "after": 0.5,
+      "_note": "draft"
+    },
+    "themes": {
+      "before": 1.0,
+      "_note": "draft — 主题件多为图案型, before 透光最合适"
+    }
   },
   "3d_content": {
     "comment": "draft",
     "rhymes_韵脚3D台七形状": 0.45,
     "bob_球_胶囊林": 0.2,
-    "sanctum_圣物殿": { "teapot": 0.09, "menger": 0.09, "gyroid": 0.09, "metaphysical": 0.08 }
+    "sanctum_圣物殿": {
+      "teapot": 0.09,
+      "menger": 0.09,
+      "gyroid": 0.09,
+      "metaphysical": 0.08
+    }
   },
   "4d_content": {
     "comment": "draft — 心/星/齿轮/花×对偶柱场景未建, 先记 0",
@@ -59,5 +78,10 @@
     "cell24_孤韵": 0.2,
     "duoprism_其余韵": 0.1
   },
-  "texture_3d4d": { "grid_涂抹": 0.67, "poisson_点彩": 0.33, "_note": "现行 2:1, draft" }
+  "texture_3d4d": {
+    "grid_涂抹": 0.95,
+    "poisson_点彩": 0.05,
+    "_locked": true,
+    "_note": "user 裁定: 点彩单调, 多则难看"
+  }
 }
