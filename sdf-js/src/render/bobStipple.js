@@ -506,20 +506,7 @@ function buildWeavePalettes(base) {
   }
   const pal = ranked.slice(0, K).map((p) => p.style);
   const pal2 = ranked.slice(K, K * 2).map((p) => p.style);
-  // 温度轴 (2026-08-14): 亮区取"头牌纯色+浅支", 暗区补"深支"。
-  // 层数不再表达明暗 (恒满层保涂抹), 明暗由颜料温度表达。
-  const topPool = ranked.slice(0, K * 2);
-  const hot = topPool
-    .slice()
-    .sort((a, b) => b.l - a.l)
-    .slice(0, Math.max(2, K - 1));
-  const palHot = [ranked[0], ...hot].map((p) => p.style);
-  const palDeep = topPool
-    .slice()
-    .sort((a, b) => a.l - b.l)
-    .slice(0, 2)
-    .map((p) => p.style);
-  return { pal, pal2, palHot, palDeep, lowSat: s < 0.22 };
+  return { pal, pal2, lowSat: s < 0.22 };
 }
 
 // 高饱和跳色支（BOB 震颤之源）: 从池中按 rng 抽一支 s>0.6 的颜料
@@ -777,27 +764,11 @@ export function bobStipple(ctx, layers, options = {}) {
   const weaveBgCache = new Map();
   if (weaveMode) {
     weaveLayers = preparedLayers.map((L) => buildWeavePalettes(L.color));
-    // 幕布层检测: 2D 层覆盖画面 >45% 视为背景幕布 (天空/地面矩形),
-    // 温度轴对其关闭——轮廓光的"内部即亮"假设只适用于物件尺度
-    for (const L of preparedLayers) {
-      if (L.is3D) continue;
-      let inside = 0;
-      for (let gy = 0; gy < 8; gy++)
-        for (let gx = 0; gx < 8; gx++) {
-          const px = ((gx + 0.5) / 8) * 2 * view - view;
-          const py = ((gy + 0.5) / 8) * 2 * view - view;
-          if (L.sdf([px, py]) < 0) inside++;
-        }
-      L.isBackdrop = inside / 64 > 0.28;
-    }
     weaveAccentW = rng() < 0.75 ? 0.15 : 0.35; // 75% 低权重 / 25% 高权重
     weaveAccent = pickAccent(rng);
     const ang = rng() < 0.75 ? (3 * Math.PI) / 4 : rng() * Math.PI * 2; // 75% 左上
     weaveLight = [Math.cos(ang), Math.sin(ang)];
   }
-  // 纸色笔触: 取背景中点色提亮做"纸", 亮区提白透光用
-  const _bgMid = bgFn(0, 0);
-  const weavePaper = `rgb(${Math.min(255, _bgMid[0] * 0.35 + 178) | 0},${Math.min(255, _bgMid[1] * 0.35 + 172) | 0},${Math.min(255, _bgMid[2] * 0.35 + 160) | 0})`;
   const getWeaveBg = (col) => {
     const key = ((col[0] >> 4) << 8) | ((col[1] >> 4) << 4) | (col[2] >> 4);
     let w = weaveBgCache.get(key);
@@ -950,9 +921,9 @@ export function bobStipple(ctx, layers, options = {}) {
         const dl = density * brushLayers;
         const base = Math.floor(dl);
         effBrushLayers = base + (rng() < dl - base ? 1 : 0);
-        // 温度轴 (2026-08-14 user 拍板): weave-2D 恒定满层保涂抹拖带链,
-        // 明暗改由颜料温度表达 (亮区热谱+纸光, 暗区深支)。3D 路径不动。
-        if (weaveMode && !hit3D) effBrushLayers = brushLayers;
+        // 密度地板 (2026-08-14 user 拍板): 2D weave 亮区至少 3 层——
+        // 涂抹感 = 多层 layerOffset·rH 拖带链, 单层无痕。3D 路径不动。
+        if (weaveMode && !hit3D) effBrushLayers = Math.max(3, effBrushLayers);
         if (effBrushLayers === 0) continue;
       }
 
@@ -991,21 +962,12 @@ export function bobStipple(ctx, layers, options = {}) {
 
       for (let layerIdx = 0; layerIdx < effBrushLayers; layerIdx++) {
         if (weaveMode) {
-          // 织谱漫步 + 双板交替 + 颜料温度轴:
-          // I 高 → 该层大概率取热谱 (纯色+浅支), 更高光处偶发纸色笔触 (提白透光);
-          // I 低 → 偶发深支; 中间地带走原双板漫步。parity 保色块震颤。
+          // 织谱漫步 + 双板交替（spec 改动①③）: parity 保 BOB 色块震颤,
+          // 跳色只注入低饱和区 (spec 旋钮③)
           const wl = hitLayerIdx >= 0 ? weaveLayers[hitLayerIdx] : getWeaveBg(hitColor);
           const parity = i % 2 !== 0 ? 0 : j % 2 === 0 ? 1 : 2;
           const useP2 = wl.pal2.length > 0 && layerIdx % 2 !== 0;
-          const hl = hitLayerIdx >= 0 ? preparedLayers[hitLayerIdx] : null;
-          const I2d = hl && !hl.is3D && !hl.isBackdrop ? hitIntensity : 0;
-          if (I2d > 0.7 && rng() < 0.55 * (I2d - 0.7)) {
-            ctx.fillStyle = weavePaper;
-          } else if (rng() < I2d * 0.85 && wl.palHot) {
-            ctx.fillStyle = wl.palHot[(parity + layerIdx) % wl.palHot.length];
-          } else if (I2d < 0.35 && wl.palDeep && rng() < 0.45 * (1 - I2d)) {
-            ctx.fillStyle = wl.palDeep[(parity + layerIdx) % wl.palDeep.length];
-          } else if (useP2 && wl.lowSat && rng() < weaveAccentW) {
+          if (useP2 && wl.lowSat && rng() < weaveAccentW) {
             ctx.fillStyle = weaveAccent;
           } else {
             const arr = useP2 ? wl.pal2 : wl.pal;
