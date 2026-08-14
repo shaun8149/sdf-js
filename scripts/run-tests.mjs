@@ -248,6 +248,7 @@ const TESTS = [
   { category: 'present', file: 'sdf-js/scripts/test-deck-contract.mjs' },
   { category: 'present', file: 'sdf-js/scripts/test-slide-digest.mjs' },
   { category: 'present', file: 'sdf-js/scripts/test-quality-lights.mjs' },
+  { category: 'present', file: 'sdf-js/scripts/test-figure-load.mjs' },
 ];
 
 // -----------------------------------------------------------------------------
