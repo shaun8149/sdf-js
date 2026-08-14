@@ -1,0 +1,18 @@
+{
+  "comment": "2D 渲染风格概率表 (2026-08-14 user 终裁)。style 将由 hash 抽取为 trait。",
+  "definitions": {
+    "before": "weave 原密度轴 (无地板): 亮区 0-2 层, 透光最大 — png3/png5 现存态",
+    "after": "weave + 密度地板 3 层: 涂抹拖带链保底",
+    "painted": "BOB painted 原味: 双调色板 + 每 SDF 三色窗 + 洗牌震颤, 满幅颜料燃烧"
+  },
+  "probabilities": {
+    "landscape": { "before": 0.5, "after": 0.5 },
+    "object": { "before": 0.5, "painted": 0.5 }
+  },
+  "notes": [
+    "风景现存渲染即 before 态, 无需重渲",
+    "before/after 仅差 floor 一行 → 实施为 bobStipple densityFloor option",
+    "painted 接入路径: getSdfs 契约 (scenes.js 17-36 先例)",
+    "其他参数表待调"
+  ]
+}
