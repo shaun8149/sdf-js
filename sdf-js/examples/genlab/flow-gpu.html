@@ -238,6 +238,7 @@ const JAG   = +(qs.get('jag') ?? 0.018);
 const COREK = +(qs.get('core') ?? 95);
 const HALOK = +(qs.get('halo') ?? 20);
 const RIM   = +(qs.get('rim') ?? 0.07);
+const DIR   = +(qs.get('dir') ?? -1);          // 传导方向 (-1 = 反向, user 2026-08-17)
 const VMIN  = +(qs.get('vmin') ?? 0.12);       // 含糊处速度下限 (× 基速)
 const VMAX  = +(qs.get('vmax') ?? 1.65);       // 清晰处速度上限
 const WANDER = +(qs.get('wander') ?? 0.022);   // 含糊处偏离轮廓找路幅度 (world)
@@ -363,14 +364,17 @@ function frame() {
     v *= Math.max(0.06, slip); // 间歇近停
   }
   const sPrev = sHead;
-  sHead += baseV * v * dt;
+  sHead += baseV * v * dt * DIR;
 
   // 主电流刚扫过的含糊顶点 → 溅出子电流余烬 (环形区间, 处理跨圈)
   if (clarity) {
     const { arc } = contour;
     const S = contour.S;
-    const a0 = ((sPrev % S) + S) % S;
-    const a1 = ((sHead % S) + S) % S;
+    const aPrev = ((sPrev % S) + S) % S;
+    const aNow = ((sHead % S) + S) % S;
+    // 扫过区间按行进方向取 (反向时角色互换)
+    const a0 = DIR > 0 ? aPrev : aNow;
+    const a1 = DIR > 0 ? aNow : aPrev;
     const passed = (x) => (a0 <= a1 ? x > a0 && x <= a1 : x > a0 || x <= a1);
     for (let i = 0; i < arc.length; i++) {
       if (passed(arc[i])) {
@@ -406,7 +410,7 @@ function frame() {
   // 窗口折线: 含糊处偏离轮廓"找路" (法向漂移, 越犹豫越飘)
   const L = contour.S * ARC;
   for (let i = 0; i < N; i++) {
-    const s = sHead - L + (L * i) / (N - 1);
+    const s = sHead - DIR * L + (DIR * (L * i)) / (N - 1); // 尾随行进方向, i=N-1 恒为头
     const q = pointAt(s);
     const c = clarityAt(s);
     const nm = normalAt(s);
