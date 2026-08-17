@@ -344,24 +344,35 @@ function computeClarity() {
       for (let j = -8; j <= 8; j++) s += raw[(i + j + n) % n];
       loop.clarityArr[i] = s / 17;
     }
+    loop.meanClarity = loop.clarityArr.reduce((a, x) => a + x, 0) / n;
+  }
+  // 太阳除名 (user: 不要到太阳上去): 平均对比度过低的小环 = 抠图算法
+  // 根本抠不出来的孤立淡件 (奶油色太阳贴奶油色天), 与犹豫模型同一哲学。
+  // 只对小环生效 (S < 0.35·S0), 主体环即使边缘发糊也永不除名。
+  const kept = loops.filter((lp) => !(lp.S < 0.35 * S0 && lp.meanClarity < MINC));
+  if (kept.length && kept.length < loops.length) {
+    loops.length = 0;
+    loops.push(...kept);
+    rebuildSchedule();
+    curIdx = -1; // 强制下一帧重新入环
   }
 }
-(function waitArt(tries) {
+function waitArt(tries) {
   const ctx2 = art.getContext('2d');
   const d = ctx2.getImageData(artW >> 1, artW >> 1, 1, 1).data;
   const corner = ctx2.getImageData(8, 8, 1, 1).data;
   if ((d[3] > 0 && corner[3] > 0) || tries > 60) computeClarity();
   else setTimeout(() => waitArt(tries + 1), 150);
-})(0);
+} // 启动点在脚本末尾 (须等 MINC/S0/调度先初始化)
 
 // ---- 8. 参数 ----
 const N     = 32;
 const M     = 16;
 const ARC   = +(qs.get('arc') ?? 0.125);
-const LAPS  = +(qs.get('lap') ?? 7);           // 最大环一圈的名义秒数
+const LAPS  = +(qs.get('lap') ?? 14);          // 最大环一圈的名义秒数 (user: 速度减半)
 const JAG   = +(qs.get('jag') ?? 0.018);
-const COREK = +(qs.get('core') ?? 95);
-const HALOK = +(qs.get('halo') ?? 20);
+const COREK = +(qs.get('core') ?? 190);        // user: 宽度减半
+const HALOK = +(qs.get('halo') ?? 40);
 const RIM   = +(qs.get('rim') ?? 0.07);
 const DIR   = +(qs.get('dir') ?? -1);
 const VMIN  = +(qs.get('vmin') ?? 0.12);
@@ -370,6 +381,7 @@ const HUNT  = +(qs.get('hunt') ?? 1.0);        // 找路进退深度 (0 = 匀速
 const OFF   = +(qs.get('off') ?? 0.016);       // 外推距离: 电流骑在表面外侧 (world)
 const FADE  = +(qs.get('fade') ?? 0.955);      // 残留衰减/帧 (越大残留越久)
 const LUME  = +(qs.get('lume') ?? 0.05);       // 闪电照明: 轨迹周遭画面打亮强度
+const MINC  = +(qs.get('minc') ?? 0.22);       // 小环平均对比度下限: 太阳这类'抠不出来'的孤立淡件除名
 
 const FS = `precision highp float;
 float hash21(vec2 q) { return fract(sin(dot(q, vec2(127.1, 311.7))) * 43758.5453); }
@@ -508,8 +520,12 @@ const n1 = (x) => {
 
 const S0 = loops[0].S;
 const GAP = 0.35;                               // 环间暗场 (秒)
-const schedule = loops.map((lp) => ({ lp, dur: Math.max(2.5, LAPS * (lp.period / S0)) }));
-const cycleDur = schedule.reduce((a, x) => a + x.dur + GAP, 0);
+let schedule, cycleDur;
+function rebuildSchedule() {
+  schedule = loops.map((lp) => ({ lp, dur: Math.max(2.5, LAPS * (lp.period / S0)) }));
+  cycleDur = schedule.reduce((a, x) => a + x.dur + GAP, 0);
+}
+rebuildSchedule();
 
 const ptsBuf = new Float32Array(N * 2);
 const embBuf = new Float32Array(M * 3);
@@ -612,6 +628,7 @@ function frame() {
   if (run) requestAnimationFrame(frame);
 }
 frame();
+waitArt(0); // 底图画满后算清晰度 + 太阳这类低对比孤件除名
 document.getElementById('stage').addEventListener('contextmenu', (e) => { e.preventDefault(); run = !run; if (run) { lastT = (performance.now() - t0) / 1000; frame(); } });
 
 hint.textContent =
