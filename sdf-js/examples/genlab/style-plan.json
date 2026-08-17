@@ -58,15 +58,11 @@
     }
   },
   "3d_content": {
-    "comment": "draft",
-    "rhymes_韵脚3D台七形状": 0.45,
-    "bob_球_胶囊林": 0.2,
-    "sanctum_圣物殿": {
-      "teapot": 0.09,
-      "menger": 0.09,
-      "gyroid": 0.09,
-      "metaphysical": 0.08
-    }
+    "_note": "draft 2026-08-17 — 正几何台入池 4/13 票; 布尔/柏拉图/语料台押后待 user 圈选",
+    "solids_stage_34": 0.31,
+    "legacy_7_8": 0.15,
+    "rhyme_stage_18": 0.23,
+    "sanctum_19_22": 0.31
   },
   "4d_content": {
     "comment": "draft — 心/星/齿轮/花×对偶柱场景未建, 先记 0",
