@@ -31,7 +31,11 @@ const hint = document.getElementById('hint');
 const src = await (await fetch(`./out/${id}.js`)).text();
 const abs = new URL('../../src/index.js', location.href.replace('/genlab/flow-gpu.html', '/sdf/x')).href;
 let code = src.replace(/(['"])(?:\.\.\/)+src\/index\.js\1/, JSON.stringify(abs));
-code = code.replace(/render\.silhouette\(/g, 'render.bobStipple(');
+// weave 模式 (view3 同路): 语义色锚定, 保留作品自己 (大模型) 的配色 —— 不是 BOB 颜料重配
+code = code.replace(
+  /render\.silhouette\(ctx, layers, \{/g,
+  "render.bobStipple(ctx, layers, { colorMode: 'weave',",
+);
 await import(URL.createObjectURL(new Blob([code], { type: 'application/javascript' })));
 
 // ---- 2. 层数据: 审计模块 (export __layers) ----
@@ -81,9 +85,12 @@ const actorSdf = actorLayer && (actorLayer.sdf ?? actorLayer);
 const compiled = compileSDF2ToGLSL(actorSdf, { fnName: 'sdLayer' });
 if (!compiled.glsl) { hint.textContent = '编译失败: ' + compiled.error; throw new Error(compiled.error); }
 
-const SPEED = +(qs.get('speed') ?? 0.42);   // 切向平流速率 (慢 = 水流感)
-const BANDK = +(qs.get('band') ?? 26);      // 辉光带贴边紧度
-const FREQ  = +(qs.get('freq') ?? 5.0);     // 噪声斑纹频率
+// ---- 闪电传导参数 (macOS 拷贝对象观感: 电流沿场边缘传导, 不是柔光) ----
+const SPEED = +(qs.get('speed') ?? 0.9);    // 电流沿轮廓的传导速率
+const JAG   = +(qs.get('jag') ?? 0.022);    // 电弧锯齿位移幅度 (world)
+const HALOK = +(qs.get('halo') ?? 34);      // 暖晕贴边紧度
+const COREK = +(qs.get('core') ?? 260);     // 电丝芯锐度 (越大越细)
+const GATE  = +(qs.get('gate') ?? 0.58);    // 通断门阈: 越高亮段越短 (电流跑动感)
 
 const FS = `precision highp float;
 // 紧凑 3-octave value fbm (免贴图)
@@ -104,19 +111,36 @@ uniform vec2 uRes;
 uniform vec3 uColor;
 void main() {
   vec2 p = ((gl_FragCoord.xy / uRes) * 2.0 - 1.0) * ${VIEW.toFixed(3)};
-  float d = sdLayer(p);
+  float d0 = sdLayer(p);
+  if (abs(d0) > 0.14) { gl_FragColor = vec4(0.0); return; } // 远场早退
   float e = 0.004;
   vec2 g = vec2(sdLayer(p + vec2(e, 0.0)) - sdLayer(p - vec2(e, 0.0)),
                 sdLayer(p + vec2(0.0, e)) - sdLayer(p - vec2(0.0, e)));
   g = g / (length(g) + 1e-5);
   vec2 tang = vec2(-g.y, g.x);
-  float band = exp(-abs(d) * ${BANDK.toFixed(2)});
-  // 噪声域沿切向随时间平移 → 斑纹贴着轮廓爬行
-  float tex = fbm(p * ${FREQ.toFixed(2)} - tang * (uT * ${SPEED.toFixed(3)}));
-  float streak = smoothstep(0.42, 0.85, tex);
-  float glow = band * (0.25 + 0.95 * streak);
-  vec3 col = mix(uColor, vec3(1.0), clamp(glow * 1.5 - 0.3, 0.0, 1.0));
-  gl_FragColor = vec4(col * glow, glow);
+
+  // ① 电弧锯齿: 高频域扭曲采样点 → 距离场的零线变成抖动的闪电丝
+  vec2 warp = vec2(fbm(p * 16.0 + uT * 2.3), fbm(p * 16.0 - uT * 1.9)) - 0.5;
+  float dj = sdLayer(p + warp * ${JAG.toFixed(4)});
+
+  // ② 白炽芯 + 暖晕 (电流的两层辉光)
+  float core = exp(-abs(dj) * ${COREK.toFixed(1)});
+  float halo = exp(-abs(dj) * ${HALOK.toFixed(1)});
+
+  // ③ 传导通断门: 相位噪声沿切向推进 → 亮段沿边缘跑动, 其余段熄灭
+  float phase = fbm(p * 2.6 - tang * (uT * ${SPEED.toFixed(3)}));
+  float gate = smoothstep(${GATE.toFixed(3)}, ${(GATE + 0.16).toFixed(3)}, phase);
+
+  // ④ 电流快闪烁
+  float flicker = 0.78 + 0.22 * vnoise(vec2(uT * 7.0, 3.7));
+
+  float energy = (core * 1.9 + halo * 0.55) * gate * flicker;
+  if (energy < 0.004) { gl_FragColor = vec4(0.0); return; }
+  // 白芯 + 暖金晕 (向层色微偏)
+  vec3 warm = normalize(uColor + vec3(0.55, 0.38, 0.12)) * 1.2;
+  vec3 col = mix(warm, vec3(1.0), clamp(core * 1.7 - 0.15, 0.0, 1.0));
+  float a = clamp(energy, 0.0, 1.0);
+  gl_FragColor = vec4(col * a, a);
 }`;
 
 // ---- 5. WebGL overlay ----
