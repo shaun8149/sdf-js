@@ -14,12 +14,13 @@ canvas{display:block;max-width:92vmin;max-height:92vmin}
 <div id="hint">…</div>
 <script type="module">
 // =============================================================================
-// WP1-GPU Phase C — 场流光 shader demo
-// 底图: 原始 out/<id>.js 模块自渲染 (weave)。
-// overlay: _audit/<id>.mjs 的 __layers → 选主角层 → compileSDF2ToGLSL 就地
-// 编译 → 切向噪声平流 shader: glow = exp(-|d|k) × fbm(p·s − tang·t)。
-// 光沿全部轮廓方向"爬行" (macOS 抠图微光的场论实现), 凹形免拓扑追踪。
-// ?piece=<id> & layer=<i 强制> & speed= & band= & freq=
+// WP1-GPU Phase C — 电流传导 (闪电沿 SDF=0 爬行)
+// 底图: 原始 out/<id>.js 模块自渲染, view3 同路 weave 原色 (大模型配色)。
+// 电流: CPU 在主角层 SDF=0 上追踪等值线折线 → 弧长参数化 → 每帧取
+// "周长 ARC 比例"的连续窗口 (32 点) 喂 shader → 域扭曲锯齿电丝
+// (白炽芯 + 暖晕, 头亮尾细) + 全轮廓极淡充能底晕。
+// user 裁定 (2026-08-17): 电流要粗 / 要连续 / 同一时刻长度 ≈ 周长的 1/8。
+// ?piece=<id> & layer=<i 强制> & arc=0.125 & lap=7 & jag= & core= & halo= & rim=
 // =============================================================================
 import { compileSDF2ToGLSL } from '../../src/sdf/sdf2.compile.js';
 
@@ -27,11 +28,10 @@ const qs = new URLSearchParams(location.search);
 const id = qs.get('piece') || 'dust-storm-farm';
 const hint = document.getElementById('hint');
 
-// ---- 1. 底图: 与 view3 同路 (blob import + 渲染器改写为 weave) ----
+// ---- 1. 底图: view3 同路 (weave 语义锚定 — 保留作品自己的配色) ----
 const src = await (await fetch(`./out/${id}.js`)).text();
 const abs = new URL('../../src/index.js', location.href.replace('/genlab/flow-gpu.html', '/sdf/x')).href;
 let code = src.replace(/(['"])(?:\.\.\/)+src\/index\.js\1/, JSON.stringify(abs));
-// weave 模式 (view3 同路): 语义色锚定, 保留作品自己 (大模型) 的配色 —— 不是 BOB 颜料重配
 code = code.replace(
   /render\.silhouette\(ctx, layers, \{/g,
   "render.bobStipple(ctx, layers, { colorMode: 'weave',",
@@ -41,10 +41,9 @@ await import(URL.createObjectURL(new Blob([code], { type: 'application/javascrip
 // ---- 2. 层数据: 审计模块 (export __layers) ----
 const mod = await import(`./out/_audit/${id}.mjs`);
 const layers = mod.__layers ?? [];
-// view 不在审计导出里 — 从原始模块文本抓 render 选项 (MVP 约定 view: N)
 const VIEW = +(src.match(/view:\s*([\d.]+)/)?.[1] ?? 1.4);
 
-// ---- 3. 选主角层: DIMENSION field-flow v2 判据 (覆盖率 + 贴边率) ----
+// ---- 3. 选主角层 (覆盖率 + 贴边率; ?layer= 强制) ----
 function pickActor() {
   const forced = qs.get('layer');
   if (forced !== null) return [+forced];
@@ -55,7 +54,7 @@ function pickActor() {
     const sdf = layer && (layer.sdf ?? layer);
     const f = sdf && (sdf.f ? (p) => sdf.f(p) : sdf);
     if (!f) continue;
-    if (!compileSDF2ToGLSL(sdf, { includeLibrary: false }).glsl) continue; // 只考虑可上 GPU 的层
+    if (!compileSDF2ToGLSL(sdf, { includeLibrary: false }).glsl) continue;
     let inside = 0, edgeIn = 0;
     for (let py = 0; py < S; py++) {
       const wy = -(((py + 0.5) / S) * 2 * VIEW - VIEW);
@@ -72,28 +71,107 @@ function pickActor() {
     if (cov >= 0.05 && cov <= 0.72 && edgeRate <= 0.3) scored.push({ li, cov });
   }
   scored.sort((a, b) => b.cov - a.cov);
-  if (!scored.length) return [];
   return scored.slice(0, 2).map((s) => s.li);
 }
 
 const actors = pickActor();
 if (!actors.length) { hint.textContent = '无可流光主角层'; throw new Error('no actor'); }
-
-// ---- 4. 编译主角层 → 平流 shader ----
 const actorLayer = layers[actors[0]];
 const actorSdf = actorLayer && (actorLayer.sdf ?? actorLayer);
+const fCPU = actorSdf.f ? (p) => actorSdf.f(p) : actorSdf;
+
+// ---- 4. 主角层编译 (充能底晕用) ----
 const compiled = compileSDF2ToGLSL(actorSdf, { fnName: 'sdLayer' });
 if (!compiled.glsl) { hint.textContent = '编译失败: ' + compiled.error; throw new Error(compiled.error); }
 
-// ---- 闪电传导参数 (macOS 拷贝对象观感: 电流沿场边缘传导, 不是柔光) ----
-const SPEED = +(qs.get('speed') ?? 0.9);    // 电流沿轮廓的传导速率
-const JAG   = +(qs.get('jag') ?? 0.022);    // 电弧锯齿位移幅度 (world)
-const HALOK = +(qs.get('halo') ?? 34);      // 暖晕贴边紧度
-const COREK = +(qs.get('core') ?? 260);     // 电丝芯锐度 (越大越细)
-const GATE  = +(qs.get('gate') ?? 0.58);    // 通断门阈: 越高亮段越短 (电流跑动感)
+// ---- 5. CPU 等值线追踪: 主环折线 + 弧长参数化 ----
+// 种子: 粗网格上最深内部点 → 沿 +x 二分到边界; 追踪: 切向步进 + 牛顿回投。
+function traceContour(f) {
+  const G = 96;
+  let best = { d: 1e9, p: null };
+  for (let py = 0; py < G; py++) {
+    const wy = -(((py + 0.5) / G) * 2 * VIEW - VIEW);
+    for (let px = 0; px < G; px++) {
+      const wx = ((px + 0.5) / G) * 2 * VIEW - VIEW;
+      const d = f([wx, wy]);
+      if (d < best.d) best = { d, p: [wx, wy] };
+    }
+  }
+  if (!best.p || best.d > 0) return null;
+  // 沿 +x 走到边界 (二分)
+  let a = best.p, step = 0.05, b = [a[0], a[1]];
+  while (f(b) < 0 && b[0] < VIEW * 2) b = [b[0] + step, b[1]];
+  let lo = [b[0] - step, b[1]], hi = b;
+  for (let i = 0; i < 40; i++) {
+    const mid = [(lo[0] + hi[0]) / 2, lo[1]];
+    if (f(mid) < 0) lo = mid; else hi = mid;
+  }
+  let p = [(lo[0] + hi[0]) / 2, lo[1]];
+  const grad = (q) => {
+    const e = 0.002;
+    return [
+      (f([q[0] + e, q[1]]) - f([q[0] - e, q[1]])) / (2 * e),
+      (f([q[0], q[1] + e]) - f([q[0], q[1] - e])) / (2 * e),
+    ];
+  };
+  const H = 0.012; // 步长 (world)
+  const pts = [p];
+  const start = p;
+  for (let i = 0; i < 6000; i++) {
+    let g = grad(p);
+    const gl = Math.hypot(g[0], g[1]) || 1;
+    g = [g[0] / gl, g[1] / gl];
+    // 切向步进 (逆时针) + 两次牛顿回投到零线
+    let q = [p[0] - g[1] * H, p[1] + g[0] * H];
+    for (let k = 0; k < 2; k++) {
+      const d = f(q);
+      const g2 = grad(q);
+      const l2 = g2[0] * g2[0] + g2[1] * g2[1] || 1;
+      q = [q[0] - (d * g2[0]) / l2, q[1] - (d * g2[1]) / l2];
+    }
+    pts.push(q);
+    p = q;
+    if (i > 20 && Math.hypot(q[0] - start[0], q[1] - start[1]) < H * 1.4) break;
+  }
+  // 弧长表
+  const arc = [0];
+  for (let i = 1; i < pts.length; i++) {
+    arc.push(arc[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]));
+  }
+  return { pts, arc, S: arc[arc.length - 1] };
+}
+
+const contour = traceContour(fCPU);
+if (!contour) { hint.textContent = '等值线追踪失败'; throw new Error('trace fail'); }
+
+// 弧长 s → 折线上的点 (环形)
+function pointAt(s) {
+  const S = contour.S;
+  let t = ((s % S) + S) % S;
+  const { pts, arc } = contour;
+  let lo = 0, hi = arc.length - 1;
+  while (hi - lo > 1) {
+    const mid = (lo + hi) >> 1;
+    if (arc[mid] <= t) lo = mid; else hi = mid;
+  }
+  const span = arc[hi] - arc[lo] || 1;
+  const u = (t - arc[lo]) / span;
+  return [
+    pts[lo][0] + (pts[hi][0] - pts[lo][0]) * u,
+    pts[lo][1] + (pts[hi][1] - pts[lo][1]) * u,
+  ];
+}
+
+// ---- 6. 参数 (user 裁定: 粗 / 连续 / 同刻长度 ≈ 周长 1/8) ----
+const N     = 32;                              // 窗口折线点数
+const ARC   = +(qs.get('arc') ?? 0.125);       // 电流长度 = 周长 × ARC
+const LAPS  = +(qs.get('lap') ?? 7);           // 绕一圈秒数
+const JAG   = +(qs.get('jag') ?? 0.018);       // 电弧锯齿位移 (world)
+const COREK = +(qs.get('core') ?? 95);         // 电丝芯锐度 (调小 = 更粗)
+const HALOK = +(qs.get('halo') ?? 20);         // 暖晕紧度
+const RIM   = +(qs.get('rim') ?? 0.07);        // 全轮廓充能底晕强度
 
 const FS = `precision highp float;
-// 紧凑 3-octave value fbm (免贴图)
 float hash21(vec2 q) { return fract(sin(dot(q, vec2(127.1, 311.7))) * 43758.5453); }
 float vnoise(vec2 q) {
   vec2 i = floor(q), f = fract(q);
@@ -109,41 +187,42 @@ ${compiled.glsl}
 uniform float uT;
 uniform vec2 uRes;
 uniform vec3 uColor;
+uniform vec2 uPts[${N}];
+float dSeg(vec2 p, vec2 a, vec2 b) {
+  vec2 pa = p - a, ba = b - a;
+  float h = clamp(dot(pa, ba) / max(dot(ba, ba), 1e-9), 0.0, 1.0);
+  return length(pa - ba * h);
+}
 void main() {
   vec2 p = ((gl_FragCoord.xy / uRes) * 2.0 - 1.0) * ${VIEW.toFixed(3)};
+  // ① 电弧锯齿: 高频域扭曲 (对采样点抖动 → 折线变闪电)
+  vec2 warp = (vec2(fbm(p * 15.0 + uT * 2.4), fbm(p * 15.0 - uT * 2.0)) - 0.5) * ${JAG.toFixed(4)};
+  vec2 pw = p + warp;
+  // ② 连续电流窗口: 到折线的距离 + 记录最近段序号 (头 i=N-1 亮, 尾细暗)
+  float dArc = 1e6;
+  float fi = 0.0;
+  for (int i = 0; i < ${N - 1}; i++) {
+    float ds = dSeg(pw, uPts[i], uPts[i + 1]);
+    if (ds < dArc) { dArc = ds; fi = float(i); }
+  }
+  float along = fi / ${(N - 2).toFixed(1)};          // 0=尾 1=头
+  float width = mix(0.45, 1.0, along);               // 尾细
+  float core = exp(-dArc * ${COREK.toFixed(1)} / width);
+  float halo = exp(-dArc * ${HALOK.toFixed(1)} / width);
+  float env = mix(0.22, 1.0, along * along);         // 尾暗
+  float flicker = 0.82 + 0.18 * vnoise(vec2(uT * 6.0, fi * 0.7));
+  float energy = (core * 1.9 + halo * 0.5) * env * flicker;
+  // ③ 全轮廓充能底晕 (极淡, 像通电的导线)
   float d0 = sdLayer(p);
-  if (abs(d0) > 0.14) { gl_FragColor = vec4(0.0); return; } // 远场早退
-  float e = 0.004;
-  vec2 g = vec2(sdLayer(p + vec2(e, 0.0)) - sdLayer(p - vec2(e, 0.0)),
-                sdLayer(p + vec2(0.0, e)) - sdLayer(p - vec2(0.0, e)));
-  g = g / (length(g) + 1e-5);
-  vec2 tang = vec2(-g.y, g.x);
-
-  // ① 电弧锯齿: 高频域扭曲采样点 → 距离场的零线变成抖动的闪电丝
-  vec2 warp = vec2(fbm(p * 16.0 + uT * 2.3), fbm(p * 16.0 - uT * 1.9)) - 0.5;
-  float dj = sdLayer(p + warp * ${JAG.toFixed(4)});
-
-  // ② 白炽芯 + 暖晕 (电流的两层辉光)
-  float core = exp(-abs(dj) * ${COREK.toFixed(1)});
-  float halo = exp(-abs(dj) * ${HALOK.toFixed(1)});
-
-  // ③ 传导通断门: 相位噪声沿切向推进 → 亮段沿边缘跑动, 其余段熄灭
-  float phase = fbm(p * 2.6 - tang * (uT * ${SPEED.toFixed(3)}));
-  float gate = smoothstep(${GATE.toFixed(3)}, ${(GATE + 0.16).toFixed(3)}, phase);
-
-  // ④ 电流快闪烁
-  float flicker = 0.78 + 0.22 * vnoise(vec2(uT * 7.0, 3.7));
-
-  float energy = (core * 1.9 + halo * 0.55) * gate * flicker;
+  energy += exp(-abs(d0) * 46.0) * ${RIM.toFixed(3)};
   if (energy < 0.004) { gl_FragColor = vec4(0.0); return; }
-  // 白芯 + 暖金晕 (向层色微偏)
   vec3 warm = normalize(uColor + vec3(0.55, 0.38, 0.12)) * 1.2;
-  vec3 col = mix(warm, vec3(1.0), clamp(core * 1.7 - 0.15, 0.0, 1.0));
+  vec3 col = mix(warm, vec3(1.0), clamp(core * 1.6 - 0.1, 0.0, 1.0));
   float a = clamp(energy, 0.0, 1.0);
   gl_FragColor = vec4(col * a, a);
 }`;
 
-// ---- 5. WebGL overlay ----
+// ---- 7. WebGL overlay ----
 const fx = document.getElementById('fx');
 const gl = fx.getContext('webgl', { premultipliedAlpha: true });
 if (!gl) { hint.textContent = 'NO WEBGL'; throw new Error('no webgl'); }
@@ -169,16 +248,29 @@ gl.enableVertexAttribArray(loc);
 gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
 gl.viewport(0, 0, fx.width, fx.height);
 gl.uniform2f(gl.getUniformLocation(prog, 'uRes'), fx.width, fx.height);
-const colorOf = actorLayer && actorLayer.color ? actorLayer.color.map((x) => Math.min(1, x / 255 + 0.25)) : [0.75, 0.85, 1.0];
+const colorOf = actorLayer && actorLayer.color ? actorLayer.color.map((x) => Math.min(1, x / 255 + 0.25)) : [0.9, 0.8, 0.6];
 gl.uniform3f(gl.getUniformLocation(prog, 'uColor'), colorOf[0], colorOf[1], colorOf[2]);
 const uT = gl.getUniformLocation(prog, 'uT');
+const uPts = gl.getUniformLocation(prog, 'uPts');
 gl.enable(gl.BLEND);
 gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
 
+// ---- 8. 帧循环: 电流头沿弧长匀速跑, 每帧上传窗口折线 ----
+const ptsBuf = new Float32Array(N * 2);
 let run = true;
 const t0 = performance.now();
 function frame() {
-  gl.uniform1f(uT, (performance.now() - t0) / 1000);
+  const t = (performance.now() - t0) / 1000;
+  const L = contour.S * ARC;                 // 电流长度
+  const head = (t / LAPS) * contour.S;       // 匀速绕行
+  for (let i = 0; i < N; i++) {
+    const s = head - L + (L * i) / (N - 1);  // 尾..头
+    const q = pointAt(s);
+    ptsBuf[i * 2] = q[0];
+    ptsBuf[i * 2 + 1] = q[1];
+  }
+  gl.uniform2fv(uPts, ptsBuf);
+  gl.uniform1f(uT, t);
   gl.clearColor(0, 0, 0, 0);
   gl.clear(gl.COLOR_BUFFER_BIT);
   gl.drawArrays(gl.TRIANGLES, 0, 3);
@@ -187,7 +279,8 @@ function frame() {
 frame();
 document.getElementById('stage').addEventListener('contextmenu', (e) => { e.preventDefault(); run = !run; if (run) frame(); });
 
-hint.textContent = `piece=${id} · actor layer #${actors[0]}/${layers.length} · ${compiled.lines} 行 GLSL · 右键暂停/续`;
+hint.textContent =
+  `piece=${id} · actor #${actors[0]}/${layers.length} · 周长 ${contour.S.toFixed(2)} · 电流 ${(ARC * 100).toFixed(0)}% ≈ ${(contour.S * ARC).toFixed(2)} · 右键暂停/续`;
 window.$genOK = true;
 </script>
 </body></html>
