@@ -132,16 +132,29 @@ let compiled = null;
 }
 
 // ---- 6. 连通分量 → 每分量一条可见轮廓环 ----
-function traceLoopFrom(f, seed) {
+// 射线法: 种子是否在折线环内 (外轮廓必含种子, 内洞轮廓不含)
+function pointInLoop(pt, pts) {
+  let inside = false;
+  for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) {
+    const yi = pts[i][1], yj = pts[j][1];
+    if (yi > pt[1] !== yj > pt[1]) {
+      const xCross = pts[i][0] + ((pt[1] - yi) / (yj - yi)) * (pts[j][0] - pts[i][0]);
+      if (pt[0] < xCross) inside = !inside;
+    }
+  }
+  return inside;
+}
+
+function traceLoopFrom(f, seed, dir = [1, 0]) {
   let step = 0.05, b = [...seed];
   let guard = 0;
-  while (f(b) < 0 && guard++ < 200) b = [b[0] + step, b[1]];
-  let lo = [b[0] - step, b[1]], hi = b;
+  while (f(b) < 0 && guard++ < 200) b = [b[0] + dir[0] * step, b[1] + dir[1] * step];
+  let lo = [b[0] - dir[0] * step, b[1] - dir[1] * step], hi = b;
   for (let i = 0; i < 40; i++) {
-    const mid = [(lo[0] + hi[0]) / 2, lo[1]];
+    const mid = [(lo[0] + hi[0]) / 2, (lo[1] + hi[1]) / 2];
     if (f(mid) < 0) lo = mid; else hi = mid;
   }
-  let p = [(lo[0] + hi[0]) / 2, lo[1]];
+  let p = [(lo[0] + hi[0]) / 2, (lo[1] + hi[1]) / 2];
   const grad = (q) => {
     const e = 0.002;
     return [
@@ -235,10 +248,20 @@ function componentsOf(actor) {
 }
 
 let loops = [];
+const MARCH_DIRS = [[1, 0], [-1, 0], [0, 1], [0, -1]];
 for (const actor of actors) {
   for (const comp of componentsOf(actor)) {
-    const loop = traceLoopFrom(actor.f, comp.seed);
-    if (loop && loop.S > 0.35 && loop.pts.length > 40) {
+    // 外轮廓验证: 种子须在环内 — 否则追到的是内洞/邻件边界 (房子间口袋),
+    // 换方向重出发 (user: 卡在两个小房子中间转圈的根因)
+    let loop = null;
+    for (const dir of MARCH_DIRS) {
+      const cand = traceLoopFrom(actor.f, comp.seed, dir);
+      if (cand && cand.S > 0.6 && cand.pts.length > 40 && pointInLoop(comp.seed, cand.pts)) {
+        loop = cand;
+        break;
+      }
+    }
+    if (loop) {
       loop.centroid = loop.pts
         .reduce((a, p) => [a[0] + p[0], a[1] + p[1]], [0, 0])
         .map((x) => x / loop.pts.length);
@@ -255,6 +278,37 @@ loops = loops.filter((lp, i) =>
   ),
 );
 loops.sort((a, b) => b.S - a.S);
+// 连通性吸附 (user: 太阳跟主体没连着就不去): 小环必须离已保留环足够近,
+// 链式吸附 — 农舍靠云挂上, 风车靠农舍挂上; 浮空孤件 (太阳/月亮) 挂不上除名
+const ISO = +(qs.get('iso') ?? 0.45);
+if (loops.length > 1) {
+  const kept = new Set(loops.filter((lp) => lp.S >= 0.35 * loops[0].S));
+  if (kept.size && kept.size < loops.length) {
+    const minDist = (a, b) => {
+      let best = Infinity;
+      for (let i = 0; i < a.pts.length; i += 6) {
+        for (let j = 0; j < b.pts.length; j += 6) {
+          const dx = a.pts[i][0] - b.pts[j][0];
+          const dy = a.pts[i][1] - b.pts[j][1];
+          const d2 = dx * dx + dy * dy;
+          if (d2 < best) best = d2;
+        }
+      }
+      return Math.sqrt(best);
+    };
+    let grew = true;
+    while (grew) {
+      grew = false;
+      for (const lp of loops) {
+        if (kept.has(lp)) continue;
+        for (const k of kept) {
+          if (minDist(lp, k) <= ISO) { kept.add(lp); grew = true; break; }
+        }
+      }
+    }
+    loops = loops.filter((lp) => kept.has(lp));
+  }
+}
 loops.length = Math.min(loops.length, 6); // 走遍: 大物体 + 小物体各分量串联
 if (!loops.length) { hint.textContent = '轮廓追踪失败'; throw new Error('no loops'); }
 
@@ -522,7 +576,7 @@ const S0 = loops[0].S;
 const GAP = 0.35;                               // 环间暗场 (秒)
 let schedule, cycleDur;
 function rebuildSchedule() {
-  schedule = loops.map((lp) => ({ lp, dur: Math.max(2.5, LAPS * (lp.period / S0)) }));
+  schedule = loops.map((lp) => ({ lp, dur: Math.max(1.2, LAPS * (lp.period / S0)) })); // 小环≈一圈即走, 不再打转
   cycleDur = schedule.reduce((a, x) => a + x.dur + GAP, 0);
 }
 rebuildSchedule();
@@ -565,7 +619,7 @@ function frame() {
     actorCol = c ? c.map((x) => Math.min(1, x / 255 + 0.25)) : [0.9, 0.8, 0.6];
   }
 
-  const baseV = loop.period / Math.max(2.5, LAPS * (loop.period / S0));
+  const baseV = loop.period / Math.max(1.2, LAPS * (loop.period / S0));
   const cHead = loop.clarityAt(sHead);
   let v = VMIN + (VMAX - VMIN) * Math.pow(cHead, 1.4);
   if (cHead < 0.4) {
