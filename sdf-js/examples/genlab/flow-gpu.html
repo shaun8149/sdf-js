@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>genlab · 场流光 GPU (Phase C)</title>
+<style>
+body{margin:0;background:#111;display:grid;place-items:center;height:100vh;font:12px monospace;color:#888}
+#stage{position:relative}
+canvas{display:block;max-width:92vmin;max-height:92vmin}
+#fx{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;mix-blend-mode:screen}
+#hint{position:fixed;bottom:10px;left:0;right:0;text-align:center}
+</style></head><body>
+<div id="stage">
+  <canvas id="c" width="900" height="900"></canvas>
+  <canvas id="fx" width="900" height="900"></canvas>
+</div>
+<div id="hint">…</div>
+<script type="module">
+// =============================================================================
+// WP1-GPU Phase C — 场流光 shader demo
+// 底图: 原始 out/<id>.js 模块自渲染 (weave)。
+// overlay: _audit/<id>.mjs 的 __layers → 选主角层 → compileSDF2ToGLSL 就地
+// 编译 → 切向噪声平流 shader: glow = exp(-|d|k) × fbm(p·s − tang·t)。
+// 光沿全部轮廓方向"爬行" (macOS 抠图微光的场论实现), 凹形免拓扑追踪。
+// ?piece=<id> & layer=<i 强制> & speed= & band= & freq=
+// =============================================================================
+import { compileSDF2ToGLSL } from '../../src/sdf/sdf2.compile.js';
+
+const qs = new URLSearchParams(location.search);
+const id = qs.get('piece') || 'dust-storm-farm';
+const hint = document.getElementById('hint');
+
+// ---- 1. 底图: 与 view3 同路 (blob import + 渲染器改写为 weave) ----
+const src = await (await fetch(`./out/${id}.js`)).text();
+const abs = new URL('../../src/index.js', location.href.replace('/genlab/flow-gpu.html', '/sdf/x')).href;
+let code = src.replace(/(['"])(?:\.\.\/)+src\/index\.js\1/, JSON.stringify(abs));
+code = code.replace(/render\.silhouette\(/g, 'render.bobStipple(');
+await import(URL.createObjectURL(new Blob([code], { type: 'application/javascript' })));
+
+// ---- 2. 层数据: 审计模块 (export __layers) ----
+const mod = await import(`./out/_audit/${id}.mjs`);
+const layers = mod.__layers ?? [];
+// view 不在审计导出里 — 从原始模块文本抓 render 选项 (MVP 约定 view: N)
+const VIEW = +(src.match(/view:\s*([\d.]+)/)?.[1] ?? 1.4);
+
+// ---- 3. 选主角层: DIMENSION field-flow v2 判据 (覆盖率 + 贴边率) ----
+function pickActor() {
+  const forced = qs.get('layer');
+  if (forced !== null) return [+forced];
+  const S = 72;
+  const scored = [];
+  for (let li = 0; li < layers.length; li++) {
+    const layer = layers[li];
+    const sdf = layer && (layer.sdf ?? layer);
+    const f = sdf && (sdf.f ? (p) => sdf.f(p) : sdf);
+    if (!f) continue;
+    if (!compileSDF2ToGLSL(sdf, { includeLibrary: false }).glsl) continue; // 只考虑可上 GPU 的层
+    let inside = 0, edgeIn = 0;
+    for (let py = 0; py < S; py++) {
+      const wy = -(((py + 0.5) / S) * 2 * VIEW - VIEW);
+      for (let px = 0; px < S; px++) {
+        const wx = ((px + 0.5) / S) * 2 * VIEW - VIEW;
+        if (f([wx, wy]) < 0) {
+          inside++;
+          if (px === 0 || py === 0 || px === S - 1 || py === S - 1) edgeIn++;
+        }
+      }
+    }
+    const cov = inside / (S * S);
+    const edgeRate = edgeIn / (4 * S);
+    if (cov >= 0.05 && cov <= 0.72 && edgeRate <= 0.3) scored.push({ li, cov });
+  }
+  scored.sort((a, b) => b.cov - a.cov);
+  if (!scored.length) return [];
+  return scored.slice(0, 2).map((s) => s.li);
+}
+
+const actors = pickActor();
+if (!actors.length) { hint.textContent = '无可流光主角层'; throw new Error('no actor'); }
+
+// ---- 4. 编译主角层 → 平流 shader ----
+const actorLayer = layers[actors[0]];
+const actorSdf = actorLayer && (actorLayer.sdf ?? actorLayer);
+const compiled = compileSDF2ToGLSL(actorSdf, { fnName: 'sdLayer' });
+if (!compiled.glsl) { hint.textContent = '编译失败: ' + compiled.error; throw new Error(compiled.error); }
+
+const SPEED = +(qs.get('speed') ?? 0.42);   // 切向平流速率 (慢 = 水流感)
+const BANDK = +(qs.get('band') ?? 26);      // 辉光带贴边紧度
+const FREQ  = +(qs.get('freq') ?? 5.0);     // 噪声斑纹频率
+
+const FS = `precision highp float;
+// 紧凑 3-octave value fbm (免贴图)
+float hash21(vec2 q) { return fract(sin(dot(q, vec2(127.1, 311.7))) * 43758.5453); }
+float vnoise(vec2 q) {
+  vec2 i = floor(q), f = fract(q);
+  vec2 u = f * f * (3.0 - 2.0 * f);
+  float a = hash21(i), b = hash21(i + vec2(1.0, 0.0));
+  float c = hash21(i + vec2(0.0, 1.0)), d = hash21(i + vec2(1.0, 1.0));
+  return mix(mix(a, b, u.x), mix(c, d, u.x), u.y);
+}
+float fbm(vec2 q) {
+  return 0.5 * vnoise(q) + 0.3 * vnoise(q * 2.03 + 17.7) + 0.2 * vnoise(q * 4.11 + 41.3);
+}
+${compiled.glsl}
+uniform float uT;
+uniform vec2 uRes;
+uniform vec3 uColor;
+void main() {
+  vec2 p = ((gl_FragCoord.xy / uRes) * 2.0 - 1.0) * ${VIEW.toFixed(3)};
+  float d = sdLayer(p);
+  float e = 0.004;
+  vec2 g = vec2(sdLayer(p + vec2(e, 0.0)) - sdLayer(p - vec2(e, 0.0)),
+                sdLayer(p + vec2(0.0, e)) - sdLayer(p - vec2(0.0, e)));
+  g = g / (length(g) + 1e-5);
+  vec2 tang = vec2(-g.y, g.x);
+  float band = exp(-abs(d) * ${BANDK.toFixed(2)});
+  // 噪声域沿切向随时间平移 → 斑纹贴着轮廓爬行
+  float tex = fbm(p * ${FREQ.toFixed(2)} - tang * (uT * ${SPEED.toFixed(3)}));
+  float streak = smoothstep(0.42, 0.85, tex);
+  float glow = band * (0.25 + 0.95 * streak);
+  vec3 col = mix(uColor, vec3(1.0), clamp(glow * 1.5 - 0.3, 0.0, 1.0));
+  gl_FragColor = vec4(col * glow, glow);
+}`;
+
+// ---- 5. WebGL overlay ----
+const fx = document.getElementById('fx');
+const gl = fx.getContext('webgl', { premultipliedAlpha: true });
+if (!gl) { hint.textContent = 'NO WEBGL'; throw new Error('no webgl'); }
+const vs = gl.createShader(gl.VERTEX_SHADER);
+gl.shaderSource(vs, 'attribute vec2 aP; void main() { gl_Position = vec4(aP, 0.0, 1.0); }');
+gl.compileShader(vs);
+const fs = gl.createShader(gl.FRAGMENT_SHADER);
+gl.shaderSource(fs, FS);
+gl.compileShader(fs);
+if (!gl.getShaderParameter(fs, gl.COMPILE_STATUS)) {
+  hint.textContent = 'shader 编译失败 (console)';
+  console.error(gl.getShaderInfoLog(fs));
+  throw new Error('fs compile');
+}
+const prog = gl.createProgram();
+gl.attachShader(prog, vs); gl.attachShader(prog, fs); gl.linkProgram(prog);
+gl.useProgram(prog);
+const quad = gl.createBuffer();
+gl.bindBuffer(gl.ARRAY_BUFFER, quad);
+gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+const loc = gl.getAttribLocation(prog, 'aP');
+gl.enableVertexAttribArray(loc);
+gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+gl.viewport(0, 0, fx.width, fx.height);
+gl.uniform2f(gl.getUniformLocation(prog, 'uRes'), fx.width, fx.height);
+const colorOf = actorLayer && actorLayer.color ? actorLayer.color.map((x) => Math.min(1, x / 255 + 0.25)) : [0.75, 0.85, 1.0];
+gl.uniform3f(gl.getUniformLocation(prog, 'uColor'), colorOf[0], colorOf[1], colorOf[2]);
+const uT = gl.getUniformLocation(prog, 'uT');
+gl.enable(gl.BLEND);
+gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+
+let run = true;
+const t0 = performance.now();
+function frame() {
+  gl.uniform1f(uT, (performance.now() - t0) / 1000);
+  gl.clearColor(0, 0, 0, 0);
+  gl.clear(gl.COLOR_BUFFER_BIT);
+  gl.drawArrays(gl.TRIANGLES, 0, 3);
+  if (run) requestAnimationFrame(frame);
+}
+frame();
+document.getElementById('stage').addEventListener('contextmenu', (e) => { e.preventDefault(); run = !run; if (run) frame(); });
+
+hint.textContent = `piece=${id} · actor layer #${actors[0]}/${layers.length} · ${compiled.lines} 行 GLSL · 右键暂停/续`;
+window.$genOK = true;
+</script>
+</body></html>

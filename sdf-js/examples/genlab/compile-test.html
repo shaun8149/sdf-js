@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>genlab · GLSL 真编译测试 (Phase B)</title>
+  <style>
+    body { font: 13px monospace; background: #111; color: #ccc; padding: 20px; }
+    #bar { height: 8px; background: #222; margin: 10px 0; }
+    #fill { height: 100%; width: 0; background: #4a9; }
+    .fail { color: #e66; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+<div id="status">载入 bundle…</div>
+<div id="bar"><div id="fill"></div></div>
+<div id="fails"></div>
+<script src="out/_audit/glsl-bundle.js"></script>
+<script>
+// 每个 case 编译成完整 fragment shader (ES 1.00) — 真 GPU 编译是唯一能抓
+// 保留字 / 非常量索引 / 精度问题的关卡 (feedback_glsl_reserved_words)。
+const canvas = document.createElement('canvas');
+const gl = canvas.getContext('webgl');
+const statusEl = document.getElementById('status');
+const fillEl = document.getElementById('fill');
+const failsEl = document.getElementById('fails');
+
+const PROLOGUE = 'precision highp float;\n' + window.GLSL_LIB + '\n';
+const EPILOGUE = '\nvoid main() { gl_FragColor = vec4(vec3(sdLayer(gl_FragCoord.xy)), 1.0); }\n';
+
+const cases = window.GLSL_CASES;
+const fails = [];
+let i = 0;
+
+function step() {
+  const t0 = performance.now();
+  // 每帧压 ~80ms，避免长任务冻结页面
+  while (i < cases.length && performance.now() - t0 < 80) {
+    const c = cases[i];
+    const sh = gl.createShader(gl.FRAGMENT_SHADER);
+    gl.shaderSource(sh, PROLOGUE + c.body + EPILOGUE);
+    gl.compileShader(sh);
+    if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) {
+      fails.push({ id: c.id, log: gl.getShaderInfoLog(sh).slice(0, 300) });
+    }
+    gl.deleteShader(sh);
+    i++;
+  }
+  fillEl.style.width = ((i / cases.length) * 100).toFixed(1) + '%';
+  statusEl.textContent = `编译 ${i}/${cases.length} · 失败 ${fails.length}`;
+  if (i < cases.length) {
+    setTimeout(step, 0); // rAF 在 headless 下不触发
+  } else {
+    statusEl.textContent = `完成: ${cases.length - fails.length}/${cases.length} 通过 · 失败 ${fails.length}`;
+    for (const f of fails.slice(0, 20)) {
+      const div = document.createElement('div');
+      div.className = 'fail';
+      div.textContent = `✗ ${f.id}\n${f.log}`;
+      failsEl.appendChild(div);
+    }
+    window.$result = { total: cases.length, failed: fails.length, fails: fails.slice(0, 50) };
+    window.$genOK = true;
+  }
+}
+setTimeout(step, 0);
+</script>
+</body>
+</html>

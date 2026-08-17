@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>genlab · GLSL 编译+数值等价测试 (Phase B)</title>
+  <style>body { font: 13px monospace; background: #111; color: #ccc; padding: 20px; }</style>
+</head>
+<body>
+<div id="status">boot…</div>
+<pre id="out"></pre>
+<script src="out/_audit/glsl-bundle.js"></script>
+<script type="module">
+// GPU 编译 + 数值等价双关: 每个 case 编译成 shader, 渲 GRID×GRID 距离场
+// (d → [0,1] 归一 → RG 16bit 定点打包), readPixels 解码后逐点对 CPU
+// layer.sdf.f 比 max|Δ|。公式镜像错误 (符号/rotMat 方向/thickness 半厚/
+// 圆角角序) 在任何一件真实作品上都会产生 O(0.1) 级偏差, 一抓一个准。
+const GRID = 32;
+const VIEW = 1.4;
+const DRANGE = 8.0; // d ∈ [-4, 4] 映射到 [0,1]
+const TOL = 3e-3;   // float32 + 打包量化 ≈ 1.2e-4, 留 25× 余量
+const statusEl = document.getElementById('status');
+const outEl = document.getElementById('out');
+
+const canvas = document.createElement('canvas');
+canvas.width = canvas.height = GRID;
+const gl = canvas.getContext('webgl', { preserveDrawingBuffer: true });
+if (!gl) { statusEl.textContent = 'NO WEBGL'; window.$done = true; throw new Error('no webgl'); }
+
+const VS = 'attribute vec2 aP; void main() { gl_Position = vec4(aP, 0.0, 1.0); }';
+const FS_TAIL = `
+void main() {
+  vec2 p = ((gl_FragCoord.xy / ${GRID}.0) * 2.0 - 1.0) * ${VIEW};
+  float d = sdLayer(p);
+  float n = clamp(d / ${DRANGE}.0 + 0.5, 0.0, 1.0);
+  float hi = floor(n * 255.0) / 255.0;
+  float lo = fract(n * 255.0);
+  gl_FragColor = vec4(hi, lo, 0.0, 1.0);
+}`;
+
+const quad = gl.createBuffer();
+gl.bindBuffer(gl.ARRAY_BUFFER, quad);
+gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+const vs = gl.createShader(gl.VERTEX_SHADER);
+gl.shaderSource(vs, VS);
+gl.compileShader(vs);
+gl.viewport(0, 0, GRID, GRID);
+
+const pixels = new Uint8Array(GRID * GRID * 4);
+const cases = window.GLSL_CASES;
+const lib = window.GLSL_LIB;
+
+// CPU 参照: 按 piece 懒加载 audit module
+const modCache = new Map();
+async function cpuLayer(caseId) {
+  const [piece, idx] = caseId.split('#');
+  if (!modCache.has(piece)) {
+    modCache.set(piece, await import(`./out/_audit/${piece}.mjs`).catch(() => null));
+  }
+  const mod = modCache.get(piece);
+  if (!mod) return null;
+  const layer = (mod.__layers ?? [])[+idx];
+  const sdf = layer && (layer.sdf ?? layer);
+  return sdf && (sdf.f ? (p) => sdf.f(p) : sdf);
+}
+
+const result = { total: cases.length, compileFail: [], linkFail: [], parityFail: [], maxDevOverall: 0, checked: 0 };
+let i = 0;
+
+async function step() {
+  const t0 = performance.now();
+  while (i < cases.length && performance.now() - t0 < 120) {
+    const c = cases[i];
+    i++;
+    const fs = gl.createShader(gl.FRAGMENT_SHADER);
+    gl.shaderSource(fs, 'precision highp float;\n' + lib + '\n' + c.body + FS_TAIL);
+    gl.compileShader(fs);
+    if (!gl.getShaderParameter(fs, gl.COMPILE_STATUS)) {
+      result.compileFail.push({ id: c.id, log: (gl.getShaderInfoLog(fs) || '').slice(0, 200) });
+      gl.deleteShader(fs);
+      continue;
+    }
+    const prog = gl.createProgram();
+    gl.attachShader(prog, vs);
+    gl.attachShader(prog, fs);
+    gl.linkProgram(prog);
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
+      result.linkFail.push({ id: c.id, log: (gl.getProgramInfoLog(prog) || '').slice(0, 200) });
+      gl.deleteProgram(prog);
+      gl.deleteShader(fs);
+      continue;
+    }
+    gl.useProgram(prog);
+    const loc = gl.getAttribLocation(prog, 'aP');
+    gl.enableVertexAttribArray(loc);
+    gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    gl.readPixels(0, 0, GRID, GRID, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+    gl.deleteProgram(prog);
+    gl.deleteShader(fs);
+
+    const f = await cpuLayer(c.id);
+    if (!f) continue;
+    let maxDev = 0;
+    let worst = null;
+    for (let py = 0; py < GRID; py++) {
+      for (let px = 0; px < GRID; px++) {
+        const k = (py * GRID + px) * 4;
+        const n = pixels[k] / 255 + pixels[k + 1] / 255 / 255;
+        const dGpu = (n - 0.5) * DRANGE;
+        // gl_FragCoord y 向上, 与循环序一致 (py=0 是底行)
+        const wx = ((px + 0.5) / GRID * 2 - 1) * VIEW;
+        const wy = ((py + 0.5) / GRID * 2 - 1) * VIEW;
+        let dCpu = f([wx, wy]);
+        // 打包两端裁剪: 只比较未饱和区
+        if (dCpu > DRANGE / 2 - 0.1 || dCpu < -DRANGE / 2 + 0.1) continue;
+        const dev = Math.abs(dGpu - dCpu);
+        if (dev > maxDev) { maxDev = dev; worst = [wx, wy, dCpu, dGpu]; }
+      }
+    }
+    result.checked++;
+    if (maxDev > result.maxDevOverall) result.maxDevOverall = maxDev;
+    if (maxDev > TOL) result.parityFail.push({ id: c.id, maxDev: +maxDev.toFixed(5), worst });
+  }
+  statusEl.textContent = `${i}/${cases.length} · compileFail ${result.compileFail.length} · parityFail ${result.parityFail.length} · maxDev ${result.maxDevOverall.toExponential(2)}`;
+  if (i < cases.length) {
+    setTimeout(step, 0);
+  } else {
+    result.maxDevOverall = +result.maxDevOverall.toExponential(3);
+    outEl.textContent = 'RESULT ' + JSON.stringify(result, null, 1);
+    window.$result = result;
+    window.$done = true;
+    document.title = 'DONE';
+  }
+}
+setTimeout(step, 0);
+</script>
+</body>
+</html>
