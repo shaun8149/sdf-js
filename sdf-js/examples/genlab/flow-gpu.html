@@ -296,6 +296,17 @@ for (const loop of loops) {
   loop.clarityArr = null;
   loop.clarityAt = (s) => (loop.clarityArr ? loop.clarityArr[idxOf(fold(s))] : 1);
   loop.indexAt = (s) => idxOf(fold(s));
+  // 外法向符号: 电流要骑在表面外侧 (SDF 增大的一侧)
+  loop.outSign = (() => {
+    const sMid = loop.S * 0.37;
+    const q = loop.pointAt(sMid);
+    const nm = loop.normalAt(sMid);
+    const e = 0.02;
+    return loop.actor.f([q[0] + nm[0] * e, q[1] + nm[1] * e]) >
+      loop.actor.f([q[0] - nm[0] * e, q[1] - nm[1] * e])
+      ? 1
+      : -1;
+  })();
 }
 
 // ---- 7. "抠图"清晰度 (每环, 底图画满后计算) ----
@@ -355,8 +366,10 @@ const RIM   = +(qs.get('rim') ?? 0.07);
 const DIR   = +(qs.get('dir') ?? -1);
 const VMIN  = +(qs.get('vmin') ?? 0.12);
 const VMAX  = +(qs.get('vmax') ?? 1.65);
-const WANDER = +(qs.get('wander') ?? 0.022);
-const HUNT  = +(qs.get('hunt') ?? 1.0);        // 找路摇摆深度 (0 = 匀速滑行)
+const HUNT  = +(qs.get('hunt') ?? 1.0);        // 找路进退深度 (0 = 匀速滑行)
+const OFF   = +(qs.get('off') ?? 0.016);       // 外推距离: 电流骑在表面外侧 (world)
+const FADE  = +(qs.get('fade') ?? 0.955);      // 残留衰减/帧 (越大残留越久)
+const LUME  = +(qs.get('lume') ?? 0.05);       // 闪电照明: 轨迹周遭画面打亮强度
 
 const FS = `precision highp float;
 float hash21(vec2 q) { return fract(sin(dot(q, vec2(127.1, 311.7))) * 43758.5453); }
@@ -395,10 +408,13 @@ void main() {
   }
   float along = fi / ${(N - 2).toFixed(1)};
   float soften = 1.0 + 1.4 * uHes;
-  float width = mix(0.45, 1.0, along) * soften;
+  // 匀宽 (user: 不要精子形): 全长等宽, 沿长度+时间轻微呼吸 (偶尔稍宽)
+  float breathe = 1.0 + 0.5 * (vnoise(vec2(fi * 0.11, uT * 0.9)) - 0.5);
+  float width = breathe * soften;
   float core = exp(-dArc * ${COREK.toFixed(1)} / width) / soften;
   float halo = exp(-dArc * ${HALOK.toFixed(1)} / width);
-  float env = mix(0.22, 1.0, along * along);
+  // 两端对称软收, 中段等亮 (不再头亮尾暗)
+  float env = smoothstep(0.0, 0.1, along) * (1.0 - smoothstep(0.9, 1.0, along));
   float flicker = 0.82 + 0.18 * vnoise(vec2(uT * (6.0 + 8.0 * uHes), fi * 0.7));
   float energy = (core * 1.9 + halo * (0.5 + 0.35 * uHes)) * env * flicker;
   for (int i = 0; i < ${M}; i++) {
@@ -408,8 +424,11 @@ void main() {
     float spark = exp(-r * 130.0) * inten * (0.55 + 0.45 * vnoise(vec2(uT * 9.0, float(i) * 2.31)));
     energy += spark * 1.3;
   }
+  // 闪电照明 (user 第5条): 大半径柔光打亮轨迹周遭的画面, 随残迹一起熄灭
+  energy += exp(-dArc * 5.5) * ${LUME.toFixed(4)} * env * (0.8 + 0.2 * flicker);
+  // 充能底晕: 累积衰减下的稳态注入 (rim × (1-FADE) / 帧 → 平衡亮度 ≈ RIM)
   float d0 = sdLayer(p);
-  energy += exp(-abs(d0) * 46.0) * ${RIM.toFixed(3)};
+  energy += exp(-abs(d0) * 46.0) * ${(RIM * (1 - FADE)).toFixed(6)};
   if (energy < 0.004) { gl_FragColor = vec4(0.0); return; }
   vec3 warm = normalize(uColor + vec3(0.55, 0.38, 0.12)) * 1.2;
   vec3 col = mix(warm, vec3(1.0), clamp(core * 1.6 - 0.1, 0.0, 1.0));
@@ -417,9 +436,9 @@ void main() {
   gl_FragColor = vec4(col * a, a);
 }`;
 
-// ---- 9. WebGL overlay ----
+// ---- 9. WebGL overlay (残留累积: 不清屏, 每帧 先衰减 再叠加注入) ----
 const fx = document.getElementById('fx');
-const gl = fx.getContext('webgl', { premultipliedAlpha: true });
+const gl = fx.getContext('webgl', { premultipliedAlpha: true, preserveDrawingBuffer: true });
 if (!gl) { hint.textContent = 'NO WEBGL'; throw new Error('no webgl'); }
 const vsh = gl.createShader(gl.VERTEX_SHADER);
 gl.shaderSource(vsh, 'attribute vec2 aP; void main() { gl_Position = vec4(aP, 0.0, 1.0); }');
@@ -449,7 +468,34 @@ const uPts = gl.getUniformLocation(prog, 'uPts');
 const uEmb = gl.getUniformLocation(prog, 'uEmb');
 const uHes = gl.getUniformLocation(prog, 'uHes');
 gl.enable(gl.BLEND);
-gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+
+// 衰减小程序: dst *= FADE (blendColor CONSTANT_ALPHA), 电流残迹慢慢熄灭
+const decayProg = (() => {
+  const dvs = gl.createShader(gl.VERTEX_SHADER);
+  gl.shaderSource(dvs, 'attribute vec2 aP; void main() { gl_Position = vec4(aP, 0.0, 1.0); }');
+  gl.compileShader(dvs);
+  const dfs = gl.createShader(gl.FRAGMENT_SHADER);
+  gl.shaderSource(dfs, 'precision lowp float; void main() { gl_FragColor = vec4(0.0); }');
+  gl.compileShader(dfs);
+  const p2 = gl.createProgram();
+  gl.attachShader(p2, dvs); gl.attachShader(p2, dfs); gl.linkProgram(p2);
+  return p2;
+})();
+const decayALoc = gl.getAttribLocation(decayProg, 'aP');
+gl.blendColor(0, 0, 0, FADE);
+function runDecay() {
+  gl.useProgram(decayProg);
+  gl.enableVertexAttribArray(decayALoc);
+  gl.vertexAttribPointer(decayALoc, 2, gl.FLOAT, false, 0, 0);
+  gl.blendFunc(gl.ZERO, gl.CONSTANT_ALPHA);
+  gl.drawArrays(gl.TRIANGLES, 0, 3);
+}
+function useMain() {
+  gl.useProgram(prog);
+  gl.enableVertexAttribArray(aloc);
+  gl.vertexAttribPointer(aloc, 2, gl.FLOAT, false, 0, 0);
+  gl.blendFunc(gl.ONE, gl.ONE); // 累积注入 (残留由 runDecay 消退)
+}
 
 // ---- 10. 帧循环: 串联巡游 + 找路摇摆 + 犹豫 + 余烬 ----
 // 1D 平滑噪声 (找路用): 间歇负值 → 头会回退再前进
@@ -472,6 +518,7 @@ let sHead = 0;
 let curIdx = -1;
 let lastT = 0;
 let run = true;
+let actorCol = [0.9, 0.8, 0.6];
 const t0 = performance.now();
 
 function frame() {
@@ -489,8 +536,7 @@ function frame() {
     tc -= GAP;
   }
   if (dark || idx < 0) {
-    gl.clearColor(0, 0, 0, 0);
-    gl.clear(gl.COLOR_BUFFER_BIT);
+    runDecay(); // 暗场: 不注入, 残迹继续熄灭
     if (run) requestAnimationFrame(frame);
     return;
   }
@@ -500,8 +546,7 @@ function frame() {
     sHead = Math.random() * loop.S;
     embers = [];
     const c = loop.actor.color;
-    const col = c ? c.map((x) => Math.min(1, x / 255 + 0.25)) : [0.9, 0.8, 0.6];
-    gl.uniform3f(uColorLoc, col[0], col[1], col[2]);
+    actorCol = c ? c.map((x) => Math.min(1, x / 255 + 0.25)) : [0.9, 0.8, 0.6];
   }
 
   const baseV = loop.period / Math.max(2.5, LAPS * (loop.period / S0));
@@ -523,7 +568,7 @@ function frame() {
       const sSpawn = loop.arc[i] + (Math.random() - 0.5) * loop.S * 0.05;
       const q = loop.pointAt(sSpawn);
       const nm = loop.normalAt(sSpawn);
-      const off = (Math.random() - 0.5) * 0.06;
+      const off = loop.outSign * (0.005 + Math.random() * 0.05); // 余烬也落在外侧
       embers.push({
         x: q[0] + nm[0] * off,
         y: q[1] + nm[1] * off,
@@ -546,23 +591,23 @@ function frame() {
     embBuf[i * 3 + 2] = e.cur ?? 0;
   });
 
-  // 窗口折线: 全程小幅左右晃 + 含糊处加倍飘 (找路的横向分量)
+  // 窗口折线: 沿外法向外推 OFF — 电流骑在物体表面外侧 (user 第4条);
+  // 不再做平滑左右摆 (精灵感), 晃动全部交给 shader 高频锯齿
   const L = loop.S * ARC;
   for (let i = 0; i < N; i++) {
     const s = sHead - DIR * L + (DIR * (L * i)) / (N - 1);
     const q = loop.pointAt(s);
-    const c = loop.clarityAt(s);
     const nm = loop.normalAt(s);
-    const drift = (0.35 + 0.65 * (1 - c)) * WANDER * Math.sin(s * 23.0 + t * 2.6 + i * 0.7);
-    ptsBuf[i * 2] = q[0] + nm[0] * drift;
-    ptsBuf[i * 2 + 1] = q[1] + nm[1] * drift;
+    ptsBuf[i * 2] = q[0] + nm[0] * loop.outSign * OFF;
+    ptsBuf[i * 2 + 1] = q[1] + nm[1] * loop.outSign * OFF;
   }
+  runDecay();                 // ① 残留衰减 (dst *= FADE)
+  useMain();                  // ② 叠加注入本帧电流
+  gl.uniform3f(uColorLoc, actorCol[0], actorCol[1], actorCol[2]);
   gl.uniform2fv(uPts, ptsBuf);
   gl.uniform3fv(uEmb, embBuf);
   gl.uniform1f(uHes, 1 - cHead);
   gl.uniform1f(uT, t);
-  gl.clearColor(0, 0, 0, 0);
-  gl.clear(gl.COLOR_BUFFER_BIT);
   gl.drawArrays(gl.TRIANGLES, 0, 3);
   if (run) requestAnimationFrame(frame);
 }
