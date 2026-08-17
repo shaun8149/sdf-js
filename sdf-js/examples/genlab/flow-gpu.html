@@ -14,30 +14,29 @@ canvas{display:block;max-width:92vmin;max-height:92vmin}
 <div id="hint">…</div>
 <script type="module">
 // =============================================================================
-// WP1-GPU Phase C — 电流传导 (闪电沿 SDF=0 爬行, "抠图犹豫"版)
+// WP1-GPU Phase C — 电流传导 ("抠图"语义版)
 //
 // user 裁定线 (2026-08-17):
-//   v2: 电流要粗 / 连续单段 / 同刻长度 ≈ 周长 1/8
-//   v3: macOS 抠图不知道 SDF —— 它看的是像素。边缘清晰处电流跑得快而锐;
-//       边缘含糊处电流犹豫: 减速、变粗变糊、打滑停滞、偏离轮廓找路;
-//       主电流跑走后, 含糊区留下的"子电流"余烬各自熄灭。
+//   v2: 粗 / 连续 / 同刻长度 ≈ 周长 1/8
+//   v3: 抠图犹豫 — 清晰快, 含糊慢+糊+顿挫; 主流走后子电流熄灭
+//   v4: ① 电流只走"可见剪影" (被上层盖住/出画框的数学轮廓不走)
+//       ② 走遍所有物体 (大物体 + 小物体, 连通分量串联巡游)
+//       ③ 找路感 — 头往复摇摆前进 (间歇负速回退), 不是匀速滑行
 //
-// 实现: 电流对我们自己的画做一次"抠图" —— 沿轮廓采样 weave 底图画布,
-// 法向两侧颜色对比 = 清晰度 c(s)。速度/线宽/抖动/余烬全部由 c(s) 驱动。
-// ?piece= &layer= &arc=0.125 &lap=7 &jag= &core= &halo= &rim= &vmin= &vmax=
+// 可见剪影 = actor.difference(...盖在其上的层).intersection(画框) — 链式布尔
+// 直接给出被遮挡裁剪后的 SDF, CPU 追踪与 GPU 底晕同源。
 // =============================================================================
 import { compileSDF2ToGLSL } from '../../src/sdf/sdf2.compile.js';
+import { rectangle } from '../../src/index.js';
 
 const qs = new URLSearchParams(location.search);
 const id = qs.get('piece') || 'dust-storm-farm';
 const hint = document.getElementById('hint');
 
-// ---- 1. 底图: view3 同路 (weave 语义锚定 — 保留作品自己的配色) ----
+// ---- 1. 底图: weave 原色 + Before 原密度轴 (动态稀疏) ----
 const src = await (await fetch(`./out/${id}.js`)).text();
 const abs = new URL('../../src/index.js', location.href.replace('/genlab/flow-gpu.html', '/sdf/x')).href;
 let code = src.replace(/(['"])(?:\.\.\/)+src\/index\.js\1/, JSON.stringify(abs));
-// Before 态 (densityFloor: 0 = 原密度轴, 动态稀疏): 稀疏区对比度低 →
-// 清晰度 c(s) 真实起伏 → 抠图犹豫有落点 (user 终裁 2026-08-17 风景全 Before)
 code = code.replace(
   /render\.silhouette\(ctx, layers, \{/g,
   "render.bobStipple(ctx, layers, { colorMode: 'weave', densityFloor: 0,",
@@ -48,19 +47,21 @@ await import(URL.createObjectURL(new Blob([code], { type: 'application/javascrip
 const mod = await import(`./out/_audit/${id}.mjs`);
 const layers = mod.__layers ?? [];
 const VIEW = +(src.match(/view:\s*([\d.]+)/)?.[1] ?? 1.4);
+const fOf = (layer) => {
+  const s = layer && (layer.sdf ?? layer);
+  return s && (s.f ? (p) => s.f(p) : typeof s === 'function' ? s : null);
+};
+const sdfOf = (layer) => (layer && (layer.sdf ?? layer)) || null;
 
-// ---- 3. 选主角层 ----
-function pickActor() {
-  const forced = qs.get('layer');
-  if (forced !== null) return [+forced];
+// ---- 3. 选主角: 大物体各自成角, 小层并集成一个"小物体"复合主角 ----
+// (macOS 抠图的 subject 常是几个不相连的 blob: 大物体 + 农舍这类小集群)
+const canCompile = (s) => s && s.ast && compileSDF2ToGLSL(s, { includeLibrary: false }).glsl;
+function censusLayers() {
   const S = 72;
-  const scored = [];
+  const rows = [];
   for (let li = 0; li < layers.length; li++) {
-    const layer = layers[li];
-    const sdf = layer && (layer.sdf ?? layer);
-    const f = sdf && (sdf.f ? (p) => sdf.f(p) : sdf);
+    const f = fOf(layers[li]);
     if (!f) continue;
-    if (!compileSDF2ToGLSL(sdf, { includeLibrary: false }).glsl) continue;
     let inside = 0, edgeIn = 0;
     for (let py = 0; py < S; py++) {
       const wy = -(((py + 0.5) / S) * 2 * VIEW - VIEW);
@@ -72,39 +73,69 @@ function pickActor() {
         }
       }
     }
-    const cov = inside / (S * S);
-    const edgeRate = edgeIn / (4 * S);
-    if (cov >= 0.05 && cov <= 0.72 && edgeRate <= 0.3) scored.push({ li, cov });
+    rows.push({ li, cov: inside / (S * S), edge: edgeIn / (4 * S) });
   }
-  scored.sort((a, b) => b.cov - a.cov);
-  return scored.slice(0, 2).map((s) => s.li);
+  return rows;
+}
+const forced = qs.get('layer');
+let bigIdx = [], smallIdx = [];
+if (forced !== null) {
+  bigIdx = [+forced];
+} else {
+  const rows = censusLayers().filter((r) => r.cov >= 0.002 && r.cov <= 0.72 && r.edge <= 0.3);
+  bigIdx = rows.filter((r) => r.cov >= 0.05).sort((a, b) => b.cov - a.cov).slice(0, 3).map((r) => r.li);
+  smallIdx = rows.filter((r) => r.cov < 0.05).map((r) => r.li);
+}
+if (!bigIdx.length && !smallIdx.length) { hint.textContent = '无可流光主角层'; throw new Error('no actor'); }
+
+// ---- 4. 可见剪影 SDF: 减去盖在其上的层, 与画框相交 ----
+// gpuOnly: GPU 链须整链可编译 (裸闭包子节点会炸发射器), CPU 链用全部层保真
+const frameRect = rectangle([2 * VIEW * 0.97, 2 * VIEW * 0.97]);
+function visibleSdf(li, gpuOnly) {
+  const base = sdfOf(layers[li]);
+  const uppers = [];
+  for (let j = li + 1; j < layers.length; j++) {
+    const u = sdfOf(layers[j]);
+    if (!u || !(u.f || typeof u === 'function')) continue;
+    if (gpuOnly ? canCompile(u) : true) uppers.push(u);
+  }
+  const vis = uppers.length ? base.difference(...uppers) : base;
+  return vis.intersection(frameRect);
+}
+const actors = [];
+for (const li of bigIdx) {
+  actors.push({ label: `L${li}`, vis: visibleSdf(li, false), color: layers[li].color });
+}
+if (smallIdx.length) {
+  const parts = smallIdx.map((li) => visibleSdf(li, false));
+  const vis = parts.length > 1 ? parts[0].union(...parts.slice(1)) : parts[0];
+  actors.push({ label: `小物体×${smallIdx.length}`, vis, color: layers[smallIdx[0]].color });
+}
+for (const a of actors) a.f = (p) => a.vis.f(p);
+
+// ---- 5. GPU 底晕: 可编译主体可见域的并 ----
+let compiled = null;
+{
+  const gpuVis = [];
+  for (const li of bigIdx) {
+    if (canCompile(sdfOf(layers[li]))) gpuVis.push(visibleSdf(li, true));
+  }
+  for (const li of smallIdx) {
+    if (canCompile(sdfOf(layers[li]))) gpuVis.push(visibleSdf(li, true));
+  }
+  if (gpuVis.length) {
+    const u = gpuVis.length > 1 ? gpuVis[0].union(...gpuVis.slice(1)) : gpuVis[0];
+    compiled = compileSDF2ToGLSL(u, { fnName: 'sdLayer', maxLines: 20000 });
+    if (!compiled.glsl) compiled = compileSDF2ToGLSL(gpuVis[0], { fnName: 'sdLayer', maxLines: 20000 });
+  }
+  if (!compiled || !compiled.glsl) compiled = { glsl: 'float sdLayer(vec2 p) { return 1e6; }', lines: 1 };
 }
 
-const actors = pickActor();
-if (!actors.length) { hint.textContent = '无可流光主角层'; throw new Error('no actor'); }
-const actorLayer = layers[actors[0]];
-const actorSdf = actorLayer && (actorLayer.sdf ?? actorLayer);
-const fCPU = actorSdf.f ? (p) => actorSdf.f(p) : actorSdf;
-
-// ---- 4. 主角层编译 (充能底晕用) ----
-const compiled = compileSDF2ToGLSL(actorSdf, { fnName: 'sdLayer' });
-if (!compiled.glsl) { hint.textContent = '编译失败: ' + compiled.error; throw new Error(compiled.error); }
-
-// ---- 5. CPU 等值线追踪: 主环折线 + 弧长参数化 ----
-function traceContour(f) {
-  const G = 96;
-  let best = { d: 1e9, p: null };
-  for (let py = 0; py < G; py++) {
-    const wy = -(((py + 0.5) / G) * 2 * VIEW - VIEW);
-    for (let px = 0; px < G; px++) {
-      const wx = ((px + 0.5) / G) * 2 * VIEW - VIEW;
-      const d = f([wx, wy]);
-      if (d < best.d) best = { d, p: [wx, wy] };
-    }
-  }
-  if (!best.p || best.d > 0) return null;
-  let step = 0.05, b = [...best.p];
-  while (f(b) < 0 && b[0] < VIEW * 2) b = [b[0] + step, b[1]];
+// ---- 6. 连通分量 → 每分量一条可见轮廓环 ----
+function traceLoopFrom(f, seed) {
+  let step = 0.05, b = [...seed];
+  let guard = 0;
+  while (f(b) < 0 && guard++ < 200) b = [b[0] + step, b[1]];
   let lo = [b[0] - step, b[1]], hi = b;
   for (let i = 0; i < 40; i++) {
     const mid = [(lo[0] + hi[0]) / 2, lo[1]];
@@ -121,6 +152,8 @@ function traceContour(f) {
   const H = 0.012;
   const pts = [p];
   const start = p;
+  let closed = false;
+  let lastCheck = p;
   for (let i = 0; i < 6000; i++) {
     let g = grad(p);
     const gl = Math.hypot(g[0], g[1]) || 1;
@@ -134,47 +167,140 @@ function traceContour(f) {
     }
     pts.push(q);
     p = q;
-    if (i > 20 && Math.hypot(q[0] - start[0], q[1] - start[1]) < H * 1.4) break;
+    if (i > 20 && Math.hypot(q[0] - start[0], q[1] - start[1]) < H * 1.4) { closed = true; break; }
+    // 卡住检测: 布尔角点梯度不连续会让切向步进原地抖 — 256 步净位移过小即停
+    if ((i & 255) === 255) {
+      if (Math.hypot(q[0] - lastCheck[0], q[1] - lastCheck[1]) < H * 12) break;
+      lastCheck = q;
+    }
   }
   const arc = [0];
   for (let i = 1; i < pts.length; i++) {
     arc.push(arc[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]));
   }
-  return { pts, arc, S: arc[arc.length - 1] };
-}
-
-const contour = traceContour(fCPU);
-if (!contour) { hint.textContent = '等值线追踪失败'; throw new Error('trace fail'); }
-
-function pointAt(s) {
-  const S = contour.S;
-  const t = ((s % S) + S) % S;
-  const { pts, arc } = contour;
-  let lo = 0, hi = arc.length - 1;
-  while (hi - lo > 1) {
-    const mid = (lo + hi) >> 1;
-    if (arc[mid] <= t) lo = mid; else hi = mid;
+  let S = arc[arc.length - 1];
+  if (!closed) {
+    const gap = Math.hypot(p[0] - start[0], p[1] - start[1]);
+    if (gap < 0.25 * S) {
+      // 缺口小 → 人工闭合 (补一段直线回起点)
+      pts.push([...start]);
+      arc.push(S + gap);
+      S += gap;
+      closed = true;
+    }
+    // 缺口大 → 保持开路, 之后用乒乓折返参数化
   }
-  const span = arc[hi] - arc[lo] || 1;
-  const u = (t - arc[lo]) / span;
-  return [
-    pts[lo][0] + (pts[hi][0] - pts[lo][0]) * u,
-    pts[lo][1] + (pts[hi][1] - pts[lo][1]) * u,
-  ];
-}
-function normalAt(s) {
-  const h = contour.S / 400;
-  const a = pointAt(s - h), b = pointAt(s + h);
-  const tx = b[0] - a[0], ty = b[1] - a[1];
-  const l = Math.hypot(tx, ty) || 1;
-  return [ty / l, -tx / l];
+  return { pts, arc, S, closed };
 }
 
-// ---- 6. "抠图"清晰度: 沿轮廓采样底图, 法向两侧颜色对比 c(s) ∈ [0,1] ----
-// 抠图算法只看像素: 两侧对比高 = 边缘清晰 = 电流自信; 对比低 = 犹豫地带。
+function componentsOf(actor) {
+  // 128² 网格 flood-fill: 每个内部连通块 → 最深种子点
+  const G = 128;
+  const d = new Float32Array(G * G);
+  for (let py = 0; py < G; py++) {
+    const wy = -(((py + 0.5) / G) * 2 * VIEW - VIEW);
+    for (let px = 0; px < G; px++) {
+      d[py * G + px] = actor.f([((px + 0.5) / G) * 2 * VIEW - VIEW, wy]);
+    }
+  }
+  const seen = new Uint8Array(G * G);
+  const comps = [];
+  for (let k0 = 0; k0 < G * G; k0++) {
+    if (seen[k0] || d[k0] >= 0) continue;
+    const queue = [k0];
+    seen[k0] = 1;
+    let area = 0, deep = { d: 1e9, k: k0 };
+    while (queue.length) {
+      const k = queue.pop();
+      area++;
+      if (d[k] < deep.d) deep = { d: d[k], k };
+      const px = k % G, py = (k / G) | 0;
+      for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+        const nx = px + dx, ny = py + dy;
+        if (nx < 0 || ny < 0 || nx >= G || ny >= G) continue;
+        const nk = ny * G + nx;
+        if (!seen[nk] && d[nk] < 0) { seen[nk] = 1; queue.push(nk); }
+      }
+    }
+    if (area >= G * G * 0.0025) {
+      const px = deep.k % G, py = (deep.k / G) | 0;
+      comps.push({
+        area,
+        seed: [((px + 0.5) / G) * 2 * VIEW - VIEW, -(((py + 0.5) / G) * 2 * VIEW - VIEW)],
+      });
+    }
+  }
+  comps.sort((a, b) => b.area - a.area);
+  return comps.slice(0, 3);
+}
+
+let loops = [];
+for (const actor of actors) {
+  for (const comp of componentsOf(actor)) {
+    const loop = traceLoopFrom(actor.f, comp.seed);
+    if (loop && loop.S > 0.35 && loop.pts.length > 40) {
+      loop.centroid = loop.pts
+        .reduce((a, p) => [a[0] + p[0], a[1] + p[1]], [0, 0])
+        .map((x) => x / loop.pts.length);
+      loops.push(Object.assign(loop, { actor }));
+    }
+  }
+}
+// 去重: 小分量种子可能溜到大环上重追同一条 (S 相近 + 质心相近)
+loops = loops.filter((lp, i) =>
+  !loops.some((other, j) =>
+    j < i &&
+    Math.abs(other.S - lp.S) / Math.max(other.S, lp.S) < 0.05 &&
+    Math.hypot(other.centroid[0] - lp.centroid[0], other.centroid[1] - lp.centroid[1]) < 0.15,
+  ),
+);
+loops.sort((a, b) => b.S - a.S);
+loops.length = Math.min(loops.length, 6); // 走遍: 大物体 + 小物体各分量串联
+if (!loops.length) { hint.textContent = '轮廓追踪失败'; throw new Error('no loops'); }
+
+for (const loop of loops) {
+  // 闭环取模; 开路乒乓折返 (period = 2S, 电流到端点原路返回, 不瞬移)
+  loop.period = loop.closed ? loop.S : 2 * loop.S;
+  const fold = (s) => {
+    const P = loop.period;
+    let t = ((s % P) + P) % P;
+    if (!loop.closed && t > loop.S) t = 2 * loop.S - t;
+    return Math.min(t, loop.S);
+  };
+  const idxOf = (t) => {
+    let lo = 0, hi = loop.arc.length - 1;
+    while (hi - lo > 1) {
+      const mid = (lo + hi) >> 1;
+      if (loop.arc[mid] <= t) lo = mid; else hi = mid;
+    }
+    return lo;
+  };
+  loop.pointAt = (s) => {
+    const t = fold(s);
+    const lo = idxOf(t);
+    const hi = Math.min(lo + 1, loop.pts.length - 1);
+    const span = loop.arc[hi] - loop.arc[lo] || 1;
+    const u = (t - loop.arc[lo]) / span;
+    return [
+      loop.pts[lo][0] + (loop.pts[hi][0] - loop.pts[lo][0]) * u,
+      loop.pts[lo][1] + (loop.pts[hi][1] - loop.pts[lo][1]) * u,
+    ];
+  };
+  loop.normalAt = (s) => {
+    const h = loop.S / 400;
+    const a = loop.pointAt(s - h), b = loop.pointAt(s + h);
+    const tx = b[0] - a[0], ty = b[1] - a[1];
+    const l = Math.hypot(tx, ty) || 1;
+    return [ty / l, -tx / l];
+  };
+  loop.clarityArr = null;
+  loop.clarityAt = (s) => (loop.clarityArr ? loop.clarityArr[idxOf(fold(s))] : 1);
+  loop.indexAt = (s) => idxOf(fold(s));
+}
+
+// ---- 7. "抠图"清晰度 (每环, 底图画满后计算) ----
 const art = document.getElementById('c');
 const artW = art.width;
-let clarity = null; // per-vertex, 与 contour.pts 对齐
 function computeClarity() {
   const ctx2 = art.getContext('2d');
   const img = ctx2.getImageData(0, 0, artW, artW).data;
@@ -185,42 +311,30 @@ function computeClarity() {
     const k = (py * artW + px) * 4;
     return [img[k], img[k + 1], img[k + 2]];
   };
-  const n = contour.pts.length;
-  const raw = new Float32Array(n);
-  for (let i = 0; i < n; i++) {
-    const p = contour.pts[i];
-    const nm = normalAt(contour.arc[i]);
-    let acc = 0, cnt = 0;
-    for (const dlt of [0.025, 0.045, 0.07]) {
-      const a = sample(p[0] + nm[0] * dlt, p[1] + nm[1] * dlt);
-      const b = sample(p[0] - nm[0] * dlt, p[1] - nm[1] * dlt);
-      if (!a || !b) continue;
-      acc += (Math.abs(a[0] - b[0]) + Math.abs(a[1] - b[1]) + Math.abs(a[2] - b[2])) / 3;
-      cnt++;
+  for (const loop of loops) {
+    const n = loop.pts.length;
+    const raw = new Float32Array(n);
+    for (let i = 0; i < n; i++) {
+      const p = loop.pts[i];
+      const nm = loop.normalAt(loop.arc[i]);
+      let acc = 0, cnt = 0;
+      for (const dlt of [0.025, 0.045, 0.07]) {
+        const a = sample(p[0] + nm[0] * dlt, p[1] + nm[1] * dlt);
+        const b = sample(p[0] - nm[0] * dlt, p[1] - nm[1] * dlt);
+        if (!a || !b) continue;
+        acc += (Math.abs(a[0] - b[0]) + Math.abs(a[1] - b[1]) + Math.abs(a[2] - b[2])) / 3;
+        cnt++;
+      }
+      raw[i] = cnt ? Math.min(1, acc / cnt / 52) : 0.5;
     }
-    raw[i] = cnt ? Math.min(1, acc / cnt / 52) : 0.5; // /52: weave 织物对比标定
-  }
-  // 沿弧平滑 (±8 顶点)
-  clarity = new Float32Array(n);
-  for (let i = 0; i < n; i++) {
-    let s = 0;
-    for (let j = -8; j <= 8; j++) s += raw[(i + j + n) % n];
-    clarity[i] = s / 17;
+    loop.clarityArr = new Float32Array(n);
+    for (let i = 0; i < n; i++) {
+      let s = 0;
+      for (let j = -8; j <= 8; j++) s += raw[(i + j + n) % n];
+      loop.clarityArr[i] = s / 17;
+    }
   }
 }
-function clarityAt(s) {
-  if (!clarity) return 1;
-  const S = contour.S;
-  const t = ((s % S) + S) % S;
-  const { arc } = contour;
-  let lo = 0, hi = arc.length - 1;
-  while (hi - lo > 1) {
-    const mid = (lo + hi) >> 1;
-    if (arc[mid] <= t) lo = mid; else hi = mid;
-  }
-  return clarity[lo];
-}
-// weave 底图是分块异步画的 — 等画布"画满"再算清晰度 (期间电流按全清晰跑)
 (function waitArt(tries) {
   const ctx2 = art.getContext('2d');
   const d = ctx2.getImageData(artW >> 1, artW >> 1, 1, 1).data;
@@ -229,19 +343,20 @@ function clarityAt(s) {
   else setTimeout(() => waitArt(tries + 1), 150);
 })(0);
 
-// ---- 7. 参数 ----
+// ---- 8. 参数 ----
 const N     = 32;
-const M     = 16;                              // 子电流余烬槽位
+const M     = 16;
 const ARC   = +(qs.get('arc') ?? 0.125);
-const LAPS  = +(qs.get('lap') ?? 7);           // 全清晰时绕圈秒数
+const LAPS  = +(qs.get('lap') ?? 7);           // 最大环一圈的名义秒数
 const JAG   = +(qs.get('jag') ?? 0.018);
 const COREK = +(qs.get('core') ?? 95);
 const HALOK = +(qs.get('halo') ?? 20);
 const RIM   = +(qs.get('rim') ?? 0.07);
-const DIR   = +(qs.get('dir') ?? -1);          // 传导方向 (-1 = 反向, user 2026-08-17)
-const VMIN  = +(qs.get('vmin') ?? 0.12);       // 含糊处速度下限 (× 基速)
-const VMAX  = +(qs.get('vmax') ?? 1.65);       // 清晰处速度上限
-const WANDER = +(qs.get('wander') ?? 0.022);   // 含糊处偏离轮廓找路幅度 (world)
+const DIR   = +(qs.get('dir') ?? -1);
+const VMIN  = +(qs.get('vmin') ?? 0.12);
+const VMAX  = +(qs.get('vmax') ?? 1.65);
+const WANDER = +(qs.get('wander') ?? 0.022);
+const HUNT  = +(qs.get('hunt') ?? 1.0);        // 找路摇摆深度 (0 = 匀速滑行)
 
 const FS = `precision highp float;
 float hash21(vec2 q) { return fract(sin(dot(q, vec2(127.1, 311.7))) * 43758.5453); }
@@ -259,9 +374,9 @@ ${compiled.glsl}
 uniform float uT;
 uniform vec2 uRes;
 uniform vec3 uColor;
-uniform float uHes;              // 电流头处的犹豫度 = 1 - clarity
+uniform float uHes;
 uniform vec2 uPts[${N}];
-uniform vec3 uEmb[${M}];         // 子电流余烬: xy 位置, z 强度
+uniform vec3 uEmb[${M}];
 float dSeg(vec2 p, vec2 a, vec2 b) {
   vec2 pa = p - a, ba = b - a;
   float h = clamp(dot(pa, ba) / max(dot(ba, ba), 1e-9), 0.0, 1.0);
@@ -269,11 +384,9 @@ float dSeg(vec2 p, vec2 a, vec2 b) {
 }
 void main() {
   vec2 p = ((gl_FragCoord.xy / uRes) * 2.0 - 1.0) * ${VIEW.toFixed(3)};
-  // 电弧锯齿域扭曲 (犹豫时更毛躁)
   float jagAmp = ${JAG.toFixed(4)} * (1.0 + 1.1 * uHes);
   vec2 warp = (vec2(fbm(p * 15.0 + uT * 2.4), fbm(p * 15.0 - uT * 2.0)) - 0.5) * jagAmp;
   vec2 pw = p + warp;
-  // 主电流: 连续窗口折线距离 + 最近段序号 (头亮尾细)
   float dArc = 1e6;
   float fi = 0.0;
   for (int i = 0; i < ${N - 1}; i++) {
@@ -281,7 +394,6 @@ void main() {
     if (ds < dArc) { dArc = ds; fi = float(i); }
   }
   float along = fi / ${(N - 2).toFixed(1)};
-  // 犹豫 → 变粗变糊 (芯散开, 晕加宽); 清晰 → 细而锐
   float soften = 1.0 + 1.4 * uHes;
   float width = mix(0.45, 1.0, along) * soften;
   float core = exp(-dArc * ${COREK.toFixed(1)} / width) / soften;
@@ -289,7 +401,6 @@ void main() {
   float env = mix(0.22, 1.0, along * along);
   float flicker = 0.82 + 0.18 * vnoise(vec2(uT * (6.0 + 8.0 * uHes), fi * 0.7));
   float energy = (core * 1.9 + halo * (0.5 + 0.35 * uHes)) * env * flicker;
-  // 子电流余烬: 主电流跑走后在含糊区渐次熄灭的小火花
   for (int i = 0; i < ${M}; i++) {
     float inten = uEmb[i].z;
     if (inten < 0.01) continue;
@@ -297,7 +408,6 @@ void main() {
     float spark = exp(-r * 130.0) * inten * (0.55 + 0.45 * vnoise(vec2(uT * 9.0, float(i) * 2.31)));
     energy += spark * 1.3;
   }
-  // 全轮廓充能底晕
   float d0 = sdLayer(p);
   energy += exp(-abs(d0) * 46.0) * ${RIM.toFixed(3)};
   if (energy < 0.004) { gl_FragColor = vec4(0.0); return; }
@@ -307,34 +417,33 @@ void main() {
   gl_FragColor = vec4(col * a, a);
 }`;
 
-// ---- 8. WebGL overlay ----
+// ---- 9. WebGL overlay ----
 const fx = document.getElementById('fx');
 const gl = fx.getContext('webgl', { premultipliedAlpha: true });
 if (!gl) { hint.textContent = 'NO WEBGL'; throw new Error('no webgl'); }
-const vs = gl.createShader(gl.VERTEX_SHADER);
-gl.shaderSource(vs, 'attribute vec2 aP; void main() { gl_Position = vec4(aP, 0.0, 1.0); }');
-gl.compileShader(vs);
-const fs = gl.createShader(gl.FRAGMENT_SHADER);
-gl.shaderSource(fs, FS);
-gl.compileShader(fs);
-if (!gl.getShaderParameter(fs, gl.COMPILE_STATUS)) {
+const vsh = gl.createShader(gl.VERTEX_SHADER);
+gl.shaderSource(vsh, 'attribute vec2 aP; void main() { gl_Position = vec4(aP, 0.0, 1.0); }');
+gl.compileShader(vsh);
+const fsh = gl.createShader(gl.FRAGMENT_SHADER);
+gl.shaderSource(fsh, FS);
+gl.compileShader(fsh);
+if (!gl.getShaderParameter(fsh, gl.COMPILE_STATUS)) {
   hint.textContent = 'shader 编译失败 (console)';
-  console.error(gl.getShaderInfoLog(fs));
+  console.error(gl.getShaderInfoLog(fsh));
   throw new Error('fs compile');
 }
 const prog = gl.createProgram();
-gl.attachShader(prog, vs); gl.attachShader(prog, fs); gl.linkProgram(prog);
+gl.attachShader(prog, vsh); gl.attachShader(prog, fsh); gl.linkProgram(prog);
 gl.useProgram(prog);
 const quad = gl.createBuffer();
 gl.bindBuffer(gl.ARRAY_BUFFER, quad);
 gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
-const loc = gl.getAttribLocation(prog, 'aP');
-gl.enableVertexAttribArray(loc);
-gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+const aloc = gl.getAttribLocation(prog, 'aP');
+gl.enableVertexAttribArray(aloc);
+gl.vertexAttribPointer(aloc, 2, gl.FLOAT, false, 0, 0);
 gl.viewport(0, 0, fx.width, fx.height);
 gl.uniform2f(gl.getUniformLocation(prog, 'uRes'), fx.width, fx.height);
-const colorOf = actorLayer && actorLayer.color ? actorLayer.color.map((x) => Math.min(1, x / 255 + 0.25)) : [0.9, 0.8, 0.6];
-gl.uniform3f(gl.getUniformLocation(prog, 'uColor'), colorOf[0], colorOf[1], colorOf[2]);
+const uColorLoc = gl.getUniformLocation(prog, 'uColor');
 const uT = gl.getUniformLocation(prog, 'uT');
 const uPts = gl.getUniformLocation(prog, 'uPts');
 const uEmb = gl.getUniformLocation(prog, 'uEmb');
@@ -342,11 +451,25 @@ const uHes = gl.getUniformLocation(prog, 'uHes');
 gl.enable(gl.BLEND);
 gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
 
-// ---- 9. 帧循环: 变速传导 + 打滑停滞 + 找路漂移 + 余烬生灭 ----
+// ---- 10. 帧循环: 串联巡游 + 找路摇摆 + 犹豫 + 余烬 ----
+// 1D 平滑噪声 (找路用): 间歇负值 → 头会回退再前进
+const n1 = (x) => {
+  const i = Math.floor(x), fr = x - i;
+  const u = fr * fr * (3 - 2 * fr);
+  const h = (k) => { const s = Math.sin(k * 127.1) * 43758.5453; return s - Math.floor(s); };
+  return h(i) * (1 - u) + h(i + 1) * u; // [0,1]
+};
+
+const S0 = loops[0].S;
+const GAP = 0.35;                               // 环间暗场 (秒)
+const schedule = loops.map((lp) => ({ lp, dur: Math.max(2.5, LAPS * (lp.period / S0)) }));
+const cycleDur = schedule.reduce((a, x) => a + x.dur + GAP, 0);
+
 const ptsBuf = new Float32Array(N * 2);
 const embBuf = new Float32Array(M * 3);
-const embers = []; // {x, y, i0, born, life}
+let embers = [];
 let sHead = 0;
+let curIdx = -1;
 let lastT = 0;
 let run = true;
 const t0 = performance.now();
@@ -355,45 +478,61 @@ function frame() {
   const t = (performance.now() - t0) / 1000;
   const dt = Math.min(0.05, t - lastT);
   lastT = t;
-  const baseV = contour.S / LAPS;
-  const cHead = clarityAt(sHead);
-  // 清晰 → 快; 含糊 → 慢 + 打滑停滞 (顿挫)
+
+  // 串联调度: 当前时刻在哪个环
+  let tc = t % cycleDur;
+  let idx = -1, dark = false;
+  for (let i = 0; i < schedule.length; i++) {
+    if (tc < schedule[i].dur) { idx = i; break; }
+    tc -= schedule[i].dur;
+    if (tc < GAP) { dark = true; idx = i; break; }
+    tc -= GAP;
+  }
+  if (dark || idx < 0) {
+    gl.clearColor(0, 0, 0, 0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    if (run) requestAnimationFrame(frame);
+    return;
+  }
+  const loop = schedule[idx].lp;
+  if (idx !== curIdx) {
+    curIdx = idx;
+    sHead = Math.random() * loop.S;
+    embers = [];
+    const c = loop.actor.color;
+    const col = c ? c.map((x) => Math.min(1, x / 255 + 0.25)) : [0.9, 0.8, 0.6];
+    gl.uniform3f(uColorLoc, col[0], col[1], col[2]);
+  }
+
+  const baseV = loop.period / Math.max(2.5, LAPS * (loop.period / S0));
+  const cHead = loop.clarityAt(sHead);
   let v = VMIN + (VMAX - VMIN) * Math.pow(cHead, 1.4);
   if (cHead < 0.4) {
     const slip = 0.5 + 0.5 * Math.sin(t * 7.3 + sHead * 29.0);
-    v *= Math.max(0.06, slip); // 间歇近停
+    v *= Math.max(0.06, slip);
   }
-  const sPrev = sHead;
-  sHead += baseV * v * dt * DIR;
+  // 找路摇摆: 低频噪声驱动的进退 (均值前移, 间歇负速回退) + 高频颤
+  const hunt = 1 + HUNT * (1.7 * (2 * n1(t * 1.9 + idx * 7.3) - 1) - 0.15 + 0.35 * Math.sin(t * 8.7));
+  sHead += baseV * v * dt * DIR * hunt * 1.55; // 1.55 补偿摇摆均值, 圈速大致守恒
 
-  // 主电流刚扫过的含糊顶点 → 溅出子电流余烬 (环形区间, 处理跨圈)
-  if (clarity) {
-    const { arc } = contour;
-    const S = contour.S;
-    const aPrev = ((sPrev % S) + S) % S;
-    const aNow = ((sHead % S) + S) % S;
-    // 扫过区间按行进方向取 (反向时角色互换)
-    const a0 = DIR > 0 ? aPrev : aNow;
-    const a1 = DIR > 0 ? aNow : aPrev;
-    const passed = (x) => (a0 <= a1 ? x > a0 && x <= a1 : x > a0 || x <= a1);
-    for (let i = 0; i < arc.length; i++) {
-      if (passed(arc[i])) {
-        const c = clarity[i];
-        if (c < 0.5 && Math.random() < (0.5 - c) * 1.6 && embers.length < M * 2) {
-          const nm = normalAt(arc[i]);
-          const off = (Math.random() - 0.5) * 0.06;
-          embers.push({
-            x: contour.pts[i][0] + nm[0] * off,
-            y: contour.pts[i][1] + nm[1] * off,
-            i0: 0.45 + 0.75 * (1 - c),
-            born: t,
-            life: 0.5 + Math.random() * 1.1,
-          });
-        }
-      }
+  // 余烬: 头附近的含糊顶点按时间速率溅火花 (头邻近式, 与折返参数化无关)
+  if (loop.clarityArr) {
+    const i = loop.indexAt(sHead);
+    const c = loop.clarityArr[i];
+    if (c < 0.5 && Math.random() < (0.5 - c) * 9.0 * dt && embers.length < M * 2) {
+      const sSpawn = loop.arc[i] + (Math.random() - 0.5) * loop.S * 0.05;
+      const q = loop.pointAt(sSpawn);
+      const nm = loop.normalAt(sSpawn);
+      const off = (Math.random() - 0.5) * 0.06;
+      embers.push({
+        x: q[0] + nm[0] * off,
+        y: q[1] + nm[1] * off,
+        i0: 0.45 + 0.75 * (1 - c),
+        born: t,
+        life: 0.5 + Math.random() * 1.1,
+      });
     }
   }
-  // 余烬衰减 → 熄灭
   embBuf.fill(0);
   for (let i = embers.length - 1; i >= 0; i--) {
     const e = embers[i];
@@ -407,14 +546,14 @@ function frame() {
     embBuf[i * 3 + 2] = e.cur ?? 0;
   });
 
-  // 窗口折线: 含糊处偏离轮廓"找路" (法向漂移, 越犹豫越飘)
-  const L = contour.S * ARC;
+  // 窗口折线: 全程小幅左右晃 + 含糊处加倍飘 (找路的横向分量)
+  const L = loop.S * ARC;
   for (let i = 0; i < N; i++) {
-    const s = sHead - DIR * L + (DIR * (L * i)) / (N - 1); // 尾随行进方向, i=N-1 恒为头
-    const q = pointAt(s);
-    const c = clarityAt(s);
-    const nm = normalAt(s);
-    const drift = (1 - c) * WANDER * Math.sin(s * 23.0 + t * 2.6 + i * 0.7);
+    const s = sHead - DIR * L + (DIR * (L * i)) / (N - 1);
+    const q = loop.pointAt(s);
+    const c = loop.clarityAt(s);
+    const nm = loop.normalAt(s);
+    const drift = (0.35 + 0.65 * (1 - c)) * WANDER * Math.sin(s * 23.0 + t * 2.6 + i * 0.7);
     ptsBuf[i * 2] = q[0] + nm[0] * drift;
     ptsBuf[i * 2 + 1] = q[1] + nm[1] * drift;
   }
@@ -428,10 +567,11 @@ function frame() {
   if (run) requestAnimationFrame(frame);
 }
 frame();
-document.getElementById('stage').addEventListener('contextmenu', (e) => { e.preventDefault(); run = !run; if (run) frame(); });
+document.getElementById('stage').addEventListener('contextmenu', (e) => { e.preventDefault(); run = !run; if (run) { lastT = (performance.now() - t0) / 1000; frame(); } });
 
 hint.textContent =
-  `piece=${id} · actor #${actors[0]}/${layers.length} · 周长 ${contour.S.toFixed(2)} · 电流 ≈ ${(contour.S * ARC).toFixed(2)} · 右键暂停/续`;
+  `piece=${id} · 主角 [${actors.map((a) => a.label).join(' + ')}] · ${loops.length} 环串联 ` +
+  loops.map((l) => l.S.toFixed(1)).join('/') + ' · 右键暂停/续';
 window.$genOK = true;
 </script>
 </body></html>
