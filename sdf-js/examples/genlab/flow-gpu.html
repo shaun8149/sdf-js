@@ -36,9 +36,11 @@ const hint = document.getElementById('hint');
 const src = await (await fetch(`./out/${id}.js`)).text();
 const abs = new URL('../../src/index.js', location.href.replace('/genlab/flow-gpu.html', '/sdf/x')).href;
 let code = src.replace(/(['"])(?:\.\.\/)+src\/index\.js\1/, JSON.stringify(abs));
+// Before 态 (densityFloor: 0 = 原密度轴, 动态稀疏): 稀疏区对比度低 →
+// 清晰度 c(s) 真实起伏 → 抠图犹豫有落点 (user 终裁 2026-08-17 风景全 Before)
 code = code.replace(
   /render\.silhouette\(ctx, layers, \{/g,
-  "render.bobStipple(ctx, layers, { colorMode: 'weave',",
+  "render.bobStipple(ctx, layers, { colorMode: 'weave', densityFloor: 0,",
 );
 await import(URL.createObjectURL(new Blob([code], { type: 'application/javascript' })));
 

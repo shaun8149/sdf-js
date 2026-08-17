@@ -704,6 +704,9 @@ export function bobStipple(ctx, layers, options = {}) {
   const bobPaletteMode = options.bobPaletteMode ?? true;
   // weave 模式（2026-08-12 spec）: 语义锚定的 BOB 化。旋钮见 spec §四。
   const weaveMode = options.colorMode === 'weave';
+  // 密度地板: 3 = After 态 (2026-08-14 拍板, 默认不变); 0 = Before 原密度轴
+  // (动态稀疏)。风景全 Before 的裁定 (2026-08-17) 由调用方传 0。
+  const densityFloor = options.densityFloor ?? 3;
   const useLlmColor = options.useLlmColor ?? false;
   let colorPalette = options.colorPalette ?? null;
   let colorPalette2 = options.colorPalette2 ?? null;
@@ -921,9 +924,10 @@ export function bobStipple(ctx, layers, options = {}) {
         const dl = density * brushLayers;
         const base = Math.floor(dl);
         effBrushLayers = base + (rng() < dl - base ? 1 : 0);
-        // 密度地板 (2026-08-14 user 拍板): 2D weave 亮区至少 3 层——
+        // 密度地板 (2026-08-14 user 拍板): 2D weave 亮区至少 densityFloor 层——
         // 涂抹感 = 多层 layerOffset·rH 拖带链, 单层无痕。3D 路径不动。
-        if (weaveMode && !hit3D) effBrushLayers = Math.max(3, effBrushLayers);
+        // densityFloor=0 → Before 原密度轴 (动态稀疏, 抠图犹豫的落点)。
+        if (weaveMode && !hit3D) effBrushLayers = Math.max(densityFloor, effBrushLayers);
         if (effBrushLayers === 0) continue;
       }
 

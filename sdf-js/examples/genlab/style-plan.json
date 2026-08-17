@@ -40,18 +40,17 @@
       "_locked": true
     },
     "landscapes": {
-      "before": 0.475,
-      "after": 0.475,
+      "before": 0.95,
       "warp": 0.05,
-      "_note": "warp 5% 为 user 裁定; before/after 平摊余量为 draft"
+      "_locked": true,
+      "_note": "user 终裁 2026-08-17: 风景全 Before (动态稀疏 = 抠图犹豫的落点, after 密度地板填平了清晰度起伏); warp 5% 维持原裁定"
     },
     "bob_六景": {
       "bob_原味": 1.0
     },
     "rhymes_韵脚": {
-      "before": 0.5,
-      "after": 0.5,
-      "_note": "draft"
+      "before": 1.0,
+      "_note": "draft — 随风景全 Before 联动, 待 user 确认"
     },
     "themes": {
       "before": 1.0,
