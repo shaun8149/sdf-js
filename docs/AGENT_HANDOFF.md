@@ -81,8 +81,9 @@ hit-mask→chamfer 场→2D 电流核移植，WebGL 优雅降级）。确定性�
 `Math.random` 并恒定化随机消费次数耦合，同进程同 hash 0 像素差，72/72 测试绿。
 **⚠️ 上链前阻塞**：JIT 浮点位漂致细线边界跨导航/跨进程差异（非级联，典型 8-12% 像素/
 视觉薄边界抖动），ticket 在案，方向 `Math.fround` 纪律/定点化/多渲取众数 +
-`verify-determinism.mjs` 自动化。押后队列（user 圈定序）：布尔雕塑 8 件 → 柏拉图殿 →
-分形/变形/静物/阵列；scene 33（SceneData 语料台）保持 dev-only 不入池。
+`verify-determinism.mjs` 自动化。押后待圈（未定案；user 最后一次提及倾向先试布尔雕塑系，
+但明示"剩下的再说"）：布尔雕塑 / 柏拉图殿 / 分形 / 变形静物阵列；scene 33（SceneData
+语料台）保持 dev-only 不入池。
 
 ---
 
