@@ -58,11 +58,12 @@
     }
   },
   "3d_content": {
-    "_note": "draft 2026-08-17 — 正几何台入池 4/13 票; 布尔/柏拉图/语料台押后待 user 圈选",
+    "_note": "user 终裁 2026-08-18: 权重照 draft (solids 4/13≈31%); 景深档位维持现档 (fogK 37.5/25/25/12.5, dofK 50/33/17) 一并 locked; 布尔/柏拉图/语料台入池时重分",
     "solids_stage_34": 0.31,
     "legacy_7_8": 0.15,
     "rhyme_stage_18": 0.23,
-    "sanctum_19_22": 0.31
+    "sanctum_19_22": 0.31,
+    "_locked": true
   },
   "4d_content": {
     "comment": "draft — 心/星/齿轮/花×对偶柱场景未建, 先记 0",
