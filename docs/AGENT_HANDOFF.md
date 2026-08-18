@@ -68,6 +68,24 @@ Theater / 4D. Direction: polish the Theater into the homepage, other capabilitie
 
 ---
 
+## 0.6 姊妹项目 DIMENSION（全链上生成艺术，独立仓）— 3D 端现状（2026-08-18）
+
+**DIMENSION**（BOB 续作，10000 件全链上生成艺术，2D/3D/4D 三宇宙）代码在独立仓
+`~/Documents/sdf/DIMENSION`（不在 sdf-main 内）；设计稿
+`docs/superpowers/specs/2026-08-11-dimension-nft-design.md`，本轮计划
+`docs/superpowers/plans/2026-08-17-dimension-3d-solids-depth-flow.md`。
+
+3D 端已 ship：scene 34「正几何台」（12 种规则几何体 × 1-4 件 hash 变奏，入 3D 轮盘
+4/13≈31%，user 锁定）+ 景深（probe dist → fog/DoF，档位概率维持现状）+ 3D 流光（右键触发，
+hit-mask→chamfer 场→2D 电流核移植，WebGL 优雅降级）。确定性战役 R1-R3 清零裸
+`Math.random` 并恒定化随机消费次数耦合，同进程同 hash 0 像素差，72/72 测试绿。
+**⚠️ 上链前阻塞**：JIT 浮点位漂致细线边界跨导航/跨进程差异（非级联，典型 8-12% 像素/
+视觉薄边界抖动），ticket 在案，方向 `Math.fround` 纪律/定点化/多渲取众数 +
+`verify-determinism.mjs` 自动化。押后队列（user 圈定序）：布尔雕塑 8 件 → 柏拉图殿 →
+分形/变形/静物/阵列；scene 33（SceneData 语料台）保持 dev-only 不入池。
+
+---
+
 ## 1. Hard rules (NON-NEGOTIABLE — these override defaults)
 
 1. **Git: always PR, never push `main` directly.** Branch (`feat/…`, `fix/…`, `chore/…`) → commit →
