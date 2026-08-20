@@ -74,6 +74,7 @@ const TESTS = [
   // Generator-S (Phase 2 ops: array, mirror)
   { category: 'generator', file: 'sdf-js/scripts/test-generator-s.mjs' },
   { category: 'generator', file: 'sdf-js/scripts/test-generator-s-e2e.mjs' },
+  { category: 'generator', file: 'sdf-js/scripts/test-genlab-procedural-stars.mjs' },
 
   // Community shader ports (port-shader skill regression)
   { category: 'port-shader', file: 'sdf-js/scripts/port-shader/test-atoms.mjs' },
