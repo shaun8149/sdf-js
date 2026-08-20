@@ -17,7 +17,16 @@
 //      (色相距 ≥60° 且双方饱和度 ≥0.25) 的层，按对比度评分降序取前 2-3 (去重:
 //      跳过与已选 obj 欧氏 RGB 距离 <OBJ_DEDUP_DIST 的候选，避免同色层占两个坑；
 //      去重后不足 2 个則退回不去重的原始排序前 2-3)。不足 2 个通过对比关 → 整件丢弃。
-//   4. accent = 未被 bg/ground/objs 占用的层里饱和度最高的一层 (小件高饱和的点缀色);
+//   4. 双实配对对比关 (终审必修 1, 2026-08-20 user 裁定"保旋转+数据层堵漏"):
+//      DIMENSION scene 34 的 12 色环把 [bg,ground,obj1,obj2] 随机旋转
+//      (scenes/index.js 的 startIndex 逻辑不在本脚本改动范围内，user 终裁保留)，
+//      代数上只有两组"背景↔物体"配对会被实际渲染出来——(bg, objs[0]) 与
+//      (ground, objs[1])。第 3 步只保证 objs 对 bg 达标 (排序也只按对 bg 的评分)，
+//      (ground, objs[1]) 此前是陪跑进来的、从未被验证过。这一步补一道门: 两个
+//      实配对都必须过第 3 步同一条标准，不过先试 objs[0]/objs[1] 互换位置 (两者
+//      都已是过 bg 对比关的候选，互换不引入新层)，仍不过整套淘汰 (不放水到更松
+//      的标准)。
+//   5. accent = 未被 bg/ground/objs 占用的层里饱和度最高的一层 (小件高饱和的点缀色);
 //      若没有剩余层 (件内层数太少)，退回全部层里饱和度最高的一层。
 //
 // 输出: 直接写 DIMENSION 仓 objects3d/palettes3d.js —— `const PAL3D = [...]`
@@ -120,7 +129,10 @@ const rejects = {
   noGround: 0,
   badSeparation: 0,
   tooFewObjs: 0,
+  groundObjGate: 0, // 双实配对对比关 (终审必修 1): 互换 objs[0]/objs[1] 后仍凑不出
+  // (bg,objs[0]) 与 (ground,objs[1]) 双双过关的组合, 整件丢弃
 };
+let swapFixed = 0; // 双实配对对比关: 靠互换 objs[0]/objs[1] 才双过的件数 (非丢弃, 计数用于报告)
 
 for (const id of landscapeIds) {
   let mod;
@@ -197,15 +209,39 @@ for (const id of landscapeIds) {
   }
   const objs = objsPicked.length >= 2 ? objsPicked : scored.slice(0, Math.min(3, scored.length));
 
+  // 双实配对对比关 (终审必修 1, 2026-08-20 user 裁定): 两个实际会被渲染出来的
+  // "背景↔物体"配对——(bg, objs[0]) 与 (ground, objs[1])——都必须过与第 3 步
+  // 同一条对比标准 (亮度差≥40 或 色相距≥60°+双方饱和度≥0.25)。objs[2] (若存在)
+  // 不参与判定 (环只取 objs[0]/objs[1] 两件, 见 DIMENSION scenes/index.js 注释)。
+  const passesContrast = (a, b) => {
+    if (Math.abs(a.Y - b.Y) >= CONTRAST_Y) return true;
+    return hueDist(a.h, b.h) >= CONTRAST_HUE && a.s >= CONTRAST_SAT && b.s >= CONTRAST_SAT;
+  };
+  let [o0, o1, ...oRest] = objs;
+  let pairOk = passesContrast(bg, o0) && passesContrast(ground, o1);
+  if (!pairOk && passesContrast(bg, o1) && passesContrast(ground, o0)) {
+    // 互换位置能双过: objs 两个候选都已经是过 bg 对比关的层, 互换不引入新层、
+    // 不放松标准, 只是把"谁站 objs[0] / 谁站 objs[1]"这个此前从未校验过的位置
+    // 分配修正过来。
+    [o0, o1] = [o1, o0];
+    pairOk = true;
+    swapFixed++;
+  }
+  if (!pairOk) {
+    rejects.groundObjGate++;
+    continue;
+  }
+  const objsFinal = [o0, o1, ...oRest];
+
   // accent: 未被占用的层里饱和度最高；件内层数太少时退回全部层
-  const used = new Set([bg, ground, ...objs]);
+  const used = new Set([bg, ground, ...objsFinal]);
   const accentPool = rows.filter((r) => !used.has(r));
   const accentSrc = (accentPool.length ? accentPool : rows).reduce((a, b) => (b.s > a.s ? b : a));
 
   results.push({
     bg: bg.color,
     ground: ground.color,
-    objs: objs.map((o) => o.color),
+    objs: objsFinal.map((o) => o.color),
     accent: accentSrc.color,
     src: id,
   });
@@ -219,7 +255,15 @@ console.log(`═══ harvest-palettes ═══`);
 console.log(`landscape pass 候选: ${landscapeIds.length}`);
 console.log(`收割成功: ${results.length} (目标 ≥80)`);
 console.log(`丢弃原因:`, rejects);
+console.log(
+  `双实配对对比关 (终审必修 1): 靠互换 objs[0]/objs[1] 才双过 ${swapFixed} 套, 互换后仍不过而整套淘汰 ${rejects.groundObjGate} 套`,
+);
 console.log(`objs 数量分布: 2 件=${objCounts[2] ?? 0}  3 件=${objCounts[3] ?? 0}`);
+if (results.length < 80) {
+  console.warn(
+    `⚠ 收割 ${results.length} 套 < 目标 80 —— 按 user 裁定不放松对比关标准, 直接交付这批 (不补数)`,
+  );
+}
 
 // ---- 生成 palettes3d.js -----------------------------------------------------
 const fmtRgb = (c) => `[${c[0]},${c[1]},${c[2]}]`;
@@ -236,7 +280,11 @@ const header = `// =============================================================
 // review.json verdict=pass 且 prompts.json cat=landscape 的 ${landscapeIds.length} 件语料，
 // 48² 网格评每层覆盖率+质心 y 后按角色指认 (bg/ground=大覆盖高/低质心,
 // objs=对 bg 亮度差≥40 或色相距≥60°+双方饱和度≥0.25 的前 2-3 层, accent=剩余层
-// 最高饱和度)；不满足对比关的整件丢弃。收割 ${results.length}/${landscapeIds.length}
+// 最高饱和度)。终审必修 1 (2026-08-20 user 裁定"保旋转+数据层堵漏"): scene 34
+// 12 色环随机旋转 [bg,ground,obj1,obj2]，代数上只有 (bg,objs[0]) 与
+// (ground,objs[1]) 两组配对会被实际渲染出来——双实配对都必须过上面同一条对比
+// 标准，不过先试 objs[0]/objs[1] 互换 (${swapFixed} 套靠互换过关)，仍不过整套
+// 丢弃 (${rejects.groundObjGate} 套)。收割 ${results.length}/${landscapeIds.length}
 // (objs 2 件×${objCounts[2] ?? 0} / 3 件×${objCounts[3] ?? 0})。
 //
 // 每套: { bg:[r,g,b], ground:[r,g,b], objs:[[r,g,b]×2-3], accent:[r,g,b], src }
