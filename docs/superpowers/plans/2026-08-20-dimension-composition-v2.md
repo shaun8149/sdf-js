@@ -553,3 +553,23 @@ git commit -m "feat(comp-v2): 五构图型+骨架放置+布尔词汇池+地形/�
 - 占位符扫描:无 TBD;T3 S5 "实跑值填入常量"是确定性系统的标准做法(先例:终审必修 1),非占位 ✓
 - 类型一致:`armatureRoll/backProject/sizeFromHF/screenCoverage/CAM34/pa.comp/pa.fog34/pa.focal34/pa.terrain34` 各任务间签名一致 ✓;`inter Roll` 排版错误已在 T3 标注更正 ✓
 - 消费恒定纪律:T3 所有 roll 先耗满(S1-S3 恒做 3 件、四组静物恒 roll、相机/雾/修饰符预算固定),分支只决定用不用 ✓;fallback 不消耗 r() ✓
+
+---
+
+### Task 6: LLM 配色方案库(user 裁定 2026-08-20:"所有颜色来自 LLM")
+
+**Files:**
+- Create: sdf-main `sdf-js/scripts/genlab-audit/harvest-palettes.mjs`(收割脚本)
+- Create: DIMENSION `objects3d/palettes3d.js`(方案库,~120 套)
+- Modify: DIMENSION `scenes/index.js` 或 `sketch.js`(scene 34 的 pal/pal2 构造改走方案)
+- Modify: DIMENSION `test/run-tests.mjs`(方案库完整性 + scene34 取色断言)
+- Modify: DIMENSION `index.html` + CHAIN_FILES(新文件三处同步)
+
+**Interfaces:**
+- Produces: `PAL3D: Array<{ bg:[r,g,b], ground:[r,g,b], objs:[[r,g,b]×2-3], accent:[r,g,b], src:string }>`;`pa.pal3d` 记录抽中方案
+- Consumes: sdf-js `examples/genlab/out/_audit/*.mjs` 的 `__layers`(颜色+SDF);风景语料清单(review.json pass 的 landscape 类)
+
+- [ ] **Step 1: 收割脚本** — 每件:48² 网格评每层覆盖率+质心 y;角色指认(bg=大覆盖高质心;ground=大覆盖低质心;objs=中覆盖且对 bg 亮度差≥40 或色相距≥60° 的前 2-3 层按对比度排序;accent=小覆盖高饱和);对比关不过的整件丢弃;输出 JS 文件(直接写 DIMENSION objects3d/palettes3d.js,头注生成来源与统计)
+- [ ] **Step 2: 岛内接线** — scene 34 setup 抽方案(`pa.pal3d = PAL3D[Math.floor(r()*PAL3D.length)]`,消费恒定);pal/pal2 构造:每角色色生成 3 变体(亮度 ±16%、色相微摆,变体参数用 r() 恒定预算)拼 12 色环 [bg×3, ground×3, obj1×3, obj2×3],REGION_OFFSET 对 scene34 覆写为 {background:0, ground:3, object:6};pal2 = 同方案第二变体组(层奇偶震颤保留);accent 以低概率替换 obj2 第 3 变体
+- [ ] **Step 3: 测试** — 方案库断言(条数≥80/每套字段齐/对比关抽验 20 套全过);scene34 断言(pa.pal3d 存在/HASH_A、B 方案不同或记录);全绿 commit(两仓)
+- [ ] **Step 4: 溺毙对照** — sheet 中溺毙 hash(monument-3/colossus-3/stilllife-3)同 hash 重渲 + 新抽 15 枚 browse 截图(cache-bust),对抗标准加一条"主体六尺可辨";结果并入 task-4-report 附录,更新 contact sheet v2 放 ~/Downloads/genlab-3d-batch1/
