@@ -68,6 +68,33 @@ Theater / 4D. Direction: polish the Theater into the homepage, other capabilitie
 
 ---
 
+## 0.6 姊妹项目 DIMENSION（全链上生成艺术，独立仓）— 3D 端现状（2026-08-20）
+
+**DIMENSION**（BOB 续作，10000 件全链上生成艺术，2D/3D/4D 三宇宙）代码在独立仓
+`~/Documents/sdf/DIMENSION`（不在 sdf-main 内）；设计稿
+`docs/superpowers/specs/2026-08-11-dimension-nft-design.md`，本轮计划
+`docs/superpowers/plans/2026-08-17-dimension-3d-solids-depth-flow.md`。
+
+3D 端已 ship：scene 34「正几何台」经**构图 v2**（2026-08-20 user 终裁）——12 种规则
+几何体 + 布尔词汇池，骨架反投影摆位（`armatureRoll`/`backProject`）驱动五构图型
+monument/colossus/hover/closeup/stilllife（30/25/20/15/10）+ 穿刺/相贯/衰变行修饰符；
+配色改走 **PAL3D**（93 套 LLM 配色方案，sdf-main `harvest-palettes.mjs` 收割自 107 件
+2D 风景语料，逐套溯源）。入 3D 轮盘 4/13≈31%（user 锁定）+ 景深（probe dist → fog/DoF，
+档位概率维持现状）+ 3D 流光（右键触发，hit-mask→chamfer 场→2D 电流核移植，WebGL 优雅
+降级）。确定性战役 R1-R3 清零裸 `Math.random` 并恒定化随机消费次数耦合，同进程同 hash
+0 像素差，98/98 测试绿。
+**⚠️ 上链前阻塞**：细线边界跨导航/跨进程差异（非级联，典型 8-12% 像素/视觉薄边界抖动）。
+疑似引擎级浮点/光栅差异（JIT 假说未证实；终审指出证据签名〔逐 document 稳定、跨 document
+分裂、细线非级联〕更像 canvas 光栅后端逐 document 差异；判决实验=JS 侧落笔 checksum 跨导航
+比对，应先做，优先于下面的补救方向与 `verify-determinism.mjs`）。上链前阻塞项记录于
+DIMENSION 仓 `.superpowers/sdd/2026-08-17-dimension-3d-solids-depth-flow/progress.md`
+（🔴条目）。判决结果出来前，`Math.fround` 纪律/定点化/多渲取众数三条候选补救可能瞄错层，
+暂不投入。押后待圈（未定案；user 最后一次提及倾向先试布尔雕塑系，
+但明示"剩下的再说"）：布尔雕塑 / 柏拉图殿 / 分形 / 变形静物阵列；scene 33（SceneData
+语料台）保持 dev-only 不入池。
+
+---
+
 ## 1. Hard rules (NON-NEGOTIABLE — these override defaults)
 
 1. **Git: always PR, never push `main` directly.** Branch (`feat/…`, `fix/…`, `chore/…`) → commit →

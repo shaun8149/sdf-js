@@ -58,15 +58,27 @@
     }
   },
   "3d_content": {
-    "comment": "draft",
-    "rhymes_韵脚3D台七形状": 0.45,
-    "bob_球_胶囊林": 0.2,
-    "sanctum_圣物殿": {
-      "teapot": 0.09,
-      "menger": 0.09,
-      "gyroid": 0.09,
-      "metaphysical": 0.08
-    }
+    "_note": "user 终裁 2026-08-18: 权重照 draft (solids 4/13≈31%); 景深档位维持现档 (fogK 37.5/25/25/12.5, dofK 50/33/17) 一并 locked; 布尔/柏拉图/语料台入池时重分",
+    "solids_stage_34": 0.31,
+    "comp_34": {
+      "_locked": true,
+      "_note": "user 终裁 2026-08-20: 五型照 draft; PAL3D 93 套 LLM 配色库 locked (src 溯源); 出画张力接受为品相方差; bg 语义漂移保留 | 追注 2026-08-20 终审修复波: 双实配对对比关落地, 93→84 套 (淘汰 9 弱对比方案), user 裁定\"保旋转+数据层堵漏\"",
+      "monument": 0.3,
+      "colossus": 0.25,
+      "hover": 0.2,
+      "closeup": 0.15,
+      "stilllife": 0.1,
+      "modifiers": {
+        "pierce": 0.08,
+        "intersect": 0.15,
+        "decay_row": 0.18
+      },
+      "palette_source": "objects3d/palettes3d.js (84 套, 双实配对全过对比关, 收割自 107 件 landscape-pass 语料)"
+    },
+    "legacy_7_8": 0.15,
+    "rhyme_stage_18": 0.23,
+    "sanctum_19_22": 0.31,
+    "_locked": true
   },
   "4d_content": {
     "comment": "draft — 心/星/齿轮/花×对偶柱场景未建, 先记 0",
