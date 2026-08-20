@@ -62,7 +62,7 @@
     "solids_stage_34": 0.31,
     "comp_34": {
       "_locked": true,
-      "_note": "user 终裁 2026-08-20: 五型照 draft; PAL3D 93 套 LLM 配色库 locked (src 溯源); 出画张力接受为品相方差; bg 语义漂移保留",
+      "_note": "user 终裁 2026-08-20: 五型照 draft; PAL3D 93 套 LLM 配色库 locked (src 溯源); 出画张力接受为品相方差; bg 语义漂移保留 | 追注 2026-08-20 终审修复波: 双实配对对比关落地, 93→84 套 (淘汰 9 弱对比方案), user 裁定\"保旋转+数据层堵漏\"",
       "monument": 0.3,
       "colossus": 0.25,
       "hover": 0.2,
@@ -73,7 +73,7 @@
         "intersect": 0.15,
         "decay_row": 0.18
       },
-      "palette_source": "objects3d/palettes3d.js (93 套, 收割自 107 件 landscape-pass 语料)"
+      "palette_source": "objects3d/palettes3d.js (84 套, 双实配对全过对比关, 收割自 107 件 landscape-pass 语料)"
     },
     "legacy_7_8": 0.15,
     "rhyme_stage_18": 0.23,
