@@ -31,6 +31,26 @@ import { getSdfs as butterflyV2Sdfs } from './test-butterfly-v2.js';
 import { getSdfs as hatmanV2Sdfs } from './test-hatman-v2.js';
 import { getDanceSdfs as danceSdfs } from './llm-round1.js';
 import { getSdfs as seuratV2Sdfs } from './test-seurat-v2.js';
+import { getSdfs as genlab17Sdfs } from './genlab-s17.js';
+import { getSdfs as genlab18Sdfs } from './genlab-s18.js';
+import { getSdfs as genlab19Sdfs } from './genlab-s19.js';
+import { getSdfs as genlab20Sdfs } from './genlab-s20.js';
+import { getSdfs as genlab21Sdfs } from './genlab-s21.js';
+import { getSdfs as genlab22Sdfs } from './genlab-s22.js';
+import { getSdfs as genlab23Sdfs } from './genlab-s23.js';
+import { getSdfs as genlab24Sdfs } from './genlab-s24.js';
+import { getSdfs as genlab25Sdfs } from './genlab-s25.js';
+import { getSdfs as genlab26Sdfs } from './genlab-s26.js';
+import { getSdfs as genlab27Sdfs } from './genlab-s27.js';
+import { getSdfs as genlab28Sdfs } from './genlab-s28.js';
+import { getSdfs as genlab29Sdfs } from './genlab-s29.js';
+import { getSdfs as genlab30Sdfs } from './genlab-s30.js';
+import { getSdfs as genlab31Sdfs } from './genlab-s31.js';
+import { getSdfs as genlab32Sdfs } from './genlab-s32.js';
+import { getSdfs as genlab33Sdfs } from './genlab-s33.js';
+import { getSdfs as genlab34Sdfs } from './genlab-s34.js';
+import { getSdfs as genlab35Sdfs } from './genlab-s35.js';
+import { getSdfs as genlab36Sdfs } from './genlab-s36.js';
 
 // ---- BOB-style random helper (r() / r([arr]) / r(lo, hi)) ------------------
 export const r = (...args) => {
@@ -64,6 +84,28 @@ const SCENE_META = {
   // 才让 painted.pxToWorld(flipY=true) → 传 math-y-up → 跟 probe 一致
   15: { yConvention: 'up', view: 1.0, kind: '3d' }, // BOB 原 7：单球+平面
   16: { yConvention: 'up', view: 1.0, kind: '3d' }, // BOB 原 8：4 胶囊+平面
+  // ---- 17-26: genlab 批产 2D 场景 (2026-08-14) ----
+  17: { yConvention: 'up', view: 1.25 }, // genlab guitar-all-p0
+  18: { yConvention: 'up', view: 1.2 }, // genlab anchor
+  19: { yConvention: 'up', view: 1.2 }, // genlab bicycle-ring-segment
+  20: { yConvention: 'up', view: 1.2 }, // genlab clock-ring-segment
+  21: { yConvention: 'up', view: 1.2 }, // genlab windup-robot
+  22: { yConvention: 'up', view: 1.2 }, // genlab rocking-horse
+  23: { yConvention: 'up', view: 1.2 }, // genlab telescope
+  24: { yConvention: 'up', view: 1.2 }, // genlab gramophone
+  25: { yConvention: 'up', view: 1.2 }, // genlab pocket-watch (snowman 雪花层盖窗, 换下)
+  26: { yConvention: 'up', view: 1.2 }, // genlab morandi-bottles
+  // ---- 27-36: genlab 风景批 (2026-08-14) ----
+  27: { yConvention: 'up', view: 1.2 }, // genlab 风景 starry-night
+  28: { yConvention: 'up', view: 1.2 }, // genlab 风景 wave
+  29: { yConvention: 'up', view: 1.2 }, // genlab 风景 red-fuji
+  30: { yConvention: 'up', view: 1.2 }, // genlab 风景 rain-bridge
+  31: { yConvention: 'up', view: 1.2 }, // genlab 风景 guilin-peaks
+  32: { yConvention: 'up', view: 1.2 }, // genlab 风景 moonrise-village
+  33: { yConvention: 'up', view: 1.2 }, // genlab 风景 tuscany-road
+  34: { yConvention: 'up', view: 1.2 }, // genlab 风景 lighthouse-storm
+  35: { yConvention: 'up', view: 1.2 }, // genlab 风景 wanderer-fog
+  36: { yConvention: 'up', view: 1.25 }, // genlab 风景 dune-curves
 };
 
 // pa 参数集合（每次加载或调用产生一组）。
@@ -71,7 +113,7 @@ const SCENE_META = {
 //   8..14  LLM × SDF round 2 的 v2 场景（昨天用改良 SKILL.md prompt 跑出的输出）
 // 随机池只取 1..6（不含鸟和 v2），其它场景需要 URL hash 显式指定。
 export const makePa = (sceneOverride) => {
-  const _scene = sceneOverride >= 1 && sceneOverride <= 16 ? sceneOverride : r([1, 2, 3, 4, 5, 6]);
+  const _scene = sceneOverride >= 1 && sceneOverride <= 36 ? sceneOverride : r([1, 2, 3, 4, 5, 6]);
   const meta = SCENE_META[_scene] || { yConvention: 'down', view: 1.0 };
   return {
     scene: _scene,
@@ -464,6 +506,28 @@ export const makesdf = (pa, options = {}) => {
   if (pa.scene === 12) sdfs.push(...hatmanV2Sdfs());
   if (pa.scene === 13) sdfs.push(...danceSdfs());
   if (pa.scene === 14) sdfs.push(...seuratV2Sdfs());
+
+  // ---- 17-26: genlab 批产场景 ----
+  if (pa.scene === 17) sdfs.push(...genlab17Sdfs());
+  if (pa.scene === 18) sdfs.push(...genlab18Sdfs());
+  if (pa.scene === 19) sdfs.push(...genlab19Sdfs());
+  if (pa.scene === 20) sdfs.push(...genlab20Sdfs());
+  if (pa.scene === 21) sdfs.push(...genlab21Sdfs());
+  if (pa.scene === 22) sdfs.push(...genlab22Sdfs());
+  if (pa.scene === 23) sdfs.push(...genlab23Sdfs());
+  if (pa.scene === 24) sdfs.push(...genlab24Sdfs());
+  if (pa.scene === 25) sdfs.push(...genlab25Sdfs());
+  if (pa.scene === 26) sdfs.push(...genlab26Sdfs());
+  if (pa.scene === 27) sdfs.push(...genlab27Sdfs());
+  if (pa.scene === 28) sdfs.push(...genlab28Sdfs());
+  if (pa.scene === 29) sdfs.push(...genlab29Sdfs());
+  if (pa.scene === 30) sdfs.push(...genlab30Sdfs());
+  if (pa.scene === 31) sdfs.push(...genlab31Sdfs());
+  if (pa.scene === 32) sdfs.push(...genlab32Sdfs());
+  if (pa.scene === 33) sdfs.push(...genlab33Sdfs());
+  if (pa.scene === 34) sdfs.push(...genlab34Sdfs());
+  if (pa.scene === 35) sdfs.push(...genlab35Sdfs());
+  if (pa.scene === 36) sdfs.push(...genlab36Sdfs());
 
   return sdfs;
 };

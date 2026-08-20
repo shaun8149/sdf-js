@@ -1,0 +1,86 @@
+{
+  "comment": "DIMENSION 总概率表草案 v2 (2026-08-14)。user 裁定项已锁; 标 draft 的等 user 修改。",
+  "rulings_locked": {
+    "png10_topo": "放弃 (无美感)",
+    "png11_morph": "放弃 (无美感)",
+    "png12_neon": "保留, 物件风格轴 1%",
+    "png13_warp": "保留, ~5%"
+  },
+  "dimension_tier": {
+    "comment": "draft — 现行 sketch.js 为 2d:3d:4d = 3:2:1 + 升维图1%",
+    "2d": 0.5,
+    "3d": 0.33,
+    "4d": 0.16,
+    "ascension": 0.01
+  },
+  "2d_content": {
+    "comment": "draft — 2D 内容池分布",
+    "objects_物件库103": 0.3,
+    "landscapes_风景库107": 0.3,
+    "bob_六景传承": 0.1,
+    "rhymes_韵脚2D端": 0.12,
+    "themes_主题系列": {
+      "_total": 0.18,
+      "mandala_玫瑰窗": 0.03,
+      "flake_雪花": 0.03,
+      "pattern_纹样": 0.04,
+      "lighthouse36_三十六景": 0.02,
+      "hours_十二时辰": 0.0,
+      "seasons_四季": 0.02,
+      "calligraphy_书法": 0.02,
+      "seamap_海图": 0.02,
+      "_note": "十二时辰暂记 0 (语料变换非独立创作, 待定); 其余为 draft"
+    }
+  },
+  "2d_style_axis": {
+    "objects": {
+      "before": 0.5,
+      "painted": 0.49,
+      "neon": 0.01,
+      "_locked": true
+    },
+    "landscapes": {
+      "before": 0.95,
+      "warp": 0.05,
+      "_locked": true,
+      "_note": "user 终裁 2026-08-17: 风景全 Before (动态稀疏 = 抠图犹豫的落点, after 密度地板填平了清晰度起伏); warp 5% 维持原裁定"
+    },
+    "bob_六景": {
+      "bob_原味": 1.0
+    },
+    "rhymes_韵脚": {
+      "before": 1.0,
+      "_note": "draft — 随风景全 Before 联动, 待 user 确认"
+    },
+    "themes": {
+      "before": 1.0,
+      "_note": "draft — 主题件多为图案型, before 透光最合适"
+    }
+  },
+  "3d_content": {
+    "comment": "draft",
+    "rhymes_韵脚3D台七形状": 0.45,
+    "bob_球_胶囊林": 0.2,
+    "sanctum_圣物殿": {
+      "teapot": 0.09,
+      "menger": 0.09,
+      "gyroid": 0.09,
+      "metaphysical": 0.08
+    }
+  },
+  "4d_content": {
+    "comment": "draft — 心/星/齿轮/花×对偶柱场景未建, 先记 0",
+    "glome_圆韵": 0.15,
+    "tesseract_方韵": 0.15,
+    "duocylinder": 0.15,
+    "torus_fork_环韵分叉": 0.25,
+    "cell24_孤韵": 0.2,
+    "duoprism_其余韵": 0.1
+  },
+  "texture_3d4d": {
+    "grid_涂抹": 0.95,
+    "poisson_点彩": 0.05,
+    "_locked": true,
+    "_note": "user 裁定: 点彩单调, 多则难看"
+  }
+}

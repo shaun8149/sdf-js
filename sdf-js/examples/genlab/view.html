@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>genlab view</title>
+<style>body{margin:0;background:#111;display:grid;place-items:center;height:100vh}canvas{max-width:90vmin;max-height:90vmin}</style>
+</head><body>
+<canvas id="c" width="900" height="900"></canvas>
+<script>{const sz = new URLSearchParams(location.search).get("size"); if (sz) { const c = document.getElementById("c"); c.width = c.height = Number(sz); }}</script>
+<script type="module">
+// 加载 out/<id>.js: 存档 prompt 约定 import '../../src/index.js' (examples/sdf/ 视角),
+// blob import 无相对基准 → 重写为绝对路径后再导入
+const id = new URLSearchParams(location.search).get('id');
+const src = await (await fetch(`./out/${id}.js`)).text();
+const abs = new URL('../../src/index.js', location.href.replace('/genlab/view.html', '/sdf/x')).href;
+const code = src.replace(/(['"])(?:\.\.\/)+src\/index\.js\1/, JSON.stringify(abs));
+const blob = new Blob([code], { type: 'application/javascript' });
+try {
+  await import(URL.createObjectURL(blob));
+  window.$genOK = true;
+} catch (e) {
+  document.body.innerHTML = `<pre style="color:#f66">${e.stack}</pre>`;
+  window.$genErr = String(e);
+}
+</script>
+</body></html>

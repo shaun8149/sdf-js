@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>genlab fx (语料变换)</title>
+<style>body{margin:0;background:#111;display:grid;place-items:center;height:100vh}canvas{max-width:90vmin;max-height:90vmin}</style>
+</head><body>
+<canvas id="c" width="900" height="900"></canvas>
+<script>{const sz = new URLSearchParams(location.search).get("size"); if (sz) { const c = document.getElementById("c"); c.width = c.height = Number(sz); }}</script>
+<script type="module">
+// =============================================================================
+// fx.html — 语料变换渲染台。加载 out/<id>.js 但把 render.silhouette 调用截胡到
+// window.$fx，按 ?mode= 施加变换后再渲染：
+//   topo  等距线版画 (png10): 距离场等值线, 纸底墨线, 层色淡染
+//   neon  霓虹夜曲   (png12): 暗底 + |d| 辉光壳层
+//   warp  域扭曲     (png13): Perlin domain warp 包裹每层 SDF → weave 点彩
+//   hours 十二时辰   (png18): 层色/背景过时刻 HSL 变换 (几何不变) → weave 点彩
+// =============================================================================
+import { render } from '../../src/index.js';
+import { createPerlin } from '../../src/field/noise.js';
+
+const qs = new URLSearchParams(location.search);
+const id = qs.get('id');
+const mode = qs.get('mode') || 'topo';
+const P = (k, d) => Number(qs.get(k) ?? d);
+
+const rgb2hsl = ([r, g, b]) => {
+  r /= 255; g /= 255; b /= 255;
+  const mx = Math.max(r, g, b), mn = Math.min(r, g, b), l = (mx + mn) / 2;
+  if (mx === mn) return [0, 0, l];
+  const d = mx - mn;
+  const s = l > 0.5 ? d / (2 - mx - mn) : d / (mx + mn);
+  const h = mx === r ? ((g - b) / d + (g < b ? 6 : 0)) / 6 : mx === g ? ((b - r) / d + 2) / 6 : ((r - g) / d + 4) / 6;
+  return [h, s, l];
+};
+const hsl2rgb = ([h, s, l]) => {
+  if (s === 0) { const v = l * 255; return [v, v, v]; }
+  const q = l < 0.5 ? l * (1 + s) : l + s - l * s, p = 2 * l - q;
+  const f = (t) => {
+    t = ((t % 1) + 1) % 1;
+    if (t < 1 / 6) return p + (q - p) * 6 * t;
+    if (t < 1 / 2) return q;
+    if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+    return p;
+  };
+  return [f(h + 1 / 3) * 255, f(h) * 255, f(h - 1 / 3) * 255];
+};
+
+// 十二时辰变换表: [色温移(hue shift), 饱和乘, 明度乘, 天空色]
+const HOURS = [
+  { n: '子·深夜', hs: 0.62, sm: 0.5, lm: 0.35, sky: [12, 16, 42] },
+  { n: '丑·残夜', hs: 0.62, sm: 0.5, lm: 0.4, sky: [16, 20, 52] },
+  { n: '寅·黎明前', hs: 0.6, sm: 0.55, lm: 0.5, sky: [38, 34, 76] },
+  { n: '卯·破晓', hs: 0.02, sm: 0.9, lm: 0.75, sky: [244, 160, 120] },
+  { n: '辰·朝阳', hs: 0.03, sm: 1.05, lm: 0.95, sky: [252, 208, 150] },
+  { n: '巳·上午', hs: 0.0, sm: 1.0, lm: 1.05, sky: [168, 212, 236] },
+  { n: '午·正午', hs: 0.0, sm: 0.95, lm: 1.15, sky: [190, 226, 246] },
+  { n: '未·午后', hs: 0.01, sm: 1.0, lm: 1.05, sky: [200, 214, 210] },
+  { n: '申·斜阳', hs: 0.02, sm: 1.1, lm: 0.95, sky: [244, 196, 130] },
+  { n: '酉·日落', hs: 0.04, sm: 1.2, lm: 0.8, sky: [235, 130, 100] },
+  { n: '戌·蓝调', hs: 0.6, sm: 0.85, lm: 0.55, sky: [60, 76, 130] },
+  { n: '亥·入夜', hs: 0.61, sm: 0.6, lm: 0.42, sky: [26, 30, 64] },
+];
+
+window.$fx = (ctx, layers, options = {}) => {
+  const W = ctx.canvas.width, H = ctx.canvas.height;
+  const view = options.view ?? 1.0;
+  const flipY = true;
+  const toWorld = (px, py) => [(px / W) * 2 * view - view, -((py / H) * 2 * view - view)];
+
+  if (mode === 'warp') {
+    const perlin = createPerlin(P('seed', 7));
+    const amp = P('amp', 0.35), freq = P('freq', 2.2);
+    const wl = layers.map(({ sdf, color }) => ({
+      color,
+      sdf: (p) => {
+        const wx = perlin(p[0] * freq, p[1] * freq) * amp;
+        const wy = perlin(p[0] * freq + 31.7, p[1] * freq + 17.3) * amp;
+        return sdf([p[0] + wx, p[1] + wy]);
+      },
+    }));
+    render.bobStipple(ctx, wl, { ...options, colorMode: 'weave', seed: P('seed', 7) });
+    return;
+  }
+
+  if (mode === 'hours') {
+    const hr = HOURS[P('h', 6) % 12];
+    const tint = ([r, g, b]) => {
+      const [h, s, l] = rgb2hsl([r, g, b]);
+      // 夜间时段: 冷移主导; 昼间: 保持原相微调
+      const nh = hr.hs > 0.3 ? h * 0.25 + hr.hs * 0.75 : h + hr.hs;
+      return hsl2rgb([nh, Math.min(1, s * hr.sm), Math.min(1, l * hr.lm)]);
+    };
+    const wl = layers.map(({ sdf, color }) => ({ sdf, color: tint(color) }));
+    const bg = options.background;
+    const nbg = bg && bg.top ? { top: hr.sky, bottom: tint(bg.bottom) } : hr.sky;
+    render.bobStipple(ctx, wl, { ...options, background: nbg, colorMode: 'weave', seed: P('seed', 7) });
+    return;
+  }
+
+  // ---- 逐像素模式 (topo / neon) ----
+  const img = ctx.createImageData(W, H);
+  const D = img.data;
+  const spacing = P('spacing', 0.045);
+  const lw = P('lw', 0.16);
+  for (let py = 0; py < H; py++) {
+    for (let px = 0; px < W; px++) {
+      const p = toWorld(px + 0.5, py + 0.5);
+      let hit = -1, hd = 0;
+      for (let li = layers.length - 1; li >= 0; li--) {
+        const d = layers[li].sdf(p);
+        if (d < 0) { hit = li; hd = d; break; }
+      }
+      let col;
+      if (mode === 'topo') {
+        // 纸底 + 全部层的等值线叠加 (含形体外的场线)
+        col = [244, 239, 226];
+        let ink = 0, tint = [58, 50, 44];
+        for (let li = 0; li < layers.length; li++) {
+          const d = layers[li].sdf(p);
+          if (d > 0.5) continue;                    // 远场不画, 保留呼吸
+          const t = Math.abs((((d / spacing) % 1) + 1) % 1 - 0.5) * 2; // 0=线心
+          const line = Math.max(0, 1 - t / lw);
+          const w = d < 0 ? 1 : Math.max(0, 1 - d / 0.5); // 场线随距离衰减
+          if (line * w > ink) { ink = line * w; tint = layers[li].color; }
+        }
+        if (hit >= 0) col = col.map((c, i) => c * 0.92 + layers[hit].color[i] * 0.08); // 层色淡染
+        if (ink > 0.02) col = col.map((c, i) => c * (1 - ink * 0.85) + tint[i] * 0.35 * ink);
+      } else {
+        // neon: 暗底 + 辉光壳
+        col = [10, 10, 18];
+        for (let li = 0; li < layers.length; li++) {
+          const d = Math.abs(layers[li].sdf(p));
+          const glow = Math.exp(-d * P('k', 14));
+          const core = d < P('w', 0.008) ? 1 : 0;
+          const c = layers[li].color;
+          col = [
+            Math.min(255, col[0] + c[0] * glow * 0.85 + 200 * core),
+            Math.min(255, col[1] + c[1] * glow * 0.85 + 200 * core),
+            Math.min(255, col[2] + c[2] * glow * 0.85 + 200 * core),
+          ];
+        }
+      }
+      const i = (py * W + px) * 4;
+      D[i] = col[0]; D[i + 1] = col[1]; D[i + 2] = col[2]; D[i + 3] = 255;
+    }
+  }
+  ctx.putImageData(img, 0, 0);
+};
+
+const src = await (await fetch(`./out/${id}.js`)).text();
+const abs = new URL('../../src/index.js', location.href.replace('/genlab/fx.html', '/sdf/x')).href;
+let code = src.replace(/(['"])(?:\.\.\/)+src\/index\.js\1/, JSON.stringify(abs));
+code = code.replace(/render\.silhouette\(/g, 'window.$fx(');
+try {
+  await import(URL.createObjectURL(new Blob([code], { type: 'application/javascript' })));
+  window.$genOK = true;
+} catch (e) {
+  document.body.innerHTML = `<pre style="color:#f66">${e.stack}</pre>`;
+  window.$genErr = String(e);
+}
+</script>
+</body></html>

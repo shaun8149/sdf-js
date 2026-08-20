@@ -2506,13 +2506,17 @@ float sd2Ellipse(vec2 p, vec2 ab) {
   float d = c3 + m2 * n2;
   float g = m + m * n2;
   float co;
+  // float32 guards: the cubic solve is ill-conditioned for eccentric
+  // ellipses — acos args drift past ±1 and the sqrt operands go slightly
+  // negative, yielding NaN on GPU where the float64 CPU path (d2.js) sails
+  // through. Clamps mirror the CPU's Math.max(0, ·) discipline.
   if (d < 0.0) {
-    float h = acos(q / c3) / 3.0;
+    float h = acos(clamp(q / c3, -1.0, 1.0)) / 3.0;
     float s = cos(h);
     float t = sin(h) * sqrt(3.0);
-    float rx = sqrt(-c * (s + t + 2.0) + m2);
-    float ry = sqrt(-c * (s - t + 2.0) + m2);
-    co = (ry + sign(l) * rx + abs(g) / (rx * ry) - m) / 2.0;
+    float rx = sqrt(max(0.0, -c * (s + t + 2.0) + m2));
+    float ry = sqrt(max(0.0, -c * (s - t + 2.0) + m2));
+    co = (ry + sign(l) * rx + abs(g) / max(rx * ry, 1e-12) - m) / 2.0;
   } else {
     float h = 2.0 * m * n * sqrt(d);
     float s = sign(q + h) * pow(abs(q + h), 1.0 / 3.0);
@@ -2520,9 +2524,10 @@ float sd2Ellipse(vec2 p, vec2 ab) {
     float rx = -s - u - c * 4.0 + 2.0 * m2;
     float ry = (s - u) * sqrt(3.0);
     float rm = sqrt(rx * rx + ry * ry);
-    co = (ry / sqrt(rm - rx) + 2.0 * g / rm - m) / 2.0;
+    co = (ry / sqrt(max(rm - rx, 1e-12)) + 2.0 * g / rm - m) / 2.0;
   }
-  vec2 r = vec2(ab.x * co, ab.y * sqrt(1.0 - co * co));
+  co = clamp(co, -1.0, 1.0);
+  vec2 r = vec2(ab.x * co, ab.y * sqrt(max(0.0, 1.0 - co * co)));
   return length(r - p) * sign(p.y - r.y);
 }
 
