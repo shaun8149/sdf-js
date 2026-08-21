@@ -104,7 +104,7 @@ monument/colossus 型 `hF` 压 cap 1.0（结构性偏近景，已修；修复轮
 与"柏拉图殿/分形/变形静物阵列"等下一卷内容一起评。另补 `set_features` 六键艺术语义
 traits（Composition/Palette/Forms/Modifier/Terrain/Depth，scene 34 专属）；落笔
 checksum 判决实验结论：双病灶（JS 残余 + canvas 光栅器）并存且会话依赖，详见
-DIMENSION `test/judgment-report.md`。DIMENSION 测试 104→178，HEAD 见 DIMENSION 仓
+DIMENSION `test/judgment-report.md`。DIMENSION 测试 104→179，HEAD 见 DIMENSION 仓
 `.superpowers/sdd/2026-08-20-dimension-3d-batch2/`（本地 gitignored，跨机器需重新走
 `git log` 核对 commit）。
 
