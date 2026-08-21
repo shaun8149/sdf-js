@@ -93,6 +93,18 @@ DIMENSION 仓 `.superpowers/sdd/2026-08-17-dimension-3d-solids-depth-flow/progre
 但明示"剩下的再说"）：布尔雕塑 / 柏拉图殿 / 分形 / 变形静物阵列；scene 33（SceneData
 语料台）保持 dev-only 不入池。
 
+**batch2 收官（2026-08-21）**：押后待圈里的"布尔雕塑"一项已完成——`SCULPT_POOL` 八件
+（斯坦梅茨体/方孔圆球/穹顶残殿/笼中球/死星/拱廊/咬过的苹果/沙漏）进构图 v2 主件三分池
+（原语 55%/布尔 25%/雕塑 20%），逐件全套对抗（8×3 contact sheet）后 user 四裁：八件
+全留；紧凑凸形（steinmetz/cube-pierced-sphere/death-star/bitten-apple）在 monument/
+colossus 型 `hF` 压 cap 1.0（结构性偏近景，已修）；电流 WebGL 视觉 user 自看不阻塞；
+fallback 件间差异（1.75–42.25%）留档，与"柏拉图殿/分形/变形静物阵列"等下一卷内容一起
+评。另补 `set_features` 六键艺术语义 traits（Composition/Palette/Forms/Modifier/
+Terrain/Depth，scene 34 专属）；落笔 checksum 判决实验结论：双病灶（JS 残余 + canvas
+光栅器）并存且会话依赖，详见 DIMENSION `test/judgment-report.md`。DIMENSION 测试
+104→177，HEAD 见 DIMENSION 仓 `.superpowers/sdd/2026-08-20-dimension-3d-batch2/`
+（本地 gitignored，跨机器需重新走 `git log` 核对 commit）。
+
 ---
 
 ## 1. Hard rules (NON-NEGOTIABLE — these override defaults)
