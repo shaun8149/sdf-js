@@ -73,7 +73,14 @@
         "intersect": 0.15,
         "decay_row": 0.18
       },
-      "palette_source": "objects3d/palettes3d.js (84 套, 双实配对全过对比关, 收割自 107 件 landscape-pass 语料)"
+      "palette_source": "objects3d/palettes3d.js (84 套, 双实配对全过对比关, 收割自 107 件 landscape-pass 语料)",
+      "sculpt_route": {
+        "primitive": 0.55,
+        "bool": 0.25,
+        "sculpt": 0.2,
+        "_locked": true,
+        "_note": "user 终裁 2026-08-21: 八件全留; 紧凑凸形 monument/colossus hF cap 1.0"
+      }
     },
     "legacy_7_8": 0.15,
     "rhyme_stage_18": 0.23,
