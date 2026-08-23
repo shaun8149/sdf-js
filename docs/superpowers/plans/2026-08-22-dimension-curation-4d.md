@@ -14,7 +14,7 @@
 - 三处同步:index.html script 序 = test/run-tests.mjs CHAIN_FILES = 链上装配序;新文件三处齐上。
 - **绝不读取/输出/提交 key.txt。**
 - 维度表(终裁):tier 权重 **2d 78 / 3d 5 / 4d 16 / 升维 1**;2d 池 = scenes [30,31,32] 权 **38/38/24**;3d 池 = [34];4d 池 = [35];升维 = 既有升维图 scene。
-- 退场清单(unroute,不删文件):scenes 1-6、7、8、9、10、11、12、13、14、15、16、17、18、19、20、21、22、23、24;painted 风格;主题库 mandala/flake 生成器件。
+- 退场清单(unroute,不删文件):scenes 1-6、7、8、9、10、11、12、13、14、15、16、18、19、20、21、22、23、24;painted 风格;主题库 mandala/flake 生成器件。**订正(m7, 2026-08-23 终审记账)**:本行原文字面误含 17,与维度表"升维 = 既有升维图 scene"矛盾——17(升维图)是 1-24 里唯一保留的一位,不在退场清单内;实现按维度表执行,DIMENSION README/`scenes/index.js` SCENE_TYPE 注释均以 17 保留为准,此处订正字面表述与实现对齐。
 - 2D 风格轴:物件(30)**before 99 / neon 1**;风景(31)**before 47.5 / after 47.5 / warp 5**;主题(32)沿用现值(仅剔 mandala/flake)。
 - **B4_SCALE = 0.5**,按场景门控(pa.scene===34 或 35 时生效),注入点:sketch.js buildPattern cellSize(≈:391)尾乘 / POISSON maxR、minR(≈:554)/ drawPoisson dotR(≈:603,乘在 Math.max 结果之外);2D 场景代码层隔离(门控判 pa.scene,非 URL 参数)。
 - 拼板:**拼4(2×2)70% / 拼16(4×4)30%**;w0 等步扫物的 w 跨度,ensureVisibleSlice 守卫;板间密度变奏 = 织线密度因子随 |w0_i − w0_center| 线性 1.0→0.85(纯派生,零 roll);构图/相机/PAL3D/fog/terrain 整件一次 roll 板间共享。
