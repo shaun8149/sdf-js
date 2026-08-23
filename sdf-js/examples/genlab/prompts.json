@@ -2454,6 +2454,942 @@
       "label": "cal-xin",
       "prompt": "the Chinese character 心 (heart) as three dots and a sweeping hook stroke, one dot painted red",
       "cat": "calligraphy"
+    },
+    {
+      "id": "kanagawa-wave",
+      "label": "the Great Wave off Kanagawa",
+      "prompt": "Hokusai's Great Wave off Kanagawa: a huge cresting wave with claw-like foam curling over three small boats, Mount Fuji tiny and pale in the distance",
+      "cat": "landscape"
+    },
+    {
+      "id": "van-gogh-crows",
+      "label": "Wheatfield with Crows",
+      "prompt": "Van Gogh's Wheatfield with Crows: a dark stormy sky pressing down on a golden wheat field, three diverging dirt paths, a scatter of black crows",
+      "cat": "landscape"
+    },
+    {
+      "id": "van-gogh-olive",
+      "label": "The Olive Trees",
+      "prompt": "Van Gogh's Olive Trees: twisted silver-green olive trees writhing under a swirling yellow-white sky, red-orange hills behind",
+      "cat": "landscape"
+    },
+    {
+      "id": "van-gogh-almond",
+      "label": "Almond Blossoms",
+      "prompt": "Van Gogh's Almond Blossoms: white blossom clusters on dark curving branches against a flat cobalt-blue sky",
+      "cat": "landscape"
+    },
+    {
+      "id": "van-gogh-cafe",
+      "label": "Café Terrace at Night",
+      "prompt": "Van Gogh's Café Terrace at Night: a glowing yellow café awning spilling light onto cobblestones under a deep blue star-filled sky",
+      "cat": "landscape"
+    },
+    {
+      "id": "monet-magpie",
+      "label": "The Magpie",
+      "prompt": "Monet's The Magpie: a single black magpie perched on a wooden gate in a vast snow field, long blue shadows, pale winter sun",
+      "cat": "landscape"
+    },
+    {
+      "id": "monet-poppies",
+      "label": "Poppy Field",
+      "prompt": "Monet's Poppy Field: a rolling hillside striped with red poppies under a light blue sky, two tiny figures with parasols",
+      "cat": "landscape"
+    },
+    {
+      "id": "friedrich-chalk-cliffs",
+      "label": "Chalk Cliffs on Rügen",
+      "prompt": "Friedrich's Chalk Cliffs on Rügen: jagged white chalk cliffs framing a view of the sea, two tiny figures peering over the edge",
+      "cat": "landscape"
+    },
+    {
+      "id": "friedrich-sea-of-ice",
+      "label": "The Sea of Ice",
+      "prompt": "Friedrich's The Sea of Ice: jagged slabs of broken pack ice stacked and tilted under a pale cold sky, a crushed ship's hull barely visible",
+      "cat": "landscape"
+    },
+    {
+      "id": "friedrich-abbey-oakwood",
+      "label": "Abbey in the Oakwood",
+      "prompt": "Friedrich's Abbey in the Oakwood: a ruined gothic arch standing among bare black oak trees in snow, a faint procession approaching",
+      "cat": "landscape"
+    },
+    {
+      "id": "turner-temeraire",
+      "label": "The Fighting Temeraire",
+      "prompt": "Turner's The Fighting Temeraire: a tall-masted sailing ship towed by a small dark steam tug across a blazing orange sunset river",
+      "cat": "landscape"
+    },
+    {
+      "id": "turner-rain-steam-speed",
+      "label": "Rain, Steam and Speed",
+      "prompt": "Turner's Rain, Steam and Speed: a dark train crossing a stone bridge, blurred into a storm of rain and steam",
+      "cat": "landscape"
+    },
+    {
+      "id": "cole-oxbow",
+      "label": "The Oxbow",
+      "prompt": "Cole's The Oxbow: a river bending in a perfect loop seen from a high cliff, one side wild and stormy, the other cultivated and sunlit",
+      "cat": "landscape"
+    },
+    {
+      "id": "bierstadt-sierra",
+      "label": "Sierra Nevada",
+      "prompt": "Bierstadt's Sierra Nevada: dramatic golden light breaking through jagged peaks over a still alpine lake, deer grazing at the shore",
+      "cat": "landscape"
+    },
+    {
+      "id": "church-twilight-wilderness",
+      "label": "Twilight in the Wilderness",
+      "prompt": "Church's Twilight in the Wilderness: a blazing orange and crimson sky mirrored in a still river, black silhouetted pine trees",
+      "cat": "landscape"
+    },
+    {
+      "id": "grant-wood-corn",
+      "label": "Young Corn",
+      "prompt": "Grant Wood's Young Corn: rolling patchwork farm hills in smooth rounded contours, neat rows of young green corn",
+      "cat": "landscape"
+    },
+    {
+      "id": "munch-scream-fjord",
+      "label": "The Scream",
+      "prompt": "Munch's The Scream: a swirling blood-orange sky over a dark curving fjord bridge, one small dark figure gripping the rail",
+      "cat": "landscape"
+    },
+    {
+      "id": "gauguin-tahiti",
+      "label": "Tahitian landscape",
+      "prompt": "Gauguin's Tahitian landscape: lush volcanic hills in flat saturated greens, a black volcanic peak, palm trees against a warm sky",
+      "cat": "landscape"
+    },
+    {
+      "id": "matisse-collioure",
+      "label": "View of Collioure",
+      "prompt": "Matisse's View of Collioure: a small harbor in bold unmixed pinks and greens, colorful boats, a red-roofed village on the hill",
+      "cat": "landscape"
+    },
+    {
+      "id": "dali-melting-clocks",
+      "label": "The Persistence of Memory",
+      "prompt": "Dalí's The Persistence of Memory: melting clocks draped over a barren tan desert ledge, a dead tree branch, a distant flat sea",
+      "cat": "landscape"
+    },
+    {
+      "id": "magritte-empire-of-light",
+      "label": "Empire of Light",
+      "prompt": "Magritte's Empire of Light: a dark house glowing with one lit window under a bright daytime blue sky with clouds",
+      "cat": "landscape"
+    },
+    {
+      "id": "sisley-flood",
+      "label": "Flood at Port-Marly",
+      "prompt": "Sisley's Flood at Port-Marly: a flooded village street with a rowboat, half-submerged houses reflected in still brown water",
+      "cat": "landscape"
+    },
+    {
+      "id": "pissarro-orchard",
+      "label": "Orchard in Bloom",
+      "prompt": "Pissarro's Orchard in Bloom: rows of blossoming fruit trees in dappled pink and white, a farmhouse roof beyond",
+      "cat": "landscape"
+    },
+    {
+      "id": "caillebotte-yerres",
+      "label": "Rowers on the Yerres",
+      "prompt": "Caillebotte's rowers on the Yerres: a calm river with striped rowing shells gliding past, willow trees leaning over the bank",
+      "cat": "landscape"
+    },
+    {
+      "id": "whistler-nocturne",
+      "label": "Nocturne in Black and Gold",
+      "prompt": "Whistler's Nocturne in Black and Gold: fireworks bursting in gold sparks over a dark river, faint silhouettes of a crowd on the far bank",
+      "cat": "landscape"
+    },
+    {
+      "id": "corot-morning",
+      "label": "Morning near Fontainebleau",
+      "prompt": "Corot's Morning near Fontainebleau: soft feathery trees in silver-green mist, a shepherd and small flock in a clearing",
+      "cat": "landscape"
+    },
+    {
+      "id": "constable-cornfield",
+      "label": "The Cornfield",
+      "prompt": "Constable's The Cornfield: a shaded lane through a ripe golden cornfield, a boy drinking from a stream, a church spire in the distance",
+      "cat": "landscape"
+    },
+    {
+      "id": "millet-angelus",
+      "label": "The Angelus",
+      "prompt": "Millet's The Angelus: two peasant figures standing bowed in a flat potato field at dusk, a distant church spire, a wheelbarrow beside them",
+      "cat": "landscape"
+    },
+    {
+      "id": "bruegel-icarus",
+      "label": "Landscape with the Fall of Icarus",
+      "prompt": "Bruegel's Landscape with the Fall of Icarus: a farmer plowing a coastal field, a ship sailing past, two tiny legs splashing in the sea",
+      "cat": "landscape"
+    },
+    {
+      "id": "cezanne-bibemus",
+      "label": "Bibémus Quarry",
+      "prompt": "Cézanne's Bibémus Quarry: blocky ochre rock faces faceted into geometric planes, a few dark pine trees among the stone",
+      "cat": "landscape"
+    },
+    {
+      "id": "hasui-zojoji-snow",
+      "label": "Zōjō-ji Temple in Snow",
+      "prompt": "Hasui's Zōjō-ji Temple in Snow: a red temple gate glowing with lantern light in falling snow at dusk, bare tree branches above",
+      "cat": "landscape"
+    },
+    {
+      "id": "hiroshige-plum-park",
+      "label": "Plum Park",
+      "prompt": "Hiroshige's Plum Park: a gnarled flowering plum branch crossing close in the foreground, tiny figures strolling beneath distant trees",
+      "cat": "landscape"
+    },
+    {
+      "id": "hiroshige-tokaido-station",
+      "label": "Tōkaidō station",
+      "prompt": "Hiroshige's Tōkaidō station: travelers crossing a wooden bridge over a river gorge, a small village and mountain beyond",
+      "cat": "landscape"
+    },
+    {
+      "id": "hokusai-kajikazawa",
+      "label": "Kajikazawa",
+      "prompt": "Hokusai's Kajikazawa: a fisherman balanced on a jagged rock casting a line into churning waves, Mount Fuji pale in the distance",
+      "cat": "landscape"
+    },
+    {
+      "id": "korin-red-white-plum",
+      "label": "Red and White Plum Blossoms",
+      "prompt": "Ogata Kōrin's Red and White Plum Blossoms: two stylized plum trees, one dark one pale, flanking a bold gold-and-silver patterned stream",
+      "cat": "landscape"
+    },
+    {
+      "id": "fan-kuan-travelers",
+      "label": "Travelers Among Mountains and Streams",
+      "prompt": "Fan Kuan's Travelers Among Mountains and Streams: one towering monolithic peak dwarfing a tiny mule train on the path below",
+      "cat": "landscape"
+    },
+    {
+      "id": "guo-xi-early-spring",
+      "label": "Early Spring",
+      "prompt": "Guo Xi's Early Spring: layered misty mountain peaks curling like smoke, a small pavilion and a winding path through the haze",
+      "cat": "landscape"
+    },
+    {
+      "id": "huang-gongwang-fuchun",
+      "label": "Dwelling in the Fuchun Mountains",
+      "prompt": "Huang Gongwang's Dwelling in the Fuchun Mountains: gentle rolling riverside hills in ink wash, a few fishing boats and thatched huts",
+      "cat": "landscape"
+    },
+    {
+      "id": "xia-gui-one-corner",
+      "label": "one-corner composition",
+      "prompt": "Xia Gui's one-corner composition: a pine-covered bluff jutting from mist in the lower corner, the rest of the scroll pale open space",
+      "cat": "landscape"
+    },
+    {
+      "id": "wang-ximeng-blue-green",
+      "label": "blue-green mountains",
+      "prompt": "Wang Ximeng's blue-green mountains: a jeweled turquoise mountain range along a river, tiny red pavilions and a curved bridge",
+      "cat": "landscape"
+    },
+    {
+      "id": "qingming-rainbow-bridge",
+      "label": "Qingming rainbow bridge",
+      "prompt": "Along the River During Qingming Festival: a bustling arched rainbow bridge crowded with tiny figures, boats passing beneath, riverside rooftops",
+      "cat": "landscape"
+    },
+    {
+      "id": "dong-yuan-xiao-xiang",
+      "label": "Xiao and Xiang Rivers",
+      "prompt": "Dong Yuan's Xiao and Xiang Rivers: soft rounded hills reflected in a still misty river, reed islands, distant sails",
+      "cat": "landscape"
+    },
+    {
+      "id": "wsl-su-causeway",
+      "label": "Su Causeway in Spring Dawn",
+      "prompt": "West Lake's Su Causeway in Spring Dawn: a willow-lined causeway curving across a misty lake, one small arched bridge",
+      "cat": "landscape"
+    },
+    {
+      "id": "wsl-broken-bridge-snow",
+      "label": "Broken Bridge in Snow",
+      "prompt": "West Lake's Broken Bridge in Snow: a stone bridge dusted white crossing a lake, dark bare willows, one red lantern glowing",
+      "cat": "landscape"
+    },
+    {
+      "id": "wsl-three-pools-moon",
+      "label": "Three Pools Mirroring the Moon",
+      "prompt": "West Lake's Three Pools Mirroring the Moon: three small stone pagodas rising from still water, a full moon reflected between them",
+      "cat": "landscape"
+    },
+    {
+      "id": "huangshan-clouds-pine",
+      "label": "Huangshan sea of clouds",
+      "prompt": "Huangshan sea of clouds: a lone twisted welcoming pine on a granite cliff above a rolling white sea of cloud",
+      "cat": "landscape"
+    },
+    {
+      "id": "taishan-sunrise-steps",
+      "label": "Mount Tai sunrise",
+      "prompt": "Mount Tai sunrise: a steep stone stairway climbing into cloud, a small pavilion at the summit lit orange by the rising sun",
+      "cat": "landscape"
+    },
+    {
+      "id": "lushan-waterfall",
+      "label": "Lushan waterfall",
+      "prompt": "Lushan waterfall: a thin white cascade falling a great distance down a sheer green cliff into misty rocks below",
+      "cat": "landscape"
+    },
+    {
+      "id": "sanxia-gorge",
+      "label": "Three Gorges",
+      "prompt": "Three Gorges: a narrow river squeezed between towering cliff walls, one small boat trailing a thin wake",
+      "cat": "landscape"
+    },
+    {
+      "id": "zhangye-danxia",
+      "label": "Zhangye Danxia",
+      "prompt": "Zhangye Danxia rainbow mountains: striped mineral hillsides in bands of red, yellow and green under a pale sky",
+      "cat": "landscape"
+    },
+    {
+      "id": "jiuzhaigou-terraces",
+      "label": "Jiuzhaigou colored lakes",
+      "prompt": "Jiuzhaigou colored lakes: terraced turquoise and emerald pools cascading down a forested slope, fallen tree trunks visible underwater",
+      "cat": "landscape"
+    },
+    {
+      "id": "suzhou-moon-gate",
+      "label": "Suzhou garden moon gate",
+      "prompt": "Suzhou garden moon gate: a perfectly round white gate framing a glimpse of a koi pond and a twisted rockery beyond",
+      "cat": "landscape"
+    },
+    {
+      "id": "suzhou-rockery-pond",
+      "label": "Suzhou garden rockery",
+      "prompt": "Suzhou garden rockery: a jagged limestone scholar's rock rising from a still pond, a covered zigzag walkway beside it",
+      "cat": "landscape"
+    },
+    {
+      "id": "wuyi-nine-bend",
+      "label": "Wuyishan Nine-Bend River",
+      "prompt": "Wuyishan Nine-Bend River: a bamboo raft drifting on a winding river between sheer red sandstone cliffs",
+      "cat": "landscape"
+    },
+    {
+      "id": "orchid-pavilion-gathering",
+      "label": "Orchid Pavilion gathering",
+      "prompt": "Orchid Pavilion gathering: a winding stream through a bamboo grove with wine cups floating between seated scholars",
+      "cat": "landscape"
+    },
+    {
+      "id": "sichuan-terrace-mist",
+      "label": "Sichuan terraces in mist",
+      "prompt": "terraced rice paddies in Sichuan mist: stacked curved water terraces climbing a hillside, one water buffalo at the edge",
+      "cat": "landscape"
+    },
+    {
+      "id": "moon-viewing-pavilion",
+      "label": "moon-viewing pavilion",
+      "prompt": "a wooden moon-viewing pavilion on stilts over a lotus pond, a round paper lantern glowing, full moon reflected",
+      "cat": "landscape"
+    },
+    {
+      "id": "ink-wash-fisherman",
+      "label": "ink wash fisherman",
+      "prompt": "a lone fisherman poling a raft through reeds in pale ink wash, one heron standing in the shallows",
+      "cat": "landscape"
+    },
+    {
+      "id": "zen-rock-garden",
+      "label": "zen rock garden",
+      "prompt": "a Japanese rock garden: raked white gravel in concentric ripples around three moss-covered stones",
+      "cat": "landscape"
+    },
+    {
+      "id": "kyoto-borrowed-view",
+      "label": "Kyoto borrowed view",
+      "prompt": "a Kyoto zen garden veranda framing a distant maple hillside, raked gravel in the foreground, one stone lantern",
+      "cat": "landscape"
+    },
+    {
+      "id": "meteora-monastery",
+      "label": "Meteora monastery",
+      "prompt": "Meteora monastery: a stone monastery perched impossibly on a sheer rock pillar, clouds drifting below",
+      "cat": "landscape"
+    },
+    {
+      "id": "halong-bay-karst",
+      "label": "Ha Long Bay",
+      "prompt": "Ha Long Bay: dozens of jagged limestone islets rising from calm emerald water, one junk boat with red sails",
+      "cat": "landscape"
+    },
+    {
+      "id": "pamukkale-terraces",
+      "label": "Pamukkale",
+      "prompt": "Pamukkale: brilliant white travertine terraces stepping down a hillside, turquoise pools catching the light",
+      "cat": "landscape"
+    },
+    {
+      "id": "trolltunga-cliff",
+      "label": "Trolltunga",
+      "prompt": "Trolltunga: a flat rock tongue jutting far out over a vast Norwegian valley lake far below",
+      "cat": "landscape"
+    },
+    {
+      "id": "preikestolen-pulpit",
+      "label": "Preikestolen",
+      "prompt": "Preikestolen: a sheer flat-topped cliff hanging six hundred meters above a deep blue fjord",
+      "cat": "landscape"
+    },
+    {
+      "id": "lofoten-village",
+      "label": "Lofoten fishing village",
+      "prompt": "Lofoten fishing village: red wooden cabins on stilts over the water, jagged snow-capped peaks rising straight behind",
+      "cat": "landscape"
+    },
+    {
+      "id": "torres-del-paine",
+      "label": "Torres del Paine",
+      "prompt": "Torres del Paine: three sheer granite towers glowing pink at dawn above a turquoise glacial lake",
+      "cat": "landscape"
+    },
+    {
+      "id": "perito-moreno-calving",
+      "label": "Perito Moreno glacier",
+      "prompt": "Perito Moreno glacier: a wall of blue-white ice calving into a lake, a huge chunk mid-fall with spray",
+      "cat": "landscape"
+    },
+    {
+      "id": "plitvice-terraces",
+      "label": "Plitvice Lakes",
+      "prompt": "Plitvice Lakes: a cascade of turquoise pools linked by dozens of small waterfalls through green forest",
+      "cat": "landscape"
+    },
+    {
+      "id": "skogafoss-rainbow",
+      "label": "Skógafoss",
+      "prompt": "Skógafoss: a broad thundering waterfall dropping from a mossy cliff, a faint rainbow arcing through its spray",
+      "cat": "landscape"
+    },
+    {
+      "id": "reynisfjara-basalt",
+      "label": "Reynisfjara black beach",
+      "prompt": "Reynisfjara black beach: hexagonal basalt columns rising from black volcanic sand, sea stacks offshore in fog",
+      "cat": "landscape"
+    },
+    {
+      "id": "bryce-hoodoos",
+      "label": "Bryce Canyon",
+      "prompt": "Bryce Canyon: hundreds of thin orange rock spires rising from an amphitheater, one lone hoodoo in the foreground",
+      "cat": "landscape"
+    },
+    {
+      "id": "delicate-arch",
+      "label": "Delicate Arch",
+      "prompt": "Delicate Arch: a freestanding sandstone arch glowing red at sunset, distant snow-capped mountains behind",
+      "cat": "landscape"
+    },
+    {
+      "id": "the-wave-sandstone",
+      "label": "The Wave sandstone",
+      "prompt": "The Wave: swirling striped sandstone ripples in orange and cream, curving like a frozen sea",
+      "cat": "landscape"
+    },
+    {
+      "id": "palouse-hills",
+      "label": "Palouse wheat hills",
+      "prompt": "Palouse wheat hills: smooth rolling golden hills in overlapping curved bands, one red barn tucked in a fold",
+      "cat": "landscape"
+    },
+    {
+      "id": "amalfi-cliffside",
+      "label": "Amalfi coast",
+      "prompt": "Amalfi coast: pastel houses stacked on a steep cliff above the sea, a switchback road, lemon terraces",
+      "cat": "landscape"
+    },
+    {
+      "id": "positano-stairs",
+      "label": "Positano",
+      "prompt": "Positano: a cascade of colorful houses tumbling down a hillside to a small beach, a striped church dome",
+      "cat": "landscape"
+    },
+    {
+      "id": "socotra-dragon-trees",
+      "label": "Socotra dragon trees",
+      "prompt": "Socotra dragon blood trees: umbrella-shaped trees on a red desert plateau under a hazy sky",
+      "cat": "landscape"
+    },
+    {
+      "id": "jokulsarlon-icebergs",
+      "label": "Jökulsárlón",
+      "prompt": "Jökulsárlón: pale blue icebergs drifting on a black glacial lagoon, one seal resting on the ice",
+      "cat": "landscape"
+    },
+    {
+      "id": "wadi-rum-arch",
+      "label": "Wadi Rum",
+      "prompt": "Wadi Rum: a red sandstone arch framing a vast orange desert, one lone camel silhouette",
+      "cat": "landscape"
+    },
+    {
+      "id": "white-desert-egypt",
+      "label": "White Desert Egypt",
+      "prompt": "White Desert Egypt: chalk-white wind-carved rock formations scattered across a flat desert under stars",
+      "cat": "landscape"
+    },
+    {
+      "id": "faroe-drangarnir",
+      "label": "Faroe sea stacks",
+      "prompt": "Faroe Islands: two dramatic sea stacks with a natural arch between them, green cliffs plunging into gray sea",
+      "cat": "landscape"
+    },
+    {
+      "id": "hallstatt-lake",
+      "label": "Hallstatt",
+      "prompt": "Hallstatt: a lakeside village with a church spire reflected in still water, steep alpine cliffs behind",
+      "cat": "landscape"
+    },
+    {
+      "id": "chefchaouen-alley",
+      "label": "Chefchaouen blue city",
+      "prompt": "Chefchaouen blue city: a narrow alley of blue-washed walls and steps, one potted plant, a shaft of sunlight",
+      "cat": "landscape"
+    },
+    {
+      "id": "verdon-gorge",
+      "label": "Gorges du Verdon",
+      "prompt": "Gorges du Verdon: a turquoise river snaking through a deep limestone canyon, one small kayak",
+      "cat": "landscape"
+    },
+    {
+      "id": "angel-falls",
+      "label": "Angel Falls",
+      "prompt": "Angel Falls: a thin waterfall dropping an immense distance from a flat-topped tepui into cloud forest",
+      "cat": "landscape"
+    },
+    {
+      "id": "iguazu-falls",
+      "label": "Iguazu Falls",
+      "prompt": "Iguazu Falls: a wide horseshoe of cascading waterfalls with rising mist, dense green jungle at the rim",
+      "cat": "landscape"
+    },
+    {
+      "id": "victoria-falls-mist",
+      "label": "Victoria Falls",
+      "prompt": "Victoria Falls: a curtain of falling water disappearing into rising white mist, a rainbow arcing above the gorge",
+      "cat": "landscape"
+    },
+    {
+      "id": "ijen-blue-fire",
+      "label": "Kawah Ijen blue fire",
+      "prompt": "Kawah Ijen: electric-blue flames flickering on a dark volcanic crater at night, tiny miner figures with lanterns",
+      "cat": "landscape"
+    },
+    {
+      "id": "danakil-sulfur",
+      "label": "Danakil Depression",
+      "prompt": "Danakil Depression: bubbling yellow and orange sulfur terraces steaming under a harsh sun",
+      "cat": "landscape"
+    },
+    {
+      "id": "salar-de-uyuni",
+      "label": "Salar de Uyuni",
+      "prompt": "Salar de Uyuni: a perfectly flat salt flat mirroring the sky, one lone figure standing where sky meets ground",
+      "cat": "landscape"
+    },
+    {
+      "id": "zabriskie-point",
+      "label": "Zabriskie Point",
+      "prompt": "Zabriskie Point: golden badland ridges folding like fabric under a hazy desert sky",
+      "cat": "landscape"
+    },
+    {
+      "id": "giant-sequoia-grove",
+      "label": "giant sequoia grove",
+      "prompt": "a giant sequoia grove: massive red-brown trunks rising into fog, one fallen log, ferns at the base",
+      "cat": "landscape"
+    },
+    {
+      "id": "redwood-fog-light",
+      "label": "coastal redwoods",
+      "prompt": "coastal redwoods: shafts of sunlight breaking through fog between towering trunks, one deer at the base",
+      "cat": "landscape"
+    },
+    {
+      "id": "banff-lake-louise",
+      "label": "Lake Louise",
+      "prompt": "Lake Louise: a turquoise glacial lake beneath a jagged snow-capped peak, one red canoe on the still water",
+      "cat": "landscape"
+    },
+    {
+      "id": "matterhorn-alpenglow",
+      "label": "the Matterhorn",
+      "prompt": "the Matterhorn: a sharp pyramidal peak glowing pink at alpenglow above a dark valley",
+      "cat": "landscape"
+    },
+    {
+      "id": "mont-blanc-glacier",
+      "label": "Mont Blanc",
+      "prompt": "Mont Blanc: a crevassed white glacier flowing between two rocky ridges under a clear sky",
+      "cat": "landscape"
+    },
+    {
+      "id": "sahara-star-dune",
+      "label": "Sahara star dune",
+      "prompt": "a Sahara star dune: a single towering dune with radiating sharp ridges, camel tracks at its base",
+      "cat": "landscape"
+    },
+    {
+      "id": "namib-red-dune",
+      "label": "Namib red dunes",
+      "prompt": "Namib red dunes: a smooth curved dune ridge glowing orange, one dead acacia tree in silhouette",
+      "cat": "landscape"
+    },
+    {
+      "id": "baobab-avenue",
+      "label": "Avenue of the Baobabs",
+      "prompt": "Avenue of the Baobabs: a row of massive baobab trees along a dirt road at sunset",
+      "cat": "landscape"
+    },
+    {
+      "id": "sundog-halo",
+      "label": "sundog",
+      "prompt": "a sundog: a bright halo ring around a low sun with two glowing bright spots on either side, snowy field below",
+      "cat": "landscape"
+    },
+    {
+      "id": "glory-brocken-spectre",
+      "label": "Brocken spectre",
+      "prompt": "a Brocken spectre: a climber's long shadow on cloud below, ringed by a faint rainbow halo",
+      "cat": "landscape"
+    },
+    {
+      "id": "red-sprite-lightning",
+      "label": "red sprite",
+      "prompt": "a red sprite: branching crimson tendrils flickering high above a distant thunderstorm's anvil cloud",
+      "cat": "landscape"
+    },
+    {
+      "id": "nacreous-clouds",
+      "label": "nacreous clouds",
+      "prompt": "nacreous clouds: thin iridescent rainbow-sheened clouds glowing at dusk over a snowy mountain ridge",
+      "cat": "landscape"
+    },
+    {
+      "id": "zodiacal-light",
+      "label": "zodiacal light",
+      "prompt": "zodiacal light: a faint pale pyramid of light rising from the horizon into a star-filled desert night sky",
+      "cat": "landscape"
+    },
+    {
+      "id": "fogbow-white",
+      "label": "fogbow",
+      "prompt": "a fogbow: a pale colorless arc glowing in thick fog over a still lake",
+      "cat": "landscape"
+    },
+    {
+      "id": "anticrepuscular-rays",
+      "label": "anticrepuscular rays",
+      "prompt": "anticrepuscular rays: light beams converging at the horizon opposite a setting sun, over rolling hills",
+      "cat": "landscape"
+    },
+    {
+      "id": "earthshine-crescent",
+      "label": "earthshine",
+      "prompt": "earthshine: a thin crescent moon cradling the faint glow of its own dark side, over a dark ridge",
+      "cat": "landscape"
+    },
+    {
+      "id": "ice-halo-22deg",
+      "label": "22-degree ice halo",
+      "prompt": "a 22-degree ice halo: a full ring around a bright winter sun above a frozen pine forest",
+      "cat": "landscape"
+    },
+    {
+      "id": "shelf-cloud-approach",
+      "label": "shelf cloud",
+      "prompt": "a shelf cloud: a long flat dark cloud shelf advancing over a golden wheat field before a storm",
+      "cat": "landscape"
+    },
+    {
+      "id": "waterspout-sea",
+      "label": "waterspout",
+      "prompt": "a waterspout: a thin spinning funnel connecting dark clouds to the sea, a distant fishing boat fleeing",
+      "cat": "landscape"
+    },
+    {
+      "id": "mirage-highway",
+      "label": "desert mirage",
+      "prompt": "a desert mirage: a straight highway shimmering into a false lake on the horizon, heat haze rippling",
+      "cat": "landscape"
+    },
+    {
+      "id": "meteor-shower-peak",
+      "label": "meteor shower",
+      "prompt": "a meteor shower: dozens of streaking meteors radiating from one point over a dark mountain silhouette",
+      "cat": "landscape"
+    },
+    {
+      "id": "comet-over-lake",
+      "label": "comet over a lake",
+      "prompt": "a comet: a bright head and long curving tail arcing over a still lake reflecting the stars",
+      "cat": "landscape"
+    },
+    {
+      "id": "solar-eclipse-corona",
+      "label": "total solar eclipse",
+      "prompt": "a total solar eclipse: a black sun ringed by a pale corona over a darkened desert horizon",
+      "cat": "landscape"
+    },
+    {
+      "id": "supermoon-city-silhouette",
+      "label": "supermoon over rooftops",
+      "prompt": "a supermoon: an enormous orange moon rising directly behind a row of dark city rooftops and antennas",
+      "cat": "landscape"
+    },
+    {
+      "id": "aurora-fjord-reflection",
+      "label": "aurora over a fjord",
+      "prompt": "aurora over a fjord: green curtains of light rippling above sheer cliffs, mirrored in still black water",
+      "cat": "landscape"
+    },
+    {
+      "id": "penitentes-field",
+      "label": "penitentes ice field",
+      "prompt": "penitentes: a field of tall thin ice spikes glowing blue-white under a high mountain sun",
+      "cat": "landscape"
+    },
+    {
+      "id": "dust-devil-desert",
+      "label": "dust devil",
+      "prompt": "a dust devil: a thin spinning column of orange dust crossing a flat cracked desert plain",
+      "cat": "landscape"
+    },
+    {
+      "id": "green-ray-double",
+      "label": "double green flash",
+      "prompt": "a double green flash: two brief green slivers at the very top and bottom of a setting sun on the ocean horizon",
+      "cat": "landscape"
+    },
+    {
+      "id": "renoir-luncheon-terrace",
+      "label": "Renoir's terrace luncheon",
+      "prompt": "Renoir's terrace luncheon: a shaded riverside terrace with a striped awning, wine bottles on a white tablecloth, boats beyond",
+      "cat": "landscape"
+    },
+    {
+      "id": "sargent-venice-canal",
+      "label": "Sargent's Venice",
+      "prompt": "Sargent's Venice: a narrow canal between weathered pastel palazzos, one gondola gliding through dappled light",
+      "cat": "landscape"
+    },
+    {
+      "id": "degas-racehorses",
+      "label": "Degas' racehorses",
+      "prompt": "Degas' racehorses: a line of horses and jockeys silhouetted against a pale flat racetrack under a wide sky",
+      "cat": "landscape"
+    },
+    {
+      "id": "homer-gulf-stream",
+      "label": "The Gulf Stream",
+      "prompt": "Winslow Homer's Gulf Stream: a small battered boat adrift on a wild turquoise sea, sharks circling, a distant waterspout",
+      "cat": "landscape"
+    },
+    {
+      "id": "wyeth-christinas-world",
+      "label": "Christina's World",
+      "prompt": "Wyeth's Christina's World: a lone figure in a field of dry grass looking up toward a distant gray farmhouse",
+      "cat": "landscape"
+    },
+    {
+      "id": "rockwell-kent-arctic",
+      "label": "Rockwell Kent's Arctic",
+      "prompt": "Rockwell Kent's Arctic: a stark iceberg and jagged peak under a huge cold moon, one small dark cabin",
+      "cat": "landscape"
+    },
+    {
+      "id": "hockney-bigger-splash",
+      "label": "A Bigger Splash",
+      "prompt": "Hockney's A Bigger Splash: a flat turquoise swimming pool with a white splash frozen mid-air, a pink modernist house behind",
+      "cat": "landscape"
+    },
+    {
+      "id": "okeeffe-mesa-bones",
+      "label": "O'Keeffe's desert mesa",
+      "prompt": "O'Keeffe's desert mesa: a flat-topped red mesa under a pale sky, a bleached animal skull in the foreground sand",
+      "cat": "landscape"
+    },
+    {
+      "id": "hopper-cape-cod",
+      "label": "Hopper's Cape Cod",
+      "prompt": "Hopper's Cape Cod: a white lighthouse and its keeper's house standing stark against a plain blue sky and dune grass",
+      "cat": "landscape"
+    },
+    {
+      "id": "moran-yellowstone-canyon",
+      "label": "Moran's Yellowstone",
+      "prompt": "Moran's Yellowstone: a deep golden canyon with a thin white waterfall, steam rising from distant geysers",
+      "cat": "landscape"
+    },
+    {
+      "id": "namatjira-ranges",
+      "label": "Namatjira's MacDonnell Ranges",
+      "prompt": "Namatjira's MacDonnell Ranges: layered red and purple desert ridges under a huge pale Australian sky, white ghost gums",
+      "cat": "landscape"
+    },
+    {
+      "id": "aivazovsky-ninth-wave",
+      "label": "The Ninth Wave",
+      "prompt": "Aivazovsky's The Ninth Wave: a towering translucent wave about to break over shipwreck survivors clinging to a mast",
+      "cat": "landscape"
+    },
+    {
+      "id": "dutch-winter-canal-skaters",
+      "label": "Dutch winter canal",
+      "prompt": "a Dutch winter canal scene: skaters gliding on frozen water past a windmill, bare trees along the bank",
+      "cat": "landscape"
+    },
+    {
+      "id": "ruisdael-windmill-wijk",
+      "label": "Windmill at Wijk",
+      "prompt": "Ruisdael's Windmill at Wijk: a tall windmill on a riverbank under a huge dramatic cloudy sky",
+      "cat": "landscape"
+    },
+    {
+      "id": "vermeer-view-of-delft",
+      "label": "View of Delft",
+      "prompt": "Vermeer's View of Delft: a walled town skyline of spires and rooftops reflected in a calm harbor under soft light",
+      "cat": "landscape"
+    },
+    {
+      "id": "big-sur-coast",
+      "label": "Big Sur",
+      "prompt": "Big Sur: a rugged cliff coastline with waves crashing far below, one lone cypress leaning over the edge",
+      "cat": "landscape"
+    },
+    {
+      "id": "faroe-mulafossur",
+      "label": "Múlafossur waterfall",
+      "prompt": "Múlafossur waterfall: a thin waterfall dropping straight off a green cliff into the sea beside a tiny red-roofed village",
+      "cat": "landscape"
+    },
+    {
+      "id": "milford-sound-mitre",
+      "label": "Milford Sound",
+      "prompt": "Milford Sound: a sheer pyramidal peak plunging straight into a still dark fjord, low cloud clinging to its face",
+      "cat": "landscape"
+    },
+    {
+      "id": "tunnel-of-love-ukraine",
+      "label": "Tunnel of Love",
+      "prompt": "Tunnel of Love: a train track vanishing into a perfect green arched tunnel of trees",
+      "cat": "landscape"
+    },
+    {
+      "id": "wisteria-tunnel",
+      "label": "wisteria tunnel",
+      "prompt": "a wisteria tunnel: cascading purple blossom clusters hanging in dense curtains over a garden walkway",
+      "cat": "landscape"
+    },
+    {
+      "id": "bluebell-wood",
+      "label": "bluebell wood",
+      "prompt": "a bluebell wood: a carpet of blue flowers stretching between slender beech trunks, shafts of morning light",
+      "cat": "landscape"
+    },
+    {
+      "id": "cherry-blossom-canal",
+      "label": "cherry blossom canal",
+      "prompt": "a cherry blossom tunnel: pink blossoms arching over a narrow canal path, petals drifting on the water",
+      "cat": "landscape"
+    },
+    {
+      "id": "tuscan-poppy-field",
+      "label": "Tuscan poppy field",
+      "prompt": "a Tuscan poppy field: a scarlet field with one dark cypress row along the ridge, rolling gold hills beyond",
+      "cat": "landscape"
+    },
+    {
+      "id": "dutch-tulip-canal",
+      "label": "Dutch tulip canal",
+      "prompt": "a Dutch tulip canal: striped rows of red and yellow tulips beside a straight canal, one distant windmill",
+      "cat": "landscape"
+    },
+    {
+      "id": "provence-lavender-abbey",
+      "label": "Provence lavender abbey",
+      "prompt": "a Provence lavender field with a stone abbey on the ridge behind, rows converging toward its facade",
+      "cat": "landscape"
+    },
+    {
+      "id": "iceland-diamond-beach",
+      "label": "Diamond Beach",
+      "prompt": "Diamond Beach: chunks of clear ice scattered on black volcanic sand, waves receding around them",
+      "cat": "landscape"
+    },
+    {
+      "id": "antarctica-icebergs",
+      "label": "Antarctic icebergs",
+      "prompt": "Antarctic icebergs: towering blue-white ice cliffs calving into a dark polar sea, one penguin colony on a floe",
+      "cat": "landscape"
+    },
+    {
+      "id": "sahara-oasis-caravan",
+      "label": "Sahara caravan",
+      "prompt": "a Sahara caravan: a line of camels crossing a high dune ridge at sunset, long shadows trailing",
+      "cat": "landscape"
+    },
+    {
+      "id": "gobi-desert-yurt",
+      "label": "Gobi desert yurt",
+      "prompt": "the Gobi desert: a lone white yurt on a vast dry steppe, distant low mountains under a huge sky",
+      "cat": "landscape"
+    },
+    {
+      "id": "tibetan-plateau-flags",
+      "label": "Tibetan plateau prayer flags",
+      "prompt": "the Tibetan plateau: strings of colorful prayer flags stretched between poles on a high ridge, snow peaks behind",
+      "cat": "landscape"
+    },
+    {
+      "id": "dali-melting-clocks-v2",
+      "label": "The Persistence of Memory",
+      "prompt": "Dalí's The Persistence of Memory: three round clock faces, each melted and drooping like soft wax over the edge of a stone ledge, barren tan desert, a dead tree branch, distant flat sea",
+      "cat": "landscape"
+    },
+    {
+      "id": "preikestolen-pulpit-v2",
+      "label": "Preikestolen",
+      "prompt": "Preikestolen: a flat rectangular rock platform jutting out from a cliff face, two tiny hikers standing at its edge, a deep blue fjord far below between steep gray cliff walls",
+      "cat": "landscape"
+    },
+    {
+      "id": "white-desert-egypt-v2",
+      "label": "White Desert Egypt",
+      "prompt": "White Desert Egypt: several chalk-white mushroom-shaped rock formations scattered on an orange desert floor under a starry night sky",
+      "cat": "landscape"
+    },
+    {
+      "id": "redwood-fog-light-v2",
+      "label": "coastal redwoods",
+      "prompt": "coastal redwoods: five towering dark red-brown trunks in a row, pale fog between them, one shaft of golden sunlight breaking through, a small deer silhouette at the base",
+      "cat": "landscape"
+    },
+    {
+      "id": "bryce-hoodoos-v2",
+      "label": "Bryce Canyon",
+      "prompt": "Bryce Canyon: a curved amphitheater wall lined with dozens of thin orange rock spires like organ pipes, one tall hoodoo spire standing alone in the foreground",
+      "cat": "landscape"
+    },
+    {
+      "id": "penitentes-field-v2",
+      "label": "penitentes ice field",
+      "prompt": "penitentes: rows of tall jagged ice spikes like a field of white blades, glowing blue-white, a bright sun and dark mountain ridge behind",
+      "cat": "landscape"
     }
   ]
 }
