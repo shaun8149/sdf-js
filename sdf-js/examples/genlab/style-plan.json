@@ -1,5 +1,5 @@
 {
-  "comment": "DIMENSION 总概率表草案 v2 (2026-08-14)。user 裁定项已锁; 标 draft 的等 user 修改。",
+  "comment": "DIMENSION 总概率表 (2026-08-22 策展手术终裁版, 取代 2026-08-14 draft v2)。数值均逐字对应 DIMENSION 仓 sketch.js/scenes/index.js/scenes/panels-4d.js 里的具名常量 (TIER_WEIGHTS/POOL_2D_WEIGHTS/STYLE2D_OBJECTS_W/STYLE2D_LANDSCAPES_W/THEME32_CATEGORY_W/POLY4D_WEIGHTS)，不是脱离代码另算的第二份数字。DIMENSION HEAD=d02061d，测试 281/281。",
   "rulings_locked": {
     "png10_topo": "放弃 (无美感)",
     "png11_morph": "放弃 (无美感)",
@@ -7,99 +7,172 @@
     "png13_warp": "保留, ~5%"
   },
   "dimension_tier": {
-    "comment": "draft — 现行 sketch.js 为 2d:3d:4d = 3:2:1 + 升维图1%",
-    "2d": 0.5,
-    "3d": 0.33,
+    "_locked": true,
+    "_note": "2026-08-22 策展手术终裁 (逐字), sketch.js TIER_WEIGHTS。BOB 六景/老 3D/老 4D/韵脚 2D/静物台全部退场——不再是这张表要覆盖的自然路由，见 retired_scenes。",
+    "2d": 0.78,
+    "3d": 0.05,
     "4d": 0.16,
     "ascension": 0.01
   },
   "2d_content": {
-    "comment": "draft — 2D 内容池分布",
-    "objects_物件库103": 0.3,
-    "landscapes_风景库107": 0.3,
-    "bob_六景传承": 0.1,
-    "rhymes_韵脚2D端": 0.12,
-    "themes_主题系列": {
-      "_total": 0.18,
-      "mandala_玫瑰窗": 0.03,
-      "flake_雪花": 0.03,
-      "pattern_纹样": 0.04,
-      "lighthouse36_三十六景": 0.02,
-      "hours_十二时辰": 0.0,
-      "seasons_四季": 0.02,
-      "calligraphy_书法": 0.02,
-      "seamap_海图": 0.02,
-      "_note": "十二时辰暂记 0 (语料变换非独立创作, 待定); 其余为 draft"
+    "_locked": true,
+    "_note": "2D 内容池 = scenes [30,31,32] (物件/风景/主题基石库) 三家独占, sketch.js POOL_2D_WEIGHTS。BOB 六景/韵脚2D(11/15/16/24)/静物台(23) 已退场 (见 retired_scenes)，不再是本表的 2D 内容池成员。",
+    "objects_scene30": 0.38,
+    "landscapes_scene31": 0.38,
+    "themes_scene32": 0.24,
+    "themes_scene32_category_weights": {
+      "_note": "scenes/index.js THEME32_CATEGORY_W，池内相对权重 (和=12，代码内部归一，非人工凑百分比)。mandala_玫瑰窗/flake_雪花两个生成器件已从内容表过滤 (GEN2D.mandala/flake 函数保留，自然路径摸不到)。",
+      "pattern_纹样": 4,
+      "lighthouse36_三十六景": 2,
+      "seasons_四季": 2,
+      "calligraphy_书法": 2,
+      "seamap_海图": 2,
+      "mandala_玫瑰窗": { "_degraded": true, "weight": 0, "_note": "策展手术摘除，函数保留" },
+      "flake_雪花": { "_degraded": true, "weight": 0, "_note": "策展手术摘除，函数保留" }
     }
   },
   "2d_style_axis": {
     "objects": {
-      "before": 0.5,
-      "painted": 0.49,
+      "_locked": true,
+      "before": 0.99,
       "neon": 0.01,
-      "_locked": true
+      "painted": {
+        "_degraded": true,
+        "weight": 0,
+        "_note": "2026-08-22 终裁退场，STYLE2D_OBJECTS_W.painted=0；libSdfsForPainted() 渲染桥接与 makesdf() 30-32 分派原样不动，?style2d=painted dev 覆盖口仍可达 (test/run-tests.mjs 可达性双向断言)"
+      }
     },
     "landscapes": {
-      "before": 0.95,
-      "warp": 0.05,
       "_locked": true,
-      "_note": "user 终裁 2026-08-17: 风景全 Before (动态稀疏 = 抠图犹豫的落点, after 密度地板填平了清晰度起伏); warp 5% 维持原裁定"
+      "before": 0.475,
+      "after": 0.475,
+      "warp": 0.05,
+      "_note": "2026-08-22 复核调整: before/after 平分 47.5/47.5 (原 2026-08-17 裁定 before 95% 全面复核后放开 after 一半份额)，warp 5% 维持不变"
     },
-    "bob_六景": {
-      "bob_原味": 1.0
+    "bob_六景": { "_degraded": true, "weight": 0, "_note": "整族退场 (scenes 1-6)，文件不删" },
+    "rhymes_韵脚2D": {
+      "_degraded": true,
+      "weight": 0,
+      "_note": "整族退场 (scenes 11/15/16/24)，文件不删"
     },
-    "rhymes_韵脚": {
-      "before": 1.0,
-      "_note": "draft — 随风景全 Before 联动, 待 user 确认"
+    "stilllife_静物台": {
+      "_degraded": true,
+      "weight": 0,
+      "_note": "整族退场 (scene 23)，文件不删"
     },
     "themes": {
       "before": 1.0,
-      "_note": "draft — 主题件多为图案型, before 透光最合适"
+      "_note": "主题件多为图案型, before 透光最合适 (与内容池 mandala/flake 摘除是两件独立的事: 一个管风格轴, 一个管内容表)"
     }
   },
   "3d_content": {
-    "_note": "user 终裁 2026-08-18: 权重照 draft (solids 4/13≈31%); 景深档位维持现档 (fogK 37.5/25/25/12.5, dofK 50/33/17) 一并 locked; 布尔/柏拉图/语料台入池时重分",
-    "solids_stage_34": 0.31,
+    "_locked": true,
+    "_note": "3D 池 = [34] (正几何台 v2) 独占全部 3D tier 权重——韵脚3D台(18)/圣物殿(19-22)/老 3D(7,8) 已退场 (见 retired_scenes)。scene34 内部结构本轮未改动，B4_SCALE=0.5 场景门控见 b4_scale 节。",
+    "solids_stage_34": 1.0,
     "comp_34": {
       "_locked": true,
-      "_note": "user 终裁 2026-08-20: 五型照 draft; PAL3D 93 套 LLM 配色库 locked (src 溯源); 出画张力接受为品相方差; bg 语义漂移保留 | 追注 2026-08-20 终审修复波: 双实配对对比关落地, 93→84 套 (淘汰 9 弱对比方案), user 裁定\"保旋转+数据层堵漏\"",
       "monument": 0.3,
       "colossus": 0.25,
       "hover": 0.2,
       "closeup": 0.15,
       "stilllife": 0.1,
-      "modifiers": {
-        "pierce": 0.08,
-        "intersect": 0.15,
-        "decay_row": 0.18
-      },
-      "palette_source": "objects3d/palettes3d.js (84 套, 双实配对全过对比关, 收割自 107 件 landscape-pass 语料)",
+      "modifiers": { "pierce": 0.08, "intersect": 0.15, "decay_row": 0.18 },
+      "fogK_dist": { "0_无雾": 0.375, "0.09_轻雾": 0.25, "0.16_中雾": 0.25, "0.28_浓雾": 0.125 },
+      "dofK_dist": { "0_无景深": 0.5, "0.3_轻景深": 0.333, "0.6_重景深": 0.167 },
+      "palette_source": "objects3d/palettes3d.js (84 套, 双实配对全过对比关)",
       "sculpt_route": {
+        "_locked": true,
         "primitive": 0.55,
         "bool": 0.25,
         "sculpt": 0.2,
-        "_locked": true,
-        "_note": "user 终裁 2026-08-21: 八件全留; 紧凑凸形 monument/colossus hF cap 1.0"
+        "_note": "八件全留 (primitive 12 / bool 5 / sculpt 8); 紧凑凸形 monument/colossus hF cap 1.0"
       }
     },
-    "legacy_7_8": 0.15,
-    "rhyme_stage_18": 0.23,
-    "sanctum_19_22": 0.31,
-    "_locked": true
+    "legacy_7_8": {
+      "_degraded": true,
+      "weight": 0,
+      "_note": "老 3D (球/胶囊林) 整族退场，文件不删"
+    },
+    "rhyme_stage_18": { "_degraded": true, "weight": 0, "_note": "韵脚 3D 台整族退场，文件不删" },
+    "sanctum_19_22": {
+      "_degraded": true,
+      "weight": 0,
+      "_note": "圣物殿 (茶壶/门格/Gyroid/形而上广场) 整族退场，文件不删"
+    }
   },
   "4d_content": {
-    "comment": "draft — 心/星/齿轮/花×对偶柱场景未建, 先记 0",
-    "glome_圆韵": 0.15,
-    "tesseract_方韵": 0.15,
-    "duocylinder": 0.15,
-    "torus_fork_环韵分叉": 0.25,
-    "cell24_孤韵": 0.2,
-    "duoprism_其余韵": 0.1
+    "_locked": true,
+    "_note": "2026-08-22 4D 拼板核心上线 (scene 35, scenes/panels-4d.js) 取代 2026-08-14 draft 的老 4D 场景表 (glome_圆韵/tesseract_方韵/duocylinder/torus_fork/cell24_孤韵/duoprism 六项已随 scenes 9/10/12-14 整体退场，文件不删)。4D 池 = [35] 独占全部 4D tier 权重。",
+    "panels_4d_stage_35": 1.0,
+    "panels_split": {
+      "_locked": true,
+      "panels_4": 0.7,
+      "panels_16": 0.3,
+      "_note": "拼4 (2x2) / 拼16 (4x4)，w0 等步扫物体自身 w 跨度 (Narrow/Wide 两档半宽)"
+    },
+    "poly4d_pool": {
+      "_locked": true,
+      "_note": "7 件非等权池 (POLY4D_WEIGHTS，和=85 现算非硬编码)。cell120/cell600 是 Task 3 新增的精确半空间交 SDF (数学/符号探针均验证通过)，但真管线性能实测超预算，判定降级不入池——几何本身无 bug，纯粹是稠密网格 probe 渲染管线的既有开销结构撞线，见 DIMENSION task-3-report.md 4 节。",
+      "glome": 0.25,
+      "cell5": 0.15,
+      "cell8": 0.15,
+      "cell16": 0.15,
+      "cell24": 0.15,
+      "cell120": {
+        "_degraded": true,
+        "weight": 0,
+        "draft_weight": 0.075,
+        "_note": "性能超预算 ~4.5x (grid 路径单板等效 ≈41.6s vs 8s 预算)，降级为 0；?poly=cell120 dev 覆盖口仍可达"
+      },
+      "cell600": {
+        "_degraded": true,
+        "weight": 0,
+        "draft_weight": 0.075,
+        "_note": "性能超预算 ~19x (grid 路径单板等效 ≈171.5s vs 8s 预算)，降级为 0；?poly=cell600 dev 覆盖口仍可达"
+      }
+    },
+    "comp_35": {
+      "_locked": true,
+      "_note": "五型构图与 comp_34 同一权重表 (setupPanels4d() 内 CAMS35，Muybridge 恒定律：相机/配色/构图/地形全片共享，唯 w0 逐板不同)",
+      "monument": 0.3,
+      "colossus": 0.25,
+      "hover": 0.2,
+      "closeup": 0.15,
+      "stilllife": 0.1
+    },
+    "panel_density_variation": {
+      "_note": "板间织线密度因子随 |w0_i - w0_center| 线性 1.0→0.85，纯派生零 roll，不是概率轴"
+    }
   },
   "texture_3d4d": {
     "grid_涂抹": 0.95,
     "poisson_点彩": 0.05,
     "_locked": true,
-    "_note": "user 裁定: 点彩单调, 多则难看"
+    "_note": "user 裁定: 点彩单调, 多则难看。3D/4D 场景共用同一笔触轴 (2D 恒 grid)。"
+  },
+  "b4_scale": {
+    "_locked": true,
+    "value": 0.5,
+    "gate": "pa.scene===34 || pa.scene===35",
+    "_note": "2026-08-22 转正 (原 batch4 视觉对抗档位)。场景门控——非 34/35 场景系数恒 1，代码层判 pa.scene (非 URL 参数)。三处注入点: sketch.js buildPattern cellSize 尾乘 / POISSON maxR、minR / drawPoisson dotR (乘在 Math.max 结果之外)。?b4= dev 覆盖口保留，语义同 ?sculpt=/?poly= (先 roll 后覆写)。"
+  },
+  "retired_scenes": {
+    "_note": "2026-08-22 策展手术摘除的自然路由 (文件/CHAIN_FILES/probe 分派全部不动，?scene=<n> 强制口原样可达单独装载——退场只退自然路由)。",
+    "scenes": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 18, 19, 20, 21, 22, 23, 24],
+    "families": [
+      "BOB 六景传承 (1-6)",
+      "老 3D 球/胶囊林 (7,8)",
+      "老 4D 圆韵/方韵/对偶柱/环韵分叉/24-cell (9,10,12,13,14)",
+      "韵脚 2D 端 (11,15,16,24)",
+      "韵脚 3D 台 (18)",
+      "圣物殿 (19-22)",
+      "2D 静物台 (23)"
+    ],
+    "style_and_content_degraded": [
+      "2D 物件风格 painted (0%)",
+      "主题内容池 mandala/flake 生成器件",
+      "4D 内容池 cell120/cell600 (性能降级，非策展摘除)"
+    ],
+    "survivors": { "2d": [30, 31, 32], "3d": [34], "4d": [35], "ascension": [17] }
   }
 }

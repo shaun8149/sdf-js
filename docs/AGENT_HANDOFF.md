@@ -108,6 +108,21 @@ DIMENSION `test/judgment-report.md`。DIMENSION 测试 104→179，HEAD 见 DIME
 `.superpowers/sdd/2026-08-20-dimension-3d-batch2/`（本地 gitignored，跨机器需重新走
 `git log` 核对 commit）。
 
+**策展手术 + 4D 拼板（2026-08-22）**：维度终裁表落地——tier 权重 2D 78%/3D 5%/4D
+16%/升维 1%；BOB 六景/老 3D(7,8)/老 4D(9,10,12-14)/韵脚 2D(11,15,16,24)/静物台(23)/
+韵脚 3D 台(18)/圣物殿(19-22) 全部退场（文件与 CHAIN_FILES 不动，`?scene=` 强制口原样
+可达，退场只退自然路由）；2D 内容池收敛到 scenes 30/31/32（38/38/24），物件风格轴
+painted 归零（before 99/neon 1，`?style2d=painted` 仍可达）；新建 scene 35「4D 拼板」
+——一件作品 = 同一 4D 胞体在多个 w0 切片拼成的板网格（拼 4 70%/拼 16 30%），内容池
+glome/cell5/8/16/24 五件各按 25/15/15/15/15，另有 cell120/600 两件精确半空间交 SDF
+（数学验证通过）因真管线性能超预算（grid 路径单板等效 ≈41.6s/171.5s，门禁 8s）判定
+降级不入池（权重 0，`?poly=` dev 口仍可达）；B4_SCALE=0.5 场景门控（scene 34/35）转正。
+DIMENSION 测试 179→281，HEAD=`d02061d`。批量交付 batch6（30 枚，自然 hash 过滤
+2D/3D tier，实际 27:3）+ batch7（20 枚，4D 拼板首批呈裁件，拼4:拼16=13:7）落
+`~/Downloads/genlab-2d3d-batch6/`、`~/Downloads/genlab-4d-batch7/`；batch7 为呈裁件，
+拼板品相/胞体权重/120-600 去留待 user 终裁。sdf-main 侧 `sdf-js/examples/genlab/
+style-plan.json` 已同步全表改版（分支 `genlab-4d`，见 PR）。
+
 ---
 
 ## 1. Hard rules (NON-NEGOTIABLE — these override defaults)
