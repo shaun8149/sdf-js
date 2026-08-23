@@ -1,5 +1,5 @@
 {
-  "comment": "DIMENSION 总概率表 (2026-08-22 策展手术终裁版, 取代 2026-08-14 draft v2)。数值均逐字对应 DIMENSION 仓 sketch.js/scenes/index.js/scenes/panels-4d.js 里的具名常量 (TIER_WEIGHTS/POOL_2D_WEIGHTS/STYLE2D_OBJECTS_W/STYLE2D_LANDSCAPES_W/THEME32_CATEGORY_W/POLY4D_WEIGHTS)，不是脱离代码另算的第二份数字。DIMENSION HEAD=d02061d，测试 281/281。",
+  "comment": "DIMENSION 总概率表 (2026-08-22 策展手术终裁版, 取代 2026-08-14 draft v2；2026-08-23 终审修复轮同步)。数值均逐字对应 DIMENSION 仓 sketch.js/scenes/index.js/scenes/panels-4d.js 里的具名常量 (TIER_WEIGHTS/POOL_2D_WEIGHTS/STYLE2D_OBJECTS_W/STYLE2D_LANDSCAPES_W/THEME32_CATEGORY_W/POLY4D_WEIGHTS)，不是脱离代码另算的第二份数字。DIMENSION HEAD=c71d32c，测试 287/287。数据来源以 DIMENSION 仓 README.md 为准（.superpowers/sdd/ 下的 task 报告是 gitignored 本地工作区文件、跨机器不可达，见 m3）。",
   "rulings_locked": {
     "png10_topo": "放弃 (无美感)",
     "png11_morph": "放弃 (无美感)",
@@ -77,7 +77,20 @@
       "closeup": 0.15,
       "stilllife": 0.1,
       "modifiers": { "pierce": 0.08, "intersect": 0.15, "decay_row": 0.18 },
-      "fogK_dist": { "0_无雾": 0.375, "0.09_轻雾": 0.25, "0.16_中雾": 0.25, "0.28_浓雾": 0.125 },
+      "fog34_dist": {
+        "_note": "I4 订正 (2026-08-23 终审记账): scene34 的主雾轴——monument/colossus/hover/closeup 四型 (90% 权重) 走 solids-stage.js setupSolidsStage() 的 fogRoll/fogPick 决定 pa.fog34，此前本文件遗漏这条轴，只登记了下面 fogK_dist（那条其实只在 stilllife 型漏达，见其 _note）。",
+        "0_无雾": 0.2,
+        "0.09_轻雾": 0.32,
+        "0.16_中雾": 0.32,
+        "0.28_浓雾": 0.16
+      },
+      "fogK_dist": {
+        "_note": "I4 订正: 这条不是 scene34 的主雾轴——是 sketch.js setPa() 里全场景通用的全局 pa.fogK（供非 34/35 的 3D/4D 场景，与 fog34/fog35 各自独立的具名常量并存）。scenes/index.js 取雾公式是 `pa.scene===34 && pa.fog34!==null ? pa.fog34 : pa.fogK`——scene34 只有 stilllife 型 (10% 权重) 会把 pa.fog34 设成 null 从而漏到这条全局轴，其余四型都走上面 fog34_dist。此前本文件把这条误标成 scene34 的（唯一）雾分布。",
+        "0_无雾": 0.375,
+        "0.09_轻雾": 0.25,
+        "0.16_中雾": 0.25,
+        "0.28_浓雾": 0.125
+      },
       "dofK_dist": { "0_无景深": 0.5, "0.3_轻景深": 0.333, "0.6_重景深": 0.167 },
       "palette_source": "objects3d/palettes3d.js (84 套, 双实配对全过对比关)",
       "sculpt_route": {
@@ -112,36 +125,50 @@
     },
     "poly4d_pool": {
       "_locked": true,
-      "_note": "7 件非等权池 (POLY4D_WEIGHTS，和=85 现算非硬编码)。cell120/cell600 是 Task 3 新增的精确半空间交 SDF (数学/符号探针均验证通过)，但真管线性能实测超预算，判定降级不入池——几何本身无 bug，纯粹是稠密网格 probe 渲染管线的既有开销结构撞线，见 DIMENSION task-3-report.md 4 节。",
-      "glome": 0.25,
-      "cell5": 0.15,
-      "cell8": 0.15,
-      "cell16": 0.15,
-      "cell24": 0.15,
+      "_note": "m2 归一口径 (2026-08-23 终审记账): 下面每项数值 = DIMENSION 仓 POLY4D_WEIGHTS 里的原始具名常量值（代码用单次 r()×POLY4D_WEIGHT_SUM 累积阈值择一，POLY4D_WEIGHT_SUM 现算实际总和=78、非硬编码 100）——不是人工换算好的『占总体的百分比』。若要真实自然出现概率，需按 weight/78 换算，见每项 real_pct 字段。cell120/cell600 是 Task 3 新增的精确半空间交 SDF (数学/符号探针均验证通过)，但真管线性能实测超预算，判定降级不入池——几何本身无 bug，纯粹是稠密网格 probe 渲染管线的既有开销结构撞线，详细数据见 DIMENSION 仓 README.md『维度抽样概率』『终审修复轮』两节 (m3 订正: 原引用指向 .superpowers/sdd/ 下 gitignored 的 task-3-report.md，跨机器不可达，改指向随仓提交的 README)。cell5 权重 2026-08-23 终审修复轮 (user 三刀之三) 15→8，因它是全池最容易『薄』的非中心对称胞体，降权而非删除。",
+      "glome": { "weight": 25, "real_pct": 0.3205 },
+      "cell5": {
+        "weight": 8,
+        "real_pct": 0.1026,
+        "_note": "2026-08-23 终审修复轮 15→8 (user 三刀之三)"
+      },
+      "cell8": { "weight": 15, "real_pct": 0.1923 },
+      "cell16": { "weight": 15, "real_pct": 0.1923 },
+      "cell24": { "weight": 15, "real_pct": 0.1923 },
       "cell120": {
         "_degraded": true,
         "weight": 0,
         "draft_weight": 0.075,
-        "_note": "性能超预算 ~4.5x (grid 路径单板等效 ≈41.6s vs 8s 预算)，降级为 0；?poly=cell120 dev 覆盖口仍可达"
+        "_note": "m1 订正: 精确超预算倍数 41.6s/8s=5.2x (原文写『~4.5x』, 现取 DIMENSION README 权威值 41.6s, 8s 预算下精确到一位小数); grid 路径单板等效 ≈41.6s (csize=256 外推×64, 与 csize=2048 直接复测 cell24 交叉验证偏差<5%)；降级为 0；?poly=cell120 dev 覆盖口仍可达"
       },
       "cell600": {
         "_degraded": true,
         "weight": 0,
         "draft_weight": 0.075,
-        "_note": "性能超预算 ~19x (grid 路径单板等效 ≈171.5s vs 8s 预算)，降级为 0；?poly=cell600 dev 覆盖口仍可达"
+        "_note": "m1 订正: 精确超预算倍数 171.5s/8s≈21.4x (原文写『~19x』——19x 其实是『比 cell24 基准贵多少倍』, 与『超 8s 预算多少倍』是两个不同的比较基准, 此前混用；grid 路径单板等效 ≈171.5s (同法外推)；降级为 0；?poly=cell600 dev 覆盖口仍可达"
       }
     },
     "comp_35": {
       "_locked": true,
-      "_note": "五型构图与 comp_34 同一权重表 (setupPanels4d() 内 CAMS35，Muybridge 恒定律：相机/配色/构图/地形全片共享，唯 w0 逐板不同)",
+      "_note": "五型构图与 comp_34 同一权重表 (setupPanels4d() 内 CAMS35，Muybridge 恒定律：相机/配色/构图/地形全片共享，唯 w0 逐板不同)。closeup 换宽取景变体 (2026-08-23 终审修复轮, user 三刀之一): 权重不变, 相机公式改为退后+放宽 focal, 让形体部分可辨而非纯纹理, 详见 DIMENSION README『终审修复轮』节。",
       "monument": 0.3,
       "colossus": 0.25,
       "hover": 0.2,
       "closeup": 0.15,
       "stilllife": 0.1
     },
+    "terrain_fog_35": {
+      "_locked": true,
+      "_note": "I4 订正 (2026-08-23 终审记账): 此前本文件缺 scene35 的雾/地形轴——panels-4d.js setupPanels4d() 无条件恒 roll (不因 comp35 分支产生消费差异), 与 comp_34 的主雾轴 fog34_dist 同一档位/比例。",
+      "fog35_dist": { "0_无雾": 0.2, "0.09_轻雾": 0.32, "0.16_中雾": 0.32, "0.28_浓雾": 0.16 },
+      "terrain35_dist": { "flat_平地": 0.7, "waves_缓波": 0.2, "none_无内建地面": 0.1 }
+    },
+    "w0_sweep_35": {
+      "_locked": true,
+      "_note": "2026-08-23 终审修复轮 (I1/I2 根治 + user 三刀之一, w0 扫幅加大): wHalf 改按每种胞体在其旋转实例下量测出的真实 w 跨度定 (不再假设=poly35Size)，Narrow/Wide 系数照旧各 1 次 r() 但乘在测得跨度上；加保底跨度 (W_HALF_FLOOR_FRAC=0.22) 与 glome 专属加大 (GLOME_MIN_FRAC=0.5，因 sqrt 响应曲线在 w0≈0 附近导数趋于 0)；新增无条件相位偏移 roll 打破 w0 序列对称性 (glome 100% 镜像回文的根因)。数值调参依据 (真浏览器渲染目检 6-8 枚样本) 与代码见 DIMENSION README『终审修复轮』节 / panels-4d.js。"
+    },
     "panel_density_variation": {
-      "_note": "板间织线密度因子随 |w0_i - w0_center| 线性 1.0→0.85，纯派生零 roll，不是概率轴"
+      "_note": "板间织线密度因子随 |实际w0_i - 窗口中心| 线性 1.0→0.85，纯派生零 roll，不是概率轴 (2026-08-23 订正: 分子从『名义 w0』改成 _ensureRichSlice 实际吃到的 w0，见 I2 修复)"
     }
   },
   "texture_3d4d": {
@@ -174,5 +201,10 @@
       "4D 内容池 cell120/cell600 (性能降级，非策展摘除)"
     ],
     "survivors": { "2d": [30, 31, 32], "3d": [34], "4d": [35], "ascension": [17] }
+  },
+  "dev_only_scenes": {
+    "_note": "m4 补漏 (2026-08-23 终审记账): 既不在 survivors (自然轮盘可达) 也不在 retired_scenes (曾经自然可达、本轮摘除) 里的第三类——scene 33 (SceneData 迷你解释器语料台) 从建成起就是 `?scene=33` 专属预览，从未上过自然路由轮盘，不是本轮策展手术的退场对象，DIMENSION README『场景登记表』原样标注为 dev-only。",
+    "scenes": [33],
+    "description": "SceneData 迷你解释器语料台，dev-only，不入抽样轮盘（`?scene=33` 手动装载）"
   }
 }
