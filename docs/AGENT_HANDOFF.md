@@ -123,6 +123,15 @@ DIMENSION 测试 179→281，HEAD=`d02061d`。批量交付 batch6（30 枚，自
 拼板品相/胞体权重/120-600 去留待 user 终裁。sdf-main 侧 `sdf-js/examples/genlab/
 style-plan.json` 已同步全表改版（分支 `genlab-4d`，见 PR）。
 
+**铸造准备卷（2026-08-25）**：T1 scene 17 升维图 2×2 拼板化重生（四板同一主题形体跨维呈现）；
+T2 确定性三票（weave 舍入死区 + 排序 tie-break + 铸造快照单进程契约 `test/mint-snapshot.mjs`）；
+T3 dev 口摘除（链文件零 URL 解析，dev 能力外迁 `dev.html`+`dev/dev.js` 装配后 monkey-patch）；
+T4 p5 走 cdnjs+SRI（本地 p5.min.js 留作 dev fallback）；T5 2D 基石库 traits 三键
+（Piece/Style/Category）；T6 小修四连（阴影灰环两档/glome 贴线残余 wOffset 最小幅度/渲中右键
+pending 自动点火/boundedField Lipschitz 注释）；T7 800-hash 大规模废片体检（纯观测，统计摘要见
+`docs/superpowers/specs/2026-08-25-mint-checkup-summary.md`，图集 `~/Downloads/genlab-mint-checkup-batch13/`）。
+测试段位 179→281→卷初 285→收卷 **422/422**（实跑），HEAD=`36ee79f`。
+
 ---
 
 ## 1. Hard rules (NON-NEGOTIABLE — these override defaults)
