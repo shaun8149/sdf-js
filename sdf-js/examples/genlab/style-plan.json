@@ -1,5 +1,5 @@
 {
-  "comment": "DIMENSION 总概率表 (2026-08-22 策展手术终裁版, 取代 2026-08-14 draft v2；2026-08-23 终审修复轮同步)。数值均逐字对应 DIMENSION 仓 sketch.js/scenes/index.js/scenes/panels-4d.js 里的具名常量 (TIER_WEIGHTS/POOL_2D_WEIGHTS/STYLE2D_OBJECTS_W/STYLE2D_LANDSCAPES_W/THEME32_CATEGORY_W/POLY4D_WEIGHTS)，不是脱离代码另算的第二份数字。DIMENSION HEAD=c71d32c，测试 287/287。数据来源以 DIMENSION 仓 README.md 为准（.superpowers/sdd/ 下的 task 报告是 gitignored 本地工作区文件、跨机器不可达，见 m3）。",
+  "comment": "DIMENSION 总概率表 (2026-08-22 策展手术终裁版, 取代 2026-08-14 draft v2；2026-08-23 终审修复轮同步；2026-08-26 配比调整卷 Task 1 同步 dimension_tier 节, 全表刷新待本卷收卷 Task 6)。数值均逐字对应 DIMENSION 仓 sketch.js/scenes/index.js/scenes/panels-4d.js 里的具名常量 (TIER_WEIGHTS/POOL_2D_WEIGHTS/STYLE2D_OBJECTS_W/STYLE2D_LANDSCAPES_W/THEME32_CATEGORY_W/POLY4D_WEIGHTS)，不是脱离代码另算的第二份数字。DIMENSION HEAD=c71d32c，测试 287/287。数据来源以 DIMENSION 仓 README.md 为准（.superpowers/sdd/ 下的 task 报告是 gitignored 本地工作区文件、跨机器不可达，见 m3）。",
   "rulings_locked": {
     "png10_topo": "放弃 (无美感)",
     "png11_morph": "放弃 (无美感)",
@@ -8,10 +8,10 @@
   },
   "dimension_tier": {
     "_locked": true,
-    "_note": "2026-08-22 策展手术终裁 (逐字), sketch.js TIER_WEIGHTS。BOB 六景/老 3D/老 4D/韵脚 2D/静物台全部退场——不再是这张表要覆盖的自然路由，见 retired_scenes。",
-    "2d": 0.78,
+    "_note": "2026-08-22 策展手术终裁 (逐字), sketch.js TIER_WEIGHTS。BOB 六景/老 3D/老 4D/韵脚 2D/静物台全部退场——不再是这张表要覆盖的自然路由，见 retired_scenes。2026-08-26 新卷终裁 (3D扩容+配比卷 Task 1): 4D 减半让 2D——2d 0.78→0.86 / 4d 0.16→0.08, 3d/ascension 不动, 和仍=1。DIMENSION 侧 1e3c791 落地 (468/468 测试 + 1000-hash 卡方复检双层 PASS: tier df=3 卡方 5.597<7.815, scene df=5 卡方 7.318<11.070)。",
+    "2d": 0.86,
     "3d": 0.05,
-    "4d": 0.16,
+    "4d": 0.08,
     "ascension": 0.01
   },
   "2d_content": {
