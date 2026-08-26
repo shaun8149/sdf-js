@@ -127,10 +127,15 @@ style-plan.json` 已同步全表改版（分支 `genlab-4d`，见 PR）。
 T2 确定性三票（weave 舍入死区 + 排序 tie-break + 铸造快照单进程契约 `test/mint-snapshot.mjs`）；
 T3 dev 口摘除（链文件零 URL 解析，dev 能力外迁 `dev.html`+`dev/dev.js` 装配后 monkey-patch）；
 T4 p5 走 cdnjs+SRI（本地 p5.min.js 留作 dev fallback）；T5 2D 基石库 traits 三键
-（Piece/Style/Category）；T6 小修四连（阴影灰环两档/glome 贴线残余 wOffset 最小幅度/渲中右键
-pending 自动点火/boundedField Lipschitz 注释）；T7 800-hash 大规模废片体检（纯观测，统计摘要见
+（Piece/Style/Category）；T6 小修七项（阴影灰环两档/glome 贴线残余 wOffset 最小幅度/渲中右键
+pending 自动点火/boundedField Lipschitz 注释/`test/evidence/` 证据库建库/T1 两注释勘正/judgment
+墙钟勘注——commit 标题曾写"四连"，实为七项，M10 终审勘正 2026-08-26）；T7 800-hash 大规模废片体检（纯观测，统计摘要见
 `docs/superpowers/specs/2026-08-25-mint-checkup-summary.md`，图集 `~/Downloads/genlab-mint-checkup-batch13/`）。
 测试段位 179→281→卷初 285→收卷 **422/422**（实跑），HEAD=`36ee79f`。
+**终审修复轮（2026-08-25/26）**：opus 终审判 "Mint-ready: With fixes"，两裁定（I1 票①保留+诚实
+文档；I4 契约="同 hash+同时刻→逐位同画面"）后 C1（mint-snapshot 链原生复活）/C2（归档判据=PNG
+sha256+manifest 三处统一）/I2（票①② 基线常设锁，变异必红）/I3/I5（52 枚子集真 `index.html` 复跑
+六判据全零——体检页=铸造页闭环）+ M1-M10 全落。测试 422→**468/468**（实跑）。
 
 ---
 
