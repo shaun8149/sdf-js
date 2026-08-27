@@ -24,7 +24,7 @@
     "prepare": "husky"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=22.13.0"
   },
   "license": "SEE LICENSE IN LICENSE.md",
   "lint-staged": {
@@ -47,7 +47,7 @@
   "dependencies": {
     "@phosphor-icons/core": "^2.1.1",
     "flag-icons": "^7.2.3",
-    "pdfjs-dist": "^6.0.227",
+    "pdfjs-dist": "^6.2.108",
     "simple-icons": "^16.24.0"
   }
 }
