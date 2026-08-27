@@ -13,8 +13,7 @@
 import { createStudioRenderer } from '../../src/render/studio.js';
 import { applyStudioScene } from '../../src/runtime/apply-studio-scene.js';
 import { makeOverlay } from './overlay.js';
-
-const SCENES = '../../scenes'; // shared scene/deck JSON dir (also read by the playground later)
+import { sceneFilePath } from './scene-url.js';
 
 const wrap = document.getElementById('canvas-wrap');
 const canvas = document.getElementById('c-present');
@@ -69,7 +68,7 @@ export const present = {
   },
   /** Fetch a scene/deck-segment file from scenes/ and render its sceneData. */
   async load(file) {
-    const res = await fetch(`${SCENES}/${file}`);
+    const res = await fetch(sceneFilePath(file));
     if (!res.ok) throw new Error(`present: scene ${file} → HTTP ${res.status}`);
     const json = await res.json();
     return this.show(json.sceneData || json);

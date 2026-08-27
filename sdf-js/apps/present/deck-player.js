@@ -27,6 +27,8 @@
 // public API, never the engine directly.
 // =============================================================================
 
+import { sceneJsonPath } from './scene-url.js';
+
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 async function waitFor(fn, timeoutMs) {
@@ -158,7 +160,7 @@ function showHint(wrap) {
 }
 
 async function playDeck(id) {
-  const res = await fetch(`../../scenes/${id}.json`);
+  const res = await fetch(sceneJsonPath(id, 'deck'));
   if (!res.ok) throw new Error(`deck ${id}: HTTP ${res.status}`);
   const deck = await res.json();
   const segments = Array.isArray(deck.segments) ? deck.segments : [];
