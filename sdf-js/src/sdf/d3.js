@@ -331,20 +331,30 @@ export const octahedron = (r = 0.4) => {
 };
 
 // dodecahedron：十二面体（D12 骰子）。r = 顶点距原点。
+// 勘正（2026-08-28，DIMENSION 3D 扩容卷 T3 发现 / T6 落地，以 DIMENSION
+// scenes/scenedata.js 勘正版为准）：旧版逐字复用了 icosahedron 的
+// (0,1,1+φ) 平面族（那是 icosa 的面法向族 = hg_sdf GDFVectors[7..12]）且不带
+// (1,1,1) 族——交出的凸体 in/circ ≈ 0.748、轴向支撑 0.382r，不是正十二面体
+// （应为 0.7947 / 0.4472r），疑似 hg_sdf fDodecahedron 移植笔误。正十二面体
+// 的 12 个面法向沿 (0,±1,±φ) 全轮换（= icosa 顶点方向 = hg_sdf 的 φ 族
+// Vectors[13..18]）；面距 ρ = r·(1+φ)/(√(1+φ²)·√3)。顶点 (±1,±1,±1)/√3·r
+// 与面心 ρ·n̂ 均闭式落零（DIMENSION run-tests 有对应闭式锁）。max(平面距)
+// 在面区精确、棱/顶区低估（≤真距），梯度=单位法向 → 1-Lipschitz，球追踪安全。
 export const dodecahedron = (r = 0.4) => {
   const r0 = numLit(r);
   const phi = (1 + Math.sqrt(5)) / 2;
-  const len = Math.sqrt(1 + (1 + phi) * (1 + phi));
-  const nx = 1 / len,
-    ny = (1 + phi) / len;
+  const len = Math.sqrt(1 + phi * phi);
+  const n1 = 1 / len,
+    n2 = phi / len;
+  const rho = (r0 * (1 + phi)) / (len * Math.sqrt(3));
   const inst = SDF3((p) => {
-    const px = Math.abs(p[0]) / r0;
-    const py = Math.abs(p[1]) / r0;
-    const pz = Math.abs(p[2]) / r0;
-    const a = px * nx + py * ny;
-    const b = py * nx + pz * ny;
-    const c = px * ny + pz * nx;
-    return (Math.max(Math.max(a, b), c) - nx) * r0;
+    const px = Math.abs(p[0]);
+    const py = Math.abs(p[1]);
+    const pz = Math.abs(p[2]);
+    const a = py * n2 + pz * n1;
+    const b = px * n1 + pz * n2;
+    const c = px * n2 + py * n1;
+    return Math.max(Math.max(a, b), c) - rho;
   });
   inst.ast = { kind: 'prim', name: 'dodecahedron', args: [r] };
   return inst;
