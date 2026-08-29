@@ -154,6 +154,8 @@ tier 落点 84.8/5.8/8.5/0.8 χ²=1.28 PASS；forced-600 保真流扫掠五分�
 全表刷新（本 PR）。**呈裁待 user**：五分路由权重／sierpinski 2%+mandelbulb 降级去留／CAGE_COMPACT
 与 FILLER_COMPACT 名单／lifted 压限／batch15-19 品相；终裁后混合 minify 正式提交另行执行。
 
+**3D 品相根治卷（2026-08-29）**：T1 全池 49 形 N≥50 cov 扫掠 → 四份 hF 压限名单合并为 **COV_COMPACT 16 件**（判据 p50>0.85，新增 7 件，行为逐位等价实证）；T2 closeup 兜底追根（窗重标 1.0+hFP*0.7 + 专属帽 1.1，兜底 53.5%→19.5%）；T3 mandelbulb 等价优化入仓（bbox 预剔除+步进 0.8，−18%）仍 6.3x 最重基线 → **判决留 0**；T4 收卷 100-hash 真浏览器复检 + batch23。测试 679→**711/711**（实跑）。呈裁待 user：pyramid 去留／帽后残余三件／lifted closeup 空幅 6/200／dev 口 mandelbulb 观感追认／batch20-23 品相。
+
 ---
 
 ## 1. Hard rules (NON-NEGOTIABLE — these override defaults)
