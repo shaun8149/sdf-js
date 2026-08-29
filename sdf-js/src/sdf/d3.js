@@ -334,8 +334,8 @@ export const octahedron = (r = 0.4) => {
 // 勘正（2026-08-28，DIMENSION 3D 扩容卷 T3 发现 / T6 落地，以 DIMENSION
 // scenes/scenedata.js 勘正版为准）：旧版逐字复用了 icosahedron 的
 // (0,1,1+φ) 平面族（那是 icosa 的面法向族 = hg_sdf GDFVectors[7..12]）且不带
-// (1,1,1) 族——交出的凸体 in/circ ≈ 0.748、轴向支撑 0.382r，不是正十二面体
-// （应为 0.7947 / 0.4472r），疑似 hg_sdf fDodecahedron 移植笔误。正十二面体
+// (1,1,1) 族——交出的凸体 in/circ ≈ 0.7465、轴向支撑 0.382r，不是正十二面体
+// （应为 0.7947 / 0.9342r 棱中距），疑似 hg_sdf fDodecahedron 移植笔误。正十二面体
 // 的 12 个面法向沿 (0,±1,±φ) 全轮换（= icosa 顶点方向 = hg_sdf 的 φ 族
 // Vectors[13..18]）；面距 ρ = r·(1+φ)/(√(1+φ²)·√3)。顶点 (±1,±1,±1)/√3·r
 // 与面心 ρ·n̂ 均闭式落零（DIMENSION run-tests 有对应闭式锁）。max(平面距)
@@ -363,7 +363,7 @@ export const dodecahedron = (r = 0.4) => {
 // icosahedron：二十面体（D20 骰子）。r = 顶点距原点。
 export const icosahedron = (r = 0.4) => {
   const r0 = numLit(r);
-  const R = r0 * 0.8506507174597755;
+  const R = r0 * 0.85065080835204; // phi / sqrt(1 + phi^2)，精确式重算（旧字面偏 1.1e-7）
   const phi = (1 + Math.sqrt(5)) / 2;
   const len = Math.sqrt(1 + (1 + phi) * (1 + phi));
   const nx = 1 / len,

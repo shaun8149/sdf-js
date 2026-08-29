@@ -221,7 +221,7 @@
   "b4_scale": {
     "_locked": true,
     "value": 0.5,
-    "gate": "pa.scene===34 || pa.scene===35",
+    "gate": "pa.scene===17 || pa.scene===34 || pa.scene===35",
     "_note": "2026-08-22 转正 (原 batch4 视觉对抗档位)。场景门控——非 34/35 场景系数恒 1，代码层判 pa.scene (非 URL 参数)。三处注入点: sketch.js buildPattern cellSize 尾乘 / POISSON maxR、minR / drawPoisson dotR (乘在 Math.max 结果之外)。?b4= dev 覆盖口保留，语义同 ?sculpt=/?poly= (先 roll 后覆写)。"
   },
   "retired_scenes": {
