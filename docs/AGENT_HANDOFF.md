@@ -145,9 +145,11 @@ sha256+manifest 三处统一）/I2（票①② 基线常设锁，变异必红）
 （sierpinski 入池 2%／mandelbulb 82.9s=4.3x 最重基线判死降级权 0；确立 **vm 自然流保真纪律**：任何
 自然 hash 猎手必须逐行镜像浏览器 setSeed+pal/pal2+shuf 全消费）；T5 填充八件（扭塔/弯月柱 →
 SOLID_POOL 16，组合六件 → SCULPT_POOL 16）——主件终态**五分路由** 47/21/17/15 draft ×(1−0.02) +
-分形带 2%（呈裁）。T6 收卷：**600-hash 真浏览器体检 0/600 废片**（六判据全零；tier 落点
-84.8/5.8/8.5/0.8 χ²=1.28 PASS；forced-600 保真流扫掠五分路由 χ²=4.70 PASS，24 件新内容各 ≥5 次
-自然命中）+ 指纹重基线 12 枚（`test/evidence/task6-expand-rebaseline/`）+ batch19 24 枚全自然样张
+分形带 2%（呈裁）。T6 收卷：**600-hash 真浏览器体检 0/600 废片**（判据七桶全零；措辞收窄（终审
+I3）：系**渲染健康度体检**——黑屏/纯色/近空对本管线结构性难触发，不构成品相背书，品相判据另立留下卷；
+tier 落点 84.8/5.8/8.5/0.8 χ²=1.28 PASS；forced-600 保真流扫掠五分路由 χ²=4.70 PASS，24 件新内容各
+≥5 次命中——forced-s34 口径（终审 M7）：强制 scene34 后池内自然路由，非全自然 600 口径）+ 指纹重
+基线 12 枚（`test/evidence/task6-expand-rebaseline/`）+ batch19 24 枚全自然样张
 呈裁（`~/Downloads/genlab-expand-batch19/`）。测试 468→**679/679**（实跑）。`style-plan.json`
 全表刷新（本 PR）。**呈裁待 user**：五分路由权重／sierpinski 2%+mandelbulb 降级去留／CAGE_COMPACT
 与 FILLER_COMPACT 名单／lifted 压限／batch15-19 品相；终裁后混合 minify 正式提交另行执行。
