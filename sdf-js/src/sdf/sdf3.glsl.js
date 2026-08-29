@@ -310,25 +310,36 @@ float sdTetrahedron(vec3 p, float r) {
 }
 
 // Dodecahedron. r = vertex distance from origin
+// Corrected 2026-08-28 (DIMENSION expand-vol T3 finding): the old body reused
+// the icosahedron (0,1,1+phi) plane family (icosa FACE normals) without the
+// (1,1,1) family — the resulting convex body (in/circ 0.7465, axial support
+// 0.382r) is not a regular dodecahedron. True dodeca face normals run along
+// (0,±1,±phi) cyclic (= icosa VERTEX directions, hg_sdf fDodecahedron phi
+// family); face distance rho = r·(1+phi)/(sqrt(1+phi²)·sqrt(3)) = 0.7946544723·r.
+// Mirrors DIMENSION scenes/scenedata.js corrected version bit-for-bit.
 float sdDodecahedron(vec3 p, float r) {
-  const float phi  = 1.6180339887498949;            // (1 + sqrt(5)) / 2
-  const float len  = 2.288245611270738;             // sqrt(1 + (1+phi)^2)
-  const float nx   = 0.43701602444882093;           // 1 / len
-  const float ny   = 1.1441227956258797;            // (1 + phi) / len
-  p = abs(p) / r;
-  float a = p.x * nx + p.y * ny;
-  float b = p.y * nx + p.z * ny;
-  float c = p.x * ny + p.z * nx;
-  return (max(max(a, b), c) - nx) * r;
+  const float n1  = 0.5257311121191336;             // 1 / sqrt(1 + phi^2)
+  const float n2  = 0.8506508083520400;             // phi / sqrt(1 + phi^2)
+  const float rho = 0.7946544722917661;             // (1+phi) / (sqrt(1+phi^2)*sqrt(3))
+  p = abs(p);
+  float a = p.y * n2 + p.z * n1;
+  float b = p.x * n1 + p.z * n2;
+  float c = p.x * n2 + p.y * n1;
+  return max(max(a, b), c) - rho * r;
 }
 
 // Icosahedron. r = vertex distance from origin
+// Corrected 2026-08-29 (DIMENSION expand-vol final review I1): the old len/nx/ny
+// were a twin typo (len = phi*sqrt(2) = 2.2882... instead of sqrt(1+phi^4) =
+// phi*sqrt(3)); the (0,1,1+phi) plane family was then non-unit (|n| = 1.2247),
+// i.e. Lipschitz > 1 — sphere-tracing overshoot risk — and the body was not a
+// regular icosahedron. Constants now mirror src/sdf/d3.js icosahedron exactly.
 float sdIcosahedron(vec3 p, float r) {
-  const float scale = 0.8506507174597755;            // 1 / sqrt(2 + 1/phi)
+  const float scale = 0.8506508083520400;            // phi / sqrt(1 + phi^2)
   const float phi   = 1.6180339887498949;
-  const float len   = 2.288245611270738;
-  const float nx    = 0.43701602444882093;
-  const float ny    = 1.1441227956258797;
+  const float len   = 2.8025170768881473;            // sqrt(1 + (1+phi)^2) = phi*sqrt(3)
+  const float nx    = 0.3568220897730899;            // 1 / len
+  const float ny    = 0.9341723589627157;            // (1+phi) / len
   const float w13   = 0.5773502691896258;            // 1 / sqrt(3)
   float R = r * scale;
   p = abs(p) / R;

@@ -28,6 +28,8 @@ const TESTS = [
   { category: 'smoke', file: 'sdf-js/test/smoke2d.mjs' },
   { category: 'smoke', file: 'sdf-js/test/scene-smoke.mjs' },
   { category: 'smoke', file: 'sdf-js/scripts/test-glsl-prune.mjs' },
+  // Platonic solids CPU↔GPU parity (DIMENSION expand-vol final review I1)
+  { category: 'smoke', file: 'sdf-js/scripts/test-platonic-parity.mjs' },
   { category: 'smoke', file: 'sdf-js/scripts/test-uniform-args.mjs' },
   { category: 'smoke', file: 'sdf-js/scripts/test-feature-gates.mjs' },
 
