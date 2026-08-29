@@ -1,5 +1,5 @@
 {
-  "comment": "DIMENSION 总概率表 (2026-08-22 策展手术终裁版, 取代 2026-08-14 draft v2；2026-08-23 终审修复轮同步；2026-08-26 配比调整卷 Task 1 同步 dimension_tier 节；2026-08-28 3D扩容+配比卷收卷 Task 6 全表刷新: scene34 主件五分路由 + SOLID/SCULPT 池 16/16 + LIFTED 11 + 分形档 + 三份 hF 压限名单；2026-08-29 呈裁终裁落地: 五分路由与 CAGE/FILLER/lifted 三组压限转正 _locked + PLATONIC_COMPACT 应急帽两件 (dodeca/icosa) + LIFTED 11→10 (clock-915 裁汰))。数值均逐字对应 DIMENSION 仓 sketch.js/scenes/index.js/scenes/solids-stage.js/scenes/panels-4d.js 里的具名常量 (TIER_WEIGHTS/POOL_2D_WEIGHTS/STYLE2D_OBJECTS_W/STYLE2D_LANDSCAPES_W/THEME32_CATEGORY_W/POLY4D_WEIGHTS/FRACTAL_WEIGHTS 及五分路由阈值)，不是脱离代码另算的第二份数字。DIMENSION 测试 683/683 (2026-08-29 实跑)。数据来源以 DIMENSION 仓 README.md 为准（.superpowers/sdd/ 下的 task 报告是 gitignored 本地工作区文件、跨机器不可达，见 m3）。",
+  "comment": "DIMENSION 总概率表 (2026-08-22 策展手术终裁版, 取代 2026-08-14 draft v2；2026-08-23 终审修复轮同步；2026-08-26 配比调整卷 Task 1 同步 dimension_tier 节；2026-08-28 3D扩容+配比卷收卷 Task 6 全表刷新: scene34 主件五分路由 + SOLID/SCULPT 池 16/16 + LIFTED 11 + 分形档 + 三份 hF 压限名单；2026-08-29 呈裁终裁落地: 五分路由与 CAGE/FILLER/lifted 三组压限转正 _locked + PLATONIC_COMPACT 应急帽两件 (dodeca/icosa) + LIFTED 11→10 (clock-915 裁汰)；2026-08-29 3D品相根治卷 T4 收卷同步: 四份 hF 压限名单吸收合并为单一 COV_COMPACT 16 件 (统一判据 p50>0.85, 新增 7 件) + closeup 窗重标 1.0+hFP*0.7 与专属帽 1.1 + mandelbulb 等价优化入仓判决留 0 (步进 0.8)。数值均逐字对应 DIMENSION 仓 sketch.js/scenes/index.js/scenes/solids-stage.js/scenes/panels-4d.js 里的具名常量 (TIER_WEIGHTS/POOL_2D_WEIGHTS/STYLE2D_OBJECTS_W/STYLE2D_LANDSCAPES_W/THEME32_CATEGORY_W/POLY4D_WEIGHTS/FRACTAL_WEIGHTS 及五分路由阈值)，不是脱离代码另算的第二份数字。DIMENSION 测试 711/711 (2026-08-29 品相根治卷收卷实跑)。数据来源以 DIMENSION 仓 README.md 为准（.superpowers/sdd/ 下的 task 报告是 gitignored 本地工作区文件、跨机器不可达，见 m3）。",
   "rulings_locked": {
     "png10_topo": "放弃 (无美感)",
     "png11_morph": "放弃 (无美感)",
@@ -67,7 +67,7 @@
   },
   "3d_content": {
     "_locked": true,
-    "_note": "3D 池 = [34] (正几何台 v2) 独占全部 3D tier 权重——韵脚3D台(18)/圣物殿(19-22)/老 3D(7,8) 已退场 (见 retired_scenes)。2026-08-26..28 3D扩容+配比卷五路扩容: 主件五分路由 (primary_route_34) + SOLID_POOL 14→16 + SCULPT_POOL 10→16 + LIFTED_POOL 11 入池 (2026-08-29 呈裁终裁③裁汰 clock-915 → 10) + 分形稀有档 (pools_34), hF 压限名单四份 (hf_caps_34, 2026-08-29 呈裁终裁全部 locked)。B4_SCALE=0.5 场景门控见 b4_scale 节。",
+    "_note": "3D 池 = [34] (正几何台 v2) 独占全部 3D tier 权重——韵脚3D台(18)/圣物殿(19-22)/老 3D(7,8) 已退场 (见 retired_scenes)。2026-08-26..28 3D扩容+配比卷五路扩容: 主件五分路由 (primary_route_34) + SOLID_POOL 14→16 + SCULPT_POOL 10→16 + LIFTED_POOL 11 入池 (2026-08-29 呈裁终裁③裁汰 clock-915 → 10) + 分形稀有档 (pools_34), hF 压限统一为 COV_COMPACT 单名单 16 件 (hf_caps_34, 2026-08-29 3D品相根治卷 T1 合并四份旧名单 + 统一判据新增 7 件; T2 closeup 窗重标)。B4_SCALE=0.5 场景门控见 b4_scale 节。",
     "solids_stage_34": 1.0,
     "comp_34": {
       "_locked": true,
@@ -131,16 +131,32 @@
         "mandelbulb": {
           "_degraded": true,
           "weight": 0,
-          "_note": "中位 82.9s = 最重基线 (dodeca 19.2s) 的 4.3x, 最轻构图型 28.1s 仍超基线全部观测 (max 24.0s)——与 cell120 超 5.2x 判死同量级同款处置: 权 0 降级, 代码/池成员/测试全保留, ?fractal=mandelbulb dev 口可达; 复活路径 = raymarch 逐件安全系数口/bbox 预剔除后 (82.9s 可望砍半) 改权重字面重评"
+          "_note": "2026-08-29 3D品相根治卷 T3 提速复判: bbox 预剔除 (|p|>1.5→|p|−1.2, 保守性解析证明) + 步进安全系数 0.5→0.8 (314 射线回归 0.8/0.9/1.0 全零错配, 旧 0.5 反有 13 条步进预算耗尽漏命中 artifact) 两招纯几何等价优化已入仓 (权 0 下自然链死代码, 1521-hash 逐位零扰动); 同日同批双侧重测中位 73.66→60.51s (−18%), 仍 = 同日最重基线 dodeca 9.64s 的 6.3x (T1/T2 已把全池拉快 ~2x, 旧绝对数 82.9s/19.2s 退役不可比) → 判决维持权 0。剖析定界: 53% 求值在外接球内剔不掉, 单点成本系 iters=6 本征, 纯等价优化到顶; 复活需渲染端结构性立项 (probe 降采样概算 ~15s / GPU <1s)。处置同 cell120: 代码/池成员/测试全保留, ?fractal=mandelbulb dev 口可达 (该口观感因 artifact 修复有像素级变更, 呈裁追认中)"
         }
       }
     },
     "hf_caps_34": {
-      "_note": "四份独立 hF 压限名单 + lifted 压限 (全部纯 min() 后处理, 零 r() 消费): COMPACT_SCULPTS 是 2026-08-21 user 终裁数据契约; CAGE/FILLER 与 lifted 压限 2026-08-29 呈裁 user 终裁①转正 locked; PLATONIC 应急帽系同日终裁②新增 (opus 终审 I2 按池不按症状盲区, dodecahedron forced-600 扫掠 p50 0.915 居全池第 2 未压; 同 hash 前后对照 dodeca×colossus cov 0.748→0.542 / icosa×colossus 0.889→0.807; 下卷全池 N≥50 扫掠统一按症状定标)。",
-      "compact_sculpts_locked": ["steinmetz", "cube-pierced-sphere", "ruin-dome", "death-star"],
-      "cage_compact_locked": ["dual-dodeca-icosa"],
-      "filler_compact_locked": ["stone-stack", "cannonball-stack"],
-      "platonic_compact_locked": ["dodecahedron", "icosahedron"],
+      "_note": "2026-08-29 3D品相根治卷 T1: 旧四份名单 (COMPACT_SCULPTS 2026-08-21 user 终裁 / CAGE / FILLER / PLATONIC 应急帽) 吸收合并为单一 COV_COMPACT 名单 (scenes/solids-stage.js 具名常量), 旧成员退役为名单内注记, 行为逐位等价实证 (前后指纹 392 行 0 违例, test/evidence/covsweep/fingerprint-diff.md)。统一判据 (取代按池点名): 全池 49 形 × {monument,colossus} × 非兜底 N≥50 保真流 cov34 扫掠, 未压件 pooled p50 > 0.85 入名单。语义: 成员做主件时 monument/colossus hF 压至 min(hF,1.0), closeup 专属帽 1.1; 纯 min() 后处理零 r()。lifted 压限独立不变。",
+      "cov_compact_16": [
+        "steinmetz",
+        "cube-pierced-sphere",
+        "ruin-dome",
+        "death-star",
+        "dual-dodeca-icosa",
+        "stone-stack",
+        "cannonball-stack",
+        "dodecahedron",
+        "icosahedron",
+        "pierced-sphere",
+        "rounded_box",
+        "tri_prism",
+        "bowl",
+        "box",
+        "ellipsoid",
+        "pyramid"
+      ],
+      "cov_compact_members_note": "前 9 件 = 旧四份退役并入 (COMPACT_SCULPTS 4 + CAGE 1 + FILLER 2 + PLATONIC 2, 行为逐位不变); 后 7 件 = 本卷统一判据新增 (pooled p50: pierced-sphere 0.898 / rounded_box 0.880 / tri_prism 0.868 / bowl 0.866 / box 0.863 / ellipsoid 0.859 / pyramid 0.847 borderline 呈裁保留)。帽后残余越线三件 ruin-dome 0.873 / cannonball-stack 0.870 / bowl 0.865 系帽值 1.0 收敛下限, 更紧帽值待呈裁。",
+      "closeup_window": "T2 兜底追根: closeup hF 窗 1.4+hFP*1.0 → 1.0+hFP*0.7 (∈[1.0,1.7], 同一 hFP roll 纯重映射零 roll) + COV_COMPACT 成员 closeup 专属帽 1.1 —— 归因: 兜底 53.5% 中 94.4% 系非 lifted 件 covPre 饱和 1.000 撞 hi=0.96 (原窗骑饱和带); 八候选 1521-hash 仿真选优 E 案, 兜底率 53.5%→19.5% (T4 收卷 100-hash 真浏览器复检 closeup 3/18=16.7% 同带复现, 全批零废片六判据全零), 其他四型 1321 行指纹逐位 0 违例。",
       "lifted_caps_locked": "monument/衰变行 ≤1.0 / colossus ≤0.9 / closeup ≤1.05 + 纵深护栏 0.55·focal/a / 全型宽件 ≤1.3/a (a = 烘焙宽高比); cov 兜底 lone 同吃压限"
     },
     "legacy_7_8": {
