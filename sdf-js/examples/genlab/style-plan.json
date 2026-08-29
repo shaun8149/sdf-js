@@ -1,5 +1,5 @@
 {
-  "comment": "DIMENSION 总概率表 (2026-08-22 策展手术终裁版, 取代 2026-08-14 draft v2；2026-08-23 终审修复轮同步；2026-08-26 配比调整卷 Task 1 同步 dimension_tier 节；2026-08-28 3D扩容+配比卷收卷 Task 6 全表刷新: scene34 主件五分路由 + SOLID/SCULPT 池 16/16 + LIFTED 11 + 分形档 + 三份 hF 压限名单)。数值均逐字对应 DIMENSION 仓 sketch.js/scenes/index.js/scenes/solids-stage.js/scenes/panels-4d.js 里的具名常量 (TIER_WEIGHTS/POOL_2D_WEIGHTS/STYLE2D_OBJECTS_W/STYLE2D_LANDSCAPES_W/THEME32_CATEGORY_W/POLY4D_WEIGHTS/FRACTAL_WEIGHTS 及五分路由阈值)，不是脱离代码另算的第二份数字。DIMENSION 测试 679/679 (2026-08-28 实跑)。数据来源以 DIMENSION 仓 README.md 为准（.superpowers/sdd/ 下的 task 报告是 gitignored 本地工作区文件、跨机器不可达，见 m3）。",
+  "comment": "DIMENSION 总概率表 (2026-08-22 策展手术终裁版, 取代 2026-08-14 draft v2；2026-08-23 终审修复轮同步；2026-08-26 配比调整卷 Task 1 同步 dimension_tier 节；2026-08-28 3D扩容+配比卷收卷 Task 6 全表刷新: scene34 主件五分路由 + SOLID/SCULPT 池 16/16 + LIFTED 11 + 分形档 + 三份 hF 压限名单；2026-08-29 呈裁终裁落地: 五分路由与 CAGE/FILLER/lifted 三组压限转正 _locked + PLATONIC_COMPACT 应急帽两件 (dodeca/icosa) + LIFTED 11→10 (clock-915 裁汰))。数值均逐字对应 DIMENSION 仓 sketch.js/scenes/index.js/scenes/solids-stage.js/scenes/panels-4d.js 里的具名常量 (TIER_WEIGHTS/POOL_2D_WEIGHTS/STYLE2D_OBJECTS_W/STYLE2D_LANDSCAPES_W/THEME32_CATEGORY_W/POLY4D_WEIGHTS/FRACTAL_WEIGHTS 及五分路由阈值)，不是脱离代码另算的第二份数字。DIMENSION 测试 683/683 (2026-08-29 实跑)。数据来源以 DIMENSION 仓 README.md 为准（.superpowers/sdd/ 下的 task 报告是 gitignored 本地工作区文件、跨机器不可达，见 m3）。",
   "rulings_locked": {
     "png10_topo": "放弃 (无美感)",
     "png11_morph": "放弃 (无美感)",
@@ -67,7 +67,7 @@
   },
   "3d_content": {
     "_locked": true,
-    "_note": "3D 池 = [34] (正几何台 v2) 独占全部 3D tier 权重——韵脚3D台(18)/圣物殿(19-22)/老 3D(7,8) 已退场 (见 retired_scenes)。2026-08-26..28 3D扩容+配比卷五路扩容: 主件五分路由 (primary_route_34) + SOLID_POOL 14→16 + SCULPT_POOL 10→16 + LIFTED_POOL 11 入池 + 分形稀有档 (pools_34), hF 压限名单三份 (hf_caps_34)。B4_SCALE=0.5 场景门控见 b4_scale 节。",
+    "_note": "3D 池 = [34] (正几何台 v2) 独占全部 3D tier 权重——韵脚3D台(18)/圣物殿(19-22)/老 3D(7,8) 已退场 (见 retired_scenes)。2026-08-26..28 3D扩容+配比卷五路扩容: 主件五分路由 (primary_route_34) + SOLID_POOL 14→16 + SCULPT_POOL 10→16 + LIFTED_POOL 11 入池 (2026-08-29 呈裁终裁③裁汰 clock-915 → 10) + 分形稀有档 (pools_34), hF 压限名单四份 (hf_caps_34, 2026-08-29 呈裁终裁全部 locked)。B4_SCALE=0.5 场景门控见 b4_scale 节。",
     "solids_stage_34": 1.0,
     "comp_34": {
       "_locked": true,
@@ -95,15 +95,15 @@
       "palette_source": "objects3d/palettes3d.js (84 套, 双实配对全过对比关)",
       "sculpt_route": {
         "_superseded_by": "primary_route_34",
-        "_note": "2026-08-22 user 终裁的三分 55/25/20 (_locked 历史记录, 保留供追溯); 3D扩容+配比卷 (2026-08-26..28) T2 语料档/T4 分形档入池后主件路由扩为五分, 见下方 primary_route_34 (draft 呈裁)。",
+        "_note": "2026-08-22 user 终裁的三分 55/25/20 (_locked 历史记录, 保留供追溯); 3D扩容+配比卷 (2026-08-26..28) T2 语料档/T4 分形档入池后主件路由扩为五分, 见下方 primary_route_34 (2026-08-29 呈裁 user 终裁 _locked)。",
         "primitive": 0.55,
         "bool": 0.25,
         "sculpt": 0.2
       }
     },
     "primary_route_34": {
-      "_draft": true,
-      "_note": "2026-08-28 收卷刷新 (3D扩容+配比卷): scene34 主件五分路由 (scenes/solids-stage.js rollPrimaryKind)——T2 四分 draft 47/21/17/15 (旧三分 55/25/20 等比压缩) + T4 分形稀有档 (四档等比乘 (1−FRACTAL_SHARE), FRACTAL_SHARE = FRACTAL_WEIGHT_SUM/100 现算, mandelbulb 降 0 后 = 0.02)。消费恒定: route+四路索引+fRoll 恒 6 r()。**draft 呈裁待 user 终裁, 未终裁前不 _locked**。副件 (S2/S3/静物池) 仍走两分 rollSolidKind 72/28 (primitive/bool)。",
+      "_locked": true,
+      "_note": "2026-08-28 收卷刷新 (3D扩容+配比卷), 2026-08-29 呈裁 user 终裁①转正锁定 (五分路由 47/21/17/15+分形带, sierpinski 2%/mandelbulb 降级维持一并追认): scene34 主件五分路由 (scenes/solids-stage.js rollPrimaryKind)——T2 四分 draft 47/21/17/15 (旧三分 55/25/20 等比压缩) + T4 分形稀有档 (四档等比乘 (1−FRACTAL_SHARE), FRACTAL_SHARE = FRACTAL_WEIGHT_SUM/100 现算, mandelbulb 降 0 后 = 0.02)。消费恒定: route+四路索引+fRoll 恒 6 r()。**user 呈裁终裁 2026-08-29 锁定 (progress.md 尾节「USER 呈裁终裁」)**。副件 (S2/S3/静物池) 仍走两分 rollSolidKind 72/28 (primitive/bool)。",
       "primitive": 0.47,
       "bool": 0.21,
       "sculpt": 0.17,
@@ -122,11 +122,11 @@
       "solid_pool_16": "12 旧原语 + dodecahedron/icosahedron (柏拉图殿 T3; dodeca 系 sdf-main d3.js 笔误勘正版, 本 PR 同步勘正 sdf-main 侧 d3.js/sdf3.glsl.js) + twisted_tower/bent_column (填充 T5, twist/bend 非等距变形按几何参数闭式步进安全系数 1/(1+|k|·rMax))",
       "bool_pool_5": "crescent/arch/pierced-sphere/ring-column/bowl (不变)",
       "sculpt_pool_16": "布尔雕塑八件 + 嵌套对偶两件 dual-cube-octa/dual-dodeca-icosa (T3) + 填充组合六件 chain-links/stone-stack/arch-bridge-moon/pillar-grove/cannonball-stack/ring-gate (T5)",
-      "lifted_pool_11": "demo-lifts 217 件对抗审终选 11 件 (T2): rocket-launch/gothic-cathedral/china-carrier/jet-aircraft/vintage-bicycle/coastal-lighthouse/spiral-vase/clock-915/chart-traffic-light/graphics-isometric-city/graphics-mountain (解释器 SD3 复活进链 + 离线烘焙 fit)",
+      "lifted_pool_10": "demo-lifts 217 件对抗审终选 11 件 (T2), 2026-08-29 呈裁终裁③裁汰 clock-915 (盘面浅浮雕点彩下不可读, 多批真浏览器实测, 达标才入铁律; ?lifted=clock-915 强制口随之不可达) → 现役 10 件: rocket-launch/gothic-cathedral/china-carrier/jet-aircraft/vintage-bicycle/coastal-lighthouse/spiral-vase/chart-traffic-light/graphics-isometric-city/graphics-mountain (解释器 SD3 复活进链 + 离线烘焙 fit; 池内挑选单 roll, 池长变化零消费结构影响)",
       "fractal_pool": {
         "sierpinski": {
           "weight": 2,
-          "_note": "938 全幅真管线 bench 中位 8.8s, 低于全部四条已上线基线中位 (10.3-19.2s), 包络内干净入池; draft 呈裁"
+          "_note": "938 全幅真管线 bench 中位 8.8s, 低于全部四条已上线基线中位 (10.3-19.2s), 包络内干净入池; 2026-08-29 呈裁 user 终裁锁定"
         },
         "mandelbulb": {
           "_degraded": true,
@@ -136,11 +136,12 @@
       }
     },
     "hf_caps_34": {
-      "_note": "三份独立 hF 压限名单 + lifted 压限 (全部纯 min() 后处理, 零 r() 消费): COMPACT_SCULPTS 是 user 终裁数据契约 (_locked); CAGE/FILLER 与 lifted 压限为各卷 draft 呈裁。",
+      "_note": "四份独立 hF 压限名单 + lifted 压限 (全部纯 min() 后处理, 零 r() 消费): COMPACT_SCULPTS 是 2026-08-21 user 终裁数据契约; CAGE/FILLER 与 lifted 压限 2026-08-29 呈裁 user 终裁①转正 locked; PLATONIC 应急帽系同日终裁②新增 (opus 终审 I2 按池不按症状盲区, dodecahedron forced-600 扫掠 p50 0.915 居全池第 2 未压; 同 hash 前后对照 dodeca×colossus cov 0.748→0.542 / icosa×colossus 0.889→0.807; 下卷全池 N≥50 扫掠统一按症状定标)。",
       "compact_sculpts_locked": ["steinmetz", "cube-pierced-sphere", "ruin-dome", "death-star"],
-      "cage_compact_draft": ["dual-dodeca-icosa"],
-      "filler_compact_draft": ["stone-stack", "cannonball-stack"],
-      "lifted_caps_draft": "monument/衰变行 ≤1.0 / colossus ≤0.9 / closeup ≤1.05 + 纵深护栏 0.55·focal/a / 全型宽件 ≤1.3/a (a = 烘焙宽高比); cov 兜底 lone 同吃压限"
+      "cage_compact_locked": ["dual-dodeca-icosa"],
+      "filler_compact_locked": ["stone-stack", "cannonball-stack"],
+      "platonic_compact_locked": ["dodecahedron", "icosahedron"],
+      "lifted_caps_locked": "monument/衰变行 ≤1.0 / colossus ≤0.9 / closeup ≤1.05 + 纵深护栏 0.55·focal/a / 全型宽件 ≤1.3/a (a = 烘焙宽高比); cov 兜底 lone 同吃压限"
     },
     "legacy_7_8": {
       "_degraded": true,
