@@ -156,6 +156,19 @@ tier 落点 84.8/5.8/8.5/0.8 χ²=1.28 PASS；forced-600 保真流扫掠五分�
 
 **3D 品相根治卷（2026-08-29）**：T1 全池 49 形 N≥50 cov 扫掠 → 四份 hF 压限名单合并为 **COV_COMPACT 16 件**（判据 p50>0.85，新增 7 件，行为逐位等价实证）；T2 closeup 兜底追根（窗重标 1.0+hFP*0.7 + 专属帽 1.1，兜底 53.5%→19.5%）；T3 mandelbulb 等价优化入仓（bbox 预剔除+步进 0.8，−18%）仍 6.3x 最重基线 → **判决留 0**；T4 收卷 100-hash 真浏览器复检 + batch23。测试 679→**711/711**（实跑）。呈裁待 user：pyramid 去留／帽后残余三件／lifted closeup 空幅 6/200／dev 口 mandelbulb 观感追认／batch20-23 品相。
 
+**活画卷（2026-08-31）**：把每件作品变成"活的画"。T1 **出生偏移+日照窗**——契约升格
+**「同 hash+同时刻+同 mintTime→逐位同画面」**：`tokenData.mintTime`（unix 秒，可选字段，合约侧传铸造
+区块时间戳）→ birthOffset = 该时刻 UTC 时 h，缺省 hash 派生 h∈[0,24)（独立派生 sfc32 流，零主流 r()
+消费）；T_eff=(墙钟h+offset) mod 24 全 CHRONO 统一，3D/4D 光照走日照窗 T_light=5.5+13·(T_eff/24)∈[5.5,18.5]
+（t=12 唯一不动点）。T2 **2D 逐笔 generator 恢复**（weave/warp 逐笔 120 段/neon 逐行 96 段，2-4s 刷完，
+完成态 vm 逐位 10/10；generator 分帧让 2D 像素首次跨 document 可复现 H-H 3/3）；T3 **装裱系统**（画心
+0.93+3.5% 暖卡纸留白+勾线+落款 "shaun"+红方印「肖恩」+日月时钟标活层分钟走针，装裱零 roll，指纹全库
+一次性重基线）；T4 **开场日扫**（排水完成后 2.6s 光色扫 24h 落定 T_eff——色调映射近似 DOM 叠加层，
+主画布零触碰=落定态逐位归档态，`?t=`/mint-snapshot 不播扫；真浏览器 7/7 全 tier PASS）+ 100-hash
+快速回归（七桶判据+装裱不变量全零）。测试 711→**823/823**（实跑）。`style-plan.json` 新增时间轴/装裱
+两节（本 PR）。呈裁待 user：2D 深夜幅度／黎明缘月亮支／birthOffset 进 traits／neon 31s／印章位置与
+朱白文口径／墨色自适应追认／batch24-25+日扫 batch26 观感。
+
 ---
 
 ## 1. Hard rules (NON-NEGOTIABLE — these override defaults)

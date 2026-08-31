@@ -1,5 +1,5 @@
 {
-  "comment": "DIMENSION 总概率表 (2026-08-22 策展手术终裁版, 取代 2026-08-14 draft v2；2026-08-23 终审修复轮同步；2026-08-26 配比调整卷 Task 1 同步 dimension_tier 节；2026-08-28 3D扩容+配比卷收卷 Task 6 全表刷新: scene34 主件五分路由 + SOLID/SCULPT 池 16/16 + LIFTED 11 + 分形档 + 三份 hF 压限名单；2026-08-29 呈裁终裁落地: 五分路由与 CAGE/FILLER/lifted 三组压限转正 _locked + PLATONIC_COMPACT 应急帽两件 (dodeca/icosa) + LIFTED 11→10 (clock-915 裁汰)；2026-08-29 3D品相根治卷 T4 收卷同步: 四份 hF 压限名单吸收合并为单一 COV_COMPACT 16 件 (统一判据 p50>0.85, 新增 7 件) + closeup 窗重标 1.0+hFP*0.7 与专属帽 1.1 + mandelbulb 等价优化入仓判决留 0 (步进 0.8)。数值均逐字对应 DIMENSION 仓 sketch.js/scenes/index.js/scenes/solids-stage.js/scenes/panels-4d.js 里的具名常量 (TIER_WEIGHTS/POOL_2D_WEIGHTS/STYLE2D_OBJECTS_W/STYLE2D_LANDSCAPES_W/THEME32_CATEGORY_W/POLY4D_WEIGHTS/FRACTAL_WEIGHTS 及五分路由阈值)，不是脱离代码另算的第二份数字。DIMENSION 测试 711/711 (2026-08-29 品相根治卷收卷实跑)。数据来源以 DIMENSION 仓 README.md 为准（.superpowers/sdd/ 下的 task 报告是 gitignored 本地工作区文件、跨机器不可达，见 m3）。",
+  "comment": "DIMENSION 总概率表 (2026-08-22 策展手术终裁版, 取代 2026-08-14 draft v2；2026-08-23 终审修复轮同步；2026-08-26 配比调整卷 Task 1 同步 dimension_tier 节；2026-08-28 3D扩容+配比卷收卷 Task 6 全表刷新: scene34 主件五分路由 + SOLID/SCULPT 池 16/16 + LIFTED 11 + 分形档 + 三份 hF 压限名单；2026-08-29 呈裁终裁落地: 五分路由与 CAGE/FILLER/lifted 三组压限转正 _locked + PLATONIC_COMPACT 应急帽两件 (dodeca/icosa) + LIFTED 11→10 (clock-915 裁汰)；2026-08-29 3D品相根治卷 T4 收卷同步: 四份 hF 压限名单吸收合并为单一 COV_COMPACT 16 件 (统一判据 p50>0.85, 新增 7 件) + closeup 窗重标 1.0+hFP*0.7 与专属帽 1.1 + mandelbulb 等价优化入仓判决留 0 (步进 0.8)；2026-08-31 活画卷收卷同步: 新增 chrono_axis_living (出生偏移/日照窗/开场仪式/时钟活层) 与 mounting (装裱) 两节——这两节不是概率轴, 是全库统一的时间轴/装裱契约登记。数值均逐字对应 DIMENSION 仓 sketch.js/scenes/index.js/scenes/solids-stage.js/scenes/panels-4d.js 里的具名常量 (TIER_WEIGHTS/POOL_2D_WEIGHTS/STYLE2D_OBJECTS_W/STYLE2D_LANDSCAPES_W/THEME32_CATEGORY_W/POLY4D_WEIGHTS/FRACTAL_WEIGHTS 及五分路由阈值)，不是脱离代码另算的第二份数字。DIMENSION 测试 823/823 (2026-08-31 活画卷收卷实跑)。数据来源以 DIMENSION 仓 README.md 为准（.superpowers/sdd/ 下的 task 报告是 gitignored 本地工作区文件、跨机器不可达，见 m3）。",
   "rulings_locked": {
     "png10_topo": "放弃 (无美感)",
     "png11_morph": "放弃 (无美感)",
@@ -27,8 +27,16 @@
       "seasons_四季": 2,
       "calligraphy_书法": 2,
       "seamap_海图": 2,
-      "mandala_玫瑰窗": { "_degraded": true, "weight": 0, "_note": "策展手术摘除，函数保留" },
-      "flake_雪花": { "_degraded": true, "weight": 0, "_note": "策展手术摘除，函数保留" }
+      "mandala_玫瑰窗": {
+        "_degraded": true,
+        "weight": 0,
+        "_note": "策展手术摘除，函数保留"
+      },
+      "flake_雪花": {
+        "_degraded": true,
+        "weight": 0,
+        "_note": "策展手术摘除，函数保留"
+      }
     }
   },
   "2d_style_axis": {
@@ -49,7 +57,11 @@
       "warp": 0.05,
       "_note": "2026-08-22 复核调整: before/after 平分 47.5/47.5 (原 2026-08-17 裁定 before 95% 全面复核后放开 after 一半份额)，warp 5% 维持不变"
     },
-    "bob_六景": { "_degraded": true, "weight": 0, "_note": "整族退场 (scenes 1-6)，文件不删" },
+    "bob_六景": {
+      "_degraded": true,
+      "weight": 0,
+      "_note": "整族退场 (scenes 1-6)，文件不删"
+    },
     "rhymes_韵脚2D": {
       "_degraded": true,
       "weight": 0,
@@ -76,7 +88,11 @@
       "hover": 0.2,
       "closeup": 0.15,
       "stilllife": 0.1,
-      "modifiers": { "pierce": 0.08, "intersect": 0.15, "decay_row": 0.18 },
+      "modifiers": {
+        "pierce": 0.08,
+        "intersect": 0.15,
+        "decay_row": 0.18
+      },
       "fog34_dist": {
         "_note": "I4 订正 (2026-08-23 终审记账): scene34 的主雾轴——monument/colossus/hover/closeup 四型 (90% 权重) 走 solids-stage.js setupSolidsStage() 的 fogRoll/fogPick 决定 pa.fog34，此前本文件遗漏这条轴，只登记了下面 fogK_dist（那条其实只在 stilllife 型漏达，见其 _note）。",
         "0_无雾": 0.2,
@@ -91,7 +107,11 @@
         "0.16_中雾": 0.25,
         "0.28_浓雾": 0.125
       },
-      "dofK_dist": { "0_无景深": 0.5, "0.3_轻景深": 0.333, "0.6_重景深": 0.167 },
+      "dofK_dist": {
+        "0_无景深": 0.5,
+        "0.3_轻景深": 0.333,
+        "0.6_重景深": 0.167
+      },
       "palette_source": "objects3d/palettes3d.js (84 套, 双实配对全过对比关)",
       "sculpt_route": {
         "_superseded_by": "primary_route_34",
@@ -164,7 +184,11 @@
       "weight": 0,
       "_note": "老 3D (球/胶囊林) 整族退场，文件不删"
     },
-    "rhyme_stage_18": { "_degraded": true, "weight": 0, "_note": "韵脚 3D 台整族退场，文件不删" },
+    "rhyme_stage_18": {
+      "_degraded": true,
+      "weight": 0,
+      "_note": "韵脚 3D 台整族退场，文件不删"
+    },
     "sanctum_19_22": {
       "_degraded": true,
       "weight": 0,
@@ -184,15 +208,27 @@
     "poly4d_pool": {
       "_locked": true,
       "_note": "m2 归一口径 (2026-08-23 终审记账): 下面每项数值 = DIMENSION 仓 POLY4D_WEIGHTS 里的原始具名常量值（代码用单次 r()×POLY4D_WEIGHT_SUM 累积阈值择一，POLY4D_WEIGHT_SUM 现算实际总和=78、非硬编码 100）——不是人工换算好的『占总体的百分比』。若要真实自然出现概率，需按 weight/78 换算，见每项 real_pct 字段。cell120/cell600 是 Task 3 新增的精确半空间交 SDF (数学/符号探针均验证通过)，但真管线性能实测超预算，判定降级不入池——几何本身无 bug，纯粹是稠密网格 probe 渲染管线的既有开销结构撞线，详细数据见 DIMENSION 仓 README.md『维度抽样概率』『终审修复轮』两节 (m3 订正: 原引用指向 .superpowers/sdd/ 下 gitignored 的 task-3-report.md，跨机器不可达，改指向随仓提交的 README)。cell5 权重 2026-08-23 终审修复轮 (user 三刀之三) 15→8，因它是全池最容易『薄』的非中心对称胞体，降权而非删除。",
-      "glome": { "weight": 25, "real_pct": 0.3205 },
+      "glome": {
+        "weight": 25,
+        "real_pct": 0.3205
+      },
       "cell5": {
         "weight": 8,
         "real_pct": 0.1026,
         "_note": "2026-08-23 终审修复轮 15→8 (user 三刀之三)"
       },
-      "cell8": { "weight": 15, "real_pct": 0.1923 },
-      "cell16": { "weight": 15, "real_pct": 0.1923 },
-      "cell24": { "weight": 15, "real_pct": 0.1923 },
+      "cell8": {
+        "weight": 15,
+        "real_pct": 0.1923
+      },
+      "cell16": {
+        "weight": 15,
+        "real_pct": 0.1923
+      },
+      "cell24": {
+        "weight": 15,
+        "real_pct": 0.1923
+      },
       "cell120": {
         "_degraded": true,
         "weight": 0,
@@ -218,8 +254,17 @@
     "terrain_fog_35": {
       "_locked": true,
       "_note": "I4 订正 (2026-08-23 终审记账): 此前本文件缺 scene35 的雾/地形轴——panels-4d.js setupPanels4d() 无条件恒 roll (不因 comp35 分支产生消费差异), 与 comp_34 的主雾轴 fog34_dist 同一档位/比例。",
-      "fog35_dist": { "0_无雾": 0.2, "0.09_轻雾": 0.32, "0.16_中雾": 0.32, "0.28_浓雾": 0.16 },
-      "terrain35_dist": { "flat_平地": 0.7, "waves_缓波": 0.2, "none_无内建地面": 0.1 }
+      "fog35_dist": {
+        "0_无雾": 0.2,
+        "0.09_轻雾": 0.32,
+        "0.16_中雾": 0.32,
+        "0.28_浓雾": 0.16
+      },
+      "terrain35_dist": {
+        "flat_平地": 0.7,
+        "waves_缓波": 0.2,
+        "none_无内建地面": 0.1
+      }
     },
     "w0_sweep_35": {
       "_locked": true,
@@ -259,11 +304,43 @@
       "4D 内容池 cell120/cell600 (性能降级，非策展摘除)",
       "3D 分形档 mandelbulb (性能降级权 0，2026-08-28 T4 判决，?fractal= dev 可达，见 pools_34.fractal_pool)"
     ],
-    "survivors": { "2d": [30, 31, 32], "3d": [34], "4d": [35], "ascension": [17] }
+    "survivors": {
+      "2d": [30, 31, 32],
+      "3d": [34],
+      "4d": [35],
+      "ascension": [17]
+    }
   },
   "dev_only_scenes": {
     "_note": "m4 补漏 (2026-08-23 终审记账): scene 33 (SceneData 迷你解释器语料台) 从建成起就是 `?scene=33` 专属预览，从未上过自然路由轮盘。2026-08-24 链装配物理瘦身第一刀把它连同专属文件 (objects3d/lib-lifted.js) 一并删除——`?scene=33` 已无真实内容可渲染。2026-08-26 3D扩容卷 T2: 解释器 SD3 本体在 scenes/scenedata.js 复活进链 (extrude/revolve/polygon 三式 + fitParams)，服务 scene34 的 LIFTED_POOL 语料档；预览走 `dev.html?scene=34&lifted=<name>`，scene 33 未复活。",
     "scenes": [33],
     "description": "已物理删除的历史 dev-only 语料台 (2026-08-24)；解释器职能由 scene34 lifted 档承接 (2026-08-26)"
+  },
+  "chrono_axis_living": {
+    "_note": "活画卷 (2026-08-31) 时间轴契约: **同 hash + 同时刻 + 同 mintTime → 逐位同画面** (终审 I4「同hash+同时刻」的 mintTime 增补)。tokenData 契约扩展: 可选字段 mintTime (unix 秒, 合约侧传铸造区块时间戳) → birthOffset = 该时刻 UTC 时 h; 缺省 → hash 派生 h∈[0,24) (一次 roll, 独立派生 sfc32 流, 种子=hash 前/后两半逐 32-bit 字异或, 零主流 r() 消费)。渲染时刻 T_eff = (墙钟h + birthOffset) mod 24 全 CHRONO 统一; ?t= (dev) 语义 = 直接钉 T_eff。归档 manifest 四字段 mintTime/birthOffset/tEff/tLight。以 DIMENSION 仓 README「链上契约」「活的画」两节为权威。",
+    "birth_offset": {
+      "main_path": "tokenData.mintTime → UTC 时刻 h (作品的出生时辰)",
+      "fallback": "hash 派生 h∈[0,24), 独立 sfc32 流零主流消费",
+      "traits": "pa.birthOffset 进 set_features 快照 (birthOffset 是否升格具名 trait 待 user 裁)"
+    },
+    "sunlight_window_3d4d": {
+      "_note": "3D/4D 光照 (lightPos3, probe_4d 唯一消费, scene 34/35/17) 不直用 T_eff, 连续 remap 进日照窗——保昼夜节律但太阳不落山; t=12 唯一不动点。2D 全域 (色温 tint/sky/假光向 lightDir2) 直用 T_eff。",
+      "formula": "T_light = 5.5 + 13 * (T_eff / 24)",
+      "range": [5.5, 18.5]
+    },
+    "opening_ritual": {
+      "_note": "开场仪式两段: 前半 = 逐笔生成 (T2), 后半 = 日扫 (T4)。全部活效果层, 不入静态归档 (mint-snapshot 等 $renderOK 读主画布完成态)。",
+      "living_brush": "2D 库件逐笔: weave/warp 笔数均分 120 段 + 背景 24 段, neon 逐行 96 段显影; 2-4s 刷完 (neon ~31s per-pixel 本体成本, 呈裁); 完成态与直绘逐位相同 (vm op流+帧缓冲判据)",
+      "day_sweep": "排水完成后 2.6s (MOUNT_SWEEP.durMs=2600, draft) 光色扫过 24h 落定 T_eff; 实现=色调映射近似 DOM 叠加层 (multiply/screen 两通道+时钟快转), 主画布零触碰 → 落定态=归档态逐位; ?t= 钉时与 mint-snapshot (__mountSweepOff) 不播扫"
+    },
+    "live_clock": "留白下缘日月时钟标: 指针 = T_eff 分钟粒度, 活层 rAF ~4s 巡检分钟变更才重绘时钟 patch (不触画心); 日/月标: 3D/4D/升维恒日 (日照窗恒昼), 2D 昼日夜月; 归档含归档时刻静态指针 (同时刻同指针)"
+  },
+  "mounting": {
+    "_note": "活画卷 T3 装裱系统 (draft 参数呈裁中): 全部装裱色 = pa.bg (暖纸底) 纯派生 + 印泥朱红常量——装裱零 roll (可执行锁: 全套画完主流 r() 游标逐位不动)。指纹全库完成态一次性重基线 (pre-mint 合法)。以 DIMENSION 仓 render2d/mount.js 为权威。",
+    "mount_scale": 0.93,
+    "mount_margin": 0.035,
+    "seal_red_rgb": [178, 44, 38],
+    "elements": "边框留白 (暖卡纸, bg 靠 16%) + 画心勾线 (深暖褐) + 落款 shaun (2D SDF 字母, 墨色自适应: 深画浅款/浅画深款) + 红方印「肖恩」(阳文 draft=红底浅字, 肖右恩左, 款上印下画心右下固定) + 日月时钟标",
+    "pending_rulings": "印章位置 (画心内 vs 留白带)/阳文 draft vs 传统朱文层序/墨色自适应追认/画心比例观感 (batch25)"
   }
 }
