@@ -169,6 +169,20 @@ tier 落点 84.8/5.8/8.5/0.8 χ²=1.28 PASS；forced-600 保真流扫掠五分�
 两节（本 PR）。呈裁待 user：2D 深夜幅度／黎明缘月亮支／birthOffset 进 traits／neon 31s／印章位置与
 朱白文口径／墨色自适应追认／batch24-25+日扫 batch26 观感。
 
+**渲染性能卷（2026-08-31..09-01）**：user 裁定「4D 最坏 59 秒必须处理掉」→ 目标最坏
+time-to-`$renderOK` ≤20s，硬验收 = **输出逐位不变**（墙钟优化零像素变化）。**T1 排水节拍
+时间预算**（profile 定音：3D/4D/升维重件墙钟 71-77% 系逐帧排水的帧间空转、非 probe CPU；
+`DRAIN_BUDGET_MS` 30ms 门控 scene 17/34/35，执行序完全不变 = 逐位构造性成立，2D 预算恒 0
+逐笔观感零扰动；4D 最坏 61.7→**14.9s** / 3D 47.5→**7.3s** / 升维 50→**10.9s**）；**T2 计算型
+长尾 worker 化**（`render2d/parallel.js` 静态分块 + 主线程合围兜底；链装配走 worker 内
+importScripts——主线程 fetch 会被合围帧饿死至提速静默归零，教训锁进测试；neon 48.0→**14.4s**
+/ weave 21.0→**8.5s**）；**T3 收卷**：100-hash mint-snapshot 口径分布刷新（活画卷 T4 固定池
+全 tier）**p50 5.7 / p90 9.3 / max 18.0s，0/100 超 20s 达标 PASS**（九桶判据全零；3 枚 CDN p5
+冷取白屏超时系 harness 伪影，复核即过）。逐位判据面 T1 14/14 + T2 14/14（vm op 流 +
+`__CK`/2D `__PX`）。DIMENSION 测试 844→849→**869/869** 实跑。记账勘正：plan「无 worker 回退
+路径」验收句在 T1 转向预算制后语义空转（T2 起回退 = 四重门控串行，已验）；T1 报告误落
+sdf-main 侧已迁回 DIMENSION 仓 sdd 目录。`style-plan.json` 顶层 `render_perf` 节新增（本 PR）。
+
 ---
 
 ## 1. Hard rules (NON-NEGOTIABLE — these override defaults)
