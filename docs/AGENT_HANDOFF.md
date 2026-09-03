@@ -183,6 +183,23 @@ importScripts——主线程 fetch 会被合围帧饿死至提速静默归零，
 路径」验收句在 T1 转向预算制后语义空转（T2 起回退 = 四重门控串行，已验）；T1 报告误落
 sdf-main 侧已迁回 DIMENSION 仓 sdd 目录。`style-plan.json` 顶层 `render_perf` 节新增（本 PR）。
 
+**时间重塑卷（2026-09-03）**：user 裁定①②——① **2D 时间分布重塑**：`chronoRemap2d` 把墙钟(T_eff)
+单调分段线性映射进四段审美带（墙钟时长 **昼 65%/昏 10%/晨 10%/夜 15%**，值域按 ANCHORS 段落界
+夜[20,4)/晨[4,8)/昼[8,16)/昏[16,20)；t=12 与 t=0 浮点精确双不动点；?t= 穿过 remap，t 恒墙钟口径；
+带心落名锚 3→6 卯·破晓 / 21→18 酉·日落）；`CHRONO.hour` = 画中时刻 T_2d（时钟指针夜快昼慢），
+T_eff 账面新增 `CHRONO.tEff`；3D/4D/升维日照窗 tLight 恒由 T_eff 直算**不动**（可执行锁 0.6875
+黄金值逐位保持）；级联：night/日月标/朱文印自然变为时均 15%。② **夜段专属**：夜色提亮一档
+`NIGHT_LIFT`{lmMul 1.15/lFloor 0.035/skyMul 1.15，draft 呈裁}+ 画面中上部 2-4 处暖色柔光晕
+`computeNightLamps`（独立 sfc32 侧流，种子=出生偏移流种子⊕0x9E3779B9，零主流 r() 消费；灯进主画布，
+昼/昏/晨零灯光零扰动；painted 豁免同 chrono 色温面）。指纹重基线：t4 池 100 行钉时刻 t=12 重算——
+**2D 85/85 逐位回归 t4 基线**（84 批内 + 1 枚批内瞬时光栅漂移复渲 3/3 逐位复归），3D/4D/升维 15 枚
+跨导航漂移域照旧结构判据；夜点检 6 枚双渲 **12/12 pairEqual**（夜灯逐位确定）+ 晨/昏各 4 枚带心
+落点全对（`test/evidence/time-remap-rebaseline/`）。测试 876→**908/908**（实跑）。batch30 样张 12 枚
+（四段×2 组 + 夜灯新旧对照 + 3D/4D 日照窗确认，`~/Downloads/genlab-timelight-batch30/`）。
+`style-plan.json` chrono_axis_living 新增 `time_remap_2d`/`night_lamps` 两小节（本 PR）。呈裁待
+user：四段时长口径追认／NIGHT_LIFT 三参幅度／夜灯参数（数量/位置带/半径/强度/暖色）／时钟指针变速
+（画中时刻）观感／batch30 品相。
+
 ---
 
 ## 1. Hard rules (NON-NEGOTIABLE — these override defaults)

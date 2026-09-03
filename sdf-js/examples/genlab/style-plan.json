@@ -1,5 +1,5 @@
 {
-  "comment": "DIMENSION 总概率表 (2026-08-22 策展手术终裁版, 取代 2026-08-14 draft v2；2026-08-23 终审修复轮同步；2026-08-26 配比调整卷 Task 1 同步 dimension_tier 节；2026-08-28 3D扩容+配比卷收卷 Task 6 全表刷新: scene34 主件五分路由 + SOLID/SCULPT 池 16/16 + LIFTED 11 + 分形档 + 三份 hF 压限名单；2026-08-29 呈裁终裁落地: 五分路由与 CAGE/FILLER/lifted 三组压限转正 _locked + PLATONIC_COMPACT 应急帽两件 (dodeca/icosa) + LIFTED 11→10 (clock-915 裁汰)；2026-08-29 3D品相根治卷 T4 收卷同步: 四份 hF 压限名单吸收合并为单一 COV_COMPACT 16 件 (统一判据 p50>0.85, 新增 7 件) + closeup 窗重标 1.0+hFP*0.7 与专属帽 1.1 + mandelbulb 等价优化入仓判决留 0 (步进 0.8)；2026-08-31 活画卷收卷同步: 新增 chrono_axis_living (出生偏移/日照窗/开场仪式/时钟活层) 与 mounting (装裱) 两节——这两节不是概率轴, 是全库统一的时间轴/装裱契约登记。；2026-09-01 渲染性能卷收卷同步: 顶层新增 render_perf 节 (排水预算制 + worker 化 + 100-hash mint 口径分布, max 18.0s ≤20s 达标)。数值均逐字对应 DIMENSION 仓 sketch.js/scenes/index.js/scenes/solids-stage.js/scenes/panels-4d.js 里的具名常量 (TIER_WEIGHTS/POOL_2D_WEIGHTS/STYLE2D_OBJECTS_W/STYLE2D_LANDSCAPES_W/THEME32_CATEGORY_W/POLY4D_WEIGHTS/FRACTAL_WEIGHTS 及五分路由阈值)，不是脱离代码另算的第二份数字。DIMENSION 测试 711/711 (2026-08-29 品相根治卷收卷实跑) → 823/823 (2026-08-31 活画卷收卷实跑) → 869/869 (2026-09-01 渲染性能卷收卷实跑)。数据来源以 DIMENSION 仓 README.md 为准（.superpowers/sdd/ 下的 task 报告是 gitignored 本地工作区文件、跨机器不可达，见 m3）。",
+  "comment": "DIMENSION 总概率表 (2026-08-22 策展手术终裁版, 取代 2026-08-14 draft v2；2026-08-23 终审修复轮同步；2026-08-26 配比调整卷 Task 1 同步 dimension_tier 节；2026-08-28 3D扩容+配比卷收卷 Task 6 全表刷新: scene34 主件五分路由 + SOLID/SCULPT 池 16/16 + LIFTED 11 + 分形档 + 三份 hF 压限名单；2026-08-29 呈裁终裁落地: 五分路由与 CAGE/FILLER/lifted 三组压限转正 _locked + PLATONIC_COMPACT 应急帽两件 (dodeca/icosa) + LIFTED 11→10 (clock-915 裁汰)；2026-08-29 3D品相根治卷 T4 收卷同步: 四份 hF 压限名单吸收合并为单一 COV_COMPACT 16 件 (统一判据 p50>0.85, 新增 7 件) + closeup 窗重标 1.0+hFP*0.7 与专属帽 1.1 + mandelbulb 等价优化入仓判决留 0 (步进 0.8)；2026-08-31 活画卷收卷同步: 新增 chrono_axis_living (出生偏移/日照窗/开场仪式/时钟活层) 与 mounting (装裱) 两节——这两节不是概率轴, 是全库统一的时间轴/装裱契约登记。；2026-09-01 渲染性能卷收卷同步: 顶层新增 render_perf 节 (排水预算制 + worker 化 + 100-hash mint 口径分布, max 18.0s ≤20s 达标)。；2026-09-03 时间重塑卷收卷同步: chrono_axis_living 新增 time_remap_2d (墙钟四段审美带 65/10/10/15, t=12/t=0 双不动点, ?t= 穿 remap) 与 night_lamps (夜色提亮 NIGHT_LIFT + 夜灯 2-4 处独立 sfc32 侧流) 两小节, sunlight_window_3d4d 日照窗不动。数值均逐字对应 DIMENSION 仓 sketch.js/scenes/index.js/scenes/solids-stage.js/scenes/panels-4d.js 里的具名常量 (TIER_WEIGHTS/POOL_2D_WEIGHTS/STYLE2D_OBJECTS_W/STYLE2D_LANDSCAPES_W/THEME32_CATEGORY_W/POLY4D_WEIGHTS/FRACTAL_WEIGHTS 及五分路由阈值)，不是脱离代码另算的第二份数字。DIMENSION 测试 711/711 (2026-08-29 品相根治卷收卷实跑) → 823/823 (2026-08-31 活画卷收卷实跑) → 869/869 (2026-09-01 渲染性能卷收卷实跑) → 876/876 (2026-09-02 印章昼夜制) → 908/908 (2026-09-03 时间重塑卷收卷实跑)。数据来源以 DIMENSION 仓 README.md 为准（.superpowers/sdd/ 下的 task 报告是 gitignored 本地工作区文件、跨机器不可达，见 m3）。",
   "render_perf": {
     "_note": "渲染性能卷 (2026-08-31..09-01; DIMENSION 侧 commit T1 5962d07 / T2 b9d8d38 / T3 b95ab92)。user 裁定「4D 最坏 59 秒必须处理掉」→ 目标最坏 time-to-$renderOK ≤20s, 硬验收 = 输出逐位不变 (墙钟优化零像素变化; T1 14/14 + T2 14/14: vm op 流 sha256 + r 流游标终态 + 真浏览器 __CK, 2D __PX 逐字节)。T1 排水节拍时间预算 (sketch.js DRAIN_BUDGET_MS 30ms, scene 17/34/35 门控——profile 定音重件墙钟 71-77% 系逐帧排水帧间空转、非 probe CPU; 执行序完全不变 = 逐位构造性成立; 2D 预算恒 0 逐笔观感零扰动): 4D 最坏 61.7→14.9s / 3D 47.5→7.3s / 升维 50.0→10.9s。T2 计算型长尾 worker 化 (render2d/parallel.js 静态分块 + 主线程合围兜底; 链装配走 worker 内 importScripts——主线程 fetch 会被合围帧饿死至提速静默归零, 教训锁进 run-tests): neon 48.0→14.4s / weave 21.0→8.5s。T3 收卷 100-hash 分布 (mint-snapshot 口径: index.html+tokenData+__mountSweepOff, 每枚全新 Chrome 冷缓存单导航, 820 窗, 串行; 活画卷 T4 固定池全 tier 85/7/7/1) 见下方数字——0/100 超 20s, 达标 PASS; 九桶判据全零; 首跑 3 枚 CDN p5 冷取失联白屏超时系 harness 伪影 (复核 5.7/5.7/6.5s 即过, 原始行+复核行双留档)。测试 844→849 (T1) → 869 (T2/T3 实跑)。数据: DIMENSION test/evidence/render-speed/ (profiler/逐位对拍/时长矩阵/speed100 四件套)。达标数字系同机口径(Apple Silicon 本机, worker 池 8=min(8,hardwareConcurrency-1)); 低核数观看端 neon 按核数线性劣化(2-4 核约 20-45s), 合围兜底保证输出逐位正确、不保证 ≤20s。",
     "budget_target_s": 20,
@@ -337,16 +337,31 @@
       "traits": "pa.birthOffset 进 set_features 快照 (birthOffset 是否升格具名 trait 待 user 裁)"
     },
     "sunlight_window_3d4d": {
-      "_note": "3D/4D 光照 (lightPos3, probe_4d 唯一消费, scene 34/35/17) 不直用 T_eff, 连续 remap 进日照窗——保昼夜节律但太阳不落山; t=12 唯一不动点。2D 全域 (色温 tint/sky/假光向 lightDir2) 直用 T_eff。",
+      "_note": "3D/4D 光照 (lightPos3, probe_4d 唯一消费, scene 34/35/17) 不直用 T_eff, 连续 remap 进日照窗——保昼夜节律但太阳不落山; t=12 唯一不动点。时间重塑卷 (2026-09-03) 后 2D 全域改走 time_remap_2d 显示轴 (见下节), 日照窗本节公式与消费面**不动** (tLight 恒由 T_eff 直算)。",
       "formula": "T_light = 5.5 + 13 * (T_eff / 24)",
       "range": [5.5, 18.5]
+    },
+    "time_remap_2d": {
+      "_note": "时间重塑卷 (2026-09-03, user 裁定①): 2D 全域 (tint/sky/night/lightDir2/时钟指针) 不再直用 T_eff, 过第二条 remap chronoRemap2d——墙钟(T_eff) 24h 单调分段线性映射进四段审美带, 各段色调美学不变 (值域按 ANCHORS 段落界), 只改各段占墙钟的时长。birthOffset 均匀 → 任一时刻全库占比恒 130/20/20/30 (夜/日月标/朱文印时均 15%, 级联已知会 user)。?t= 钉时刻穿过 remap (t 恒墙钟/T_eff 口径); t=12 (昼带中心) 与 t=0 (夜带中心) 浮点精确不动点——t=12 归档锚点像素逐位不变 (100-hash 真浏览器实证)。CHRONO.hour = T_2d (画中时刻, 夜段指针快昼段慢), T_eff 账面新增 CHRONO.tEff。以 DIMENSION 仓 common/chrono.js chronoRemap2d 头注为权威。",
+      "bands_wallclock_pct": { "day": 65, "dusk": 10, "dawn": 10, "night": 15 },
+      "remap_table": [
+        { "band": "night_late", "wall": "[0, 1.8)", "t2d": "[0, 4)" },
+        { "band": "dawn", "wall": "[1.8, 4.2)", "t2d": "[4, 8)", "center": "3 → 6 (卯·破晓)" },
+        { "band": "day", "wall": "[4.2, 19.8)", "t2d": "[8, 16)", "center": "12 → 12 (不动点)" },
+        { "band": "dusk", "wall": "[19.8, 22.2)", "t2d": "[16, 20)", "center": "21 → 18 (酉·日落)" },
+        { "band": "night_early", "wall": "[22.2, 24)", "t2d": "[20, 24)", "center": "0 → 0 (不动点)" }
+      ]
+    },
+    "night_lamps": {
+      "_note": "时间重塑卷 (2026-09-03, user 裁定②): 2D 夜段专属——① 夜色提亮一档 NIGHT_LIFT { lmMul 1.15, lFloor 0.035, skyMul 1.15 } (ANCHORS 插值后处理, ANCHORS 表一字不动, 幅度 draft 呈裁); ② 画面中上部 2-4 处暖色柔光晕 computeNightLamps/drawNightLamps (类灯笼/窗火, 不绑画内物体)。灯组 hash 派生走独立 sfc32 侧流 (种子 = 出生偏移流种子逐字异或 0x9E3779B9), 零主流 r() 消费; 灯进主画布 (renderLibPieceGen 尾段, 是画的一部分, 同 hash+同时刻逐位同——真浏览器双渲 12/12 pairEqual); 昼/黄昏/清晨段零灯光零扰动。painted 风格不参与 (BOB 色窗原生管线, 与 chrono 色温同一豁免面)。参数 draft 呈裁: n 2-4 / x∈[0.14,0.86] / y∈[0.10,0.42] / r∈[0.09,0.17]·min(W,H) / α∈[0.28,0.50]。",
+      "scope": "scene 30-32 的 before/after/warp/neon (renderLibPieceGen 路径); 3D/4D/升维走日照窗恒昼, 无夜段"
     },
     "opening_ritual": {
       "_note": "开场仪式两段: 前半 = 逐笔生成 (T2), 后半 = 日扫 (T4)。全部活效果层, 不入静态归档 (mint-snapshot 等 $renderOK 读主画布完成态)。",
       "living_brush": "2D 库件逐笔: weave/warp 笔数均分 120 段 + 背景 24 段, neon 逐行 96 段显影; 2-4s 刷完 (neon ~31s per-pixel 本体成本, 呈裁); 完成态与直绘逐位相同 (vm op流+帧缓冲判据)",
       "day_sweep": "排水完成后 2.6s (MOUNT_SWEEP.durMs=2600, draft) 光色扫过 24h 落定 T_eff; 实现=色调映射近似 DOM 叠加层 (multiply/screen 两通道+时钟快转), 主画布零触碰 → 落定态=归档态逐位; ?t= 钉时与 mint-snapshot (__mountSweepOff) 不播扫"
     },
-    "live_clock": "留白下缘日月时钟标: 指针 = T_eff 分钟粒度, 活层 rAF ~4s 巡检分钟变更才重绘时钟 patch (不触画心); 日/月标: 3D/4D/升维恒日 (日照窗恒昼), 2D 昼日夜月; 归档含归档时刻静态指针 (同时刻同指针)"
+    "live_clock": "留白下缘日月时钟标: 指针 = T_2d 分钟粒度 (时间重塑卷起 CHRONO.hour = 画中时刻, 夜段指针快昼段慢; T_eff 账面在 CHRONO.tEff), 活层 rAF ~4s 巡检分钟变更才重绘时钟 patch (不触画心); 日/月标: 3D/4D/升维恒日 (日照窗恒昼), 2D 昼日夜月 (时均 15% 夜); 归档含归档时刻静态指针 (同时刻同指针)"
   },
   "mounting": {
     "_note": "活画卷 T3 装裱系统 (draft 参数呈裁中): 全部装裱色 = pa.bg (暖纸底) 纯派生 + 印泥朱红常量——装裱零 roll (可执行锁: 全套画完主流 r() 游标逐位不动)。指纹全库完成态一次性重基线 (pre-mint 合法)。以 DIMENSION 仓 render2d/mount.js 为权威。",
