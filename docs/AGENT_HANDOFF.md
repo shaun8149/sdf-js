@@ -215,6 +215,15 @@ user：四段时长口径追认／NIGHT_LIFT 三参幅度／夜灯参数（数�
 （实跑）。batch32+fix1/fix2 样张（`~/Downloads/genlab-current2d-batch32/`）。电流案 draft（包络三常量
 /F2 减档参数）user 目检"效果很不错"全按推荐追认。
 
+**逐笔显影幕 + 日扫拉长（2026-09-05，user 目检截图两裁）**：①逐笔动画期间未画区裸露 wash 平色
++水平接缝线（诊断：渐变 bg 分 24 段脏矩形经 mountBlit 0.93 缩放 drawImage 的段界重采样，亮 3-8 LSB；
+完成态里被笔触盖住属既有亚视觉债）——修在观看层：`WEAVE_FRONT` 前沿通道（只写不读）+ mount.js ⑥
+逐笔显影幕（DOM overlay 盖 pa.bg 纸色随落笔前沿逐帧揭开，12px 湿边；主画布操作流一字不动，修前修后
+终态同 git blob + 双端 ck/px 逐位回归）；②日扫 durMs 2600→**7000**（自然观看 renderOK ≈10s=排水3+扫7；
+mint 口径 `__mountSweepOff` 零影响，性能卷 18.0s 不动，README 平台注记双处）。测试 953→**976/976**
+（实跑）。batch33 样张。挂账：真"wash 并进笔序"须完成态重基线（另起卷呈裁）／湿边 PAD 口味／
+mountBlit 接缝亚视觉既有债。
+
 ---
 
 ## 1. Hard rules (NON-NEGOTIABLE — these override defaults)
