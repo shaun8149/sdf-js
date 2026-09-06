@@ -550,8 +550,8 @@
     "tests_chain": "1045 (卷基线 e074a21) → 1061 (T1 十族+磨损) → 1070 (T2 语义三层) → 1085 (T3 2D 扩面转正+双边门) → 1105 (T4 3D 转正 triplanar) → 1106/1106 (T5 收卷实跑, +TRI_POW 字面锁)"
   },
   "flow_ribbon": {
-    "_note": "Fidenza 流场缎带 (2026-09-07, DIMENSION 001e7dd; recipe-only: Fidenza 无授权文本判最严档零抄码零调色板数值, trait 不用 Fidenza 用 Flow-Ribbon)。三要素自写: 八档几何级数宽度混布/grid 哈希碰撞让位+lookahead 防残段/弧长分段变色。实现: 每渲 CPU bake 512² 双通道 atlas {patT,PAL3D 环内色槽} → 主导面 triplanar O(1) 采样 → wpExt3dShade 解码 (零新 raymarch, +1~3%)。守卫先后序: 迷彩守卫原位改写 pal 数组, atlas 存槽 fill 时解码恒吃守卫后色 + bg 族对比檐 K=0.32。测试 1119→1132。呈裁余项: ground 檐/波地 flat 豁免/留池三件追认。",
-    "rate": 0.1,
+    "_note": "Fidenza 流场缎带 (2026-09-07, DIMENSION 001e7dd; recipe-only: Fidenza 无授权文本判最严档零抄码零调色板数值, trait 不用 Fidenza 用 Flow-Ribbon)。三要素自写: 八档几何级数宽度混布/grid 哈希碰撞让位+lookahead 防残段/弧长分段变色。实现: 每渲 CPU bake 512² 双通道 atlas {patT,PAL3D 环内色槽} → 主导面 triplanar O(1) 采样 → wpExt3dShade 解码 (零新 raymarch, +1~3%)。守卫先后序: 迷彩守卫原位改写 pal 数组, atlas 存槽 fill 时解码恒吃守卫后色 + bg 族对比檐 K=0.32。测试 1119→1132。呈裁余项: ground 檐/波地 flat 豁免/留池三件追认。 2026-09-07 提频: FR_RATE 0.10→0.20 (user \"这个美更值得常见一点\"; 5000-hash 实测 19.78%, χ²=0.187, DIMENSION 2656de0)。",
+    "rate": 0.2,
     "stream_xor": "0xa24baef7 (第七方, 七方种子互异)",
     "whitelist_kinds": 13,
     "color": {
