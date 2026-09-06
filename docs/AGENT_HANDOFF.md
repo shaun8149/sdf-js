@@ -253,6 +253,23 @@ sky-cloud 改判+snowflake 复核维持／roll 口径统一／**迷彩卷 index.
 `style-plan.json` 新增 `pattern_system` 节（本 PR）。呈裁待 user：磨损层开关与浓度／等距晕实验族
 去留／双边门参数／权重表 draft／curation 余项／poisson 纹样偏弱增强否／batch 样张品相。
 
+**warp 提比 + 达利物件（2026-09-06..07）**：user 见 warp 纹样"挺美的"→ 风景池 warp 5%→**15%**；
+物件池 warp 0→**30%**（"确实有一种达利的感觉"；怀表/小提琴/沙漏熔化语法最强）；全库 warp ≈14.7%。
+划分窗 IEEE 位级重合验证（neon 尾窗零翻转，翻转唯 before→warp）；t4 池 19 翻转行重基线，非翻转
+66/66 逐位。**豁免名单** `WARP2D_EXEMPT`（眼镜/打字机/莫兰迪瓶——细线框/密集机械/多件重叠熔后
+失身份，折纸鹤不进）warp→before 纯判定重映射零 roll。**3D 裁定完全不走 domain warping**（warp3d
+原型零第三态剥离）。测试 1106（锁重标零增删）。
+
+**Fidenza 流场缎带（2026-09-07，recipe-only：Fidenza 无授权文本判最严档零抄码零调色板）**：
+源码精读三要素=八档几何级数宽度混布/碰撞让位（grid 哈希+lookahead 防残段）/弧长分段变色。
+实现：每渲 CPU bake 512² 双通道 atlas（{patT,色槽}）→ 主导面 triplanar O(1) 采样 → wpExt3dShade
+解码（零新 raymarch，+1~3%）；**scene34 独立稀有档 FR_RATE=10%**（第七方侧流 ⊕0xa24baef7，
+七方种子互异），kind 白名单 13（球面/穹面类 10 件剔除）；**v1.5 彩带**=弧长段 PAL3D 12 环内
+加权选色（本色族 75%/跳色 25%，环外零引入）+ bg 族对比檐 K=0.32（守卫先后序构造论证：守卫
+原位改写 pal 数组，atlas 存槽 fill 时解码恒吃守卫后色）；traits Modifier='Flow-Ribbon'。
+测试 1119→**1132/1132**。batch39/40 样张。呈裁余项：ground 檐/波地 flat 豁免/留池三件
+（cylinder/cone/graphics-mountain）追认（?fr=1 dev 对照口经审查建议保留）。
+
 ---
 
 ## 1. Hard rules (NON-NEGOTIABLE — these override defaults)
