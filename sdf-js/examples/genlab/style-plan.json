@@ -493,7 +493,7 @@
       }
     },
     "rates": {
-      "_note": "扩面出现率 (qilin-study-design §四 rollout, user 已裁): 2D before/after 40% 抽签 (WP_EXT_RATE, 纹样静置+轻 perlin 抖动 0.03-0.06); warp 恒 100% (纹样经同一 domain warp 随形流动); themes 豁免 0; 3D scene34 33% (WP_EXT3D_RATE, triplanar |n|^3 三平面混合根治掠射拉丝 + 单 probe 顺带取场值; scene35/17 本卷不接锁死)。",
+      "_note": "扩面出现率 (qilin-study-design §四 rollout, user 已裁): 2D before/after 40% 抽签 (WP_EXT_RATE, 纹样静置+轻 perlin 抖动 0.03-0.06); warp 100% 无 gate——不抽签但带数仍受双边面积门约束, 全员出窗→素面 (终审实测 ~4%, 反例 0x14c1c7c1…) (纹样经同一 domain warp 随形流动); themes 豁免 0; 3D scene34 33% (WP_EXT3D_RATE, triplanar |n|^3 三平面混合根治掠射拉丝 + 单 probe 顺带取场值; scene35/17 本卷不接锁死)。",
       "before_after_2d": 0.4,
       "warp": 1.0,
       "themes": 0,
@@ -519,7 +519,7 @@
       "ext3d_rolls": "恒 23 (前置 16 空转 + gate 1 + 带 6)"
     },
     "final_checkup": {
-      "_note": "收卷体检 (T5, 固定池 100 hash, DIMENSION test/evidence/pattern-final-checkup/; 带纹状态双口径 = 渲时 wrapper 实录 + 渲后纯派生重建交叉对拍): 九桶全零; 2D gate 24/64=37.5% (期望 40% 二项噪声内, 独立 2000-hash 重建 41.1%; 命中含双边门空带 4); themes 0 调用; warp 全带 (i=43 实录 kikko@3); 3D 2/7 (100k 大样本 32.88%); 实录↔重建 20/20 + gate-off 零调用 40/40; 族分布 31 带十族全出现; 语义命中率 (tag≠generic 首带∈top-3 权重族) 14/17=82.4% vs 权重推算期望 63.5%。样张 24 枚 ~/Downloads/genlab-pattern-final/ (2D 十族配额 + 3D 六族 + 素面 2 + 自然 warp 2 + 夜段对照 4)。"
+      "_note": "收卷体检 (T5, 固定池 100 hash, DIMENSION test/evidence/pattern-final-checkup/; 带纹状态双口径 = 渲时 wrapper 实录 + 渲后纯派生重建交叉对拍): 九桶全零; 2D gate 24/64=37.5% (期望 40% 二项噪声内, 独立 2000-hash 重建 41.1%; 命中含双边门空带 4); themes 0 调用; warp 无 gate (i=43 实录 kikko@3; 双边门空带可达 ~4%); 3D 2/7 (100k 大样本 32.88%); 实录↔重建 20/20 + gate-off 零调用 40/40; 族分布 31 带十族全出现; 加权抽样一致性 (原称语义命中率; tag≠generic 首带∈top-3 权重族, 零假设=权重表本身, 检抽样器不检 curation) 14/17=82.4% vs 权重推算期望 63.5%。样张 24 枚 ~/Downloads/genlab-pattern-final/ (2D 十族配额 + 3D 六族 + 素面 2 + 自然 warp 2 + 夜段对照 4)。"
     },
     "tests_chain": "1045 (卷基线 e074a21) → 1061 (T1 十族+磨损) → 1070 (T2 语义三层) → 1085 (T3 2D 扩面转正+双边门) → 1105 (T4 3D 转正 triplanar) → 1106/1106 (T5 收卷实跑, +TRI_POW 字面锁)"
   }

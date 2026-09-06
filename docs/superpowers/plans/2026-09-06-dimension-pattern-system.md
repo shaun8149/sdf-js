@@ -28,7 +28,7 @@ ext 原型 monkey-patch→链内正式集成:before/after **40% gate**(WP 侧流
 probe 透 normal + **triplanar** 混合(掠射拉丝根治)+ 并入 applyScenePostprocess 单 probe(性能 A/B,双 probe 消除)+ **33% gate** + poisson 档接入 + kind→tag 复用语义表。3D 面重基线;背景/地面/2D 逐位。样张 8 枚(triplanar 前后对照含)。
 
 ### Task 5: 收卷
-全量回归终值;100-hash 体检(九桶+纹样出现率实测 vs 40%/33%/warp 全带);batch 样张总批(三面×新族配额,轮盘零偏爱)→ `~/Downloads/genlab-pattern-final/`;sdf-main style-plan(纹样体系节:族表/语义表/门控/出现率)+ §0.6 + PR 不 merge;README;STOP 呈裁(磨损层开关/等距晕去留/双边门参数/样张品相)。
+全量回归终值;100-hash 体检(九桶+纹样出现率实测 vs 40%/33%/warp 无 gate(终审勘正: 带数仍过双边门, 全带系假不变量));batch 样张总批(三面×新族配额,轮盘零偏爱)→ `~/Downloads/genlab-pattern-final/`;sdf-main style-plan(纹样体系节:族表/语义表/门控/出现率)+ §0.6 + PR 不 merge;README;STOP 呈裁(磨损层开关/等距晕去留/双边门参数/样张品相)。
 
 ## 工程纪律
 双门审查;卷末 opus 终审;fix loop ≤5;执行序 T1→T2→T3→T4→T5(T3∥T4 可并但重基线各自独立面)。
