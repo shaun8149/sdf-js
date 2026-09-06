@@ -381,5 +381,146 @@
     "seal_duo_ruling": "终裁改判 2026-09-02: 印章昼夜双制——白天阳文 (红底浅字, 原 draft 路径逐字保持) / 晚上朱文 (纸底红字: 无红底块, 印泥红笔画+红圆角边框, 印面透底)。当日早前的 hash 末位奇偶 50/50 制被本裁定取代 (零件铸造前改判, pre-mint 合法)。印随日月同源: 选制与日月标共用同一路由 mountGlyphKind (sun→阳文/moon→朱文, 单一真源)——3D/4D/升维日照窗恒日→恒阳文, 2D 昼阳夜朱 (界=CHRONO.night, 夜段 [20,4) 时均占比 1/3)。钤印定格: 落印时刻按当时 CHRONO 定制式, 观看中不翻转; ?t= 钉时刻照常决定制式; 纯函数零 roll (不碰主流 r() 与出生偏移派生流)。指纹重基线 (DIMENSION test/evidence/seal-daynight-rebaseline/): 九桶全零, 2D 受影响行 46/46 逐位回归 t4 原基线 (t=12 归档口径下阳文路径逐字保持)。",
     "elements": "边框留白 (暖卡纸, bg 靠 16%) + 画心勾线 (深暖褐) + 落款 shaun (2D SDF 字母, 墨色自适应: 深画浅款/浅画深款) + 红方印「肖恩」(昼夜双制 2026-09-02 终裁改判: 白天阳文红底浅字/晚上朱文纸底红字透底, 与日月标同源同刻, 见 seal_duo_ruling; 肖右恩左, 款上印下画心右下固定) + 日月时钟标",
     "pending_rulings": "印章位置 (画心内 vs 留白带)/墨色自适应追认/画心比例观感 (batch25)——阳文 vs 朱文已终裁改判 (见 seal_duo_ruling, 2026-09-02 昼夜双制, 取代当日早前的奇偶制)"
+  },
+  "pattern_system": {
+    "_note": "和风纹样体系 (纹样体系卷 2026-09-06, user 终裁全案圈定 qilin-study-design 全采纳; 前置 = 同日 warp 和风纹样初版三族)。公有领域和风图案程序化自写 recipe-only 零抄码; Qilin 三机制 (面积双边门/语义白名单加权/磨损层) 机制层学习实现全自写, 纹样只做确定性明暗调制不采独立色替换 (LLM 配色语义铁律)。实现集中 DIMENSION render2d/fx2d.js (权威), 常量均具名 draft 呈裁。",
+    "families": {
+      "_note": "十族 (T1 扩容 3→10)。值 = WP_SCALE 纹样格频区间 (世界域 view≈1); isoline = 每世界单位等距环数 (实验族, 纹 = 层自身已扭曲 SDF 的等距环带, 唯一「纹随形生」族, 样张单列呈裁)。",
+      "seigaiha_青海波": [3.2, 5.6],
+      "asanoha_麻叶": [2.4, 4.2],
+      "komon_小花散点": [5.0, 8.5],
+      "uroko_鳞文": [3.0, 5.2],
+      "ryusui_流水": [1.6, 3.0],
+      "tatewaku_立涌": [2.2, 4.0],
+      "shippo_七宝": [3.0, 5.5],
+      "kasumi_霞": [2.0, 3.5],
+      "kikko_龟甲": [3.0, 5.0],
+      "isoline_等距晕": [6.0, 12.0]
+    },
+    "semantic_tags": {
+      "_note": "语义三层第 1 层 (T2): pieceId→tag 人工 curated 硬编码 (WP_SEM_TAGS 268 条, objects 89 + landscapes 253 逐 id 过目, 不明确宁缺 74 件落 generic 均权; themes 149 件豁免 0 收录)。3D 侧 kind→tag (WP_EXT3D_KIND_TAGS 47 键, 五池 kind 全集 curated 子集, steinmetz/cube-pierced-sphere 宁缺)。收卷改判 2026-09-06: monk-sea water→sky-cloud (T2 审查呈裁采纳, 画面主体=压顶巨空); snowflake 复核维持 sky-cloud (objects 同伴全系天象)。",
+      "counts_2d": {
+        "mountain": 59,
+        "water": 72,
+        "sky-cloud": 43,
+        "fabric-object": 53,
+        "architecture": 41,
+        "_curated_total": 268,
+        "_generic_fallback": 74
+      },
+      "counts_3d_kind": {
+        "architecture": 28,
+        "fabric-object": 12,
+        "mountain": 3,
+        "water": 2,
+        "sky-cloud": 2,
+        "_curated_total": 47
+      }
+    },
+    "weights": {
+      "_note": "语义三层第 2 层 (WP_SEM_WEIGHTS, tag→十族权重; design §三 draft 表 + isoline 列补齐): 全族非零 = 偏置不禁止 (Qilin 习语); generic 均权 = 既裁均匀 roll 的十族推广。第 3 层 = 加权单 roll 前缀和抽族 (roll 数恒定) + Focal 轮转不重样 (多带件已选族剔除重归一)。draft 呈裁可调 (只动此表)。",
+      "mountain": {
+        "seigaiha": 20,
+        "asanoha": 5,
+        "komon": 5,
+        "uroko": 40,
+        "ryusui": 5,
+        "tatewaku": 5,
+        "shippo": 5,
+        "kasumi": 10,
+        "kikko": 5,
+        "isoline": 12
+      },
+      "water": {
+        "seigaiha": 30,
+        "asanoha": 5,
+        "komon": 5,
+        "uroko": 5,
+        "ryusui": 35,
+        "tatewaku": 10,
+        "shippo": 5,
+        "kasumi": 3,
+        "kikko": 2,
+        "isoline": 10
+      },
+      "sky-cloud": {
+        "seigaiha": 5,
+        "asanoha": 5,
+        "komon": 10,
+        "uroko": 3,
+        "ryusui": 10,
+        "tatewaku": 30,
+        "shippo": 5,
+        "kasumi": 30,
+        "kikko": 2,
+        "isoline": 8
+      },
+      "fabric-object": {
+        "seigaiha": 15,
+        "asanoha": 20,
+        "komon": 20,
+        "uroko": 3,
+        "ryusui": 3,
+        "tatewaku": 4,
+        "shippo": 30,
+        "kasumi": 2,
+        "kikko": 3,
+        "isoline": 8
+      },
+      "architecture": {
+        "seigaiha": 5,
+        "asanoha": 25,
+        "komon": 10,
+        "uroko": 10,
+        "ryusui": 3,
+        "tatewaku": 2,
+        "shippo": 10,
+        "kasumi": 5,
+        "kikko": 30,
+        "isoline": 8
+      },
+      "generic": {
+        "seigaiha": 10,
+        "asanoha": 10,
+        "komon": 10,
+        "uroko": 10,
+        "ryusui": 10,
+        "tatewaku": 10,
+        "shippo": 10,
+        "kasumi": 10,
+        "kikko": 10,
+        "isoline": 10
+      }
+    },
+    "rates": {
+      "_note": "扩面出现率 (qilin-study-design §四 rollout, user 已裁): 2D before/after 40% 抽签 (WP_EXT_RATE, 纹样静置+轻 perlin 抖动 0.03-0.06); warp 100% 无 gate——不抽签但带数仍受双边面积门约束, 全员出窗→素面 (终审实测 ~4%, 反例 0x14c1c7c1…) (纹样经同一 domain warp 随形流动); themes 豁免 0; 3D scene34 33% (WP_EXT3D_RATE, triplanar |n|^3 三平面混合根治掠射拉丝 + 单 probe 顺带取场值; scene35/17 本卷不接锁死)。",
+      "before_after_2d": 0.4,
+      "warp": 1.0,
+      "themes": 0,
+      "solids_3d_scene34": 0.33
+    },
+    "bilateral_gate": {
+      "_note": "面积双边门 (T3, Qilin 发现 A): 可见层 top-hit 占比 (24² 网格扫描, 纯派生零 roll) 候选窗 [WP_MIN_COV, WP_MAX_COV] + 最大占比层无条件出局 (主底色恒素面); 全员出窗 → 素面 (侧流 roll 照耗)。上界在 top-hit 口径下被 argmax 出局构造性支配 (纵深防御, 源码诚实注记)。",
+      "min_cov": 0.035,
+      "max_cov": 0.55,
+      "argmax_layer": "恒素面"
+    },
+    "wear_layer": {
+      "_note": "磨损层 (T1, Qilin 发现 C 自写版): 纹样 uv 域微格 hash 反啄门, 场值向 0.5 织谱本色回拉——「用本色把纹样啄掉一层」。全局艺术开关默认关, 呈裁后定死; 样张对照 dev.html?wear=1。",
+      "WP_WEAR_ON": false,
+      "freq": 7.0,
+      "dens": 0.3,
+      "amp": 0.8
+    },
+    "side_streams": {
+      "_note": "消费恒定: 全部纹样参数走独立 sfc32 侧流, 零主流 r() 消费 (非纹样面构造逐位不变)。五方种子互异: 主流 prngA/prngB / 出生偏移 (无异或) / 夜灯 ⊕0x9E3779B9 / 纹样 WP ⊕0x85EBCA6B / ext ⊕0xC2B2AE35。roll 计数口径收卷勘正统一含预热 (旧 WP 记 21 不含预热)。",
+      "wp_rolls": "恒 33 (预热 12 + 选层 3 + 3 带槽×6)",
+      "ext2d_rolls": "恒 16 (预热 12 + gate 1 + 抖动 3)",
+      "ext3d_rolls": "恒 23 (前置 16 空转 + gate 1 + 带 6)"
+    },
+    "final_checkup": {
+      "_note": "收卷体检 (T5, 固定池 100 hash, DIMENSION test/evidence/pattern-final-checkup/; 带纹状态双口径 = 渲时 wrapper 实录 + 渲后纯派生重建交叉对拍): 九桶全零; 2D gate 24/64=37.5% (期望 40% 二项噪声内, 独立 2000-hash 重建 41.1%; 命中含双边门空带 4); themes 0 调用; warp 无 gate (i=43 实录 kikko@3; 双边门空带可达 ~4%); 3D 2/7 (100k 大样本 32.88%); 实录↔重建 20/20 + gate-off 零调用 40/40; 族分布 31 带十族全出现; 加权抽样一致性 (原称语义命中率; tag≠generic 首带∈top-3 权重族, 零假设=权重表本身, 检抽样器不检 curation) 14/17=82.4% vs 权重推算期望 63.5%。样张 24 枚 ~/Downloads/genlab-pattern-final/ (2D 十族配额 + 3D 六族 + 素面 2 + 自然 warp 2 + 夜段对照 4)。"
+    },
+    "tests_chain": "1045 (卷基线 e074a21) → 1061 (T1 十族+磨损) → 1070 (T2 语义三层) → 1085 (T3 2D 扩面转正+双边门) → 1105 (T4 3D 转正 triplanar) → 1106/1106 (T5 收卷实跑, +TRI_POW 字面锁)"
   }
 }
