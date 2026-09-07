@@ -270,6 +270,18 @@ sky-cloud 改判+snowflake 复核维持／roll 口径统一／**迷彩卷 index.
 测试 1119→**1132/1132**。batch39/40 样张。呈裁余项：ground 檐/波地 flat 豁免/留池三件
 （cylinder/cone/graphics-mountain）追认（?fr=1 dev 对照口经审查建议保留）。
 
+**Edifice 砖砌档 + 三窗互斥（2026-09-07，recipe-only 最严档）**：user 否 Ringers（"要铺满整面"）
+点名 Edifice（Ben Kovach #204，deep-dive 02 精读已备）。三填充器 tag 圈地（RandomWalk/DistToStart
+三度量/Spiral 年轮）→ flood 成砖 + 针脚 running-bond + PAL3D 环内面积加权固色 + 斥力源少步数侵蚀
+→ 与彩缎同套 512² atlas→triplanar 管线（第八方侧流 ⊕0xed1f1cff 八方互异）。转正四连（user 全按
+推荐）：**单 roll 三窗互斥**——彩缎 [0,0.20)/砖砌 [0.20,0.28)/素面（gateRoll 原位透传零 roll 变化，
+彩缎命中集零扰动三证；ED 侧流原 gate 位改让位槽保位=转正与原型样张逐位可比）；跳色降权 90% 本色
++檐零新代码继承；traits Modifier='Masonry'+Grain 五值（未中不落键）；**ground/波地豁免两档共用**
+（|solidsStageSdf|≥0.02 判据与病灶构造互补，十族恒不豁免 T4 逐位原封）。彩缎提频 FR_RATE 0.10→0.20
+（"这个美更值得常见一点"，5000-hash 19.78%）先行入链。测试 1132→1153（原型）→**1172/1172**。
+3D 装饰体系定型三层：十族纹样（材质）/彩缎 20%（流动构图）/砖砌 8%（建筑构图），后两档互斥。
+HASH_NATURAL34 自然翻入砖砌窗（合法兑现，锚点全清点重锚）。铸前呈裁：Grain 命名/Masonry 命名追认。
+
 ---
 
 ## 1. Hard rules (NON-NEGOTIABLE — these override defaults)
