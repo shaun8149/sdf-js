@@ -363,21 +363,21 @@ export const dodecahedron = (r = 0.4) => {
 // icosahedron：二十面体（D20 骰子）。r = 顶点距原点。
 export const icosahedron = (r = 0.4) => {
   const r0 = numLit(r);
-  const R = r0 * 0.85065080835204; // phi / sqrt(1 + phi^2)，精确式重算（旧字面偏 1.1e-7）
   const phi = (1 + Math.sqrt(5)) / 2;
   const len = Math.sqrt(1 + (1 + phi) * (1 + phi));
   const nx = 1 / len,
     ny = (1 + phi) / len;
   const w13 = 1 / Math.sqrt(3);
+  const rho = (r0 * (1 + phi)) / (Math.sqrt(1 + phi * phi) * Math.sqrt(3));
   const inst = SDF3((p) => {
-    const px = Math.abs(p[0]) / R;
-    const py = Math.abs(p[1]) / R;
-    const pz = Math.abs(p[2]) / R;
+    const px = Math.abs(p[0]);
+    const py = Math.abs(p[1]);
+    const pz = Math.abs(p[2]);
     const a = px * nx + py * ny;
     const b = py * nx + pz * ny;
     const c = px * ny + pz * nx;
     const d = (px + py + pz) * w13;
-    return (Math.max(Math.max(Math.max(a, b), c), d) - nx) * R;
+    return Math.max(Math.max(Math.max(a, b), c), d) - rho;
   });
   inst.ast = { kind: 'prim', name: 'icosahedron', args: [r] };
   return inst;

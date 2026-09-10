@@ -5,7 +5,9 @@
 // instead of phi*sqrt(3)) — non-unit plane normals (Lipschitz 1.2247 > 1),
 // GPU body was not a regular icosahedron while the JS body was. This test
 // pins all five Platonic bodies (tetra / octa / cube / dodeca / icosa) so the
-// two implementations can never drift silently again:
+// two implementations can never drift silently again. It also pins the public
+// radius contract for dodeca/icosa: radius means vertex distance from origin,
+// not face distance or an internal normalization scale.
 //
 //   1. Constant pins — numeric literals are regex-extracted from the *shipped*
 //      GLSL source text and checked against exact closed-form recomputations
@@ -54,12 +56,12 @@ fnText('sdOctahedron');
 fnText('sdBox');
 
 const ico = {
-  scale: constOf(icoSrc, 'scale'),
   phi: constOf(icoSrc, 'phi'),
   len: constOf(icoSrc, 'len'),
   nx: constOf(icoSrc, 'nx'),
   ny: constOf(icoSrc, 'ny'),
   w13: constOf(icoSrc, 'w13'),
+  rho: constOf(icoSrc, 'rho'),
 };
 const dod = {
   n1: constOf(dodSrc, 'n1'),
@@ -74,12 +76,16 @@ const pin = (label, got, want) =>
   ok(Math.abs(got - want) < 1e-12, `${label}: shipped ${got} ≈ exact ${want}`);
 
 console.log('icosahedron constants (final-review I1 corrected values):');
-pin('  scale = phi/sqrt(1+phi^2)', ico.scale, PHI / Math.sqrt(1 + PHI * PHI));
 pin('  phi', ico.phi, PHI);
 pin('  len = sqrt(1+(1+phi)^2) = phi*sqrt(3)', ico.len, Math.sqrt(1 + (1 + PHI) * (1 + PHI)));
 pin('  nx = 1/len', ico.nx, 1 / (PHI * Math.sqrt(3)));
 pin('  ny = (1+phi)/len', ico.ny, (1 + PHI) / (PHI * Math.sqrt(3)));
 pin('  w13 = 1/sqrt(3)', ico.w13, 1 / Math.sqrt(3));
+pin(
+  '  rho = inradius/circumradius',
+  ico.rho,
+  (1 + PHI) / (Math.sqrt(1 + PHI * PHI) * Math.sqrt(3)),
+);
 ok(
   Math.abs(Math.hypot(ico.nx, ico.ny) - 1) < 1e-12,
   `  |(nx,ny)| = 1 (unit normals → 1-Lipschitz), got ${Math.hypot(ico.nx, ico.ny)}`,
@@ -94,7 +100,43 @@ pin(
   (1 + PHI) / (Math.sqrt(1 + PHI * PHI) * Math.sqrt(3)),
 );
 
-// ---- 3. JS mirrors of the shipped GLSL bodies ------------------------------
+// ---- 3. public radius contract pins ----------------------------------------
+
+const contractRadii = [0.4, 1.0, 1.7];
+const assertSurface = (label, make, pointsForRadius) => {
+  let maxAbs = 0,
+    n = 0;
+  for (const r of contractRadii) {
+    const f = make(r);
+    for (const p of pointsForRadius(r)) {
+      const d = Math.abs(f(p));
+      if (d > maxAbs) maxAbs = d;
+      n++;
+    }
+  }
+  ok(maxAbs < 1e-12, `${label}: ${n} closed-form surface points, max |d| = ${maxAbs.toExponential(3)}`);
+};
+
+assertSurface('dodecahedron radius = vertex distance', dodecahedron, (r) => {
+  const s = r / Math.sqrt(3);
+  return [
+    [1, 1, 1],
+    [0, 1 / PHI, PHI],
+    [1 / PHI, PHI, 0],
+    [PHI, 0, 1 / PHI],
+  ].map((p) => p.map((x) => x * s));
+});
+
+assertSurface('icosahedron radius = vertex distance', icosahedron, (r) => {
+  const s = r / Math.sqrt(1 + PHI * PHI);
+  return [
+    [0, PHI, 1],
+    [PHI, 1, 0],
+    [1, 0, PHI],
+  ].map((p) => p.map((x) => x * s));
+});
+
+// ---- 4. JS mirrors of the shipped GLSL bodies ------------------------------
 
 const glsl = {
   tetrahedron: (p, r) =>
@@ -134,19 +176,18 @@ const glsl = {
   },
 
   icosahedron: (p, r) => {
-    const R = r * ico.scale;
-    const px = Math.abs(p[0]) / R,
-      py = Math.abs(p[1]) / R,
-      pz = Math.abs(p[2]) / R;
+    const px = Math.abs(p[0]),
+      py = Math.abs(p[1]),
+      pz = Math.abs(p[2]);
     const a = px * ico.nx + py * ico.ny;
     const b = py * ico.nx + pz * ico.ny;
     const c = px * ico.ny + pz * ico.nx;
     const d = (px + py + pz) * ico.w13;
-    return (Math.max(Math.max(Math.max(a, b), c), d) - ico.nx) * R;
+    return Math.max(Math.max(Math.max(a, b), c), d) - ico.rho * r;
   },
 };
 
-// ---- 4. deterministic sample sweep -----------------------------------------
+// ---- 5. deterministic sample sweep -----------------------------------------
 
 // 13 fixed directions: axes, face diagonal, space diagonal, phi-family
 // (icosa/dodeca vertex & face directions), plus three "awkward" generic dirs.
