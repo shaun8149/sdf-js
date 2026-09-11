@@ -282,6 +282,40 @@ sky-cloud 改判+snowflake 复核维持／roll 口径统一／**迷彩卷 index.
 3D 装饰体系定型三层：十族纹样（材质）/彩缎 20%（流动构图）/砖砌 8%（建筑构图），后两档互斥。
 HASH_NATURAL34 自然翻入砖砌窗（合法兑现，锚点全清点重锚）。铸前呈裁：Grain 命名/Masonry 命名追认。
 
+**纵深卷（2026-09-07..08，衔接补记一句）**：avenue 纵深廊构图第六型入表（closeup 降 7%）+ 4D
+拼板装饰解锁等，测试 1172→1293——该卷 sdf-main 侧账目未单独立段，此句补记衔接测试链。
+
+**构型扩容+光影卷（2026-09-08..11，plan `2026-09-08-dimension-form-and-inkline.md`，1293→1469）**：
+batch43 审图季裁定风暴（十余道审图令一卷吃尽）+ user 藏品级定调驱动的双主轴卷。**构型面**：T1
+遗址建筑语汇十件（ziggurat/gate/broken-colonnade/altar-steps/obelisk-row/broken-dome/archway/
+aqueduct/broken-stele/watchtower）入 SCULPT_POOL 16→26（池加长不改 roll；立面六件 KIND_PLANAR
+ry 窗；高兜底三件入 COV_COMPACT；五件直写标量内联 1.8-3.4× 提速逐位等价锁）；T1b「对比锚」
+scale-anchor 构图（user 埃菲尔铁塔蓝调参考图令：近景巨物压缘+远塔雾中+地平线 mini-stele 尺度锚）；
+T4b「拱廊内景」interior 构图（user 砖拱廊剧照令：连拱退行+厚墙门洞+筒拱收顶，**光池 = 既有影判据
+自然涌现**）——scene34 构图终态**八窗 26/20/5/18/7/12/6/6**（monument/colossus/anchor/hover/
+closeup/avenue/interior/stilllife）；T2 lifted 复捞 486 文件全量二次普查唯一过三标准件
+product-chrome-spheres 入池 10→11（+15-25 目标未达成如实报——具象件首轮捞净，扩池正道 user 已裁
+atom 生成器移植立项，city-skyline/canyon/gear 族优先，排 4D 影雕卷前后）；收口小刀集三刀（poisson
+方言降十倍 99.5/0.5、4D 拼 16 废除拼 4 独占、calligraphy 文字类权 0 退场）。**2D 白天装饰**：墨线
+方案 user 叫停搁置候补（"墨线是不是我们最好的选择还没讨论过"——Sudfah 胜出系控制者意见未经终裁，
+零代码入仓），终裁改走**"用光来治"**：受光云系统 60%（云暗部蓝灰/受光缘金红，时段色温朝霞-正午-
+晚霞联动，dusk rim 独立提亮）+ 流场淡彩 25%（天空区极淡流带，浅天档实测亮度分档治白上加白）+
+主题池 warp 生产转正（pattern 恒扭/seasons+lighthouse 60%）。
+
+**光影定调与七件套（同卷后半）**：user 藏品级定调逐字精神——"光和影是整个表现手法的核心；影子
+降一维，4 维降 1 维是 3 维……重点要描绘这个影子，才能把 4D 的感觉描绘出来"。落成三维影语法：2D
+影是线（不强调）/3D 影是面（本卷长影+光池主战场）/**4D 影是"影雕"= 4D SDF 沿光向投影成的 3D
+实体（下卷设计核，与对偶柱立项合体归 4D 减法卷）**。T4b 光影七件套：①2D 灯光洒光（晕圈→照明，
+screen 垫层软衰减）②3D 夜空星座（hash 派生 1-2 座折线星座，星不压建筑）③夜地面保暗（"地面保暗，
+明暗对比=夜的骨架"）④光束渲染（解析束辉闭式零采样，fix1 收紧束读作柱不作洗）⑤夜映金保金下限
+（低饱和底色相钳金域，"脏米色"根治）⑥3D 长影强化（金色带影长 ~1.8×，t=12 IEEE 逐位保持）
+⑦拱廊光池。审图季另沉淀审美原则：尺度对比（"2D SDF 大小有对比的其实会更美"=马远寒江独钓构图）、
+夜黑须有内容承托（与 2D 昼留白逻辑相反）。测试链 1293→1348→1375→1376→1383→1410→1420→**1469**
+全绿；batch44 200 张 user 总验收逐字："基本上可以说是非常完美了……3D 非常美，每一张都很有质量。"
+呈裁攒单十条（seamap 修/删 user 仍欠终裁、素面 kind/stilllife 白名单、broken-dome 三选、
+AVENUE_WIDE 追认、o1-o3 光影观察、俯视件淡彩白名单、等比归一追认、closeup 0 出场复核等）见
+DIMENSION 仓 task-5b-closeout-report STOP 节。
+
 ---
 
 ## 1. Hard rules (NON-NEGOTIABLE — these override defaults)
