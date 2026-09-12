@@ -3,11 +3,12 @@
 <style>body{margin:0;background:#111;display:grid;place-items:center;height:100vh}canvas{max-width:90vmin;max-height:90vmin}</style>
 </head><body>
 <canvas id="c" width="900" height="900"></canvas>
-<script>{const sz = new URLSearchParams(location.search).get("size"); if (sz) { const c = document.getElementById("c"); c.width = c.height = Number(sz); }}</script>
+<script src="query-params.js"></script>
+<script>{ window.genlabQuery.applyCanvasSizeFromQuery(document.getElementById("c")); }</script>
 <script type="module">
 // 加载 out/<id>.js: 存档 prompt 约定 import '../../src/index.js' (examples/sdf/ 视角),
 // blob import 无相对基准 → 重写为绝对路径后再导入
-const id = new URLSearchParams(location.search).get('id');
+const id = window.genlabQuery.requireSlug(new URLSearchParams(location.search).get('id'), 'id');
 const src = await (await fetch(`./out/${id}.js`)).text();
 const abs = new URL('../../src/index.js', location.href.replace('/genlab/view.html', '/sdf/x')).href;
 let code = src.replace(/(['"])(?:\.\.\/)+src\/index\.js\1/, JSON.stringify(abs));
@@ -17,7 +18,10 @@ try {
   await import(URL.createObjectURL(blob));
   window.$genOK = true;
 } catch (e) {
-  document.body.innerHTML = `<pre style="color:#f66">${e.stack}</pre>`;
+  const pre = document.createElement('pre');
+  pre.style.color = '#f66';
+  pre.textContent = e.stack || String(e);
+  document.body.replaceChildren(pre);
   window.$genErr = String(e);
 }
 </script>

@@ -12,6 +12,7 @@ canvas{display:block;max-width:92vmin;max-height:92vmin}
   <canvas id="fx" width="900" height="900"></canvas>
 </div>
 <div id="hint">…</div>
+<script src="query-params.js"></script>
 <script type="module">
 // =============================================================================
 // WP1-GPU Phase C — 电流传导 ("抠图"语义版)
@@ -30,7 +31,7 @@ import { compileSDF2ToGLSL } from '../../src/sdf/sdf2.compile.js';
 import { rectangle } from '../../src/index.js';
 
 const qs = new URLSearchParams(location.search);
-const id = qs.get('piece') || 'dust-storm-farm';
+const id = window.genlabQuery.requireSlug(qs.get('piece') || 'dust-storm-farm', 'piece');
 const hint = document.getElementById('hint');
 
 // ---- 1. 底图: weave 原色 + Before 原密度轴 (动态稀疏) ----
