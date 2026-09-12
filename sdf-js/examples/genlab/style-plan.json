@@ -1,5 +1,5 @@
 {
-  "comment": "DIMENSION 总概率表 (2026-08-22 策展手术终裁版, 取代 2026-08-14 draft v2；2026-08-23 终审修复轮同步；2026-08-26 配比调整卷 Task 1 同步 dimension_tier 节；2026-08-28 3D扩容+配比卷收卷 Task 6 全表刷新: scene34 主件五分路由 + SOLID/SCULPT 池 16/16 + LIFTED 11 + 分形档 + 三份 hF 压限名单；2026-08-29 呈裁终裁落地: 五分路由与 CAGE/FILLER/lifted 三组压限转正 _locked + PLATONIC_COMPACT 应急帽两件 (dodeca/icosa) + LIFTED 11→10 (clock-915 裁汰)；2026-08-29 3D品相根治卷 T4 收卷同步: 四份 hF 压限名单吸收合并为单一 COV_COMPACT 16 件 (统一判据 p50>0.85, 新增 7 件) + closeup 窗重标 1.0+hFP*0.7 与专属帽 1.1 + mandelbulb 等价优化入仓判决留 0 (步进 0.8)；2026-08-31 活画卷收卷同步: 新增 chrono_axis_living (出生偏移/日照窗/开场仪式/时钟活层) 与 mounting (装裱) 两节——这两节不是概率轴, 是全库统一的时间轴/装裱契约登记。；2026-09-01 渲染性能卷收卷同步: 顶层新增 render_perf 节 (排水预算制 + worker 化 + 100-hash mint 口径分布, max 18.0s ≤20s 达标)。；2026-09-03 时间重塑卷收卷同步: chrono_axis_living 新增 time_remap_2d (墙钟四段审美带 65/10/10/15, t=12/t=0 双不动点, ?t= 穿 remap) 与 night_lamps (夜色提亮 NIGHT_LIFT + 夜灯 2-4 处独立 sfc32 侧流) 两小节, sunlight_window_3d4d 日照窗不动。数值均逐字对应 DIMENSION 仓 sketch.js/scenes/index.js/scenes/solids-stage.js/scenes/panels-4d.js 里的具名常量 (TIER_WEIGHTS/POOL_2D_WEIGHTS/STYLE2D_OBJECTS_W/STYLE2D_LANDSCAPES_W/THEME32_CATEGORY_W/POLY4D_WEIGHTS/FRACTAL_WEIGHTS 及五分路由阈值)，不是脱离代码另算的第二份数字。DIMENSION 测试 711/711 (2026-08-29 品相根治卷收卷实跑) → 823/823 (2026-08-31 活画卷收卷实跑) → 869/869 (2026-09-01 渲染性能卷收卷实跑) → 876/876 (2026-09-02 印章昼夜制) → 908/908 (2026-09-03 时间重塑卷收卷实跑) → 953/953 (2026-09-05 2D电流核换血+fix1/fix2 实跑) → 976/976 (2026-09-05 逐笔显影幕+日扫7s 实跑) → 1008/1008 (2026-09-05 迷彩件修复 b2+a1 实跑)。；2026-09-05 迷彩件修复: 3D/4D/升维配色新增对比守卫 (ΔY<40→物体弧确定性明度偏移至 ≥46, 零 roll, 触发面 ~16%) + 摆位兜底 cov 复检 (>hi 纯几何缩 hF, 触发 ~0.7%), 双症状迷彩率 0.83%→0。；2026-09-05 过程态两裁: 逐笔显影幕 (观看层, 未画区干净纸色随前沿揭开, 完成态逐位不动) + 日扫 durMs 2600→7000 (自然 renderOK ≈10s, mint 口径不变)。；2026-09-05 观感终裁批: time_remap_2d/night_lamps 全参数 user 追认转正 _locked; 2D 右键电流换接 3D 同源厚电流核 (观看层 overlay 零画面指纹影响, 骑大主体/单环/满幅优雅无为三裁, 详见 DIMENSION README 电流节)。；2026-09-06..07 warp 提比 (风景 15%/物件 30% 达利+豁免名单) + Fidenza 流场缎带 (flow_ribbon 节, 10% 稀有档+v1.5 彩带) 收卷同步, 测试 1106→1132→1172 (Edifice 砖砌档转正+三窗互斥+地面豁免, 2026-09-07)。；2026-09-07..08 纵深卷 (avenue 构图第六型+closeup 降 7+4D 拼板装饰解锁, 1172→1293, sdf-main 侧此前未同步, 本次补记)。；2026-09-08..11 构型扩容+光影卷收卷同步: SCULPT_POOL 16→26 (遗址建筑十件) + comp_34 八窗终态 26/20/5/18/7/12/6/6 (anchor 对比锚+interior 拱廊内景入表) + LIFTED_POOL 10→11 (product-chrome-spheres 复捞) + 收口小刀集三刀 (texture_3d4d 99.5/0.5 / panels_split 100/0 / calligraphy 0) + 顶层新增 sky_decor (受光云 60%+流场淡彩 25%)/theme_warp (主题 warp 60%)/light_shadow (光影七件套+影子降一维设定) 三节; 测试 1293→1348→1375→1376→1383→1410→1420→1469 (2026-09-11 收卷实跑, batch44 200 张 user 总验收\"基本上可以说是非常完美了\")。数据来源以 DIMENSION 仓 README.md 为准（.superpowers/sdd/ 下的 task 报告是 gitignored 本地工作区文件、跨机器不可达，见 m3）。",
+  "comment": "DIMENSION 总概率表 (2026-08-22 策展手术终裁版, 取代 2026-08-14 draft v2；2026-08-23 终审修复轮同步；2026-08-26 配比调整卷 Task 1 同步 dimension_tier 节；2026-08-28 3D扩容+配比卷收卷 Task 6 全表刷新: scene34 主件五分路由 + SOLID/SCULPT 池 16/16 + LIFTED 11 + 分形档 + 三份 hF 压限名单；2026-08-29 呈裁终裁落地: 五分路由与 CAGE/FILLER/lifted 三组压限转正 _locked + PLATONIC_COMPACT 应急帽两件 (dodeca/icosa) + LIFTED 11→10 (clock-915 裁汰)；2026-08-29 3D品相根治卷 T4 收卷同步: 四份 hF 压限名单吸收合并为单一 COV_COMPACT 16 件 (统一判据 p50>0.85, 新增 7 件) + closeup 窗重标 1.0+hFP*0.7 与专属帽 1.1 + mandelbulb 等价优化入仓判决留 0 (步进 0.8)；2026-08-31 活画卷收卷同步: 新增 chrono_axis_living (出生偏移/日照窗/开场仪式/时钟活层) 与 mounting (装裱) 两节——这两节不是概率轴, 是全库统一的时间轴/装裱契约登记。；2026-09-01 渲染性能卷收卷同步: 顶层新增 render_perf 节 (排水预算制 + worker 化 + 100-hash mint 口径分布, max 18.0s ≤20s 达标)。；2026-09-03 时间重塑卷收卷同步: chrono_axis_living 新增 time_remap_2d (墙钟四段审美带 65/10/10/15, t=12/t=0 双不动点, ?t= 穿 remap) 与 night_lamps (夜色提亮 NIGHT_LIFT + 夜灯 2-4 处独立 sfc32 侧流) 两小节, sunlight_window_3d4d 日照窗不动。数值均逐字对应 DIMENSION 仓 sketch.js/scenes/index.js/scenes/solids-stage.js/scenes/panels-4d.js 里的具名常量 (TIER_WEIGHTS/POOL_2D_WEIGHTS/STYLE2D_OBJECTS_W/STYLE2D_LANDSCAPES_W/THEME32_CATEGORY_W/POLY4D_WEIGHTS/FRACTAL_WEIGHTS 及五分路由阈值)，不是脱离代码另算的第二份数字。DIMENSION 测试 711/711 (2026-08-29 品相根治卷收卷实跑) → 823/823 (2026-08-31 活画卷收卷实跑) → 869/869 (2026-09-01 渲染性能卷收卷实跑) → 876/876 (2026-09-02 印章昼夜制) → 908/908 (2026-09-03 时间重塑卷收卷实跑) → 953/953 (2026-09-05 2D电流核换血+fix1/fix2 实跑) → 976/976 (2026-09-05 逐笔显影幕+日扫7s 实跑) → 1008/1008 (2026-09-05 迷彩件修复 b2+a1 实跑)。；2026-09-05 迷彩件修复: 3D/4D/升维配色新增对比守卫 (ΔY<40→物体弧确定性明度偏移至 ≥46, 零 roll, 触发面 ~16%) + 摆位兜底 cov 复检 (>hi 纯几何缩 hF, 触发 ~0.7%), 双症状迷彩率 0.83%→0。；2026-09-05 过程态两裁: 逐笔显影幕 (观看层, 未画区干净纸色随前沿揭开, 完成态逐位不动) + 日扫 durMs 2600→7000 (自然 renderOK ≈10s, mint 口径不变)。；2026-09-05 观感终裁批: time_remap_2d/night_lamps 全参数 user 追认转正 _locked; 2D 右键电流换接 3D 同源厚电流核 (观看层 overlay 零画面指纹影响, 骑大主体/单环/满幅优雅无为三裁, 详见 DIMENSION README 电流节)。；2026-09-06..07 warp 提比 (风景 15%/物件 30% 达利+豁免名单) + Fidenza 流场缎带 (flow_ribbon 节, 10% 稀有档+v1.5 彩带) 收卷同步, 测试 1106→1132→1172 (Edifice 砖砌档转正+三窗互斥+地面豁免, 2026-09-07)。；2026-09-07..08 纵深卷 (avenue 构图第六型+closeup 降 7+4D 拼板装饰解锁, 1172→1293, sdf-main 侧此前未同步, 本次补记)。；2026-09-08..11 构型扩容+光影卷收卷同步: SCULPT_POOL 16→26 (遗址建筑十件) + comp_34 八窗终态 26/20/5/18/7/12/6/6 (anchor 对比锚+interior 拱廊内景入表) + LIFTED_POOL 10→11 (product-chrome-spheres 复捞) + 收口小刀集三刀 (texture_3d4d 99.5/0.5 / panels_split 100/0 / calligraphy 0) + 顶层新增 sky_decor (受光云 60%+流场淡彩 25%)/theme_warp (主题 warp 60%)/light_shadow (光影七件套+影子降一维设定) 三节; 测试 1293→1348→1375→1376→1383→1410→1420→1469 (2026-09-11 收卷实跑, batch44 200 张 user 总验收\"基本上可以说是非常完美了\")。；2026-09-12..13 生产四刀+objects 池改造补记+Kusama 线网收卷同步: 四刀 = seamap 删 (themeSum 8)/素面白名单三件套/黄昏色温三档 (gold3_dusk_tiers 节)/星座 SDF 化扩域, 1469→1470→1478→1493→1498; objects 池改造 (773ff2e, 此前失同步补记) = dimension_tier 63/28/8/1 + POOL_2D 16/51.5/32.5 + objects 风格窗 19/80/1 + 物件纹样 gate 80%; Kusama 线网 (kusama_net 节) = 物件池背景两算法档 30/20/50 转正, 1498→1511 (r1)→1525 (r2)→1531/1531 (2026-09-13 转正实跑, DIMENSION 80cda71)。数据来源以 DIMENSION 仓 README.md 为准（.superpowers/sdd/ 下的 task 报告是 gitignored 本地工作区文件、跨机器不可达，见 m3）。",
   "render_perf": {
     "_note": "渲染性能卷 (2026-08-31..09-01; DIMENSION 侧 commit T1 5962d07 / T2 b9d8d38 / T3 b95ab92)。user 裁定「4D 最坏 59 秒必须处理掉」→ 目标最坏 time-to-$renderOK ≤20s, 硬验收 = 输出逐位不变 (墙钟优化零像素变化; T1 14/14 + T2 14/14: vm op 流 sha256 + r 流游标终态 + 真浏览器 __CK, 2D __PX 逐字节)。T1 排水节拍时间预算 (sketch.js DRAIN_BUDGET_MS 30ms, scene 17/34/35 门控——profile 定音重件墙钟 71-77% 系逐帧排水帧间空转、非 probe CPU; 执行序完全不变 = 逐位构造性成立; 2D 预算恒 0 逐笔观感零扰动): 4D 最坏 61.7→14.9s / 3D 47.5→7.3s / 升维 50.0→10.9s。T2 计算型长尾 worker 化 (render2d/parallel.js 静态分块 + 主线程合围兜底; 链装配走 worker 内 importScripts——主线程 fetch 会被合围帧饿死至提速静默归零, 教训锁进 run-tests): neon 48.0→14.4s / weave 21.0→8.5s。T3 收卷 100-hash 分布 (mint-snapshot 口径: index.html+tokenData+__mountSweepOff, 每枚全新 Chrome 冷缓存单导航, 820 窗, 串行; 活画卷 T4 固定池全 tier 85/7/7/1) 见下方数字——0/100 超 20s, 达标 PASS; 九桶判据全零; 首跑 3 枚 CDN p5 冷取失联白屏超时系 harness 伪影 (复核 5.7/5.7/6.5s 即过, 原始行+复核行双留档)。测试 844→849 (T1) → 869 (T2/T3 实跑)。数据: DIMENSION test/evidence/render-speed/ (profiler/逐位对拍/时长矩阵/speed100 四件套)。达标数字系同机口径(Apple Silicon 本机, worker 池 8=min(8,hardwareConcurrency-1)); 低核数观看端 neon 按核数线性劣化(2-4 核约 20-45s), 合围兜底保证输出逐位正确、不保证 ≤20s。",
     "budget_target_s": 20,
@@ -26,18 +26,18 @@
   },
   "dimension_tier": {
     "_locked": true,
-    "_note": "2026-08-22 策展手术终裁 (逐字), sketch.js TIER_WEIGHTS。BOB 六景/老 3D/老 4D/韵脚 2D/静物台全部退场——不再是这张表要覆盖的自然路由，见 retired_scenes。2026-08-26 新卷终裁 (3D扩容+配比卷 Task 1): 4D 减半让 2D——2d 0.78→0.86 / 4d 0.16→0.08, 3d/ascension 不动, 和仍=1。DIMENSION 侧 1e3c791 落地 (468/468 测试 + 1000-hash 卡方复检双层 PASS: tier df=3 卡方 5.597<7.815, scene df=5 卡方 7.318<11.070)。",
-    "2d": 0.86,
-    "3d": 0.05,
+    "_note": "2026-08-22 策展手术终裁 (逐字), sketch.js TIER_WEIGHTS。BOB 六景/老 3D/老 4D/韵脚 2D/静物台全部退场——不再是这张表要覆盖的自然路由，见 retired_scenes。2026-08-26 新卷终裁 (3D扩容+配比卷 Task 1): 4D 减半让 2D——2d 0.78→0.86 / 4d 0.16→0.08, 3d/ascension 不动, 和仍=1。DIMENSION 侧 1e3c791 落地 (468/468 测试 + 1000-hash 卡方复检双层 PASS: tier df=3 卡方 5.597<7.815, scene df=5 卡方 7.318<11.070)。2026-09-08 objects 池改造 (审图季 user 终裁: \"2D 单一物体跟现在的艺术风格已经很不搭……整体权重从 33% 降到 10%, 剩下的加给 3D\"): 2d 0.86→0.63 / 3d 0.05→0.28, 4d/ascension 不动——objects 自然占比 0.63×0.16≈10.1%; DIMENSION 侧 773ff2e 落地, 本表此前失同步, 2026-09-13 收卷补记。",
+    "2d": 0.63,
+    "3d": 0.28,
     "4d": 0.08,
     "ascension": 0.01
   },
   "2d_content": {
     "_locked": true,
-    "_note": "2D 内容池 = scenes [30,31,32] (物件/风景/主题基石库) 三家独占, sketch.js POOL_2D_WEIGHTS。BOB 六景/韵脚2D(11/15/16/24)/静物台(23) 已退场 (见 retired_scenes)，不再是本表的 2D 内容池成员。",
-    "objects_scene30": 0.38,
-    "landscapes_scene31": 0.38,
-    "themes_scene32": 0.24,
+    "_note": "2D 内容池 = scenes [30,31,32] (物件/风景/主题基石库) 三家独占, sketch.js POOL_2D_WEIGHTS。BOB 六景/韵脚2D(11/15/16/24)/静物台(23) 已退场 (见 retired_scenes)，不再是本表的 2D 内容池成员。2026-09-08 objects 池改造 (773ff2e, 与 dimension_tier 同刀): POOL_2D_WEIGHTS 38/38/24 → 16/51.5/32.5——objects 让出的份额在 2D 池内归风景/主题, 全库自然占比 objects ≈10.1% / landscapes ≈32.4% / themes ≈20.5%; 本表此前失同步, 2026-09-13 收卷补记。",
+    "objects_scene30": 0.16,
+    "landscapes_scene31": 0.515,
+    "themes_scene32": 0.325,
     "themes_scene32_category_weights": {
       "_note": "scenes/index.js THEME32_CATEGORY_W，池内相对权重 (和=10——2026-09-08 书法退场后, 代码内部归一，非人工凑百分比)。mandala_玫瑰窗/flake_雪花两个生成器件已从内容表过滤 (GEN2D.mandala/flake 函数保留，自然路径摸不到)。2026-09-08 user 裁 (batch43 审图⑩ 收口小刀集③): \"去掉文字的 2D\"——calligraphy 2→0, themeSum 12→10 等比归一 (诚实披露: 等比重标全部类窗, ≈16.7% 主题行非书法跨类翻, 与 mandala 过滤同口径先例, 审查建议追认; seamap 被动 16.7%→20%, 其修/删 user 仍欠终裁)。书法 29 件保留, dev ?piece= 可达。",
       "pattern_纹样": 4,
@@ -48,7 +48,11 @@
         "weight": 0,
         "_note": "2026-09-08 文字类退场令, 件保留 dev 可达"
       },
-      "seamap_海图": 2,
+      "seamap_海图": {
+        "_degraded": true,
+        "weight": 0,
+        "_note": "2026-09-12 生产四刀 knife-1 (DIMENSION 293f1b8): user 终裁 \"C map 我觉得删了吧, 它跟我们整个的气质不搭, 真的不搭\"——THEME32 seamap 2→0, themeSum 10→8 三类等比归一 + 不可自然到达断言; 件保留 dev ?piece= 可达"
+      },
       "mandala_玫瑰窗": {
         "_degraded": true,
         "weight": 0,
@@ -64,15 +68,22 @@
   "2d_style_axis": {
     "objects": {
       "_locked": true,
-      "before": 0.69,
+      "before": 0.19,
       "neon": 0.01,
       "painted": {
         "_degraded": true,
         "weight": 0,
         "_note": "2026-08-22 终裁退场，STYLE2D_OBJECTS_W.painted=0；libSdfsForPainted() 渲染桥接与 makesdf() 30-32 分派原样不动，?style2d=painted dev 覆盖口仍可达 (test/run-tests.mjs 可达性双向断言)"
       },
-      "warp": 0.3,
-      "_note": "2026-09-06 user 终裁: warp 0→30% (\"确实有一种达利的感觉\"), before 99→69, neon 1 不动; 2026-09-07 豁免名单 WARP2D_EXEMPT=[eyeglasses,typewriter,morandi-bottles] (熔后失身份, warp→before 纯判定重映射零 roll, 折纸鹤不进); 划分窗序 before|painted|warp|neon, neon 尾窗 IEEE 位级与旧重合零翻转"
+      "warp": 0.8,
+      "_note": "2026-09-06 user 终裁: warp 0→30% (\"确实有一种达利的感觉\"), before 99→69, neon 1 不动; 2026-09-07 豁免名单 WARP2D_EXEMPT=[eyeglasses,typewriter,morandi-bottles] (熔后失身份, warp→before 纯判定重映射零 roll, 折纸鹤不进); 划分窗序 before|painted|warp|neon, neon 尾窗 IEEE 位级与旧重合零翻转。2026-09-08 objects 池改造 (773ff2e, user 终裁 \"所有物体里面 80% 融化\"): STYLE2D_OBJECTS_W before 69→19 / warp 30→80, neon 1 不动 (objects 纹样 gate 同刀 80%, 见 pattern_system); 本表此前失同步, 2026-09-13 收卷补记。",
+      "kusama_net": {
+        "_locked": true,
+        "circle_packing": 0.3,
+        "triangulation": 0.2,
+        "none": 0.5,
+        "_note": "Kusama 线网背景 (2026-09-12..13, DIMENSION r1 935257a → r2 634c27c → 转正 80cda71): objects 池物体背后的背景区两算法档——圆堆积 (stroke 彩圆, palette 派生深色系+accent, 墨黑 ~40% 主色调, fill-a 逐圆 30% 淡填充内置) / 细碎 Delaunay 剖分 (\"库萨玛银杏叶\"级: 三角面积 r1 的 ~1/10, 内圈顶点落物体 SDF=0 轮廓线上=物体成网中之洞, 线色浅淡多彩弃黑, 低幅 sine 波线)。网只画物外背景 (物体 SDF 作障碍), 圆 rMax/rMin 与剖分种子间距逐 hash 随机 (每件泡沫粒度/网眼疏密不同)。单 roll 三窗互斥 [0,0.30)/[0.30,0.50)/[0.50,1) (fx2d.js KU_GATE_CP/KU_GATE_DT), 第十三方独立侧流 ⊕0x7FEB355B 恒耗, 消费恒定对拍锁+600-hash 统计锁 (实测 32.2/18.5/49.3)。user 终裁逐字: \"这两张很好, 50%的概率没问题……三角和圆跟背景很融入\"。呈裁复核项七条 (fill-a 默认/密度权重/30-20 切分等) 留 200 张批, 见 DIMENSION 仓 kusama ledger。"
+      }
     },
     "landscapes": {
       "_locked": true,
@@ -529,9 +540,14 @@
     "rates": {
       "_note": "扩面出现率 (qilin-study-design §四 rollout, user 已裁): 2D before/after 40% 抽签 (WP_EXT_RATE, 纹样静置+轻 perlin 抖动 0.03-0.06); warp 100% 无 gate——不抽签但带数仍受双边面积门约束, 全员出窗→素面 (终审实测 ~4%, 反例 0x14c1c7c1…) (纹样经同一 domain warp 随形流动); themes 豁免 0; 3D scene34 33% (WP_EXT3D_RATE, triplanar |n|^3 三平面混合根治掠射拉丝 + 单 probe 顺带取场值; scene35/17 本卷不接锁死)。",
       "before_after_2d": 0.4,
+      "before_2d_objects": 0.8,
       "warp": 1.0,
       "themes": 0,
-      "solids_3d_scene34": 0.33
+      "solids_3d_scene34": 0.33,
+      "_note_objects_reshape": "2026-09-08 objects 池改造 (773ff2e): 物件 (scene30) before 素面件带纹率 40%→80% (WP_EXT_RATE_OBJECTS, user 终裁 \"留下的物件 80% 带 Qilin 纹样\"), 风景 (scene31) 维持 WP_EXT_RATE 40%; gate 分叉按 pa.scene 判, roll 结构不变。本表此前失同步, 2026-09-13 收卷补记。"
+    },
+    "plain_whitelist_3d": {
+      "_note": "2026-09-12 生产四刀 knife-2 (DIMENSION 35a3624) 素面白名单三件套: 3D 四窗素面档 [0.90,1) 加 kind 资格白名单——强轮廓 40 件有资格素面, 钝形 20 件出列 (素面命中但无资格 → 确定性重映射回纹样, 零 roll 纯 lookup, wp4PlainAllowed); 夜件免死 (夜窗态素面保留, 夜有光影承托); stilllife 6% 追认注记。白名单 40 员逐件表与三档色值攒 200 张批呈裁 (kusama ledger 呈裁清单)。"
     },
     "bilateral_gate": {
       "_note": "面积双边门 (T3, Qilin 发现 A): 可见层 top-hit 占比 (24² 网格扫描, 纯派生零 roll) 候选窗 [WP_MIN_COV, WP_MAX_COV] + 最大占比层无条件出局 (主底色恒素面); 全员出窗 → 素面 (侧流 roll 照耗)。上界在 top-hit 口径下被 argmax 出局构造性支配 (纵深防御, 源码诚实注记)。",
@@ -604,13 +620,20 @@
     "_note": "光影七件套 (构型扩容+光影卷 T4b, 2026-09-10; user 藏品级定调 2026-09-09 逐字精神: \"光和影是整个表现手法的核心; 影子降一维……重点要描绘这个影子, 才能把 4D 的感觉描绘出来\"——三维影语法: 2D 影是线(不强调)/3D 影是面(长影+光池 本卷主战场)/4D 影是\"影雕\"=4D SDF 沿光向投影成 3D 实体 (下卷设计核, 与对偶柱立项合体归 4D 减法卷)。常量全 draft, 数值以 DIMENSION 仓 ad19b21 源码字面为准。",
     "pieces": {
       "1_2d洒光": "夜灯先铺洒光垫层 (R×3.1 'screen' 三停软衰减, 乘性提亮=照明语义), 晕圈叠其上; 零 roll",
-      "2_3d星座": "第十一方侧流 ⊕0xBF58476D 恒 51 roll; 1-2 座 × 5-8 星折线, probe 判真天空才落星",
+      "2_3d星座": "第十一方侧流 ⊕0xBF58476D 恒 51 roll; 1-2 座 × 5-8 星折线, probe 判真天空才落星。2026-09-12 生产四刀 knife-4 (dcdc434) SDF 化重做: user 裁 \"你的星座不是 SDF, 这就不美了\"——星点改 astroid 四芒星 (|dx|^⅔+|dy|^⅔)^1.5≤r + 胶囊连线, 走织谱管线; 作用域扩全部夜件 (scene34/35/17 同享, 整幅一座)",
       "3_地面保暗": "NIGHT3_GROUND_K 0.22→0.08 + FLOOR 近黑微暖——映金只给建筑主体 (user 审图⑤: 明暗对比=夜的骨架)",
       "4_光束": "解析束辉闭式零采样 (径向高斯×高度衰减×锥展开); fix1 八常量收紧——束读作柱不作洗, 深黑夜空保住",
       "5_保金下限": "低饱和底 (HSL s<0.22) 混比升 0.78 + 色相钳金域 [0.075,0.125] 饱和地板 0.42; 饱和底逐位不变",
       "6_长影": "金色带日高压低 elevMul=1−0.45·w → 影长 ~1.8×; 正午台地 [10,14] 恒 0 (非素面件 t=12 IEEE 逐位保持; 素面件 T_lightStrong=18 恒金色带→t=12 即带长影, 强光影意图放大); 影雾保形",
       "7_拱廊光池": "interior 构图侧门洞光池 = 既有影判据自然涌现, 随活画时轴游走 (光束的室内版); 见 comp_34 interior"
     },
-    "rebaseline": "vm A/B 100 hash MISMATCH 0 + 真浏览器 t=12 九桶全零 2D 69/69 逐位 + 夜面 t=0 双服 100/100 old≠new (DIMENSION test/evidence/lightshadow-rebaseline/)"
+    "rebaseline": "vm A/B 100 hash MISMATCH 0 + 真浏览器 t=12 九桶全零 2D 69/69 逐位 + 夜面 t=0 双服 100/100 old≠new (DIMENSION test/evidence/lightshadow-rebaseline/)",
+    "gold3_dusk_tiers": {
+      "_locked": true,
+      "pure_gold": 0.4,
+      "gold_red_mix": 0.35,
+      "sunset_red": 0.25,
+      "_note": "2026-09-12 生产四刀 knife-3 (DIMENSION 5b92254) 黄昏色温三档: user 终裁 \"有的时候偏金, 有的时候偏红, 有的时候是金和红的混合体, 不要全是金\"——金色带日光色 hash 派生三档 纯金 [255,200,112] 40% / 金红混 [252,148,84] 35% / 晚霞红 [240,98,66] 25% (draft 色值, 以 DIMENSION 源码字面为准); 第十二方独立侧流 ⊕0xCC9E2D51 (GOLD3, 恒 13 roll), chronoGold3Shade/chronoNight3Shade 同法同位; 权重与色值攒 200 张批呈裁复核。"
+    }
   }
 }

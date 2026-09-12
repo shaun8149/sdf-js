@@ -316,6 +316,32 @@ screen 垫层软衰减）②3D 夜空星座（hash 派生 1-2 座折线星座，
 AVENUE_WIDE 追认、o1-o3 光影观察、俯视件淡彩白名单、等比归一追认、closeup 0 出场复核等）见
 DIMENSION 仓 task-5b-closeout-report STOP 节。
 
+**生产四刀（2026-09-12，呈裁攒单逐条清账，1469→1498）**：knife-1 seamap 删除（user："跟我们
+整个的气质不搭，真的不搭"——THEME32 seamap 2→0，themeSum 8 等比归一+不可自然到达断言，293f1b8）；
+knife-2 素面白名单三件套（3D 素面档 kind 资格制：强轮廓 40 件有资格/钝形 20 件出列重映射回纹样
+（零 roll 纯 lookup wp4PlainAllowed）/夜件免死/stilllife 6% 追认，35a3624）；knife-3 黄昏色温三档
+（user："有的时候偏金，有的时候偏红……不要全是金"——金色带日光色 hash 派生 纯金 40%/金红混 35%/
+晚霞红 25%，第十二方侧流 ⊕0xCC9E2D51，5b92254）；knife-4 星座 SDF 化重做+扩域（user："你的星座
+不是 SDF，这就不美了"——astroid 四芒星+胶囊连线走织谱管线，扩全部夜件 34/35/17 整幅一座，dcdc434）。
+t4 池重基线一次收（7c4b69f）。**同期补记 objects 池改造（2026-09-08，773ff2e，sdf-main 侧此前
+失同步）**：user "2D 单一物体跟现在的艺术风格已经很不搭……整体权重从 33% 降到 10%，剩下的加给
+3D"——TIER 63/28/8/1 + POOL_2D 16/51.5/32.5 + objects 风格窗 before19/warp80/neon1 + 物件纹样
+gate 80%。
+
+**Kusama 线网背景（2026-09-12..13，1498→1531，DIMENSION r1 935257a → r2 634c27c → 转正
+80cda71）**：2D 物件池物体背后的背景区两算法档——**圆堆积**（stroke 彩圆，palette 派生深色系+
+accent、墨黑 ~40% 主色调，fill-a 逐圆 30% 淡填充内置）/**细碎 Delaunay 剖分**（"库萨玛银杏叶"级：
+三角面积 r1 的 ~1/10，**内圈顶点落物体 SDF=0 轮廓零等值线上 = 物体成网中之洞**（扫格+牛顿投影采样，
+物内三角剔除+穿物边整边剔），线色浅淡多彩弃黑，低幅 sine 波线端点归零）。网只画物外背景（物体 SDF
+作障碍），圆 rMax/rMin 与剖分种子间距逐 hash 随机（每件泡沫粒度/网眼疏密不同）。单 roll 三窗互斥
+[0,0.30) 圆/[0.30,0.50) 剖分/[0.50,1) 无网，第十三方独立侧流 ⊕0x7FEB355B，消费恒定对拍锁（自然
+带网 vs 强制关网后续 r() 流逐位一致）+600-hash 统计锁（32.2/18.5/49.3）。user 终裁逐字："这两张
+很好，50%的概率没问题……三角和圆跟背景很融入。" 转正重基线昼夜双轮 65/65 SAME + 受影响行
+predMatches 100/100。呈裁复核项七条（fill-a 默认/密度权重/圆30剖20切分/素面白名单优先带网未实现/
+neon 不接/traits 未曝露档位/mint-snapshot 口径）攒 200 张批，见 DIMENSION 仓 kusama ledger。
+排队中：200 张完全体验收批 vs 4D 影雕卷（对偶柱+影雕设计核）二择 user 待裁；atom 生成器移植卷
+（user 已选 A）排 4D 影雕卷前后。
+
 ---
 
 ## 1. Hard rules (NON-NEGOTIABLE — these override defaults)
@@ -357,6 +383,13 @@ DIMENSION 仓 task-5b-closeout-report STOP 节。
    驱动 examples/batch-export.html → 真实 buildDeckPdf 产品代码 + page-lint
    出厂检)。不要再写临场脚本复刻导出循环 — 抽查脚本与批量脚本不同源时,
    抽查就是安慰剂 (事故正是这么漏的)。
+
+**🗺 场景语料总地图（2026-08-12，防重复造轮子）：** 写任何新场景/物件前先查——
+demo-lifts 217 件（`examples/compositor/demo-lifts/*.json`，具象王牌：火箭发射架/哥特教堂/
+灯塔/航母舰队/自行车/罗马柱廊/时钟/盆景山，注意剥 `.sceneData` 壳）· `scenes/` 247 件 ·
+场景 atoms 42 个（`src/scene/components/atoms/`）· MVP 61 示例（`examples/mvp/`，铅笔/钟表/
+自行车/emoji 系列）· community ports · autoscope 6 模板。全部经 `compile().sdf.f` 可 CPU
+求值（火箭 57-subject 已验证）——GPU 场景语料可直接喂 CPU 渲染器。
 
 ## 2. Architecture (the technical spine)
 
