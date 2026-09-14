@@ -3,7 +3,8 @@
 <style>body{margin:0;background:#111;display:grid;place-items:center;height:100vh}canvas{max-width:90vmin;max-height:90vmin}</style>
 </head><body>
 <canvas id="c" width="900" height="900"></canvas>
-<script>{const sz = new URLSearchParams(location.search).get("size"); if (sz) { const c = document.getElementById("c"); c.width = c.height = Number(sz); }}</script>
+<script src="query-params.js"></script>
+<script>{ window.genlabQuery.applyCanvasSizeFromQuery(document.getElementById("c")); }</script>
 <script type="module">
 // =============================================================================
 // fx.html — 语料变换渲染台。加载 out/<id>.js 但把 render.silhouette 调用截胡到
@@ -17,7 +18,7 @@ import { render } from '../../src/index.js';
 import { createPerlin } from '../../src/field/noise.js';
 
 const qs = new URLSearchParams(location.search);
-const id = qs.get('id');
+const id = window.genlabQuery.requireSlug(qs.get('id'), 'id');
 const mode = qs.get('mode') || 'topo';
 const P = (k, d) => Number(qs.get(k) ?? d);
 
@@ -153,7 +154,10 @@ try {
   await import(URL.createObjectURL(new Blob([code], { type: 'application/javascript' })));
   window.$genOK = true;
 } catch (e) {
-  document.body.innerHTML = `<pre style="color:#f66">${e.stack}</pre>`;
+  const pre = document.createElement('pre');
+  pre.style.color = '#f66';
+  pre.textContent = e.stack || String(e);
+  document.body.replaceChildren(pre);
   window.$genErr = String(e);
 }
 </script>

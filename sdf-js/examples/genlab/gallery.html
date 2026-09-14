@@ -8,17 +8,25 @@ body{margin:0;background:#0d0d0d;font:12px monospace;color:#ccc}
 .cell .tag{position:absolute;left:6px;bottom:6px;background:#000c;padding:2px 6px;border-radius:3px}
 </style></head><body>
 <div class="grid" id="g"></div>
+<script src="query-params.js"></script>
 <script>
 // 全家福: prompts.json 里每个已生成的 id 一格 (?ids=a,b,c 可指定子集)
 const qs = new URLSearchParams(location.search);
 fetch('./prompts.json').then((r) => r.json()).then(async ({ prompts }) => {
-  const want = qs.get('ids') ? qs.get('ids').split(',') : prompts.map((p) => p.id);
+  const want = qs.get('ids')
+    ? window.genlabQuery.safeSlugList(qs.get('ids').split(','))
+    : window.genlabQuery.safeSlugList(prompts.map((p) => p.id));
   for (const id of want) {
     const head = await fetch(`./out/${id}.js`, { method: 'HEAD' });
     if (!head.ok) continue;
     const cell = document.createElement('div');
     cell.className = 'cell';
-    cell.innerHTML = `<iframe src="view.html?id=${id}&size=360"></iframe><span class="tag">${id}</span>`;
+    const iframe = document.createElement('iframe');
+    iframe.src = `view.html?id=${encodeURIComponent(id)}&size=360`;
+    const tag = document.createElement('span');
+    tag.className = 'tag';
+    tag.textContent = id;
+    cell.append(iframe, tag);
     document.getElementById('g').appendChild(cell);
   }
 });
