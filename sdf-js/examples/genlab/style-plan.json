@@ -1,5 +1,5 @@
 {
-  "comment": "DIMENSION 总概率表 (2026-08-22 策展手术终裁版, 取代 2026-08-14 draft v2；2026-08-23 终审修复轮同步；2026-08-26 配比调整卷 Task 1 同步 dimension_tier 节；2026-08-28 3D扩容+配比卷收卷 Task 6 全表刷新: scene34 主件五分路由 + SOLID/SCULPT 池 16/16 + LIFTED 11 + 分形档 + 三份 hF 压限名单；2026-08-29 呈裁终裁落地: 五分路由与 CAGE/FILLER/lifted 三组压限转正 _locked + PLATONIC_COMPACT 应急帽两件 (dodeca/icosa) + LIFTED 11→10 (clock-915 裁汰)；2026-08-29 3D品相根治卷 T4 收卷同步: 四份 hF 压限名单吸收合并为单一 COV_COMPACT 16 件 (统一判据 p50>0.85, 新增 7 件) + closeup 窗重标 1.0+hFP*0.7 与专属帽 1.1 + mandelbulb 等价优化入仓判决留 0 (步进 0.8)；2026-08-31 活画卷收卷同步: 新增 chrono_axis_living (出生偏移/日照窗/开场仪式/时钟活层) 与 mounting (装裱) 两节——这两节不是概率轴, 是全库统一的时间轴/装裱契约登记。；2026-09-01 渲染性能卷收卷同步: 顶层新增 render_perf 节 (排水预算制 + worker 化 + 100-hash mint 口径分布, max 18.0s ≤20s 达标)。；2026-09-03 时间重塑卷收卷同步: chrono_axis_living 新增 time_remap_2d (墙钟四段审美带 65/10/10/15, t=12/t=0 双不动点, ?t= 穿 remap) 与 night_lamps (夜色提亮 NIGHT_LIFT + 夜灯 2-4 处独立 sfc32 侧流) 两小节, sunlight_window_3d4d 日照窗不动。数值均逐字对应 DIMENSION 仓 sketch.js/scenes/index.js/scenes/solids-stage.js/scenes/panels-4d.js 里的具名常量 (TIER_WEIGHTS/POOL_2D_WEIGHTS/STYLE2D_OBJECTS_W/STYLE2D_LANDSCAPES_W/THEME32_CATEGORY_W/POLY4D_WEIGHTS/FRACTAL_WEIGHTS 及五分路由阈值)，不是脱离代码另算的第二份数字。DIMENSION 测试 711/711 (2026-08-29 品相根治卷收卷实跑) → 823/823 (2026-08-31 活画卷收卷实跑) → 869/869 (2026-09-01 渲染性能卷收卷实跑) → 876/876 (2026-09-02 印章昼夜制) → 908/908 (2026-09-03 时间重塑卷收卷实跑) → 953/953 (2026-09-05 2D电流核换血+fix1/fix2 实跑) → 976/976 (2026-09-05 逐笔显影幕+日扫7s 实跑) → 1008/1008 (2026-09-05 迷彩件修复 b2+a1 实跑)。；2026-09-05 迷彩件修复: 3D/4D/升维配色新增对比守卫 (ΔY<40→物体弧确定性明度偏移至 ≥46, 零 roll, 触发面 ~16%) + 摆位兜底 cov 复检 (>hi 纯几何缩 hF, 触发 ~0.7%), 双症状迷彩率 0.83%→0。；2026-09-05 过程态两裁: 逐笔显影幕 (观看层, 未画区干净纸色随前沿揭开, 完成态逐位不动) + 日扫 durMs 2600→7000 (自然 renderOK ≈10s, mint 口径不变)。；2026-09-05 观感终裁批: time_remap_2d/night_lamps 全参数 user 追认转正 _locked; 2D 右键电流换接 3D 同源厚电流核 (观看层 overlay 零画面指纹影响, 骑大主体/单环/满幅优雅无为三裁, 详见 DIMENSION README 电流节)。；2026-09-06..07 warp 提比 (风景 15%/物件 30% 达利+豁免名单) + Fidenza 流场缎带 (flow_ribbon 节, 10% 稀有档+v1.5 彩带) 收卷同步, 测试 1106→1132→1172 (Edifice 砖砌档转正+三窗互斥+地面豁免, 2026-09-07)。；2026-09-07..08 纵深卷 (avenue 构图第六型+closeup 降 7+4D 拼板装饰解锁, 1172→1293, sdf-main 侧此前未同步, 本次补记)。；2026-09-08..11 构型扩容+光影卷收卷同步: SCULPT_POOL 16→26 (遗址建筑十件) + comp_34 八窗终态 26/20/5/18/7/12/6/6 (anchor 对比锚+interior 拱廊内景入表) + LIFTED_POOL 10→11 (product-chrome-spheres 复捞) + 收口小刀集三刀 (texture_3d4d 99.5/0.5 / panels_split 100/0 / calligraphy 0) + 顶层新增 sky_decor (受光云 60%+流场淡彩 25%)/theme_warp (主题 warp 60%)/light_shadow (光影七件套+影子降一维设定) 三节; 测试 1293→1348→1375→1376→1383→1410→1420→1469 (2026-09-11 收卷实跑, batch44 200 张 user 总验收\"基本上可以说是非常完美了\")。；2026-09-12..13 生产四刀+objects 池改造补记+Kusama 线网收卷同步: 四刀 = seamap 删 (themeSum 8)/素面白名单三件套/黄昏色温三档 (gold3_dusk_tiers 节)/星座 SDF 化扩域, 1469→1470→1478→1493→1498; objects 池改造 (773ff2e, 此前失同步补记) = dimension_tier 63/28/8/1 + POOL_2D 16/51.5/32.5 + objects 风格窗 19/80/1 + 物件纹样 gate 80%; Kusama 线网 (kusama_net 节) = 物件池背景两算法档 30/20/50 转正, 1498→1511 (r1)→1525 (r2)→1531/1531 (2026-09-13 转正实跑, DIMENSION 80cda71)。数据来源以 DIMENSION 仓 README.md 为准（.superpowers/sdd/ 下的 task 报告是 gitignored 本地工作区文件、跨机器不可达，见 m3）。；2026-09-13..14 色彩光影卷收卷同步 (DIMENSION c590393, 九刀 T1/T4/T2/T3/T4b/T4c/T4d/T4e/T4f): K2 gold3 权重回摆 0.55/0.27/0.18 转正 + K3 碑式四型平光带折叠 + K4 神庙 palette 提频窗 15%×18套 (light_shadow 三小节) + M1 影色四档分离 35/25/25/15 + M2 ΔHue<30° 守卫 (触发率 39.15%, user 终裁 A 保持字面) + M5 纹样色三律三角色 (墨/纸/accent, 件级三窗 67/25/8) + 纹样三原则 (细线/每件≥2族/同族跨区回响, 多族率 31%→83%) + Qilin 全族补齐 10→15 + Kusama 圆语法 QQL 化 (件级 BullseyeGenerator) + 2D 白堆积四刀 (白斑 7.5%→1.9% PASS, 机制黄构造性全灭) + 型染定纹按族转正 (四族随形/十族定纹+霞缩幅)。测试链 1531→1558(T1)→1574/1577(T4 2D/3D)→1604(T2)→1634(T3)→1642(T4b+全卷合并重基线)→1661(T4c)→1685(T4d)→1688(T4e)→1692/1692 (2026-09-14 T4f 收卷实跑)。；2026-09-14..15 色彩光影卷尾三刀+opus 终审同步 (DIMENSION 47d5c89): T6 光的纪律五刀 (760bbc3, 白光两情境门+恒星七档+ng 窄色域巨物窗+建筑面散射抑制, light_shadow stellar_discipline_t6 小节) + T7 收官双件 (f106989, B 旋钮遗址 9 件入砖砌白名单见 masonry 节 + 彩光浓度对照零转正) + T8 定档 (47d5c89, STELLAR3_OBJ_MIX 0.22→0.18 + 黄金加深 deepA 定值, user 终裁 2026-09-15 \"两个都按照你的推荐来\") + opus 全卷终审 Approved-with-fixes (ΔHue 触发率 39.15→40.69% 重锁回灌 = 终审 R2, 见 dhue_guard_m2)。测试链 1692→1724(T6)→1731(T7)→1732/1732 (2026-09-15 T8 定档双轮实跑)；batch47 200/200 九桶全零 (seed=471001, T6/T7 后首全量复核批)。",
+  "comment": "DIMENSION 总概率表 (2026-08-22 策展手术终裁版, 取代 2026-08-14 draft v2；2026-08-23 终审修复轮同步；2026-08-26 配比调整卷 Task 1 同步 dimension_tier 节；2026-08-28 3D扩容+配比卷收卷 Task 6 全表刷新: scene34 主件五分路由 + SOLID/SCULPT 池 16/16 + LIFTED 11 + 分形档 + 三份 hF 压限名单；2026-08-29 呈裁终裁落地: 五分路由与 CAGE/FILLER/lifted 三组压限转正 _locked + PLATONIC_COMPACT 应急帽两件 (dodeca/icosa) + LIFTED 11→10 (clock-915 裁汰)；2026-08-29 3D品相根治卷 T4 收卷同步: 四份 hF 压限名单吸收合并为单一 COV_COMPACT 16 件 (统一判据 p50>0.85, 新增 7 件) + closeup 窗重标 1.0+hFP*0.7 与专属帽 1.1 + mandelbulb 等价优化入仓判决留 0 (步进 0.8)；2026-08-31 活画卷收卷同步: 新增 chrono_axis_living (出生偏移/日照窗/开场仪式/时钟活层) 与 mounting (装裱) 两节——这两节不是概率轴, 是全库统一的时间轴/装裱契约登记。；2026-09-01 渲染性能卷收卷同步: 顶层新增 render_perf 节 (排水预算制 + worker 化 + 100-hash mint 口径分布, max 18.0s ≤20s 达标)。；2026-09-03 时间重塑卷收卷同步: chrono_axis_living 新增 time_remap_2d (墙钟四段审美带 65/10/10/15, t=12/t=0 双不动点, ?t= 穿 remap) 与 night_lamps (夜色提亮 NIGHT_LIFT + 夜灯 2-4 处独立 sfc32 侧流) 两小节, sunlight_window_3d4d 日照窗不动。数值均逐字对应 DIMENSION 仓 sketch.js/scenes/index.js/scenes/solids-stage.js/scenes/panels-4d.js 里的具名常量 (TIER_WEIGHTS/POOL_2D_WEIGHTS/STYLE2D_OBJECTS_W/STYLE2D_LANDSCAPES_W/THEME32_CATEGORY_W/POLY4D_WEIGHTS/FRACTAL_WEIGHTS 及五分路由阈值)，不是脱离代码另算的第二份数字。DIMENSION 测试 711/711 (2026-08-29 品相根治卷收卷实跑) → 823/823 (2026-08-31 活画卷收卷实跑) → 869/869 (2026-09-01 渲染性能卷收卷实跑) → 876/876 (2026-09-02 印章昼夜制) → 908/908 (2026-09-03 时间重塑卷收卷实跑) → 953/953 (2026-09-05 2D电流核换血+fix1/fix2 实跑) → 976/976 (2026-09-05 逐笔显影幕+日扫7s 实跑) → 1008/1008 (2026-09-05 迷彩件修复 b2+a1 实跑)。；2026-09-05 迷彩件修复: 3D/4D/升维配色新增对比守卫 (ΔY<40→物体弧确定性明度偏移至 ≥46, 零 roll, 触发面 ~16%) + 摆位兜底 cov 复检 (>hi 纯几何缩 hF, 触发 ~0.7%), 双症状迷彩率 0.83%→0。；2026-09-05 过程态两裁: 逐笔显影幕 (观看层, 未画区干净纸色随前沿揭开, 完成态逐位不动) + 日扫 durMs 2600→7000 (自然 renderOK ≈10s, mint 口径不变)。；2026-09-05 观感终裁批: time_remap_2d/night_lamps 全参数 user 追认转正 _locked; 2D 右键电流换接 3D 同源厚电流核 (观看层 overlay 零画面指纹影响, 骑大主体/单环/满幅优雅无为三裁, 详见 DIMENSION README 电流节)。；2026-09-06..07 warp 提比 (风景 15%/物件 30% 达利+豁免名单) + Fidenza 流场缎带 (flow_ribbon 节, 10% 稀有档+v1.5 彩带) 收卷同步, 测试 1106→1132→1172 (Edifice 砖砌档转正+三窗互斥+地面豁免, 2026-09-07)。；2026-09-07..08 纵深卷 (avenue 构图第六型+closeup 降 7+4D 拼板装饰解锁, 1172→1293, sdf-main 侧此前未同步, 本次补记)。；2026-09-08..11 构型扩容+光影卷收卷同步: SCULPT_POOL 16→26 (遗址建筑十件) + comp_34 八窗终态 26/20/5/18/7/12/6/6 (anchor 对比锚+interior 拱廊内景入表) + LIFTED_POOL 10→11 (product-chrome-spheres 复捞) + 收口小刀集三刀 (texture_3d4d 99.5/0.5 / panels_split 100/0 / calligraphy 0) + 顶层新增 sky_decor (受光云 60%+流场淡彩 25%)/theme_warp (主题 warp 60%)/light_shadow (光影七件套+影子降一维设定) 三节; 测试 1293→1348→1375→1376→1383→1410→1420→1469 (2026-09-11 收卷实跑, batch44 200 张 user 总验收\"基本上可以说是非常完美了\")。；2026-09-12..13 生产四刀+objects 池改造补记+Kusama 线网收卷同步: 四刀 = seamap 删 (themeSum 8)/素面白名单三件套/黄昏色温三档 (gold3_dusk_tiers 节)/星座 SDF 化扩域, 1469→1470→1478→1493→1498; objects 池改造 (773ff2e, 此前失同步补记) = dimension_tier 63/28/8/1 + POOL_2D 16/51.5/32.5 + objects 风格窗 19/80/1 + 物件纹样 gate 80%; Kusama 线网 (kusama_net 节) = 物件池背景两算法档 30/20/50 转正, 1498→1511 (r1)→1525 (r2)→1531/1531 (2026-09-13 转正实跑, DIMENSION 80cda71)。数据来源以 DIMENSION 仓 README.md 为准（.superpowers/sdd/ 下的 task 报告是 gitignored 本地工作区文件、跨机器不可达，见 m3）。；2026-09-13..14 色彩光影卷收卷同步 (DIMENSION c590393, 九刀 T1/T4/T2/T3/T4b/T4c/T4d/T4e/T4f): K2 gold3 权重回摆 0.55/0.27/0.18 转正 + K3 碑式四型平光带折叠 + K4 神庙 palette 提频窗 15%×18套 (light_shadow 三小节) + M1 影色四档分离 35/25/25/15 + M2 ΔHue<30° 守卫 (触发率 39.15%, user 终裁 A 保持字面) + M5 纹样色三律三角色 (墨/纸/accent, 件级三窗 67/25/8) + 纹样三原则 (细线/每件≥2族/同族跨区回响, 多族率 31%→83%) + Qilin 全族补齐 10→15 + Kusama 圆语法 QQL 化 (件级 BullseyeGenerator) + 2D 白堆积四刀 (白斑 7.5%→1.9% PASS, 机制黄构造性全灭) + 型染定纹按族转正 (四族随形/十族定纹+霞缩幅)。测试链 1531→1558(T1)→1574/1577(T4 2D/3D)→1604(T2)→1634(T3)→1642(T4b+全卷合并重基线)→1661(T4c)→1685(T4d)→1688(T4e)→1692/1692 (2026-09-14 T4f 收卷实跑)。；2026-09-14..15 色彩光影卷尾三刀+opus 终审同步 (DIMENSION 47d5c89): T6 光的纪律五刀 (760bbc3, 白光两情境门+恒星七档+ng 窄色域巨物窗+建筑面散射抑制, light_shadow stellar_discipline_t6 小节) + T7 收官双件 (f106989, B 旋钮遗址 9 件入砖砌白名单见 masonry 节 + 彩光浓度对照零转正) + T8 定档 (47d5c89, STELLAR3_OBJ_MIX 0.22→0.18 + 黄金加深 deepA 定值, user 终裁 2026-09-15 \"两个都按照你的推荐来\") + opus 全卷终审 Approved-with-fixes (ΔHue 触发率 39.15→40.69% 重锁回灌 = 终审 R2, 见 dhue_guard_m2)。测试链 1692→1724(T6)→1731(T7)→1732/1732 (2026-09-15 T8 定档双轮实跑)；batch47 200/200 九桶全零 (seed=471001, T6/T7 后首全量复核批)。；2026-09-15 T9/T9b 策展手术同步 (DIMENSION 6b476f4 T9 → f190bdc T9b 收口刀): batch47 审图三令 + 边界 19 件 user 圈选终裁 \"按照推荐来\" = 三类语料成员级剔除 32 件 (俯视文物圆盘图腾/织物布样 sampler/emoji 卡通拟人脸, 详见 piece_cull_t9 节), 测试链 1732→1745(T9)→1752/1752 (T9b 双轮实跑)；batch48 200/200 九桶全零 (seed=481001, 剔件 32 零出场断言级双证), user 总评逐字 \"第一, 基本上做到了每一件都合格, 没有特别不好的。第二, 优秀的作品有很多\"。",
   "render_perf": {
     "_note": "渲染性能卷 (2026-08-31..09-01; DIMENSION 侧 commit T1 5962d07 / T2 b9d8d38 / T3 b95ab92)。user 裁定「4D 最坏 59 秒必须处理掉」→ 目标最坏 time-to-$renderOK ≤20s, 硬验收 = 输出逐位不变 (墙钟优化零像素变化; T1 14/14 + T2 14/14: vm op 流 sha256 + r 流游标终态 + 真浏览器 __CK, 2D __PX 逐字节)。T1 排水节拍时间预算 (sketch.js DRAIN_BUDGET_MS 30ms, scene 17/34/35 门控——profile 定音重件墙钟 71-77% 系逐帧排水帧间空转、非 probe CPU; 执行序完全不变 = 逐位构造性成立; 2D 预算恒 0 逐笔观感零扰动): 4D 最坏 61.7→14.9s / 3D 47.5→7.3s / 升维 50.0→10.9s。T2 计算型长尾 worker 化 (render2d/parallel.js 静态分块 + 主线程合围兜底; 链装配走 worker 内 importScripts——主线程 fetch 会被合围帧饿死至提速静默归零, 教训锁进 run-tests): neon 48.0→14.4s / weave 21.0→8.5s。T3 收卷 100-hash 分布 (mint-snapshot 口径: index.html+tokenData+__mountSweepOff, 每枚全新 Chrome 冷缓存单导航, 820 窗, 串行; 活画卷 T4 固定池全 tier 85/7/7/1) 见下方数字——0/100 超 20s, 达标 PASS; 九桶判据全零; 首跑 3 枚 CDN p5 冷取失联白屏超时系 harness 伪影 (复核 5.7/5.7/6.5s 即过, 原始行+复核行双留档)。测试 844→849 (T1) → 869 (T2/T3 实跑)。数据: DIMENSION test/evidence/render-speed/ (profiler/逐位对拍/时长矩阵/speed100 四件套)。达标数字系同机口径(Apple Silicon 本机, worker 池 8=min(8,hardwareConcurrency-1)); 低核数观看端 neon 按核数线性劣化(2-4 核约 20-45s), 合围兜底保证输出逐位正确、不保证 ≤20s。",
     "budget_target_s": 20,
@@ -773,7 +773,7 @@
         "obj_mix": 0.18,
         "yellow_rgb": [235, 170, 50],
         "gold_rgb": [228, 152, 42],
-        "_note": "T6② 恒星七档光谱 STELLAR3_W (760bbc3; user 终裁: \"我们又不是地球景色, 恒星可以发出很多颜色的光, 从红色 黄色 到白色, 都可以\"; 粉侧光获点名): 白40/金15/黄12/橙10/红8/粉10/青白5, 第十六方独立侧流恒 13 roll; chronoGold3Shade 并轨——w≥1 金色带 GOLD3 逐位不动锁, 白档恒等路径。5000-hash 光谱分布实跑锁定, 20000-hash 审查者重建全 |z|<1.7; batch47 raw χ²=8.3 PASS。obj 混比 STELLAR3_OBJ_MIX = 0.18 (T8 定档 47d5c89, user 终裁 2026-09-15 \"按照你的推荐来\": T6 首版 0.22→0.18, 雪原粉全域淋色回收; ground 0.12/bg 0.10 独立字面无联动不动)。黄金定值 = deepA 档 (T8 定档: T7 draft 被裁不够深再深一档, 病例本尊 0x84a76a2f 奶油底四档对照目检定值): yellow [235,170,50] / gold [228,152,42] (面板暖差 R−B Δ+5.5, 零抄外部色值); batch47 #94 金塔紫影在野可辨。"
+        "_note": "T6② 恒星七档光谱 STELLAR3_W (760bbc3; user 终裁: \"我们又不是地球景色, 恒星可以发出很多颜色的光, 从红色 黄色 到白色, 都可以\"; 粉侧光获点名): 白40/金15/黄12/橙10/红8/粉10/青白5, 第十六方独立侧流恒 13 roll; chronoGold3Shade 并轨——w≥1 金色带 GOLD3 逐位不动锁, 白档恒等路径。5000-hash 光谱分布实跑锁定, 20000-hash 审查者重建全 |z|<1.7; batch47 raw χ²=8.3 PASS。obj 混比 STELLAR3_OBJ_MIX = 0.18 (T8 定档 47d5c89, user 终裁 2026-09-15 \"按照你的推荐来\": T6 首版 0.22→0.18, 雪原粉全域淋色回收; ground 0.12/bg 0.10 独立字面无联动不动)。黄金定值 = deepA 档 (T8 定档: T7 draft 被裁不够深再深一档, 病例本尊 0x84a76a2f 奶油底四档对照目检定值): yellow [235,170,50] / gold [228,152,42] (面板暖差 R−B Δ+5.5, 零抄外部色值)。T8 定档 47d5c89, batch47/48 两批连证: 混比 0.18 —— b47 #109 粉光双瓶零淋色 / b48 #122 粉档零淋色 (雪原粉全域淋色回收成立); deepA 黄金 —— b47 #94 金塔紫影在野可辨 / b48 #133/#161/#092 在野可辨；转正后连续两批零回归, 且 batch47 #125 封神件归因 = colossus×stellar yellow (deepA 新黄金在野)×sparse-trees 非 ng 窗自然窄色域 = 新黄金首个封神级背书。"
       },
       "ng_narrow_window": {
         "rate": 0.1,
@@ -787,5 +787,63 @@
       },
       "_note": "T6 光的纪律五刀 (色彩光影卷, 760bbc3, 1692→1724; user batch46 审图四终裁驱动, 原 M4 恒星光色轴提前入卷) + T7 彩光浓度/T8 定档收尾。第五刀 = 全栈交互表 + dev ?stellar= 钩。重基线昼 15/夜 24 CHANGED, predMatches 200/200, rebaseline-rows-t6 接替 t4f; T7 CHANGED 0 续任; T8 昼 15/夜 0, rebaseline-rows-t8 接替 t6。数值以 DIMENSION 仓 47d5c89 源码字面为准。"
     }
+  },
+  "piece_cull_t9": {
+    "_locked": true,
+    "_note": "策展手术 T9/T9b (色彩光影卷收官, 2026-09-15; DIMENSION 6b476f4 T9 确类刀 + f190bdc T9b 收口刀): batch47 审图三令 + 边界 19 件 user 圈选终裁 \"按照推荐来\" = 三类语料成员级剔除共 32 件——①俯视文物/器物圆盘图腾 (历石/彩陶盘/瓷盘/纹章盘) ②织物布样 sampler (整件织物挂样展示构图) ③emoji/卡通拟人脸 (五官拟人)。谱系判据 user 逐字: \"能被光影和熔化再创作的留, 只能被展示的删\" (bird/fish 动物剪影留, 五官拟人删; windup-robot 系 agent 按谱系判据扩斩, user 未否决 = 追认)。库表/函数零删, dev ?piece= 口全可达 (seamap/mandala/calligraphy 同款先例)。反面参照 (留下的绘画性语料获同批好评): 向日葵田 warp \"非常美, 像梵高\" / 夜奔犬 / 赭红城市落日×满幅青海波。",
+    "themes_culled_23": {
+      "disc_totem_圆盘图腾_6": [
+        "aztec-sun (病例本尊×2 出场)",
+        "porcelain-plate",
+        "porcelain-fish (病例)",
+        "mandala-lotus",
+        "celtic-knot",
+        "mamluk-lamp"
+      ],
+      "fabric_sampler_织物挂样_12": [
+        "sashiko (病例)",
+        "mudcloth",
+        "kilim-bands",
+        "navajo-blanket",
+        "quilt-stars",
+        "paisley",
+        "batik-garden",
+        "persian-medallion",
+        "persian-garden",
+        "azulejo-panel",
+        "talavera-tile",
+        "delft-windmill"
+      ],
+      "fullframe_textile_全幅织物纹_5": [
+        "tartan",
+        "bargello",
+        "wedding-rings-quilt",
+        "ikat-diamonds",
+        "kimono-waves"
+      ],
+      "_note": "PIECE_CULL_THEMES 12 (T9) → 23 (T9b +11 边界全删); 归类按 T9b 终态口径 (瓷砖样本三件与织物挂样同构线一并表态, 审查者口径自洽建议采纳)"
+    },
+    "objects_culled_9": [
+      "smile-arc-circle (病例, emoji 笑脸)",
+      "windup-robot (扩斩追认)",
+      "compass-luopan",
+      "compass-rose",
+      "bronze-ding",
+      "crescent-moon",
+      "snowflake",
+      "music-notes",
+      "saturn"
+    ],
+    "explicit_keep": {
+      "solar-eclipse": "user 终裁显式保留——\"日食=光事件本体\", 能被光影再创作; 字面反向锁 + 自然可达正向锚点双锁; batch48 在野 1 次 #048 观感偏装饰圆盘知情记录 (user 已裁保留, 零动作)"
+    },
+    "pools_after": {
+      "pattern_scene32": "31 → 19 (T9) → 8 存续 (zellige-star/escher-birds/art-nouveau-iris/hex-honeycomb/william-morris/chinoiserie-panel/alhambra-tiles/escher-fish-birds, 全幅镶嵌/画意类); THEME32 权重 pattern 4 不动, 池薄知情, 池补新语料列远期; batch48 体检 15 出场 8/8 全到场最高单件 3 次无霸屏",
+      "objects_scene30": "89 → 87 (T9) → 80 存续"
+    },
+    "mechanism": "让位槽 pieceCullRemap: 同一抽件 u 小数余量等比散布存续件, 零额外 r() (消费恒定, 非中招件逐位不变); T9 双树 4000-hash 对拍 mismatch 0, T9b 升级三树对拍 (raw/HEAD/work, seed=471003 4000-hash) mismatch 0; 8 件池受让集中度 33-53, max/mean 1.33 无单件聚集",
+    "rate_loss": "全 mint 口径: T9 4.48% (batch47 在野 9/200=4.5% 互证) → T9b DIRECT 4.575% + REFLOW 3.675% (T9 concern 预告的二轮翻面: 存续池收缩致让位目标后移) = 总翻面 8.25% (~8%), 让位全数落存续件零废片",
+    "user_verdicts": "\"这一类全部去掉。毫无美感\" (阿兹特克历石盘, 三病例) / \"这一类也完全去掉\" (刺子绣布样) / \"这种去掉\" (笑脸星星) / 边界圈选 \"按照推荐来\" (再斩 18, 留 solar-eclipse); batch48 合批验收总评 \"第一, 基本上做到了每一件都合格, 没有特别不好的。第二, 优秀的作品有很多\"",
+    "tests_rebaseline": "测试 1732→1745 (T9) → 1752/1752 (T9b 双轮实跑); 重基线 rebaseline-rows-t9 (中招 5 行) → rebaseline-rows-t9b (中招 6 行 = DIRECT 4 + REFLOW 2) 接替 t8, predMatches 69/69 昼夜双轮九桶全零; batch48 200/200 (seed=481001) 剔件 32 零出场断言级双证 (summarize 断言 + 独立名单 grep 0/200)"
   }
 }
