@@ -33,6 +33,13 @@ import { resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { extractSlideIR, parseJsonLoose } from '../src/mapping/slide-to-ir.js';
 import { detectNavChrome } from '../src/mapping/slide-digest.js';
+import {
+  assertNoStationShrink,
+  cacheEntryToList,
+  emptySlidesCache,
+  normalizeSlidesCache,
+  storeSlidesCacheEntry,
+} from './gen-deck-ir-cache.mjs';
 
 const API_KEY = process.env.ANTHROPIC_API_KEY;
 if (!API_KEY) {
@@ -176,21 +183,21 @@ async function main() {
   // --force alone wipes the cache; --force --only N keeps it and re-extracts
   // only slide N (otherwise a one-slide retouch nukes 30 cached results).
   const wipeCache = FORCE && ONLY == null;
-  const cache =
-    existsSync(CACHE_PATH) && !wipeCache ? JSON.parse(readFileSync(CACHE_PATH, 'utf8')) : {};
+  const rawCache =
+    existsSync(CACHE_PATH) && !wipeCache ? JSON.parse(readFileSync(CACHE_PATH, 'utf8')) : null;
+  const cache = wipeCache ? emptySlidesCache() : normalizeSlidesCache(rawCache, { only: ONLY });
   // Per-page slots are ARRAYS: a two-chart page (p27's revenue columns +
   // share pie) yields two stations from one page. Old caches stored a bare
   // object — wrap on read for compatibility.
-  const asList = (slot) => (Array.isArray(slot) ? slot : slot ? [slot] : null);
   const pageIrs = [];
   for (let i = 0; i < slides.length; i++) {
     if (ONLY != null && i !== ONLY) {
-      pageIrs.push(asList(cache[i]));
+      pageIrs.push(cacheEntryToList(cache[i]));
       continue;
     }
     const forceThis = FORCE && (ONLY == null || i === ONLY);
     if (cache[i] && !forceThis) {
-      const cached = asList(cache[i]);
+      const cached = cacheEntryToList(cache[i]);
       pageIrs.push(cached);
       console.log(`  [${i}] cached (${cached.map((x) => x.structure).join('+')})`);
       continue;
@@ -239,7 +246,8 @@ async function main() {
       }
     }
     pageIrs.push(list);
-    cache[i] = list.length === 1 ? list[0] : list;
+    assertNoStationShrink({ index: i, previous: cache[i], next: list });
+    storeSlidesCacheEntry(cache, i, list);
     writeFileSync(CACHE_PATH, JSON.stringify(cache, null, 1));
     console.log(
       `  [${i}] ${list.map((ir) => `${ir.structure}${ir.form ? `·${ir.form}` : ''}`).join(' + ')} "${(list[0].title || '').slice(0, 36)}"${list.length > 1 ? ` (${list.length} stations from one page)` : ''}`,
