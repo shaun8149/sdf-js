@@ -464,6 +464,69 @@ scene35 18 件 shadowfall 61.1%（#142 影雕夜窗 money shot ★★，#056 ρ=
 （C3 四轴 trait 曝露拍板/mint 抽测已 8/8 ≤20s/上链前置清单）；M3 粉紫艺术档（batch48 好评预告，
 留下卷）。
 
+**抽象池退场 + M3 艺术配色档 + 相机三轴 + 配比刀（2026-09-18..19，1965→2053，DIMENSION HEAD
+`38719cf`）**：双卷收官后连落五刀，前两刀清账、后三刀并发（各跑隔离 worktree + 独立端口，后落地者
+rebase 复跑——本卷新立的**并发纪律**）。**T6 depool**（`53f45f7`，→1974）：user batch49 审后终裁
+逐字"我们的 QQL 模仿是失败的，跟我们的 SDF 风格不搭；除了 2D 物件上的 QQL，把这些类 QQL 的东西
+都去掉"——scene36 抽象点链流场池**退出自然路由**，`POOL_2D_WEIGHTS` 四槽 {12.8,41.2,26,20} →
+**还原入池前三槽** {16,51.5,32.5}（选"还原原值"而非等比重标 = 最小扰动支：2D 三池分布逐位回到
+f190bdc，退池 = 入池的严格逆运算）；Kusama 线网 user 明示例外留任（退池后 scene30 池权反升
+3.2pp，门值不动）；200-hash 自然轮盘 scene36 命中 0（若仍按 12.6% 份额出现，连 200 次不中概率
+2.0e-12）。**教训落字**：点链流场与 SDF+织谱点彩是两套平行语言，满幅铺珠后画面读作 QQL 仿作而非
+DIMENSION；Kusama 成立是因为它服务于一个具象主体——**外部 recipe 移植只在它服务既有主体时成立，
+不能自己变成主体**。**M3 艺术配色档**（`0408f46` T7 →2002／`877ad0e` T8 →2011／`d25973b` T9
+→2013，另 `18fa5f3`）：20 套人工策展的非自然色板 `PAL3D_ART` 以**独立数组 + 第二十二方侧流 22% 窗**
+入池（84 套收割池与两份 census 名单字节不动；窗率实测 21.92%，χ²=0.0186；重映射次序 主→K4→ng→
+**ART**，无资格/场景/夜窗门）；T8/T9 把 `src` 全改 **Title Case 英文**（user"要用英文，不要拼音"→
+"都按照你的推荐来"再改六名：Klein→**Blue Monochrome**／Indigo Fold→Indigo Print／Neon→Neon Tube／
+Primary Three→Primaries／Papercut→Cut Paper／Dual Field→Plum Field；拼写钉英式 grey），**色值全程
+未动故无重基线**——双证：结构上 `\.src\b` 全链只 4 文件 8 处，实证上 600-hash 双树 12 色环/四角色/
+22 路由字段/8 连主流 r() 全逐位同。同刀补 **scene35 第五 trait 键 Palette**（此前四键，22% 艺术档件
+trait 面完全不显色板；不加前缀不设 PaletteKind，两族靠词形自明）。**三条挂账**：①**稀有度不平权且
+user 接受**——idx%20 于 [0,84) ⇒ 前四套各 5.95% vs 其余 4.76%（1.25×），**对外稀有度表必须如实标
+此栏**（挂铸造收口卷）；②`PAL3D_ART` 裸引用无 typeof 防御是**有意的**（静默退池比白屏更坏），把
+"装配四面同步"锁顶成**承重锁**；③抖动风险**两套机制**（Moon Pillar 摆幅族 4.875% / Blue Monochrome
+灰豁免门族 0.563%），未来抖动锁必须两族同扫。**墙钟 flake 两条根治 + 方法论**：探针必须 `?t=` 钉时
+（未钉的红轮与绿轮都留档——这一对就是 flake 的定义，也是"未钉的绿什么都证明不了"的理由）；T7⑦ 的
+谓词压根没提 CHRONO，时间依赖是从**窗的资格门**进来的，故"这条锁凌晨三点会红吗"的规矩必须覆盖
+**窗的记账位**。**T10 策展刀**（`b2d1d5c`，→**2027**）：user 面对 batch50 样张裁"这两种构图都去掉"
+——Escher 同形密铺族 + 伊斯兰对称砖族共 4 件撤除（判据同 T9"只能被展示的删"：满幅 2D 密铺、无 SDF
+主体、无光影叙事），`PIECE_CULL_THEMES` 23→**27**，pattern 存续池 8→**4**（art-nouveau-iris／
+chinoiserie-panel／hex-honeycomb／william-morris；`THEME32_CATEGORY_W` 不动，**池薄加剧知情**）；
+翻面 DIRECT 1.10%+REFLOW 4.05%=**5.15%** 全 mint／scene32 内 25.95%，三树 mismatch 0；**边界件
+william-morris 刻意不删**，单列呈 user 圈选。**相机三轴刀 T1**（`3899abb`，→**2050**）：user 终裁
+"② roll 转正 = 要"（含 monument，"将倾之碑"读法被接受）/"③ pitch = 要"。38 张原型立住唯一的机械
+事实——**三个旋转里只有 roll 能在摆位之后施加**（它绕画面自身中心转，骨架三分线随之同转，出框的
+只有四个角；pitch/yaw 会把已反投影的主体推出画外）。件一 roll 转正：第二十三方侧流恒 14 roll 零
+主流消费，白名单型内 30% 窗，`|θ| = 4° + u^1.6×(cap−4°)`（**重标进各型角带**而非 min() 钳位——钳位
+会把 57.7% 的 avenue 件堆在恰好 8.0°），逐型 cap shadowfall/hover 20°·colossus/anchor 18°·monument
+12°·closeup/stilllife 10°·avenue 8°·**interior 0**（一点透视 = 对称 + 中心灭点，roll 会把轴掰弯）；
+新 traits 轴 **Tilt**（None/Slight/Dutch Angle/Steep）；装裱印章时钟构造性水平（mount.js 零旋转读 =
+结构锁）；实测命中 50/178=28.1%，|θ| p50 6.40 / max 18.72，`CAM34.roll ≡ pa.tilt34` 211/211。件二
+pitch 扩幅（CAMS 表内、不新增 roll）：monument 上界 →40.11°，colossus/hover 负角半区 −12.03°/
+−15.01°，**俯角挂长影时辰**（`goldW3≥1` 且非夜窗 ⇒ `T_eff ∈ [2,7.5)∪[16.5,22)`，20 个日照小时里
+的 11 个；刻意读基础轴而非 Strong——碑式四型的强轴总闸恒真，用 Strong 时辰门几乎全天大开）；公式
+`old −(dipOn?(1−cp)·drop:0)` 使门关时逐位恒等，**这正是重基线能拆成 ROLL/PITCH 两支的原因**。
+**证伪记档**：shadowfall"任意时辰可俯瞰"的豁免被判决实验杀掉——其自适应拉远闭式是按仰角推导的，
+pitch<0 时相机被拖到 ro.z −66.22 而碑的画幅占比 16.1%→0，**CAMS35 一字未动**，另立一刀做双侧包络。
+重基线：2D 69/69 逐位同，3D/4D 37 行 = ROLL 9 + PITCH 2 + SAME 26，**ROLL 行 cov34 漂移 0**（roll
+不进摆位的渲染级证明），PITCH 两轮都只落 monument。**配比刀**（`38719cf`，→**2053/2053** 全量绿）：
+user 逐字"总体增加 3D 在所有作品中的比例，提高 1.5 倍，然后 2D 相应的进行减少"——`TIER_WEIGHTS`
+{2d:63,3d:28,4d:8,asc:1} → **{2d:49, 3d:42, 4d:8, asc:1}**（3d×1.5=42，14 点差额全部且仅由 2D 吸收）。
+**阈值派生核：只有一个数动**（T2D 0.63→0.49，T3D/T4D 逐位不动）⇒ 4D 与升维带是与旧比例**同一批
+hash**（5000-hash 387/46 逐枚吻合），翻面带 `[0.49,0.63)` **严格单向 2D→3D**；消费恒定（仍恰 2 r()）。
+实测 tier 3205/1362/387/46 → **2480/2087/387/46**（χ² 2.7342→1.1903），3D 倍数 1.5323×（阈值侧）/
+1.4746×（全链），翻面率 13.26–14.50% 100% 单向，3D 八构图窗内部份额不动（monument 23.8→23.9%）=
+**翻面件走的是完全同一条 3D 管线**；新增派生锁断言 `3d === 28*1.5` 使 user 的裁定本身可执行；42 个
+具名锚只 HASH_B 翻面，印章带界锁换载体 HASH_B→HASH_A（**换载体非重基线**）；未翻 2D 56/56 像素级同。
+`style-plan.json` 五处同步（`dimension_tier`+`tier15_measured`／`2d_content` 三槽还原+`abstract_flowdots_36`
+退池节／新增顶层 `art_palette_m3`／`3d_content.cam_axes_t1`／`piece_cull_t9` T10 组），plan 两份入库
+（`2026-09-18-dimension-m3-art-palette.md`／`2026-09-19-dimension-camera-and-tier.md`）。**挂账**：
+对外稀有度表不平权栏（铸造收口）／抖动双族锁立项／william-morris 边界件呈裁／shadowfall 双侧俯角
+包络另立一刀／**Tilt 轴与 C3 四轴 trait 曝露一并铸造前拍板**／T10 四件在野复核挂 batch51／pattern
+池薄（4 件承 scene32 的 4/8 类权重）补语料。**在途未落（本次 PR 不含）**：红线闸门刀（语料 11 件
+退场）、俯角地面门刀（C 案）。
+
 ---
 
 ## 1. Hard rules (NON-NEGOTIABLE — these override defaults)
