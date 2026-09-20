@@ -113,6 +113,8 @@ export async function parsePDFFromBytes(data, sourceLabel = '<bytes>') {
  * Clustering rule:
  *   - 2 items are in the same line if |y1 - y2| < 0.5 × avg(fontSize)
  *   - Sort items in a line by x (left → right)
+ *   - Split a same-y band back into separate visual lines when a large
+ *     horizontal gap indicates columns rather than words in one sentence
  *   - Concat text with space INSERTED only if x-gap > 0.3 × avg(fontSize)
  *     (preserves natural English inter-word space; CJK glyphs touching → no
  *     spurious space inserted)
@@ -137,14 +139,39 @@ export function clusterItemsIntoLines(items) {
       // Track tallest item in line — drives the next y tolerance
       currentH = Math.max(currentH, it.fontSize);
     } else {
-      lines.push(mergeLine(current));
+      lines.push(...mergeLineBand(current));
       current = [it];
       currentY = it.y;
       currentH = it.fontSize;
     }
   }
-  lines.push(mergeLine(current));
+  lines.push(...mergeLineBand(current));
   return lines;
+}
+
+function mergeLineBand(itemsInBand) {
+  const sorted = [...itemsInBand].sort((a, b) => a.x - b.x);
+  const avgFontSize = sorted.reduce((s, it) => s + it.fontSize, 0) / sorted.length;
+  const segments = [];
+  let segment = [sorted[0]];
+  let prev = sorted[0];
+  let prevEndX = prev.x + prev.w;
+
+  for (let i = 1; i < sorted.length; i++) {
+    const it = sorted[i];
+    const gap = it.x - prevEndX;
+    const columnGap = Math.max(avgFontSize * 8, Math.min(prev.w, it.w) * 0.65);
+    if (gap > columnGap) {
+      segments.push(segment);
+      segment = [it];
+    } else {
+      segment.push(it);
+    }
+    prev = it;
+    prevEndX = Math.max(prevEndX, it.x + it.w);
+  }
+  segments.push(segment);
+  return segments.map((items) => mergeLine(items));
 }
 
 function mergeLine(itemsInLine) {

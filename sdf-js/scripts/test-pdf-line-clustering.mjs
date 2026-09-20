@@ -55,6 +55,36 @@ console.log('\n--- English words on same line (must preserve spaces) ---');
   assert(lines[0].text === 'Hello World', `space preserved: "${lines[0].text}"`);
 }
 
+console.log('\n--- Two columns at the same y stay separate ---');
+{
+  // Presentation PDFs often place comparison columns at identical y positions.
+  // They must not be concatenated into one sentence before LLM extraction.
+  const items = [
+    {
+      text: 'Left Column Title',
+      x: 50,
+      y: 100,
+      w: 150,
+      h: 14,
+      fontSize: 14,
+      fontFamily: 'Arial',
+    },
+    {
+      text: 'Right Column Title',
+      x: 350,
+      y: 100,
+      w: 150,
+      h: 14,
+      fontSize: 14,
+      fontFamily: 'Arial',
+    },
+  ];
+  const lines = clusterItemsIntoLines(items);
+  assert(lines.length === 2, `same-y two-column text → 2 lines (got ${lines.length})`);
+  assert(lines[0].text === 'Left Column Title', `left column preserved: "${lines[0]?.text}"`);
+  assert(lines[1].text === 'Right Column Title', `right column preserved: "${lines[1]?.text}"`);
+}
+
 console.log('\n--- Two lines (different y) ---');
 {
   const items = [
