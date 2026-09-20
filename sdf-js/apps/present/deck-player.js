@@ -165,6 +165,7 @@ async function playDeck(id) {
   if (!segments.length) throw new Error(`deck ${id}: no segments`);
   const n = segments.length;
 
+  if (window.__atlasPresentUnavailable) return;
   await waitFor(() => !!(window.present && window.present.load), 10000);
 
   const wrap = document.getElementById('canvas-wrap');
