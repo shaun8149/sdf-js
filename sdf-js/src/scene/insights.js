@@ -26,7 +26,18 @@ export function calloutOverlay(ir, superAt, hideAt) {
     ...(hideAt != null ? { hideAt } : {}),
   };
 }
-const disp = (ir, i) => (ir.display && ir.display[i]) || String(ir.magnitude[i]);
+export function magnitudeDisplay(ir, i, fallback) {
+  const display =
+    Array.isArray(ir?.display) &&
+    Array.isArray(ir?.magnitude) &&
+    ir.display.length === ir.magnitude.length
+      ? ir.display
+      : null;
+  const value = display && display[i] != null ? display[i] : (fallback ?? ir?.magnitude?.[i]);
+  return String(value);
+}
+
+const disp = (ir, i) => magnitudeDisplay(ir, i, ir.magnitude[i]);
 const yearOf = (s) => {
   const m = /^(\d{4})e?$/.exec(String(s).trim());
   return m ? Number(m[1]) : null;

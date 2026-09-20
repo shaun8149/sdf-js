@@ -5,6 +5,7 @@ import { renderIR } from '../src/scene/render-ir.js';
 import { validateIR } from '../src/scene/ir.js';
 import { compile } from '../src/scene/index.js';
 import { expandStage } from '../src/scene/stage.js';
+import { deriveMagnitudeInsight } from '../src/scene/insights.js';
 
 let pass = 0,
   fail = 0;
@@ -98,6 +99,78 @@ ok(
   } catch (e) {
     ok(false, `compile failed: ${e.message}`);
   }
+}
+
+{
+  const valueTexts = (scene) => scene.overlay.filter((o) => o.role === 'value').map((o) => o.text);
+  const mismatchedDisplay = ['iPhone', 'Android'];
+  const regular = renderMagnitude({
+    structure: 'magnitude',
+    title: 'bad display shape',
+    nodes: ['A', 'B', 'C'],
+    magnitude: [10, 20, 30],
+    display: mismatchedDisplay,
+  });
+  ok(
+    mismatchedDisplay.every((txt) => !valueTexts(regular).includes(txt)),
+    'mismatched display[] is ignored for monolith value chips',
+  );
+  ok(
+    ['10', '20', '30'].every((txt) => valueTexts(regular).includes(txt)),
+    'monolith value chips fall back to magnitude values',
+  );
+
+  const horizontal = renderMagnitude({
+    structure: 'magnitude',
+    orientation: 'horizontal',
+    title: 'distribution',
+    nodes: ['1-3次', '3-5次', '6-9次'],
+    magnitude: [53, 32, 15],
+    unit: '%',
+    display: mismatchedDisplay,
+  });
+  ok(
+    mismatchedDisplay.every((txt) => !valueTexts(horizontal).includes(txt)),
+    'mismatched display[] is ignored for horizontal value chips',
+  );
+
+  const line = renderMagnitude({
+    structure: 'magnitude',
+    form: 'line',
+    title: 'monthly users',
+    nodes: ['①', '②', '③'],
+    magnitude: [10, 20, 30],
+    display: mismatchedDisplay,
+  });
+  ok(
+    mismatchedDisplay.every((txt) => !valueTexts(line).includes(txt)),
+    'mismatched display[] is ignored for line value chips',
+  );
+
+  const formatted = renderMagnitude({
+    structure: 'magnitude',
+    form: 'line',
+    title: 'formatted values',
+    nodes: ['①', '②', '③'],
+    magnitude: [10, 20, 30],
+    display: ['~10M', '~20M', '~30M'],
+  });
+  ok(
+    ['~10M', '~20M', '~30M'].every((txt) => valueTexts(formatted).includes(txt)),
+    'aligned display[] still preserves human-formatted values',
+  );
+
+  const insight = deriveMagnitudeInsight({
+    structure: 'magnitude',
+    title: '用户分布%',
+    nodes: ['1-3次', '3-5次', '6-9次'],
+    magnitude: [53, 32, 15],
+    display: mismatchedDisplay,
+  });
+  ok(
+    insight.text.includes('53') && insight.sub.includes('32') && !insight.text.includes('iPhone'),
+    'mismatched display[] is ignored for derived insight citations',
+  );
 }
 
 ok(renderIR(ir).name.startsWith('(magnitude)'), 'renderIR dispatches magnitude');
