@@ -21,7 +21,28 @@
 
 const canvas = document.getElementById('c');
 const gl = canvas.getContext('webgl2', { antialias: true });
-if (!gl) throw new Error('WebGL2 required');
+if (!gl) {
+  canvas.style.display = 'none';
+  const panel = document.getElementById('panel');
+  const message =
+    '<h1>ATLAS · 4D</h1>' +
+    '<p style="margin:0;color:rgba(232,234,240,.82);line-height:1.65">' +
+    '这个 4D SDF 演示需要 WebGL2,当前浏览器/设备不支持。<br/>' +
+    'This demo needs WebGL2, which this browser does not provide.<br/><br/>' +
+    '请在电脑上的 Chrome / Edge / Firefox 打开。<br/>' +
+    'Open it in desktop Chrome, Edge or Firefox.</p>';
+  if (panel) {
+    panel.style.width = 'min(520px, calc(100vw - 56px))';
+    panel.innerHTML = message;
+  } else {
+    const fallback = document.createElement('div');
+    fallback.style.cssText =
+      'position:fixed;inset:24px;display:grid;place-items:center;text-align:center;color:#e8eaf0;font:500 14px/1.65 system-ui,sans-serif';
+    fallback.innerHTML = `<div>${message}</div>`;
+    document.body.appendChild(fallback);
+  }
+  throw new Error('[fourd] WebGL2 unavailable — fallback notice shown');
+}
 
 const FRAG = `#version 300 es
 precision highp float;
