@@ -481,7 +481,12 @@ export function renderMatrix(ir, opts = {}) {
   // era axis on the ROWS (the 2015 flagship p4: axes = [3 dimensions,
   // [过去, 现在]]) — same evolution read, transposed orientation. Swap axes
   // and cell coordinates into the branch's expected shape.
-  if (!ir.form && ir.axes[1].length === 2 && isEraAxis(ir.axes[1]) && !isEraAxis(ir.axes[0])) {
+  if (
+    (ir.form === 'evolution' || !ir.form) &&
+    ir.axes[1].length === 2 &&
+    isEraAxis(ir.axes[1]) &&
+    !isEraAxis(ir.axes[0])
+  ) {
     const t = {
       ...ir,
       axes: [ir.axes[1], ir.axes[0]],

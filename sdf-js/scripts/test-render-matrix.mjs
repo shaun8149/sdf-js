@@ -190,6 +190,17 @@ ok(renderIR(swot).subjects.length === scene.subjects.length, 'renderIR dispatche
     evo.subjects.some((s) => s.id === 'past-0') && evo.subjects.some((s) => s.id === 'now-3'),
     'transposed cells keep their era assignment',
   );
+  const explicitEraRows = { ...eraRows, form: 'evolution' };
+  const explicitEvo = rm(explicitEraRows);
+  ok(
+    explicitEvo.name.startsWith('(matrix·evolution)'),
+    'explicit row-era evolution transposes into evolution',
+  );
+  ok(
+    explicitEvo.subjects.some((s) => s.id === 'past-0') &&
+      explicitEvo.subjects.some((s) => s.id === 'now-3'),
+    'explicit transposed cells keep their era assignment',
+  );
   // reversed era listing ([现在, 过去]) is normalized, not rendered upside down
   const revved = {
     ...era,

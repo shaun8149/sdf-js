@@ -205,13 +205,13 @@ export function filterPageChrome(lines, pageHeight) {
   // Chrome patterns:
   //   URL anywhere in line:           https://... | http://... | www.foo.com
   //   Page indicator at line end:     "13/42" or " 13/42" or "page 13"
-  //   Datestamp at line start:        "2026/6/18" "2026-06-18" "06/18/2026"
+  //   Date/time-only line:            "2026/6/18" "2026-06-18" "06/18/2026 09:43"
   //   Standalone short number-ish:    "13", "Page 13", "13 of 42"
   const chromePatterns = [
     /https?:\/\/\S+/i,
     /\bwww\.\S+/i,
     /\d+\s*\/\s*\d+\s*$/, // "2/13" at end of line
-    /^\s*(?:\d{4}[/-]\d{1,2}[/-]\d{1,2}|\d{1,2}[/-]\d{1,2}[/-]\d{2,4})/,
+    /^\s*(?:\d{4}[/-]\d{1,2}[/-]\d{1,2}|\d{1,2}[/-]\d{1,2}[/-]\d{2,4})(?:\s+\d{1,2}:\d{2}(?::\d{2})?(?:\s*[AP]M)?)?\s*$/i,
     /^\s*page\s+\d+/i,
     /^\s*\d+\s+of\s+\d+\s*$/i,
   ];
