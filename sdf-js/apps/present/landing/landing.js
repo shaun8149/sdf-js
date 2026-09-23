@@ -415,6 +415,25 @@ const lookNow = new THREE.Vector3(); // current idle look target
 const enterLookAt = new THREE.Vector3(0, SCREEN_Y, BACK);
 const logoEl = document.getElementById('enter-logo');
 
+function resetLandingRoomState() {
+  state = 'room';
+  enterProg = 0;
+  introStart = 0;
+  targetDeckHref = deckUrl(DEFAULT_DECK_ID);
+  document.body.classList.remove('entering');
+  document.body.style.cursor = '';
+  logoEl.classList.remove('on');
+  fadeEl.classList.remove('on');
+}
+
+window.addEventListener('pageshow', (event) => {
+  if (!event.persisted) return;
+  const wasMidEntrance = state !== 'room' || document.body.classList.contains('entering');
+  if (!wasMidEntrance) return;
+  resetLandingRoomState();
+  window.location.reload(); // bfcache can restore a stale/lost WebGL context.
+});
+
 function animate() {
   requestAnimationFrame(animate);
   const time = performance.now() * 0.001;
