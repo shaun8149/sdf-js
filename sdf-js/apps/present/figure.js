@@ -9,6 +9,7 @@ import { getTheme } from '../../src/present/themes.js';
 import { resolveDeckPalette } from '../../src/scene/mount-palette.js';
 import { applyWhiteTone } from '../../src/scene/tone.js';
 import { createFigure } from './figure-core.js';
+import { loadFigureIR, showFigureLoadError } from './figure-load.js';
 import { attachPresenter } from './presenter.js';
 
 const params = new URLSearchParams(location.search);
@@ -36,7 +37,13 @@ const { show } = createFigure({
   cleanFloor: tone === 'white', // 白世界配裸地板 —— 棋盘格是黑石时代的试验场纹理
 });
 const name = params.get('ir') || 'funnel-sales';
-const ir = await (await fetch(`../../scenes/ir/${deckName || name}.json`)).json();
+let ir;
+try {
+  ir = await loadFigureIR({ deckName, irName: name });
+} catch (e) {
+  showFigureLoadError(e);
+  throw e;
+}
 // Section color program: the SAME palette the 2D end ships. §9.6 配合点 #1:
 // deck 契约携带 artMount(真迹装裱,§3.5)时优先穿它的预烘焙 palette ——
 // 同一份 deck.json,纸上 PDF 和 3D 飞行穿同一件真迹的颜色。URL 参数保留为
