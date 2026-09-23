@@ -3,7 +3,8 @@
 <style>body{margin:0;background:#111;display:grid;place-items:center;height:100vh}canvas{max-width:90vmin;max-height:90vmin}</style>
 </head><body>
 <canvas id="c" width="900" height="900"></canvas>
-<script>{const sz = new URLSearchParams(location.search).get("size"); if (sz) { const c = document.getElementById("c"); c.width = c.height = Number(sz); }}</script>
+<script src="query-params.js"></script>
+<script>{ window.genlabQuery.applyCanvasSizeFromQuery(document.getElementById("c")); }</script>
 <script type="module">
 // =============================================================================
 // gen.html — 程序生成三主题（全部 weave 点彩渲染, seed 决定一切）:
