@@ -527,6 +527,15 @@ hash**（5000-hash 387/46 逐枚吻合），翻面带 `[0.49,0.63)` **严格单�
 池薄（4 件承 scene32 的 4/8 类权重）补语料。**在途未落（本次 PR 不含）**：红线闸门刀（语料 11 件
 退场）、俯角地面门刀（C 案）。
 
+**2026-10-15..24 2D 全库 Opus 5.5 换血 + warp 幅度定档**（DIMENSION 61e7e4a / 5b5d52a，sdf-main PR #457 已 merge）：
+三个 2D bundle 434 件全部由 Opus 5.5 重写（盲写不给旧代码 → 看自身渲染图自评修订 → 必要时只修代码），
+id 与键顺序逐字沿用旧 bundle，按 id 的策展表（WP_SEM_TAGS 268 键／PIECE_CULL_\*／WARP2D_EXEMPT）全部不动；
+user 盲评后裁"所有的都是 5.5 明显更好"。前情勘正：旧库实由 claude-opus-5（thinking disabled）于 08-12/13/23
+生成，非 Sonnet 4.5。bake 自检 434/434、真链 weave 管线 434/434 渲通；体积 +0.5MB。warp 幅度由七档
+0.25..0.43 固定为 `WARP2D_AMP=0.43`（user 裁"最强的是最美的"，0.43 之上探针证饱和），seed 照抽、非 warp
+件逐位同。策展表重审：剔除 37 件全部维持、语义表维持、豁免 2 件不扩。生产线脚本见 `sdf-js/scripts/genlab-*`，
+style-plan 新节 `lib2d_rewrite_opus55` 与 `2d_style_axis.warp_amp`。
+
 ---
 
 ## 1. Hard rules (NON-NEGOTIABLE — these override defaults)
