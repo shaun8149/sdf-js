@@ -12,6 +12,7 @@
 //        key 读 repo 根 key.txt (与 bake-pdf-lifts 同约定), 或 ANTHROPIC_API_KEY
 // =============================================================================
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
+import https from 'node:https';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -51,27 +52,76 @@ const queue = prompts
 
 console.log(`队列 ${queue.length} 件 (共 ${prompts.length} 条存档) → ${OUT}`);
 
+// node:https 裸请求: 24k token 非流式响应首字节可超 5 分钟,
+// 会撞 fetch/undici 默认 headersTimeout → 'fetch failed'。裸 https 无此限制。
+function postAnthropic(body) {
+  return new Promise((resolve, reject) => {
+    const payload = JSON.stringify(body);
+    const req = https.request(
+      {
+        hostname: 'api.anthropic.com',
+        path: '/v1/messages',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Content-Length': Buffer.byteLength(payload),
+          'x-api-key': API_KEY,
+          'anthropic-version': '2023-06-01',
+        },
+      },
+      (res) => {
+        let buf = '';
+        res.on('data', (c) => (buf += c));
+        res.on('end', () => resolve({ status: res.statusCode, text: buf }));
+      },
+    );
+    req.on('error', reject);
+    req.setTimeout(1200e3, () => req.destroy(new Error('hard timeout 20min')));
+    req.end(payload);
+  });
+}
+
 async function callAnthropic(userMessage) {
   const t0 = Date.now();
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': API_KEY,
-      'anthropic-version': '2023-06-01',
-    },
-    body: JSON.stringify({
-      model: MODEL,
-      max_tokens: MAX_TOKENS,
-      system: [{ type: 'text', text: systemPrompt, cache_control: { type: 'ephemeral' } }],
-      messages: [{ role: 'user', content: userMessage }],
-    }),
+  const res = await postAnthropic({
+    model: MODEL,
+    max_tokens: MAX_TOKENS,
+    // claude-opus-5 defaults thinking to ADAPTIVE (unlike opus-4.x, where omitting
+    // `thinking` meant no thinking) — max_tokens caps thinking+text combined, so an
+    // unset thinking param can silently burn the whole budget on reasoning and leave
+    // 0 tokens for the actual code output (observed: stop_reason=max_tokens,
+    // thinking_tokens=16384, 0 text). This pipeline only wants code+caption, not
+    // chain-of-thought, so disable it explicitly (allowed at effort<=high, which is
+    // the default when effort is unset).
+    thinking: { type: 'disabled' },
+    system: [{ type: 'text', text: systemPrompt, cache_control: { type: 'ephemeral' } }],
+    messages: [{ role: 'user', content: userMessage }],
   });
   const elapsed = ((Date.now() - t0) / 1000).toFixed(1);
-  if (!res.ok) throw new Error(`Anthropic ${res.status}: ${(await res.text()).slice(0, 300)}`);
-  const data = await res.json();
+  if (res.status !== 200) throw new Error(`Anthropic ${res.status}: ${res.text.slice(0, 300)}`);
+  const data = JSON.parse(res.text);
   if (data.stop_reason === 'refusal') throw new Error('refusal');
-  return { text: data.content.map((b) => b.text ?? '').join(''), usage: data.usage, elapsed };
+  if (process.env.GENLAB_DEBUG_RAW) {
+    writeFileSync(
+      join(OUT, '_debug_raw.json'),
+      JSON.stringify(
+        {
+          blockTypes: data.content.map((b) => b.type),
+          stop_reason: data.stop_reason,
+          usage: data.usage,
+        },
+        null,
+        2,
+      ),
+    );
+  }
+  return {
+    text: data.content.map((b) => b.text ?? '').join(''),
+    usage: data.usage,
+    elapsed,
+    stopReason: data.stop_reason,
+    rawLen: res.text.length,
+  };
 }
 
 // 模型输出 = ```js 代码块 + 后置构图说明
@@ -82,24 +132,43 @@ function splitResponse(text) {
   return { code: m[1], note };
 }
 
-const log = [];
+// 累加台账: 分批调用 (--only chunk) 时不覆盖前面批次的记录, 按 id 去重取最新一条
+const logPath = join(OUT, '_log.json');
+let log = [];
+if (existsSync(logPath)) {
+  try {
+    log = JSON.parse(readFileSync(logPath, 'utf8'));
+  } catch {
+    log = [];
+  }
+}
 for (const [i, p] of queue.entries()) {
   process.stdout.write(`[${i + 1}/${queue.length}] ${p.id} … `);
+  let entry;
   try {
-    const { text, usage, elapsed } = await callAnthropic(p.prompt);
+    const { text, usage, elapsed, stopReason, rawLen } = await callAnthropic(p.prompt);
     const { code, note } = splitResponse(text);
-    if (!code) throw new Error('响应无代码块');
+    if (!code) {
+      writeFileSync(join(OUT, `_debug_${p.id}.txt`), text);
+      throw new Error(
+        `响应无代码块 (${text.length} chars, stop=${stopReason}, raw=${rawLen}B, out=${usage?.output_tokens}tok, 存 _debug_${p.id}.txt)`,
+      );
+    }
     writeFileSync(join(OUT, `${p.id}.js`), code);
     writeFileSync(join(OUT, `${p.id}.txt`), `PROMPT: ${p.prompt}\n\n${note}\n`);
-    log.push({ id: p.id, ok: true, elapsed: Number(elapsed), usage });
+    entry = { id: p.id, ok: true, elapsed: Number(elapsed), usage };
     console.log(
       `OK ${elapsed}s (out ${usage.output_tokens}tok, cache read ${usage.cache_read_input_tokens})`,
     );
   } catch (e) {
-    log.push({ id: p.id, ok: false, error: String(e.message).slice(0, 200) });
+    entry = { id: p.id, ok: false, error: String(e.message).slice(0, 200) };
     console.log(`FAIL: ${e.message}`);
   }
-  writeFileSync(join(OUT, '_log.json'), JSON.stringify(log, null, 2));
+  // 按 id 去重: 同一 id 重跑 (--force / 重试) 用新记录替换旧记录, 其余批次记录保留
+  const existingIdx = log.findIndex((l) => l.id === p.id);
+  if (existingIdx >= 0) log[existingIdx] = entry;
+  else log.push(entry);
+  writeFileSync(logPath, JSON.stringify(log, null, 2));
 }
 
 const ok = log.filter((l) => l.ok).length;
