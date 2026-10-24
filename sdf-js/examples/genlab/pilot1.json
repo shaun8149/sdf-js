@@ -1,0 +1,133 @@
+{
+  "seed": 20261015,
+  "per_pool": 8,
+  "note": "sampled from active pool (cull lists excluded)",
+  "picked": {
+    "objects": [
+      {
+        "id": "coffee-cup",
+        "cat": "mvp-archive",
+        "prompt": "a coffee cup on a saucer"
+      },
+      {
+        "id": "rainbow-arc",
+        "cat": "mvp-archive",
+        "prompt": "a rainbow over green rolling hills"
+      },
+      {
+        "id": "lotus",
+        "cat": "extension",
+        "prompt": "a pink lotus flower with layered petals above a round green lily pad on still water"
+      },
+      {
+        "id": "mountain-lake",
+        "cat": "extension",
+        "prompt": "a snow-capped mountain reflected in a still lake, pine trees on the shore"
+      },
+      {
+        "id": "skeleton-key",
+        "cat": "extension",
+        "prompt": "an old brass skeleton key with an ornate bow and two square teeth, large and centered"
+      },
+      {
+        "id": "folding-fan",
+        "cat": "extension",
+        "prompt": "an open folding fan with pleats radiating from a pivot, simple pattern on the paper"
+      },
+      {
+        "id": "ladder-moon",
+        "cat": "extension",
+        "prompt": "a wooden ladder leaning against a large crescent moon, surreal night scene"
+      },
+      {
+        "id": "sailboat",
+        "cat": "mvp-archive",
+        "prompt": "a sailboat on the sea, sun setting"
+      }
+    ],
+    "landscapes": [
+      {
+        "id": "stonehenge-dawn",
+        "cat": "landscape",
+        "prompt": "megalith stone circle silhouetted against a pale dawn sky, low mist over the grass, crows circling"
+      },
+      {
+        "id": "sanxia-gorge",
+        "cat": "landscape",
+        "prompt": "Three Gorges: a narrow river squeezed between towering cliff walls, one small boat trailing a thin wake"
+      },
+      {
+        "id": "gate-to-field",
+        "cat": "landscape",
+        "prompt": "an open wooden gate in a stone wall leading into a sunlit wheat field, path curving beyond, framing composition"
+      },
+      {
+        "id": "namib-deadvlei",
+        "cat": "landscape",
+        "prompt": "black dead camelthorn trees on a white clay pan against a towering apricot dune, hard shadow line, surreal minimal composition"
+      },
+      {
+        "id": "oasis-palms",
+        "cat": "landscape",
+        "prompt": "a green palm oasis in a hollow between giant orange dunes, small pool reflecting the palms"
+      },
+      {
+        "id": "wanderer-fog",
+        "cat": "landscape",
+        "prompt": "a figure seen from behind standing on a rocky summit above a sea of fog, distant peaks emerging, Friedrich composition"
+      },
+      {
+        "id": "wsl-su-causeway",
+        "cat": "landscape",
+        "prompt": "West Lake's Su Causeway in Spring Dawn: a willow-lined causeway curving across a misty lake, one small arched bridge"
+      },
+      {
+        "id": "dali-melting-clocks-v2",
+        "cat": "landscape",
+        "prompt": "Dalí's The Persistence of Memory: three round clock faces, each melted and drooping like soft wax over the edge of a stone ledge, barren tan desert, a dead tree branch, distant flat sea"
+      }
+    ],
+    "themes": [
+      {
+        "id": "l36-gale-grass",
+        "cat": "lighthouse36",
+        "prompt": "the lighthouse with all the headland grass blown sideways in a gale, bent lone tree"
+      },
+      {
+        "id": "s4-duck-pond",
+        "cat": "seasons",
+        "prompt": "four-panel four seasons of the same scene, 2x2 quadrants: a duck pond with reeds; spring with blossoms, summer deep green, autumn gold and red, winter snow; identical composition each panel, thin borders between panels"
+      },
+      {
+        "id": "l36-seals",
+        "cat": "lighthouse36",
+        "prompt": "seals hauled out on the lighthouse rocks, tower behind, overcast silver sea"
+      },
+      {
+        "id": "l36-comet",
+        "cat": "lighthouse36",
+        "prompt": "the lighthouse beneath a bright comet with a long tail crossing the night sky"
+      },
+      {
+        "id": "s4-fields-patchwork",
+        "cat": "seasons",
+        "prompt": "four-panel four seasons of the same scene, 2x2 quadrants: patchwork farm fields with a track; spring with blossoms, summer deep green, autumn gold and red, winter snow; identical composition each panel, thin borders between panels"
+      },
+      {
+        "id": "s4-wheat-oak",
+        "cat": "seasons",
+        "prompt": "four-panel four seasons of the same scene, 2x2 quadrants: a lone oak in a wheat field; spring with blossoms, summer deep green, autumn gold and red, winter snow; identical composition each panel, thin borders between panels"
+      },
+      {
+        "id": "l36-winter",
+        "cat": "lighthouse36",
+        "prompt": "the lighthouse in snowfall, icicles on the gallery rail, grey-white sea"
+      },
+      {
+        "id": "s4-sheep-meadow",
+        "cat": "seasons",
+        "prompt": "four-panel four seasons of the same scene, 2x2 quadrants: a meadow with grazing sheep; spring with blossoms, summer deep green, autumn gold and red, winter snow; identical composition each panel, thin borders between panels"
+      }
+    ]
+  }
+}
