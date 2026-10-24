@@ -45,6 +45,7 @@
     "prettier": "^3.8.4"
   },
   "dependencies": {
+    "@napi-rs/canvas": "^1.0.13",
     "@phosphor-icons/core": "^2.1.1",
     "flag-icons": "^7.2.3",
     "pdfjs-dist": "^6.0.227",
