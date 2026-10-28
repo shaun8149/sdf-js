@@ -301,6 +301,12 @@ if (DRY) {
   console.log(`\n--dry: 不写文件。前 3 套预览:\n`);
   console.log(results.slice(0, 3).map(fmtEntry).join('\n'));
 } else {
+  if (results.length === 0) {
+    console.error(
+      '\n拒绝写入: 收割结果为 0 套。请确认 examples/genlab/out/_audit 已生成且语料可加载；为避免覆盖现有 palettes3d.js，不写文件。',
+    );
+    process.exit(1);
+  }
   writeFileSync(OUT_PATH, header);
   console.log(`\n写入 ${OUT_PATH} (${(header.length / 1024).toFixed(1)} KB)`);
 }
