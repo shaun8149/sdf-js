@@ -766,7 +766,7 @@
       ]
     },
     "night_lamps": {
-      "_note": "[user 2026-09-03..05 终裁转正 _locked] 时间重塑卷 (2026-09-03, user 裁定②): 2D 夜段专属——① 夜色提亮一档 NIGHT_LIFT { lmMul 1.15, lFloor 0.035, skyMul 1.15 } (ANCHORS 插值后处理, ANCHORS 表一字不动, 幅度 draft 呈裁); ② 画面中上部 2-4 处暖色柔光晕 computeNightLamps/drawNightLamps (类灯笼/窗火, 不绑画内物体)。灯组 hash 派生走独立 sfc32 侧流 (种子 = 出生偏移流种子逐字异或 0x9E3779B9), 零主流 r() 消费; 灯进主画布 (renderLibPieceGen 尾段, 是画的一部分, 同 hash+同时刻逐位同——真浏览器双渲 12/12 pairEqual); 昼/黄昏/清晨段零灯光零扰动。painted 风格不参与 (BOB 色窗原生管线, 与 chrono 色温同一豁免面)。参数 draft 呈裁: n 2-4 / x∈[0.14,0.86] / y∈[0.10,0.42] / r∈[0.09,0.17]·min(W,H) / α∈[0.28,0.50]。",
+      "_note": "[user 2026-09-03..05 终裁转正 _locked] 时间重塑卷 (2026-09-03, user 裁定②): 2D 夜段专属——① 夜色提亮一档 NIGHT_LIFT { lmMul 1.15, lFloor 0.035, skyMul 1.15 } (ANCHORS 插值后处理, ANCHORS 表一字不动, 幅度 draft 呈裁); **2026-10-28 减一档 (DIMENSION 43e91cf, user 终裁)**: NIGHT_LIFT → { lmMul 1.3, lFloor 0.05, skyMul 1.15, smMul 1.25 } (新增夜段饱和乘数, 原夜段饱和砍半), 让新库件的色彩关系在夜里可读; 夜段色相向蓝拉 75% 未动 (备选下一档 50%); ② 画面中上部 2-4 处暖色柔光晕 computeNightLamps/drawNightLamps (类灯笼/窗火, 不绑画内物体)。灯组 hash 派生走独立 sfc32 侧流 (种子 = 出生偏移流种子逐字异或 0x9E3779B9), 零主流 r() 消费; 灯进主画布 (renderLibPieceGen 尾段, 是画的一部分, 同 hash+同时刻逐位同——真浏览器双渲 12/12 pairEqual); 昼/黄昏/清晨段零灯光零扰动。painted 风格不参与 (BOB 色窗原生管线, 与 chrono 色温同一豁免面)。参数 draft 呈裁: n 2-4 / x∈[0.14,0.86] / y∈[0.10,0.42] / r∈[0.09,0.17]·min(W,H) / α∈[0.28,0.50]。",
       "scope": "scene 30-32 的 before/after/warp/neon (renderLibPieceGen 路径); 3D/4D/升维走日照窗恒昼, 无夜段"
     },
     "opening_ritual": {
@@ -1032,6 +1032,13 @@
     }
   },
   "sky_decor": {
+    "top_color_gate": {
+      "_locked": true,
+      "hue_deg": [185, 255],
+      "lightness_min": 0.35,
+      "saturation_min": 0.08,
+      "_note": "2026-10-28 user 终裁 (DIMENSION 43e91cf): 当刻天色 (CHRONO.sky) 只替换件自身顶色本来就是天空色的件, 受光云/流场淡彩同门 (render2d/fx2d.js bgTopIsSky)。判据 = 背景顶色 HSL 色相 185..255° ∧ 明度 ≥ 0.35 ∧ 饱和 ≥ 0.08; 明度阈 0.35 的依据: 库内夜空/暮色顶色明度 ≤ 0.16, 白天正蓝天 ≥ 0.35, 0.18..0.32 的风格化深蓝 (Deadvlei/红富士) 归保留。不满足的件保留本色过色温 (金地屏风/夜景/俯视/框式)。纯派生零 roll, 三池同判: 风景 108/252 换、144 保留; 物件 15/89; 主题 13/64。起因: 2D 换血后 200 张风景批 (8 时辰×25) 显示一律换天色毁掉本色即主题的件; user 评 \"原来的天色套件把很多作品的颜色感染力弄没了\"。"
+    },
     "_note": "2D 白天装饰\"用光来治\" (构型扩容+光影卷 T4/T5, user 终裁 2026-09-09..10; 墨线方案 user 叫停搁置候补——\"墨线是不是我们最好的选择还没讨论过\", 零代码入仓)。作用域 = scene31 白天风景 (夜件不加, 夜有灯); 实现 render2d/fx2d.js, 第十方 sfc32 侧流 ⊕0x165667b1 恒 43 roll 零主流消费; batch44 实测 云 53.6% (30/56 昼风景)/淡彩 17.9% (10/56)。",
     "lit_clouds": {
       "rate": 0.6,
