@@ -17,6 +17,7 @@ import https from 'node:https';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { renderModule } from './genlab-render.mjs';
+import { commitFinalRewrite, hasCompleteRewriteOutput } from './lib/genlab-rewrite-output.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(here, '..');
@@ -59,7 +60,7 @@ if (args.includes('--pilot')) {
   for (const pool of Object.values(pilot.picked)) for (const p of pool) ids.push(p.id);
 }
 ids = ids.filter((id) => byId[id] || console.log(`跳过 ${id}: prompts.json 无此 id`));
-const queue = ids.filter((id) => force || !existsSync(join(OUT, `${id}.js`)));
+const queue = ids.filter((id) => force || !hasCompleteRewriteOutput(OUT, id));
 console.log(`队列 ${queue.length} 件 → ${OUT}  (model ${MODEL}, rounds ${ROUNDS})`);
 
 function postAnthropic(body) {
@@ -209,10 +210,16 @@ for (const [i, id] of queue.entries()) {
       }
       process.stdout.write(`r2 ${r2.elapsed}s/${r2.usage.output_tokens}tok `);
     }
-    writeFileSync(join(OUT, `${id}.js`), finalCode);
-    writeFileSync(join(OUT, `${id}.txt`), `PROMPT: ${p.prompt}\n\n${finalNote}\n`);
     try {
-      await renderModule(join(OUT, `${id}.js`), join(OUT, `${id}.png`), SIZE);
+      await commitFinalRewrite({
+        outDir: OUT,
+        id,
+        code: finalCode,
+        note: finalNote,
+        prompt: p.prompt,
+        size: SIZE,
+        renderModule,
+      });
       entry.ok = true;
       console.log('OK');
     } catch (e) {
@@ -239,8 +246,15 @@ for (const [i, id] of queue.entries()) {
           fix: true,
         });
         if (!s3.code) throw new Error('fix round 无代码块');
-        writeFileSync(join(OUT, `${id}.js`), s3.code);
-        await renderModule(join(OUT, `${id}.js`), join(OUT, `${id}.png`), SIZE);
+        await commitFinalRewrite({
+          outDir: OUT,
+          id,
+          code: s3.code,
+          note: s3.note || finalNote,
+          prompt: p.prompt,
+          size: SIZE,
+          renderModule,
+        });
         entry.ok = true;
         console.log('OK');
       } catch (e3) {
