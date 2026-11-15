@@ -29,7 +29,7 @@ const DIM = opt('--dim', '/Users/hexiaoyang/Documents/sdf/DIMENSION');
 const DRY = args.includes('--dry');
 const ONLY = opt('--only', 'objects,landscapes,themes').split(',');
 // terser 不在 sdf-main 依赖里: 先找 repo 的 node_modules, 再找 --terser-dir (默认 /tmp/genlab-min, `npm i terser` 即可)
-const terser = (() => {
+const loadTerser = () => {
   for (const base of [
     join(ROOT, '..', 'package.json'),
     join(opt('--terser-dir', '/tmp/genlab-min'), 'package.json'),
@@ -39,9 +39,97 @@ const terser = (() => {
     } catch {}
   }
   throw new Error('找不到 terser: npm i terser --prefix /tmp/genlab-min, 或 --terser-dir <dir>');
-})();
+};
 
 const BUNDLES = { objects: 'LIB_OBJECTS', landscapes: 'LIB_LANDSCAPES', themes: 'LIB_THEMES' };
+
+const HOST_ACCESS_PATTERNS = [
+  /\bglobalThis\b/,
+  /\bglobal\b/,
+  /\bprocess\b/,
+  /\brequire\b/,
+  /\bmodule\b/,
+  /\bexports\b/,
+  /\bBuffer\b/,
+  /\bFunction\b/,
+  /\beval\b/,
+  /\bconstructor\b/,
+  /\bprototype\b/,
+  /\b__proto__\b/,
+  /\bimport\s*\(/,
+  /\bimport\.meta\b/,
+  /\bfetch\b/,
+  /\bXMLHttpRequest\b/,
+  /\bWebSocket\b/,
+  /\bWorker\b/,
+  /\bimportScripts\b/,
+  /\bsetTimeout\b/,
+  /\bsetInterval\b/,
+  /\bqueueMicrotask\b/,
+];
+
+const stripCommentsAndQuotedStrings = (src) => {
+  let out = '';
+  for (let i = 0; i < src.length; i++) {
+    const c = src[i];
+    const n = src[i + 1];
+    if (c === '/' && n === '/') {
+      out += '  ';
+      i += 2;
+      while (i < src.length && src[i] !== '\n') {
+        out += ' ';
+        i++;
+      }
+      if (i < src.length) out += '\n';
+      continue;
+    }
+    if (c === '/' && n === '*') {
+      out += '  ';
+      i += 2;
+      while (i < src.length && !(src[i] === '*' && src[i + 1] === '/')) {
+        out += src[i] === '\n' ? '\n' : ' ';
+        i++;
+      }
+      if (i < src.length) {
+        out += '  ';
+        i++;
+      }
+      continue;
+    }
+    if (c === '"' || c === "'") {
+      const quote = c;
+      out += ' ';
+      i++;
+      while (i < src.length) {
+        const ch = src[i];
+        out += ch === '\n' ? '\n' : ' ';
+        if (ch === '\\') {
+          i++;
+          if (i < src.length) out += src[i] === '\n' ? '\n' : ' ';
+        } else if (ch === quote) {
+          break;
+        }
+        i++;
+      }
+      continue;
+    }
+    out += c;
+  }
+  return out;
+};
+
+export const assertGeneratedModuleSafe = (id, src) => {
+  if (src.includes('`')) {
+    throw new Error(`${id}: 禁止模板字符串 (bake guard)`);
+  }
+  for (const re of HOST_ACCESS_PATTERNS) {
+    if (re.test(src)) throw new Error(`${id}: 禁止宿主访问/动态执行: ${re}`);
+  }
+  const stripped = stripCommentsAndQuotedStrings(src);
+  if (/document\.|window\.|Math\.random|Date\.now|performance\./.test(stripped)) {
+    throw new Error(`${id}: 残留 DOM / 随机 / 时间引用`);
+  }
+};
 
 // ---- 现有 bundle 的键顺序 ----
 const orderOf = (pool) => {
@@ -64,7 +152,7 @@ const takeExpr = (s, pos) => {
   return [s.slice(pos, i).trim(), i];
 };
 
-const transform = (id, src) => {
+export const transform = (id, src) => {
   // import
   const im = src.match(/^import\s*\{([\s\S]*?)\}\s*from\s*['"][^'"]*src\/index\.js['"];?\s*\n/m);
   if (!im) throw new Error(`${id}: 无 import 语句`);
@@ -82,10 +170,7 @@ const transform = (id, src) => {
     '',
   );
   body = body.replace(/^[ \t]*const\s+ctx\s*=\s*canvas\.getContext\(['"]2d['"]\);?[ \t]*\n/m, '');
-  if (
-    /document\.|window\.|Math\.random|Date\.now|performance\./.test(body.replace(/\/\/.*$/gm, ''))
-  )
-    throw new Error(`${id}: 残留 DOM / 随机 / 时间引用`);
+  assertGeneratedModuleSafe(id, body);
   // render.silhouette(ctx, LAYERS, { ... });
   const rc = body.match(/render\.silhouette\(\s*ctx\s*,/);
   if (!rc) throw new Error(`${id}: 无 render.silhouette(ctx, ...) 调用`);
@@ -171,40 +256,47 @@ const validate = (pool, code, ids) => {
   return report;
 };
 
-for (const pool of ONLY) {
-  const ids = orderOf(pool);
-  const parts = [];
-  const missing = [];
-  for (const id of ids) {
-    const f = join(SRC, `${id}.js`);
-    if (!existsSync(f)) {
-      missing.push(id);
-      continue;
+const main = async () => {
+  const terser = loadTerser();
+  for (const pool of ONLY) {
+    const ids = orderOf(pool);
+    const parts = [];
+    const missing = [];
+    for (const id of ids) {
+      const f = join(SRC, `${id}.js`);
+      if (!existsSync(f)) {
+        missing.push(id);
+        continue;
+      }
+      parts.push(transform(id, readFileSync(f, 'utf8')));
     }
-    parts.push(transform(id, readFileSync(f, 'utf8')));
+    if (missing.length) throw new Error(`${pool}: 缺 ${missing.length} 件新版: ${missing.join(',')}`);
+    const raw = `const ${BUNDLES[pool]}=(()=>{const __o={},__mk=(l,v,b)=>({layers:l,view:v,background:b});\n${parts.join('')}return __o;})();\n`;
+    const min = await terser.minify(raw, {
+      ecma: 2020,
+      module: false,
+      toplevel: false,
+      compress: { passes: 2, unsafe: false, unsafe_math: false, keep_infinity: true },
+      mangle: true,
+      format: { comments: false },
+    });
+    if (min.error) throw min.error;
+    const code = min.code + '\n';
+    const report = validate(pool, code, ids);
+    const bad = report.filter((r) => !r.ok);
+    const oldSize = readFileSync(join(DIM, 'objects2d', `lib-${pool}.js`)).length;
+    console.log(
+      `${pool}: ${ids.length} 件, 自检 ${report.length - bad.length}/${report.length} ok, 层数均值 ${(report.reduce((s, r) => s + (r.layers || 0), 0) / report.length).toFixed(1)}, 体积 ${(oldSize / 1024).toFixed(0)}KB → ${(code.length / 1024).toFixed(0)}KB (未压缩 ${(raw.length / 1024).toFixed(0)}KB)`,
+    );
+    for (const b of bad) console.log(`  ✗ ${b.id}: ${b.err}`);
+    if (bad.length) throw new Error(`${pool}: ${bad.length} 件自检失败, 不写`);
+    if (!DRY) {
+      writeFileSync(join(DIM, 'objects2d', `lib-${pool}.js`), code);
+      console.log(`  → 写入 objects2d/lib-${pool}.js`);
+    }
   }
-  if (missing.length) throw new Error(`${pool}: 缺 ${missing.length} 件新版: ${missing.join(',')}`);
-  const raw = `const ${BUNDLES[pool]}=(()=>{const __o={},__mk=(l,v,b)=>({layers:l,view:v,background:b});\n${parts.join('')}return __o;})();\n`;
-  const min = await terser.minify(raw, {
-    ecma: 2020,
-    module: false,
-    toplevel: false,
-    compress: { passes: 2, unsafe: false, unsafe_math: false, keep_infinity: true },
-    mangle: true,
-    format: { comments: false },
-  });
-  if (min.error) throw min.error;
-  const code = min.code + '\n';
-  const report = validate(pool, code, ids);
-  const bad = report.filter((r) => !r.ok);
-  const oldSize = readFileSync(join(DIM, 'objects2d', `lib-${pool}.js`)).length;
-  console.log(
-    `${pool}: ${ids.length} 件, 自检 ${report.length - bad.length}/${report.length} ok, 层数均值 ${(report.reduce((s, r) => s + (r.layers || 0), 0) / report.length).toFixed(1)}, 体积 ${(oldSize / 1024).toFixed(0)}KB → ${(code.length / 1024).toFixed(0)}KB (未压缩 ${(raw.length / 1024).toFixed(0)}KB)`,
-  );
-  for (const b of bad) console.log(`  ✗ ${b.id}: ${b.err}`);
-  if (bad.length) throw new Error(`${pool}: ${bad.length} 件自检失败, 不写`);
-  if (!DRY) {
-    writeFileSync(join(DIM, 'objects2d', `lib-${pool}.js`), code);
-    console.log(`  → 写入 objects2d/lib-${pool}.js`);
-  }
+};
+
+if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
+  await main();
 }
