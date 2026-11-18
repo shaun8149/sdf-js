@@ -279,6 +279,7 @@
         "lifted": 0,
         "fractal": 0.02
       },
+      "_note_ribbon_2026_11_18": "缎带配色档 (DIMENSION color3d.js RIBBON_PALS): 流场缎带命中件 (scene34 frNaturalHit / scene35 gate35<FR_RATE) 75% 换 6 套 Fidenza 式自调配色 (Mustard/Ochre/Terracotta/Slate/Primary/Flag), 侧流 0x6a09e667, 最后重映射。起因: user「这张很美，因为 Fidenza 的颜色对了」。",
       "_note_2026_11_18": "棱线形体卷 (DIMENSION scenes/solids-facet.js): user 逐字「从原语池挪 20 给棱线池，变成 27 / 21 / 28 / 20」。FACET_POOL 15 件 (晶体簇 3 / 星形复合 4 / 玄武岩 2 / 线框 3 / 切割 3) 均匀抽; 原语池 8 个光滑件就地切面化 (同参数同 r() 次数, 只换形)。30 万次 rollPrimaryKind 真沙箱实测 27.519 / 21.462 / 28.642 / 20.383 / 分形 1.994; 棱线池单件 1.33–1.39%。下方 effective_measured 为上一刀 (47/21/28) 的实测档。",
       "effective_measured": "30 万次 rollPrimaryKind() 真沙箱真 r() 流直测 (DIMENSION test/evidence/forms3d-t1/routeshare-forms3d.mjs): 47.775 / 21.636 / 28.579 / 0 / 2.010; 改前同法 A/B (SCULPT 17) 53.984 / 24.382 / 19.623 / 2.010。⚠ 口径注: `pa.solidKinds[0]` (屏上主件) **不等于**路由落档 —— interior 型主件走 INTERIOR_ARCHES 强制池, avenue 的重/宽/环退避会把 S1 换成 S2/S3; 上表说的是路由档。"
     },
@@ -1238,6 +1239,7 @@
         "ikat-diamonds",
         "kimono-waves"
       ],
+      "_note_2026_11_18": "PIECE_CULL_THEMES 27 → 28: + hex-honeycomb (user 面对样张逐字「这个构图太丑了，去掉」)。pattern 类存续 4 → 3 (art-nouveau-iris / chinoiserie-panel / william-morris), 单件占主题池 8.3% → 11.1%; 随即按 user 选「压到单件约 2%」把 TILING_TRIM_R 1/3 → 0.88 (pattern 有效份额 33.3% → 6%, 余量按 2:2 让 lighthouse36/seasons), 4000-hash 实测 pattern 三件 2.0–2.3%。",
       "_note": "PIECE_CULL_THEMES 12 (T9) → 23 (T9b +11 边界全删) → **27 (T10 +4)**; 归类按 T9b 终态口径 (瓷砖样本三件与织物挂样同构线一并表态, 审查者口径自洽建议采纳)"
     },
     "themes_culled_t10_4": {
