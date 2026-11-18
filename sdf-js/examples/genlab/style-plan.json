@@ -256,24 +256,28 @@
       "_note": "2026-08-28 收卷刷新 (3D扩容+配比卷), 2026-08-29 呈裁 user 终裁①转正锁定 (五分路由 47/21/17/15+分形带, sierpinski 2%/mandelbulb 降级维持一并追认): scene34 主件五分路由 (scenes/solids-stage.js rollPrimaryKind)——T2 四分 draft 47/21/17/15 (旧三分 55/25/20 等比压缩) + T4 分形稀有档 (四档等比乘 (1−FRACTAL_SHARE), FRACTAL_SHARE = FRACTAL_WEIGHT_SUM/100 现算, mandelbulb 降 0 后 = 0.02)。消费恒定: route+四路索引+fRoll 恒 6 r()。**user 呈裁终裁 2026-08-29 锁定 (progress.md 尾节「USER 呈裁终裁」)**。副件 (S2/S3/静物池) 仍走两分 rollSolidKind 72/28 (primitive/bool)。",
       "_note_2026_09_20": "**失同步补记 (3D 形体扩容卷 T2 收卷硬门)**: 本节自 2026-08-29 起未随两刀更新, 现一次补齐。①**#170 红线闸门刀** (DIMENSION 4554916, 2026-09-19 user 终裁②「语料档 LIFTED 全池退场」) 把路由改成**具名权重表** `PRIMARY_WEIGHTS = { SOLID, BOOL, SCULPT, LIFTED }` + 现算 `PRIMARY_W_SUM`, LIFTED 权重降 0 (语料带宽恰 0 = 自然不可达, 分支与池成员全留, ?lifted= dev 口仍可达——cell120/mandelbulb 同款降级纪律)。②**3D 形体扩容卷 T1** (15f017d, 2026-09-20) 把 SCULPT 权 17→28 (一个字面数字; 三条阈值全部由 PRIMARY_W_SUM 现算派生, 零硬编码零新 roll)。权重表现值 = {SOLID:47, BOOL:21, SCULPT:28, LIFTED:0}, PRIMARY_W_SUM=96。消费恒定: rollPrimaryKind 仍恒 6 r()。**SCULPT 17→28 是控制端临时采纳, 待 user 在本卷 T7 STOP 处终裁** (推荐采纳: 单件出现率 19.60%/26 = 0.754% → 28.58%/38 = 0.752% **持平**, 让权来自 user 点名不满的 primitive 档; 保守退路 SCULPT:24 = 0.673%/件, 稀释 11%, 不推荐)。",
       "weights_named": {
-        "SOLID": 47,
+        "SOLID": 27,
         "BOOL": 21,
         "SCULPT": 28,
+        "FACET": 20,
         "LIFTED": 0,
         "PRIMARY_W_SUM": 96
       },
-      "primitive": 0.4896,
+      "primitive": 0.2813,
       "bool": 0.2188,
       "sculpt": 0.2917,
+      "facet": 0.2083,
       "lifted": 0,
       "fractal_share_derived": 0.02,
       "effective_natural": {
-        "primitive": 0.4798,
+        "primitive": 0.2756,
         "bool": 0.2144,
         "sculpt": 0.2858,
+        "facet": 0.2042,
         "lifted": 0,
         "fractal": 0.02
       },
+      "_note_2026_11_18": "棱线形体卷 (DIMENSION scenes/solids-facet.js): user 逐字「从原语池挪 20 给棱线池，变成 27 / 21 / 28 / 20」。FACET_POOL 15 件 (晶体簇 3 / 星形复合 4 / 玄武岩 2 / 线框 3 / 切割 3) 均匀抽; 原语池 8 个光滑件就地切面化 (同参数同 r() 次数, 只换形)。30 万次 rollPrimaryKind 真沙箱实测 27.519 / 21.462 / 28.642 / 20.383 / 分形 1.994; 棱线池单件 1.33–1.39%。下方 effective_measured 为上一刀 (47/21/28) 的实测档。",
       "effective_measured": "30 万次 rollPrimaryKind() 真沙箱真 r() 流直测 (DIMENSION test/evidence/forms3d-t1/routeshare-forms3d.mjs): 47.775 / 21.636 / 28.579 / 0 / 2.010; 改前同法 A/B (SCULPT 17) 53.984 / 24.382 / 19.623 / 2.010。⚠ 口径注: `pa.solidKinds[0]` (屏上主件) **不等于**路由落档 —— interior 型主件走 INTERIOR_ARCHES 强制池, avenue 的重/宽/环退避会把 S1 换成 S2/S3; 上表说的是路由档。"
     },
     "pools_34": {
