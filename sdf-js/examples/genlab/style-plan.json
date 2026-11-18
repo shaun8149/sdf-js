@@ -27,10 +27,11 @@
   "dimension_tier": {
     "_locked": true,
     "_note": "2026-08-22 策展手术终裁 (逐字), sketch.js TIER_WEIGHTS。BOB 六景/老 3D/老 4D/韵脚 2D/静物台全部退场——不再是这张表要覆盖的自然路由，见 retired_scenes。2026-08-26 新卷终裁 (3D扩容+配比卷 Task 1): 4D 减半让 2D——2d 0.78→0.86 / 4d 0.16→0.08, 3d/ascension 不动, 和仍=1。DIMENSION 侧 1e3c791 落地 (468/468 测试 + 1000-hash 卡方复检双层 PASS: tier df=3 卡方 5.597<7.815, scene df=5 卡方 7.318<11.070)。2026-09-08 objects 池改造 (审图季 user 终裁: \"2D 单一物体跟现在的艺术风格已经很不搭……整体权重从 33% 降到 10%, 剩下的加给 3D\"): 2d 0.86→0.63 / 3d 0.05→0.28, 4d/ascension 不动——objects 自然占比 0.63×0.16≈10.1%; DIMENSION 侧 773ff2e 落地, 本表此前失同步, 2026-09-13 收卷补记。2026-09-19 **配比刀** (38719cf, user 终裁逐字: \"总体增加 3D 在所有作品中的比例, 提高 1.5 倍, 然后 2D 相应的进行减少\"): 3d 28×1.5 = **42**, 14 点差额**全部且仅由 2D 吸收** (2d 63→**49**), 4d/ascension 一字不动, 和仍 = 100。阈值派生核: setPa() 的 tier 抽签是单 roll 对 TIER_WEIGHTS 派生的累积阈值, 故**只有一个数动** —— T2D 0.63→0.49, T3D (0.91)/T4D (0.99) 逐位不动 ⇒ 4D/升维带是与旧比例**同一批 hash** (5000-hash 确定性集 387/46 逐枚吻合), 翻面带 = tierRoll ∈ [0.49,0.63) **严格单向 2D→3D**。消费恒定: tierRoll+poolRoll 恒 2 r(), 只重划值域 (翻面件下游 roll 流移一位系 setPa() 既有 pa.texture 分支换边, 即\"翻面\"的定义本身, 非新增消费)。",
-    "2d": 0.49,
-    "3d": 0.42,
+    "2d": 0.3675,
+    "3d": 0.5425,
     "4d": 0.08,
     "ascension": 0.01,
+    "tier_2026_11_18": "user 逐字「减少2D的占比到现在的 75%，增加3D」(DIMENSION sketch.js TIER_WEIGHTS {2d:49,3d:42} → {2d:36.75, 3d:54.25}, 4d/ascension 不动)。只有 T2D 动 (0.49→0.3675), T3D 0.91/T4D 0.99 不动 ⇒ 翻面带 tierRoll ∈ [0.3675,0.49) 严格单向 2D→3D, 消费恒定。下方 tier15_measured 为上一刀 (63/28→49/42) 的实测档。",
     "tier15_measured": {
       "_note": "配比刀 5000-hash 确定性集 / 全链双树对拍实测 (DIMENSION test/evidence/tier15-rebaseline/)。重基线归因 TIER-SHIFT; 新增派生锁断言 3d === 28*1.5 ∧ 4d === 8 ∧ ascension === 1 使 user 裁定本身可执行。42 具名锚点审计仅 HASH_B 翻面 (已重基线 + 自证断言), HASH_SD_MISS 免疫; 六处 give-way 内联锚 + a1 hover 兜底锚按 T2/T6 先例重猎, 原案例 hash 留档; 印章带界锁换载体 HASH_B→HASH_A (仍 2D, 期望值不变 = 换载体非重基线)。",
       "tier_counts_old": [3205, 1362, 387, 46],
