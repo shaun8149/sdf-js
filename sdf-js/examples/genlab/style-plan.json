@@ -209,15 +209,16 @@
     "comp_34": {
       "_locked": true,
       "_note": "**九窗终态** (3D 形体扩容卷 T5 收卷 2026-09-20): v2 五型 30/25/20/15/10 (2026-08-20) → 纵深卷 avenue 第六型入表 14% + closeup 15→7 (2026-09-07) → 构型扩容+光影卷 anchor 对比锚 5% (T1b, user 埃菲尔铁塔蓝调参考图令: 近景巨物压缘+ANCHOR_TALL 远塔雾中+地平线 mini-stele 尺度锚) + interior 拱廊内景 6% (T4b, user 砖拱廊剧照令: INTERIOR_ARCHES 连拱退行+厚墙门洞+筒拱收顶+光池自然涌现; avenue 让 2 + stilllife 让 4) → **形体扩容卷 T5 skyline 巨构群 5%** (user 终裁⑤ \"巨构群构图型 = 要, 用现有形体拼天际线不改形体轴\" + 参考十二张令 \"主要是记住构图和明暗, 以及人的位置\"; monument 26→23 让 3 + hover 18→16 让 2, 见 skyline_t5 节)。compRoll 单 roll 值域重划, 消费恒定; **双段窗划** (skyline 占 [0.23,0.26)+[0.67,0.69)) ⟹ 翻型带恰 5% 且全部翻向 skyline, 其余七窗字面原位零翻型 (单段案翻面 9%, 不取)。窗序 monument|skyline|colossus|anchor|hover|skyline|closeup|avenue|interior|stilllife。scene35 的 comp_35 不跟随, 保持 v2 五型 (见 4d_content)。",
+      "_note_2026_11_18": "开阔取景卷 (DIMENSION solids-stage.js): user 裁定「构图配比往开阔一侧倾斜 + 放宽长影」, 后经覆盖率实测改为「留白档 + 小调配比」。closeup 7→3 / stilllife 6→10; 留白档 = 独立侧流 (hash ⊕ 0x5bd1e995) 在 monument/colossus/hover/avenue/anchor 五型里 1/3 命中, 主件 (及 monument/hover 副件) 屏高 ×0.6, 在 capHF 之后乘。长影: hover/stilllife 改长影型; 长影正午台地 10–14 → 11.5–12.5 (金色调仍用 10–14, 拆为 chronoGoldW)。3000-hash 实测: closeup 实际 7.3% (含 NG 窗 45% 改判), stilllife 9.2%; 覆盖率中位 0.49→0.40, cov≤0.25 占比 11.1%→23.9%; 白天长影 (w≥0.5) 3D 加权 ≈87%→97%。",
       "monument": 0.23,
       "skyline": 0.05,
       "colossus": 0.2,
       "anchor": 0.05,
       "hover": 0.16,
-      "closeup": 0.07,
+      "closeup": 0.03,
       "avenue": 0.12,
       "interior": 0.06,
-      "stilllife": 0.06,
+      "stilllife": 0.1,
       "modifiers": {
         "pierce": 0.08,
         "intersect": 0.15,
