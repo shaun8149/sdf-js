@@ -135,6 +135,7 @@
     "traits": "五键 Category/Family/Palette/Density/Ground + F4 件 Interplay/Piece"
   },
   "2d_style_axis": {
+    "apparatus_2026_11_19": "2D Apparatus 房间化风格 (DIMENSION b5b3c48, user 选「2D Apparatus 风格轴」): 物件/风景件 (neon 除外) 经独立侧流 (0x5f356495) 20% 改 style2d='apparatus' (trait Style: Apparatus)。画面 36 格, 主体里跑开新房间/延伸自动机 (Apparatus, Kjetil Golid, MIT; 机制自写), 延伸只走同一顶层号格 → 房间顺原画色区; 房间取层色, 9% 缝露深色底; 风景全幅、物件只在主体层; worker 同 seed 重建同层表 (连拍 3 次逐位同)。",
     "warp_amp": {
       "_locked": true,
       "value": 0.43,
@@ -624,8 +625,9 @@
       "_note": "四维影雕 shadowfall 第六型 (4D 影雕卷 T1/T2/T2′/T2″/T3, 2026-09-15..18, panels-4d.js)。user 设计核逐字: \"四维的世界, 它的影子是一个 3D 的物体……重点要描绘这个影子, 才能够把这个 4D 的感觉描绘出来\"; \"要做减法\"。铸造页文案底稿 (user 索解释义定稿): 一板三层——悬浮体=4D 的 3D 切片 (CT 之切) / 落地碑=4D 的 3D 影雕 (第四维光之照, 碑即影故着影色) / 地面拖影=碑的 2D 影 (第二跳)。\"影子是维度的证词\"。数学底座 T1: 影体 SDF = 4D SDF 沿光向投影成 3D SDF (shadow4_project 数值 / shadow4_hull 凸包 / shadow4_duocyl_axis 闭式三路径, min 族保 1-Lipschitz, SHADOW4_CLEAR 校准 6e-3)。",
       "type_window": {
         "_note": "SHADOWFALL_RATE=0.6 型别窗单 roll: 60% shadowfall (单板全幅真场景 min(悬浮切片, 影碑A, 影碑B)) / 40% 切片拼板 (poly4d_pool 老语法)。2000-hash 实测 60.0% 正中。",
-        "shadowfall_影雕型": 0.6,
-        "slice_切片型": 0.4
+        "_note_2026_11_18": "SHADOWFALL_RATE 0.6 → 0.75 (影雕扩容, 见 dimension_tier.tier_2026_11_18b); 影雕件 70% 无雾; 切片型 40% 经侧流 (0x3b6f1c9d) 房间化: 四板切片同种子 roomifySdf, 规则一致形随第四维变化 (DIMENSION b5b3c48)。",
+        "shadowfall_影雕型": 0.75,
+        "slice_切片型": 0.25
       },
       "shadow_pool": {
         "_note": "POLY4D_WEIGHTS_SHADOW 影雕池专用权重 (SUM 现算 95, real_pct = weight/95); glome/cell5 权 0 (影恒为球零叙事/薄病), 巨胞体维持 0。",
@@ -730,6 +732,7 @@
       "traits": "pa.birthOffset 进 set_features 快照 (birthOffset 是否升格具名 trait 待 user 裁)"
     },
     "sunlight_window_3d4d": {
+      "_note_2026_11_19": "3D/4D 夜景全撤 (DIMENSION b5b3c48, user 逐字「很难区分是夜景还是黑色」「3D 我们不考虑夜景了」): computeChrono 里 tLight = chronoFoldDay(chronoRemapLight(T_eff)), 日照带 [6,18], 带外每小时镜像折回 2.5/6 小时 (午夜前算黄昏 [15.5,18], 午夜后算清晨 [6,8.5]), 只在午夜跳变; night3 / lamps3 字段与夜泛光灯 / 夜调色 / 天空光束 / 星座 / 亮窗整套删除; 装裱日月标与印章 3D/4D 恒日。白天作品逐位不变; 原夜间时刻改为暮金长影。下方 formula/range 为旧档。",
       "_note": "3D/4D 光照 (lightPos3, probe_4d 唯一消费, scene 34/35/17) 不直用 T_eff, 连续 remap 进日照窗——保昼夜节律但太阳不落山; t=12 唯一不动点。时间重塑卷 (2026-09-03) 后 2D 全域改走 time_remap_2d 显示轴 (见下节), 日照窗本节公式与消费面**不动** (tLight 恒由 T_eff 直算)。",
       "formula": "T_light = 5.5 + 13 * (T_eff / 24)",
       "range": [5.5, 18.5]
@@ -775,10 +778,12 @@
       ]
     },
     "night_lamps": {
+      "_retired_2026_11_18": "② 2D 夜灯 (computeNightLamps/drawNightLamps) 已删除 (DIMENSION 0d8b391, user「把2D夜晚灯光的特效去掉」); ① NIGHT_LIFT 保留。",
       "_note": "[user 2026-09-03..05 终裁转正 _locked] 时间重塑卷 (2026-09-03, user 裁定②): 2D 夜段专属——① 夜色提亮一档 NIGHT_LIFT { lmMul 1.15, lFloor 0.035, skyMul 1.15 } (ANCHORS 插值后处理, ANCHORS 表一字不动, 幅度 draft 呈裁); **2026-10-28 减一档 (DIMENSION 43e91cf, user 终裁)**: NIGHT_LIFT → { lmMul 1.3, lFloor 0.05, skyMul 1.15, smMul 1.25 } (新增夜段饱和乘数, 原夜段饱和砍半), 让新库件的色彩关系在夜里可读; 夜段色相向蓝拉 75% 未动 (备选下一档 50%); ② 画面中上部 2-4 处暖色柔光晕 computeNightLamps/drawNightLamps (类灯笼/窗火, 不绑画内物体)。灯组 hash 派生走独立 sfc32 侧流 (种子 = 出生偏移流种子逐字异或 0x9E3779B9), 零主流 r() 消费; 灯进主画布 (renderLibPieceGen 尾段, 是画的一部分, 同 hash+同时刻逐位同——真浏览器双渲 12/12 pairEqual); 昼/黄昏/清晨段零灯光零扰动。painted 风格不参与 (BOB 色窗原生管线, 与 chrono 色温同一豁免面)。参数 draft 呈裁: n 2-4 / x∈[0.14,0.86] / y∈[0.10,0.42] / r∈[0.09,0.17]·min(W,H) / α∈[0.28,0.50]。",
       "scope": "scene 30-32 的 before/after/warp/neon (renderLibPieceGen 路径); 3D/4D/升维走日照窗恒昼, 无夜段"
     },
     "opening_ritual": {
+      "_retired_2026_11_17": "后半 day_sweep 已删除 (DIMENSION 8fcf0ee, user「这个过程不美, 完全去掉」): 排水完成即 render_done; __mountSweepOff 钩撤除。前半 living_brush 保留。",
       "_note": "开场仪式两段: 前半 = 逐笔生成 (T2), 后半 = 日扫 (T4)。全部活效果层, 不入静态归档 (mint-snapshot 等 $renderOK 读主画布完成态)。",
       "living_brush": "2D 库件逐笔: weave/warp 笔数均分 120 段 + 背景 24 段, neon 逐行 96 段显影; 2-4s 刷完 (neon ~31s per-pixel 本体成本, 呈裁); 完成态与直绘逐位相同 (vm op流+帧缓冲判据)",
       "day_sweep": "排水完成后 2.6s (MOUNT_SWEEP.durMs=2600, draft) 光色扫过 24h 落定 T_eff; 实现=色调映射近似 DOM 叠加层 (multiply/screen 两通道+时钟快转), 主画布零触碰 → 落定态=归档态逐位; ?t= 钉时与 mint-snapshot (__mountSweepOff) 不播扫"
