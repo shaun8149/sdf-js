@@ -35,7 +35,7 @@
 // Usage: node scripts/genlab-audit/harvest-palettes.mjs [--out <path>] [--dry]
 // =============================================================================
 
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync, renameSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
@@ -301,6 +301,20 @@ if (DRY) {
   console.log(`\n--dry: 不写文件。前 3 套预览:\n`);
   console.log(results.slice(0, 3).map(fmtEntry).join('\n'));
 } else {
-  writeFileSync(OUT_PATH, header);
+  if (rejects.loadFail > 0) {
+    console.error(
+      `\n拒绝写入: ${rejects.loadFail} 件 audit 语料加载失败。请先补齐 examples/genlab/out/_audit；为避免用不完整语料覆盖现有 palettes3d.js，不写文件。`,
+    );
+    process.exit(1);
+  }
+  if (results.length === 0) {
+    console.error(
+      '\n拒绝写入: 收割结果为 0 套。请确认 examples/genlab/out/_audit 已生成且语料可加载；为避免覆盖现有 palettes3d.js，不写文件。',
+    );
+    process.exit(1);
+  }
+  const tmpPath = `${OUT_PATH}.tmp-${process.pid}`;
+  writeFileSync(tmpPath, header);
+  renameSync(tmpPath, OUT_PATH);
   console.log(`\n写入 ${OUT_PATH} (${(header.length / 1024).toFixed(1)} KB)`);
 }
