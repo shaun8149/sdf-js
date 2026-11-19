@@ -626,7 +626,7 @@
       "_locked": true,
       "_note": "四维影雕 shadowfall 第六型 (4D 影雕卷 T1/T2/T2′/T2″/T3, 2026-09-15..18, panels-4d.js)。user 设计核逐字: \"四维的世界, 它的影子是一个 3D 的物体……重点要描绘这个影子, 才能够把这个 4D 的感觉描绘出来\"; \"要做减法\"。铸造页文案底稿 (user 索解释义定稿): 一板三层——悬浮体=4D 的 3D 切片 (CT 之切) / 落地碑=4D 的 3D 影雕 (第四维光之照, 碑即影故着影色) / 地面拖影=碑的 2D 影 (第二跳)。\"影子是维度的证词\"。数学底座 T1: 影体 SDF = 4D SDF 沿光向投影成 3D SDF (shadow4_project 数值 / shadow4_hull 凸包 / shadow4_duocyl_axis 闭式三路径, min 族保 1-Lipschitz, SHADOW4_CLEAR 校准 6e-3)。",
       "type_window": {
-        "_note_2026_11_19": "房间化占 4D 40% (user「4D 也是」): 切片型全部房间化 (ROOMED35_RATE_SLICE 1) + 影雕型悬浮体 20% 房间化 (碑仍为 4D 体的影) → 0.25 + 0.75×0.2 = 40%, 实测 42.5%。影雕/切片 75/25 不动。",
+        "_note_2026_11_19": "房间化占 4D 40% (user「4D 也是」): 切片型全部房间化 (ROOMED35_RATE_SLICE 1) + 影雕型悬浮体 20% 房间化 (碑仍为 4D 体的影) → 0.25 + 0.75×0.2 = 40%, 实测 42.5%。影雕/切片 75/25 不动。 随即 user 裁「在影雕的时候, 不要塔楼」: 影雕型不房间化 (ROOMED35_RATE_SHADOW 0), 房间化只剩切片型, 占 4D 约 25% (实测 28.8%)。",
         "_note": "SHADOWFALL_RATE=0.6 型别窗单 roll: 60% shadowfall (单板全幅真场景 min(悬浮切片, 影碑A, 影碑B)) / 40% 切片拼板 (poly4d_pool 老语法)。2000-hash 实测 60.0% 正中。",
         "_note_2026_11_18": "SHADOWFALL_RATE 0.6 → 0.75 (影雕扩容, 见 dimension_tier.tier_2026_11_18b); 影雕件 70% 无雾; 切片型 40% 经侧流 (0x3b6f1c9d) 房间化: 四板切片同种子 roomifySdf, 规则一致形随第四维变化 (DIMENSION b5b3c48)。",
         "shadowfall_影雕型": 0.75,
