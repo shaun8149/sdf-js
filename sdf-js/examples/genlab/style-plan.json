@@ -27,10 +27,12 @@
   "dimension_tier": {
     "_locked": true,
     "_note": "2026-08-22 策展手术终裁 (逐字), sketch.js TIER_WEIGHTS。BOB 六景/老 3D/老 4D/韵脚 2D/静物台全部退场——不再是这张表要覆盖的自然路由，见 retired_scenes。2026-08-26 新卷终裁 (3D扩容+配比卷 Task 1): 4D 减半让 2D——2d 0.78→0.86 / 4d 0.16→0.08, 3d/ascension 不动, 和仍=1。DIMENSION 侧 1e3c791 落地 (468/468 测试 + 1000-hash 卡方复检双层 PASS: tier df=3 卡方 5.597<7.815, scene df=5 卡方 7.318<11.070)。2026-09-08 objects 池改造 (审图季 user 终裁: \"2D 单一物体跟现在的艺术风格已经很不搭……整体权重从 33% 降到 10%, 剩下的加给 3D\"): 2d 0.86→0.63 / 3d 0.05→0.28, 4d/ascension 不动——objects 自然占比 0.63×0.16≈10.1%; DIMENSION 侧 773ff2e 落地, 本表此前失同步, 2026-09-13 收卷补记。2026-09-19 **配比刀** (38719cf, user 终裁逐字: \"总体增加 3D 在所有作品中的比例, 提高 1.5 倍, 然后 2D 相应的进行减少\"): 3d 28×1.5 = **42**, 14 点差额**全部且仅由 2D 吸收** (2d 63→**49**), 4d/ascension 一字不动, 和仍 = 100。阈值派生核: setPa() 的 tier 抽签是单 roll 对 TIER_WEIGHTS 派生的累积阈值, 故**只有一个数动** —— T2D 0.63→0.49, T3D (0.91)/T4D (0.99) 逐位不动 ⇒ 4D/升维带是与旧比例**同一批 hash** (5000-hash 确定性集 387/46 逐枚吻合), 翻面带 = tierRoll ∈ [0.49,0.63) **严格单向 2D→3D**。消费恒定: tierRoll+poolRoll 恒 2 r(), 只重划值域 (翻面件下游 roll 流移一位系 setPa() 既有 pa.texture 分支换边, 即\"翻面\"的定义本身, 非新增消费)。",
-    "2d": 0.49,
-    "3d": 0.42,
-    "4d": 0.08,
+    "2d": 0.3675,
+    "3d": 0.4825,
+    "4d": 0.14,
     "ascension": 0.01,
+    "tier_2026_11_18b": "影雕扩容 (user 选「影雕份额翻倍 + 默认无雾 + 偏安静配色」, 起因 user 极喜欢的 4D 影雕件 0x0131cb84… White Night): TIER 3d 54.25→48.25 / 4d 8→14 (T3D 0.91→0.85, 翻面带 [0.85,0.91) 3D→4D 单向); scene35 SHADOWFALL_RATE 0.6→0.75; 影雕件复用 fogRoll: 70% 无雾, 余 0.09; 影雕安静档 (color3d.js, 侧流 0x2f4a1d63, 非艺术档影雕件 40%) 换 QUIET_PALS 6 套 (White Night/snowfield-fence/li-river-mist/bruegel-winter/cracked-playa/White Square) + 影色补色档 + 配色环起点钉 0。3000-hash 实测: 4d 13.5%, 影雕占全部 ≈10%, 无雾 69%。user 原件校验和不变。",
+    "tier_2026_11_18": "user 逐字「减少2D的占比到现在的 75%，增加3D」(DIMENSION sketch.js TIER_WEIGHTS {2d:49,3d:42} → {2d:36.75, 3d:54.25}, 4d/ascension 不动)。只有 T2D 动 (0.49→0.3675), T3D 0.91/T4D 0.99 不动 ⇒ 翻面带 tierRoll ∈ [0.3675,0.49) 严格单向 2D→3D, 消费恒定。下方 tier15_measured 为上一刀 (63/28→49/42) 的实测档。",
     "tier15_measured": {
       "_note": "配比刀 5000-hash 确定性集 / 全链双树对拍实测 (DIMENSION test/evidence/tier15-rebaseline/)。重基线归因 TIER-SHIFT; 新增派生锁断言 3d === 28*1.5 ∧ 4d === 8 ∧ ascension === 1 使 user 裁定本身可执行。42 具名锚点审计仅 HASH_B 翻面 (已重基线 + 自证断言), HASH_SD_MISS 免疫; 六处 give-way 内联锚 + a1 hover 兜底锚按 T2/T6 先例重猎, 原案例 hash 留档; 印章带界锁换载体 HASH_B→HASH_A (仍 2D, 期望值不变 = 换载体非重基线)。",
       "tier_counts_old": [3205, 1362, 387, 46],
@@ -133,6 +135,7 @@
     "traits": "五键 Category/Family/Palette/Density/Ground + F4 件 Interplay/Piece"
   },
   "2d_style_axis": {
+    "apparatus_2026_11_19": "2D Apparatus 房间化风格 (DIMENSION b5b3c48, user 选「2D Apparatus 风格轴」): 物件/风景件 (neon 除外) 经独立侧流 (0x5f356495) 20% 改 style2d='apparatus' (trait Style: Apparatus)。画面 36 格, 主体里跑开新房间/延伸自动机 (Apparatus, Kjetil Golid, MIT; 机制自写), 延伸只走同一顶层号格 → 房间顺原画色区; 房间取层色, 9% 缝露深色底; 风景全幅、物件只在主体层; worker 同 seed 重建同层表 (连拍 3 次逐位同)。",
     "warp_amp": {
       "_locked": true,
       "value": 0.43,
@@ -208,15 +211,16 @@
     "comp_34": {
       "_locked": true,
       "_note": "**九窗终态** (3D 形体扩容卷 T5 收卷 2026-09-20): v2 五型 30/25/20/15/10 (2026-08-20) → 纵深卷 avenue 第六型入表 14% + closeup 15→7 (2026-09-07) → 构型扩容+光影卷 anchor 对比锚 5% (T1b, user 埃菲尔铁塔蓝调参考图令: 近景巨物压缘+ANCHOR_TALL 远塔雾中+地平线 mini-stele 尺度锚) + interior 拱廊内景 6% (T4b, user 砖拱廊剧照令: INTERIOR_ARCHES 连拱退行+厚墙门洞+筒拱收顶+光池自然涌现; avenue 让 2 + stilllife 让 4) → **形体扩容卷 T5 skyline 巨构群 5%** (user 终裁⑤ \"巨构群构图型 = 要, 用现有形体拼天际线不改形体轴\" + 参考十二张令 \"主要是记住构图和明暗, 以及人的位置\"; monument 26→23 让 3 + hover 18→16 让 2, 见 skyline_t5 节)。compRoll 单 roll 值域重划, 消费恒定; **双段窗划** (skyline 占 [0.23,0.26)+[0.67,0.69)) ⟹ 翻型带恰 5% 且全部翻向 skyline, 其余七窗字面原位零翻型 (单段案翻面 9%, 不取)。窗序 monument|skyline|colossus|anchor|hover|skyline|closeup|avenue|interior|stilllife。scene35 的 comp_35 不跟随, 保持 v2 五型 (见 4d_content)。",
+      "_note_2026_11_18": "开阔取景卷 (DIMENSION solids-stage.js): user 裁定「构图配比往开阔一侧倾斜 + 放宽长影」, 后经覆盖率实测改为「留白档 + 小调配比」。closeup 7→3 / stilllife 6→10; 留白档 = 独立侧流 (hash ⊕ 0x5bd1e995) 在 monument/colossus/hover/avenue/anchor 五型里 1/3 命中, 主件 (及 monument/hover 副件) 屏高 ×0.6, 在 capHF 之后乘。长影: hover/stilllife 改长影型; 长影正午台地 10–14 → 11.5–12.5 (金色调仍用 10–14, 拆为 chronoGoldW)。3000-hash 实测: closeup 实际 7.3% (含 NG 窗 45% 改判), stilllife 9.2%; 覆盖率中位 0.49→0.40, cov≤0.25 占比 11.1%→23.9%; 白天长影 (w≥0.5) 3D 加权 ≈87%→97%。",
       "monument": 0.23,
       "skyline": 0.05,
       "colossus": 0.2,
       "anchor": 0.05,
       "hover": 0.16,
-      "closeup": 0.07,
+      "closeup": 0.03,
       "avenue": 0.12,
       "interior": 0.06,
-      "stilllife": 0.06,
+      "stilllife": 0.1,
       "modifiers": {
         "pierce": 0.08,
         "intersect": 0.15,
@@ -255,24 +259,30 @@
       "_note": "2026-08-28 收卷刷新 (3D扩容+配比卷), 2026-08-29 呈裁 user 终裁①转正锁定 (五分路由 47/21/17/15+分形带, sierpinski 2%/mandelbulb 降级维持一并追认): scene34 主件五分路由 (scenes/solids-stage.js rollPrimaryKind)——T2 四分 draft 47/21/17/15 (旧三分 55/25/20 等比压缩) + T4 分形稀有档 (四档等比乘 (1−FRACTAL_SHARE), FRACTAL_SHARE = FRACTAL_WEIGHT_SUM/100 现算, mandelbulb 降 0 后 = 0.02)。消费恒定: route+四路索引+fRoll 恒 6 r()。**user 呈裁终裁 2026-08-29 锁定 (progress.md 尾节「USER 呈裁终裁」)**。副件 (S2/S3/静物池) 仍走两分 rollSolidKind 72/28 (primitive/bool)。",
       "_note_2026_09_20": "**失同步补记 (3D 形体扩容卷 T2 收卷硬门)**: 本节自 2026-08-29 起未随两刀更新, 现一次补齐。①**#170 红线闸门刀** (DIMENSION 4554916, 2026-09-19 user 终裁②「语料档 LIFTED 全池退场」) 把路由改成**具名权重表** `PRIMARY_WEIGHTS = { SOLID, BOOL, SCULPT, LIFTED }` + 现算 `PRIMARY_W_SUM`, LIFTED 权重降 0 (语料带宽恰 0 = 自然不可达, 分支与池成员全留, ?lifted= dev 口仍可达——cell120/mandelbulb 同款降级纪律)。②**3D 形体扩容卷 T1** (15f017d, 2026-09-20) 把 SCULPT 权 17→28 (一个字面数字; 三条阈值全部由 PRIMARY_W_SUM 现算派生, 零硬编码零新 roll)。权重表现值 = {SOLID:47, BOOL:21, SCULPT:28, LIFTED:0}, PRIMARY_W_SUM=96。消费恒定: rollPrimaryKind 仍恒 6 r()。**SCULPT 17→28 是控制端临时采纳, 待 user 在本卷 T7 STOP 处终裁** (推荐采纳: 单件出现率 19.60%/26 = 0.754% → 28.58%/38 = 0.752% **持平**, 让权来自 user 点名不满的 primitive 档; 保守退路 SCULPT:24 = 0.673%/件, 稀释 11%, 不推荐)。",
       "weights_named": {
-        "SOLID": 47,
+        "SOLID": 27,
         "BOOL": 21,
         "SCULPT": 28,
+        "FACET": 20,
         "LIFTED": 0,
         "PRIMARY_W_SUM": 96
       },
-      "primitive": 0.4896,
+      "primitive": 0.2813,
       "bool": 0.2188,
       "sculpt": 0.2917,
+      "facet": 0.2083,
       "lifted": 0,
       "fractal_share_derived": 0.02,
       "effective_natural": {
-        "primitive": 0.4798,
+        "primitive": 0.2756,
         "bool": 0.2144,
         "sculpt": 0.2858,
+        "facet": 0.2042,
         "lifted": 0,
         "fractal": 0.02
       },
+      "_note_tower_2026_11_18": "结构塔楼档 (DIMENSION scenes/solids-tower.js): PRIMARY_WEIGHTS 27/21/28/20 + TOWER 40 (user「权重跟 4D 整体出现比例相同」→ 3000-hash 实测塔楼 13.7% 全部作品, 3D 内 28%)。Apparatus (Kjetil Golid, MIT) 三维化 + Monument 机制 recipe-only; 体量 tower/setback/cluster/host (宿主 SDF 环/球/拱/沙漏); 房间颜色类别 → 点彩环内偏移; 主件为塔楼自动改走 COMP_TYPES.structure (weight 0 行)。",
+      "_note_ribbon_2026_11_18": "缎带配色档 (DIMENSION color3d.js RIBBON_PALS): 流场缎带命中件 (scene34 frNaturalHit / scene35 gate35<FR_RATE) 75% 换 6 套 Fidenza 式自调配色 (Mustard/Ochre/Terracotta/Slate/Primary/Flag), 侧流 0x6a09e667, 最后重映射。起因: user「这张很美，因为 Fidenza 的颜色对了」。",
+      "_note_2026_11_18": "棱线形体卷 (DIMENSION scenes/solids-facet.js): user 逐字「从原语池挪 20 给棱线池，变成 27 / 21 / 28 / 20」。FACET_POOL 15 件 (晶体簇 3 / 星形复合 4 / 玄武岩 2 / 线框 3 / 切割 3) 均匀抽; 原语池 8 个光滑件就地切面化 (同参数同 r() 次数, 只换形)。30 万次 rollPrimaryKind 真沙箱实测 27.519 / 21.462 / 28.642 / 20.383 / 分形 1.994; 棱线池单件 1.33–1.39%。下方 effective_measured 为上一刀 (47/21/28) 的实测档。",
       "effective_measured": "30 万次 rollPrimaryKind() 真沙箱真 r() 流直测 (DIMENSION test/evidence/forms3d-t1/routeshare-forms3d.mjs): 47.775 / 21.636 / 28.579 / 0 / 2.010; 改前同法 A/B (SCULPT 17) 53.984 / 24.382 / 19.623 / 2.010。⚠ 口径注: `pa.solidKinds[0]` (屏上主件) **不等于**路由落档 —— interior 型主件走 INTERIOR_ARCHES 强制池, avenue 的重/宽/环退避会把 S1 换成 S2/S3; 上表说的是路由档。"
     },
     "pools_34": {
@@ -615,8 +625,9 @@
       "_note": "四维影雕 shadowfall 第六型 (4D 影雕卷 T1/T2/T2′/T2″/T3, 2026-09-15..18, panels-4d.js)。user 设计核逐字: \"四维的世界, 它的影子是一个 3D 的物体……重点要描绘这个影子, 才能够把这个 4D 的感觉描绘出来\"; \"要做减法\"。铸造页文案底稿 (user 索解释义定稿): 一板三层——悬浮体=4D 的 3D 切片 (CT 之切) / 落地碑=4D 的 3D 影雕 (第四维光之照, 碑即影故着影色) / 地面拖影=碑的 2D 影 (第二跳)。\"影子是维度的证词\"。数学底座 T1: 影体 SDF = 4D SDF 沿光向投影成 3D SDF (shadow4_project 数值 / shadow4_hull 凸包 / shadow4_duocyl_axis 闭式三路径, min 族保 1-Lipschitz, SHADOW4_CLEAR 校准 6e-3)。",
       "type_window": {
         "_note": "SHADOWFALL_RATE=0.6 型别窗单 roll: 60% shadowfall (单板全幅真场景 min(悬浮切片, 影碑A, 影碑B)) / 40% 切片拼板 (poly4d_pool 老语法)。2000-hash 实测 60.0% 正中。",
-        "shadowfall_影雕型": 0.6,
-        "slice_切片型": 0.4
+        "_note_2026_11_18": "SHADOWFALL_RATE 0.6 → 0.75 (影雕扩容, 见 dimension_tier.tier_2026_11_18b); 影雕件 70% 无雾; 切片型 40% 经侧流 (0x3b6f1c9d) 房间化: 四板切片同种子 roomifySdf, 规则一致形随第四维变化 (DIMENSION b5b3c48)。",
+        "shadowfall_影雕型": 0.75,
+        "slice_切片型": 0.25
       },
       "shadow_pool": {
         "_note": "POLY4D_WEIGHTS_SHADOW 影雕池专用权重 (SUM 现算 95, real_pct = weight/95); glome/cell5 权 0 (影恒为球零叙事/薄病), 巨胞体维持 0。",
@@ -721,6 +732,7 @@
       "traits": "pa.birthOffset 进 set_features 快照 (birthOffset 是否升格具名 trait 待 user 裁)"
     },
     "sunlight_window_3d4d": {
+      "_note_2026_11_19": "3D/4D 夜景全撤 (DIMENSION b5b3c48, user 逐字「很难区分是夜景还是黑色」「3D 我们不考虑夜景了」): computeChrono 里 tLight = chronoFoldDay(chronoRemapLight(T_eff)), 日照带 [6,18], 带外每小时镜像折回 2.5/6 小时 (午夜前算黄昏 [15.5,18], 午夜后算清晨 [6,8.5]), 只在午夜跳变; night3 / lamps3 字段与夜泛光灯 / 夜调色 / 天空光束 / 星座 / 亮窗整套删除; 装裱日月标与印章 3D/4D 恒日。白天作品逐位不变; 原夜间时刻改为暮金长影。下方 formula/range 为旧档。",
       "_note": "3D/4D 光照 (lightPos3, probe_4d 唯一消费, scene 34/35/17) 不直用 T_eff, 连续 remap 进日照窗——保昼夜节律但太阳不落山; t=12 唯一不动点。时间重塑卷 (2026-09-03) 后 2D 全域改走 time_remap_2d 显示轴 (见下节), 日照窗本节公式与消费面**不动** (tLight 恒由 T_eff 直算)。",
       "formula": "T_light = 5.5 + 13 * (T_eff / 24)",
       "range": [5.5, 18.5]
@@ -766,10 +778,12 @@
       ]
     },
     "night_lamps": {
-      "_note": "[user 2026-09-03..05 终裁转正 _locked] 时间重塑卷 (2026-09-03, user 裁定②): 2D 夜段专属——① 夜色提亮一档 NIGHT_LIFT { lmMul 1.15, lFloor 0.035, skyMul 1.15 } (ANCHORS 插值后处理, ANCHORS 表一字不动, 幅度 draft 呈裁); ② 画面中上部 2-4 处暖色柔光晕 computeNightLamps/drawNightLamps (类灯笼/窗火, 不绑画内物体)。灯组 hash 派生走独立 sfc32 侧流 (种子 = 出生偏移流种子逐字异或 0x9E3779B9), 零主流 r() 消费; 灯进主画布 (renderLibPieceGen 尾段, 是画的一部分, 同 hash+同时刻逐位同——真浏览器双渲 12/12 pairEqual); 昼/黄昏/清晨段零灯光零扰动。painted 风格不参与 (BOB 色窗原生管线, 与 chrono 色温同一豁免面)。参数 draft 呈裁: n 2-4 / x∈[0.14,0.86] / y∈[0.10,0.42] / r∈[0.09,0.17]·min(W,H) / α∈[0.28,0.50]。",
+      "_retired_2026_11_18": "② 2D 夜灯 (computeNightLamps/drawNightLamps) 已删除 (DIMENSION 0d8b391, user「把2D夜晚灯光的特效去掉」); ① NIGHT_LIFT 保留。",
+      "_note": "[user 2026-09-03..05 终裁转正 _locked] 时间重塑卷 (2026-09-03, user 裁定②): 2D 夜段专属——① 夜色提亮一档 NIGHT_LIFT { lmMul 1.15, lFloor 0.035, skyMul 1.15 } (ANCHORS 插值后处理, ANCHORS 表一字不动, 幅度 draft 呈裁); **2026-10-28 减一档 (DIMENSION 43e91cf, user 终裁)**: NIGHT_LIFT → { lmMul 1.3, lFloor 0.05, skyMul 1.15, smMul 1.25 } (新增夜段饱和乘数, 原夜段饱和砍半), 让新库件的色彩关系在夜里可读; 夜段色相向蓝拉 75% 未动 (备选下一档 50%); ② 画面中上部 2-4 处暖色柔光晕 computeNightLamps/drawNightLamps (类灯笼/窗火, 不绑画内物体)。灯组 hash 派生走独立 sfc32 侧流 (种子 = 出生偏移流种子逐字异或 0x9E3779B9), 零主流 r() 消费; 灯进主画布 (renderLibPieceGen 尾段, 是画的一部分, 同 hash+同时刻逐位同——真浏览器双渲 12/12 pairEqual); 昼/黄昏/清晨段零灯光零扰动。painted 风格不参与 (BOB 色窗原生管线, 与 chrono 色温同一豁免面)。参数 draft 呈裁: n 2-4 / x∈[0.14,0.86] / y∈[0.10,0.42] / r∈[0.09,0.17]·min(W,H) / α∈[0.28,0.50]。",
       "scope": "scene 30-32 的 before/after/warp/neon (renderLibPieceGen 路径); 3D/4D/升维走日照窗恒昼, 无夜段"
     },
     "opening_ritual": {
+      "_retired_2026_11_17": "后半 day_sweep 已删除 (DIMENSION 8fcf0ee, user「这个过程不美, 完全去掉」): 排水完成即 render_done; __mountSweepOff 钩撤除。前半 living_brush 保留。",
       "_note": "开场仪式两段: 前半 = 逐笔生成 (T2), 后半 = 日扫 (T4)。全部活效果层, 不入静态归档 (mint-snapshot 等 $renderOK 读主画布完成态)。",
       "living_brush": "2D 库件逐笔: weave/warp 笔数均分 120 段 + 背景 24 段, neon 逐行 96 段显影; 2-4s 刷完 (neon ~31s per-pixel 本体成本, 呈裁); 完成态与直绘逐位相同 (vm op流+帧缓冲判据)",
       "day_sweep": "排水完成后 2.6s (MOUNT_SWEEP.durMs=2600, draft) 光色扫过 24h 落定 T_eff; 实现=色调映射近似 DOM 叠加层 (multiply/screen 两通道+时钟快转), 主画布零触碰 → 落定态=归档态逐位; ?t= 钉时与 mint-snapshot (__mountSweepOff) 不播扫"
@@ -1032,6 +1046,13 @@
     }
   },
   "sky_decor": {
+    "top_color_gate": {
+      "_locked": true,
+      "hue_deg": [185, 255],
+      "lightness_min": 0.35,
+      "saturation_min": 0.08,
+      "_note": "2026-10-28 user 终裁 (DIMENSION 43e91cf): 当刻天色 (CHRONO.sky) 只替换件自身顶色本来就是天空色的件, 受光云/流场淡彩同门 (render2d/fx2d.js bgTopIsSky)。判据 = 背景顶色 HSL 色相 185..255° ∧ 明度 ≥ 0.35 ∧ 饱和 ≥ 0.08; 明度阈 0.35 的依据: 库内夜空/暮色顶色明度 ≤ 0.16, 白天正蓝天 ≥ 0.35, 0.18..0.32 的风格化深蓝 (Deadvlei/红富士) 归保留。不满足的件保留本色过色温 (金地屏风/夜景/俯视/框式)。纯派生零 roll, 三池同判: 风景 108/252 换、144 保留; 物件 15/89; 主题 13/64。起因: 2D 换血后 200 张风景批 (8 时辰×25) 显示一律换天色毁掉本色即主题的件; user 评 \"原来的天色套件把很多作品的颜色感染力弄没了\"。"
+    },
     "_note": "2D 白天装饰\"用光来治\" (构型扩容+光影卷 T4/T5, user 终裁 2026-09-09..10; 墨线方案 user 叫停搁置候补——\"墨线是不是我们最好的选择还没讨论过\", 零代码入仓)。作用域 = scene31 白天风景 (夜件不加, 夜有灯); 实现 render2d/fx2d.js, 第十方 sfc32 侧流 ⊕0x165667b1 恒 43 roll 零主流消费; batch44 实测 云 53.6% (30/56 昼风景)/淡彩 17.9% (10/56)。",
     "lit_clouds": {
       "rate": 0.6,
@@ -1224,6 +1245,7 @@
         "ikat-diamonds",
         "kimono-waves"
       ],
+      "_note_2026_11_18": "PIECE_CULL_THEMES 27 → 28: + hex-honeycomb (user 面对样张逐字「这个构图太丑了，去掉」)。pattern 类存续 4 → 3 (art-nouveau-iris / chinoiserie-panel / william-morris), 单件占主题池 8.3% → 11.1%; 随即按 user 选「压到单件约 2%」把 TILING_TRIM_R 1/3 → 0.88 (pattern 有效份额 33.3% → 6%, 余量按 2:2 让 lighthouse36/seasons), 4000-hash 实测 pattern 三件 2.0–2.3%。",
       "_note": "PIECE_CULL_THEMES 12 (T9) → 23 (T9b +11 边界全删) → **27 (T10 +4)**; 归类按 T9b 终态口径 (瓷砖样本三件与织物挂样同构线一并表态, 审查者口径自洽建议采纳)"
     },
     "themes_culled_t10_4": {

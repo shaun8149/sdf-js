@@ -535,6 +535,10 @@ user 盲评后裁"所有的都是 5.5 明显更好"。前情勘正：旧库实�
 0.25..0.43 固定为 `WARP2D_AMP=0.43`（user 裁"最强的是最美的"，0.43 之上探针证饱和），seed 照抽、非 warp
 件逐位同。策展表重审：剔除 37 件全部维持、语义表维持、豁免 2 件不扩。生产线脚本见 `sdf-js/scripts/genlab-*`，
 style-plan 新节 `lib2d_rewrite_opus55` 与 `2d_style_axis.warp_amp`。
+**2026-10-28 两条 2D 色彩规则**（DIMENSION 43e91cf）：①当刻天色只替换件自身顶色为天空色的件（HSL 185–255° ∧ 明度 ≥ 0.35 ∧
+饱和 ≥ 0.08，云/淡彩同门；风景 108/252 换、144 保留），②夜色减一档（NIGHT_LIFT lmMul 1.3 / lFloor 0.05 / smMul 1.25）；
+style-plan `sky_decor.top_color_gate` 与 `chrono_axis_living.night_lamps`。同日 run-tests.mjs 退役删除（DIMENSION 161381a），
+链文件清单改由 index.html 现取。
 
 ---
 
