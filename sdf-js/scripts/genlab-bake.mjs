@@ -45,8 +45,16 @@ const BUNDLES = { objects: 'LIB_OBJECTS', landscapes: 'LIB_LANDSCAPES', themes: 
 
 // ---- 现有 bundle 的键顺序 ----
 const orderOf = (pool) => {
-  const s = readFileSync(join(DIM, 'objects2d', `lib-${pool}.js`), 'utf8');
-  return [...s.matchAll(/o(?:\.([a-z][a-z0-9]*)|\["([^"]+)"\])=\(\)=>/g)].map((m) => m[1] || m[2]);
+  const ctx = chainCtx();
+  const name = BUNDLES[pool];
+  const file = join(DIM, 'objects2d', `lib-${pool}.js`);
+  vm.runInContext(readFileSync(file, 'utf8'), ctx, { filename: `lib-${pool}.js` });
+  const ids = vm.runInContext(
+    `typeof ${name} === 'undefined' ? [] : Object.keys(${name})`,
+    ctx,
+  );
+  if (!ids.length) throw new Error(`${pool}: 旧 bundle 键序为空, 拒绝写入`);
+  return ids;
 };
 
 // ---- 括号配平取一个表达式 (从 pos 起, 到顶层 , 或 } 为止) ----

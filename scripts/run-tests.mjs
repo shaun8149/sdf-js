@@ -32,6 +32,7 @@ const TESTS = [
   { category: 'smoke', file: 'sdf-js/scripts/test-platonic-parity.mjs' },
   { category: 'smoke', file: 'sdf-js/scripts/test-uniform-args.mjs' },
   { category: 'smoke', file: 'sdf-js/scripts/test-feature-gates.mjs' },
+  { category: 'tooling', file: 'sdf-js/scripts/test-genlab-bake-order.mjs' },
 
   // Geometry sanity checker (M5 prereq)
   { category: 'sanity', file: 'sdf-js/scripts/test-sanity.mjs' },
