@@ -171,6 +171,8 @@ const validate = (pool, code, ids) => {
   return report;
 };
 
+const pendingWrites = [];
+
 for (const pool of ONLY) {
   const ids = orderOf(pool);
   const parts = [];
@@ -203,8 +205,13 @@ for (const pool of ONLY) {
   );
   for (const b of bad) console.log(`  ✗ ${b.id}: ${b.err}`);
   if (bad.length) throw new Error(`${pool}: ${bad.length} 件自检失败, 不写`);
-  if (!DRY) {
-    writeFileSync(join(DIM, 'objects2d', `lib-${pool}.js`), code);
-    console.log(`  → 写入 objects2d/lib-${pool}.js`);
+  pendingWrites.push({ pool, path: join(DIM, 'objects2d', `lib-${pool}.js`), code });
+}
+
+// Do not leave DIMENSION half-updated if a later pool is missing or fails validation.
+if (!DRY) {
+  for (const w of pendingWrites) {
+    writeFileSync(w.path, w.code);
+    console.log(`  → 写入 objects2d/lib-${w.pool}.js`);
   }
 }
